@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight,
   CircleNotch,
@@ -16,22 +16,27 @@ export function AuthScreen({ configured }: { configured: boolean }) {
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
-    [showPassword, setShowPassword] = useState(false);
+    [showPassword, setShowPassword] = useState(false),
+    [showResendConfirmation, setShowResendConfirmation] = useState(false);
+  const emailRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("mode") === "signup")
       setMode("signup");
     if (
       new URLSearchParams(window.location.search).get("notice") ===
       "link-expired"
-    )
+    ) {
       setError(
         "Este link expirou ou já foi usado. Peça um novo e-mail e tente novamente.",
       );
+      setShowResendConfirmation(true);
+    }
   }, []);
   function changeMode(next: typeof mode) {
     setMode(next);
     setError("");
     setNotice("");
+    setShowResendConfirmation(false);
   }
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -81,6 +86,39 @@ export function AuthScreen({ configured }: { configured: boolean }) {
         return;
       }
     } catch (err) {
+      const message = errorMessage(err);
+      setError(message);
+      setShowResendConfirmation(
+        message === "Confirme seu e-mail antes de entrar.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function resendConfirmation() {
+    if (busy || !configured) return;
+    const email = emailRef.current?.value.trim() ?? "";
+    if (!email) {
+      setError("Informe o e-mail acima para reenviar a confirmação.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    setNotice("");
+    try {
+      const { error } = await createClient().auth.resend({
+        type: "signup",
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+      setNotice(
+        "Se a conta estiver pendente de confirmação, enviaremos um novo link para esse endereço.",
+      );
+      setShowResendConfirmation(false);
+    } catch (err) {
       setError(errorMessage(err));
     } finally {
       setBusy(false);
@@ -113,6 +151,16 @@ export function AuthScreen({ configured }: { configured: boolean }) {
       {error && (
         <div className="form-alert" role="alert">
           {error}
+          {showResendConfirmation && (
+            <button
+              type="button"
+              className="text-button"
+              disabled={busy || !configured}
+              onClick={() => void resendConfirmation()}
+            >
+              {busy ? "Enviando…" : "Reenviar link de confirmação"}
+            </button>
+          )}
         </div>
       )}
       {notice && (
@@ -164,6 +212,7 @@ export function AuthScreen({ configured }: { configured: boolean }) {
         <label>
           E-mail
           <input
+            ref={emailRef}
             name="email"
             type="email"
             autoComplete="email"
