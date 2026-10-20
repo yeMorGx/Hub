@@ -208,3 +208,34 @@ test("prévia do calendário é pública e declara seus dados fictícios", async
   assert.equal(response.status, 200);
   assert.match(await response.text(), /dados fictícios/);
 });
+
+test("site público apresenta o produto e leva à central de downloads", async () => {
+  const response = await request("/site");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /Seu time\./);
+  assert.match(html, /href="\/download"/);
+  assert.match(html, /canonical/);
+  assert.match(html, /dados fictícios/);
+});
+test("downloads expõe o instalador oficial e informa versão e assinatura pendente", async () => {
+  const response = await request("/download");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /Hub_0\.1\.2_x64-setup\.exe/);
+  assert.match(html, /não tem assinatura de código/);
+  assert.match(html, /macOS/);
+  assert.match(html, /Linux/);
+  assert.match(html, /454cd533dc657f2d61fa3d9c6454d783ef35bb955288d4c0430fc27647fbed93/);
+});
+test("marketing publica apenas as páginas públicas no sitemap e serve imagem social", async () => {
+  const response = await request("/sitemap.xml");
+  assert.equal(response.status, 200);
+  const xml = await response.text();
+  assert.match(xml, /\/site/);
+  assert.match(xml, /\/download/);
+  assert.doesNotMatch(xml, /\/invite|\/demo|\/login/);
+  const image = await request("/marketing/og.png");
+  assert.equal(image.status,200);
+  assert.match(image.headers.get("content-type") || "", /image\/png/);
+});

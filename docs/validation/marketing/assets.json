@@ -1,0 +1,33 @@
+{
+  "images": [
+    {
+      "file": "public/marketing/today.webp",
+      "source": "/demo",
+      "method": "Chromium screenshot of public demo at 1440x1000, locally converted to WebP",
+      "data": "fictitious demonstration data"
+    },
+    {
+      "file": "public/marketing/chat.webp",
+      "source": "/demo, Conversas",
+      "method": "Chromium screenshot of public demo at 1440x1000, locally converted to WebP",
+      "data": "fictitious demonstration data"
+    },
+    {
+      "file": "public/marketing/tasks.webp",
+      "source": "/demo/kanban",
+      "method": "Chromium screenshot of public demo at 1440x1000, locally converted to WebP",
+      "data": "fictitious demonstration data"
+    },
+    {
+      "file": "public/marketing/calendar.webp",
+      "source": "/demo/calendar",
+      "method": "Chromium screenshot of public demo at 1440x1000, locally converted to WebP",
+      "data": "fictitious demonstration data"
+    }
+  ],
+  "otherAssets": {
+    "public/marketing/icon.svg": "Hub SquaresFour brand geometry, blue/lime marketing variant",
+    "app/marketing/og.png/route.tsx": "Original social image rendered from text with Next ImageResponse"
+  },
+  "externalAssetsReused": false
+}

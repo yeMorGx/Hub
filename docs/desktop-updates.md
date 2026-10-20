@@ -33,8 +33,12 @@ Isto **não é o Tauri Updater**: não instala pacotes automaticamente e não su
 
 ## Entrega 0.1.2 concluída
 
-- [Baixar prévia no rascunho GitHub](https://github.com/yeMorGx/Hub/releases/tag/untagged-86eda426e3b99f0e4f12), exige acesso ao repositório. Escolher `Hub_0.1.2_x64-setup.exe` em Assets. Não foi publicada como release estável, portanto não gera aviso.
+- [Baixar prévia no rascunho GitHub](https://github.com/yeMorGx/Hub/releases/tag/desktop-v0.1.2), exige acesso ao repositório. Escolher `Hub_0.1.2_x64-setup.exe` em Assets. Não foi publicada como release estável, portanto não gera aviso.
 - [Build nativo e smoke aprovados](https://github.com/yeMorGx/Hub/actions/runs/39495085346), commit `a2d66eda75ea43e4c8492aad77c017cb0e5db2ea`. Instalador com 2.313.817 bytes, `NotSigned`; instalação, login renderizado, instância única, restauração e desinstalação passaram. Relatório e captura em `validation/desktop-updates/`.
 - [Promoção ao rascunho aprovada](https://github.com/yeMorGx/Hub/actions/runs/39495970727). Download do asset conferido contra SHA-256 `454cd533dc657f2d61fa3d9c6454d783ef35bb955288d4c0430fc27647fbed93`.
 - Site publicado, deployment `dpl_JBCDMs73S3p3jvu33YaKJucxBaYR` READY. 29 checks HTTP públicos passaram. `/api/desktop/update` retornou 200 com `release: null`, conforme a ausência de uma release desktop estável publicada. Nenhum rascunho/pre-release é anunciado.
 - Permanece pendente o teste real do botão de download entre duas versões publicadas. Não houve instalação automática nem validação de Authenticode reconhecido.
+
+## Publicação para o site de downloads
+
+A release `desktop-v0.1.2` foi publicada como release estável pública para atender ao pedido de uma landing page com download sem login. O instalador e seu SHA-256 permanecem os mesmos da prévia testada. As referências a rascunho acima descrevem a entrega anterior. A partir desta publicação, ela pode ser anunciada pelo endpoint de atualizações para clientes compatíveis com versão menor. [Site e validação](marketing-research.md).

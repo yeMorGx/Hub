@@ -4,7 +4,13 @@ import { hasSupabaseConfig, supabaseConfig } from "@/lib/supabase/config";
 import type { Database } from "@/lib/supabase/database.types";
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
-  if (!hasSupabaseConfig() || request.nextUrl.pathname.startsWith("/demo"))
+  if (
+    !hasSupabaseConfig() ||
+    request.nextUrl.pathname.startsWith("/demo") ||
+    ["/site", "/download", "/robots.txt", "/sitemap.xml"].includes(
+      request.nextUrl.pathname,
+    )
+  )
     return response;
   const { url, key } = supabaseConfig();
   const supabase = createServerClient<Database>(url, key, {

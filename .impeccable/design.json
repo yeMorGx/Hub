@@ -13,5 +13,121 @@
     "scope": ["desktop login", "mobile login", "desktop signup", "desktop recovery request", "512px PWA icon"],
     "evidence": ".impeccable/review/auth/",
     "limits": "No private-screen or MFA captures; no real account, email or end-to-end authentication validation; device installation unverified"
+  },
+  "marketing": {
+    "mode": "persuade",
+    "authority": "Independent public identity selected under user delegation; does not replace app authority or root tokens.",
+    "designDocument": "DESIGN.md#site-público--autoridade-independente",
+    "research": "docs/marketing-research.md",
+    "font": "Manrope Variable",
+    "icons": "@phosphor-icons/react",
+    "tokens": {
+      "ink": "#172238",
+      "blue": "#2449e8",
+      "lime": "#d5fa71",
+      "paper": "#f5f6f1",
+      "muted": "#626977",
+      "line": "#d9ddd9",
+      "background": "#ffffff",
+      "buttonRadius": 7,
+      "panelRadius": 14,
+      "screenshotRadius": 6,
+      "body": {
+        "fontSize": "15px",
+        "lineHeight": 1.6
+      },
+      "display": {
+        "fontWeight": 650,
+        "fontSize": "clamp(64px, 6.8vw, 96px)",
+        "lineHeight": 1.03,
+        "letterSpacing": "-0.04em"
+      },
+      "headline": {
+        "fontWeight": 650,
+        "fontSize": "clamp(36px, 4vw, 55px)",
+        "lineHeight": 1.12,
+        "letterSpacing": "-0.04em"
+      },
+      "button": {
+        "minHeight": "52px",
+        "padding": "14px 23px",
+        "fontSize": "13px",
+        "fontWeight": 750
+      },
+      "focus": {
+        "width": "3px",
+        "offset": "5px",
+        "color": "#5371ff",
+        "onColorField": "#d5fa71"
+      }
+    },
+    "surface": {
+      "name": "Public marketing and downloads",
+      "routes": [
+        "/site",
+        "/download"
+      ],
+      "desktop": "editorial headlines, broad color fields, local product screenshots; Windows download and platform alternatives in parallel",
+      "mobile": "stacked content, two-column explorer tabs, compact navigation with menu",
+      "container": {
+        "maxWidth": "1280px",
+        "desktopGutter": "48px",
+        "tabletGutter": "32px",
+        "mobileGutter": "20px"
+      },
+      "breakpoints": {
+        "tablet": "1100px",
+        "mobile": "760px"
+      },
+      "components": [
+        "ink, lime and outline actions",
+        "responsive navigation",
+        "keyboard product tabs",
+        "local demonstration timer",
+        "native FAQ disclosures",
+        "download platform panels",
+        "checksum disclosure and copy feedback"
+      ]
+    },
+    "extensions": {
+      "shadows": [],
+      "motion": {
+        "buttonTransition": "background 0.18s ease, transform 0.18s ease",
+        "buttonHoverTranslateY": "-2px",
+        "reducedMotion": "disable animations, transitions, smooth scrolling and button translation"
+      },
+      "sources": [
+        "app/marketing.css",
+        "components/marketing.tsx",
+        "app/site/page.tsx",
+        "app/download/page.tsx"
+      ]
+    },
+    "narrative": {
+      "northStar": "Trabalho em sintonia",
+      "characteristics": [
+        "expressive editorial typography",
+        "generous spacing",
+        "electric blue and vivid lime color fields",
+        "clearly labeled fictional product demonstrations"
+      ],
+      "rules": [
+        "Scope marketing CSS variables to the public surface.",
+        "Do not promote public-page compositions into app-wide rules.",
+        "Use supported features and distribution facts; do not invent social proof or productivity metrics."
+      ]
+    },
+    "status": "implemented independent public surface",
+    "review": {
+      "visual_verdict": "ship",
+      "scope": [
+        "site at 1440px",
+        "site at 390px",
+        "download at 1440px",
+        "download at 390px"
+      ],
+      "evidence": ".impeccable/review/marketing/",
+      "limits": "Visual review only; not proof of complete accessibility, authentication, desktop installation or real integrations."
+    }
   }
 }
