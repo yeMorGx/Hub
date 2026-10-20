@@ -77,7 +77,6 @@ export function AdvancedConversation({
     threadSerial = useRef(0),
     searchSerial = useRef(0),
     retry = useRef<{ key: string; id: string } | null>(null),
-    bottom = useRef<HTMLDivElement>(null),
     scroller = useRef<HTMLDivElement>(null),
     recorder = useRef<MediaRecorder | null>(null),
     stream = useRef<MediaStream | null>(null),
@@ -223,7 +222,8 @@ export function AdvancedConversation({
   }, [channel.messages]);
   useEffect(() => {
     if (!atBottom || mode !== "conversation" || root) return;
-    bottom.current?.scrollIntoView({ block: "nearest" });
+    const list = scroller.current;
+    if (list) list.scrollTop = list.scrollHeight;
     const latest = channel.messages.at(-1);
     if (latest && !document.hidden) void channel.markRead(latest.ordinal);
   }, [channel.messages, atBottom, mode, root]);
@@ -732,7 +732,6 @@ export function AdvancedConversation({
             Mais resultados
           </button>
         )}
-        <div ref={bottom} />
       </div>
       {mode === "conversation" && (
         <>
@@ -740,7 +739,8 @@ export function AdvancedConversation({
             <button
               className="new-messages-button"
               onClick={() => {
-                bottom.current?.scrollIntoView({ block: "nearest" });
+                const list = scroller.current;
+                if (list) list.scrollTop = list.scrollHeight;
                 setAtBottom(true);
               }}
             >

@@ -5218,6 +5218,18 @@ input[type="time"] {
   min-height: 0;
   flex: 1;
 }
+.live-chat-layout {
+  grid-template-rows: minmax(0, 1fr);
+}
+.live-chat-layout .chat-main {
+  min-height: 0;
+  overflow: hidden;
+}
+.live-chat-layout .chat-head,
+.advanced-conversation > .message-form,
+.advanced-conversation > .composer-context {
+  flex-shrink: 0;
+}
 .conversation-tools {
   display: flex;
   align-items: center;
@@ -5250,7 +5262,8 @@ input[type="time"] {
 .advanced-messages {
   flex: 1;
   overflow: auto;
-  min-height: 200px;
+  min-height: 0;
+  overscroll-behavior: contain;
   padding: 20px 24px;
 }
 .advanced-message {
