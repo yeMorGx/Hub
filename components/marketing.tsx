@@ -104,6 +104,9 @@ export function MarketingFooter() {
             <Link href="/download">
               Downloads <ArrowUpRight aria-hidden="true" />
             </Link>
+            <Link href="/privacy">
+              Privacidade <ArrowUpRight aria-hidden="true" />
+            </Link>
             <Link href="/login">
               Entrar no Hub <ArrowUpRight aria-hidden="true" />
             </Link>

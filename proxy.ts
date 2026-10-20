@@ -7,7 +7,7 @@ export async function proxy(request: NextRequest) {
   if (
     !hasSupabaseConfig() ||
     request.nextUrl.pathname.startsWith("/demo") ||
-    ["/site", "/download", "/robots.txt", "/sitemap.xml"].includes(
+    ["/site", "/download", "/privacy", "/robots.txt", "/sitemap.xml"].includes(
       request.nextUrl.pathname,
     )
   )

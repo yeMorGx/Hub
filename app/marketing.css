@@ -1454,6 +1454,217 @@
     font-size: 47px;
   }
 }
+
+.m-policy {
+  --m-ink: #172238;
+  --m-blue: #2449e8;
+  --m-paper: #f5f6f1;
+  --m-muted: #626977;
+  --m-line: #d9ddd9;
+  min-height: 100vh;
+  background: var(--m-paper);
+  color: var(--m-ink);
+  color-scheme: light;
+  font-size: 15px;
+  line-height: 1.75;
+}
+.m-policy a {
+  color: var(--m-blue);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.m-policy a:hover {
+  text-decoration-thickness: 2px;
+}
+.m-policy a:focus-visible {
+  outline: 3px solid #5371ff;
+  outline-offset: 4px;
+}
+.m-policy-shell {
+  width: min(850px, calc(100% - 48px));
+  margin-inline: auto;
+}
+.m-policy-skip {
+  position: fixed;
+  z-index: 100;
+  top: -80px;
+  left: 20px;
+  padding: 10px 16px;
+  border-radius: 5px;
+  background: var(--m-lime);
+  color: var(--m-ink) !important;
+}
+.m-policy-skip:focus {
+  top: 12px;
+}
+.m-policy-header {
+  background: #fff;
+  border-bottom: 1px solid var(--m-line);
+}
+.m-policy-nav {
+  width: min(1180px, calc(100% - 64px));
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.m-policy-nav nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 4vw, 42px);
+  font-size: 13px;
+  font-weight: 650;
+}
+.m-policy-nav nav a {
+  color: var(--m-ink);
+  text-decoration: none;
+}
+.m-policy-nav nav a:hover {
+  color: var(--m-blue);
+}
+.m-policy-brand {
+  color: var(--m-ink) !important;
+  font-size: 24px;
+  font-weight: 850;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  text-decoration: none !important;
+}
+.m-policy-brand span {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  margin-right: 3px;
+  place-items: center;
+  border-radius: 7px;
+  background: var(--m-blue);
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: -0.08em;
+}
+.m-policy-content {
+  padding-top: clamp(48px, 8vw, 88px);
+  padding-bottom: 88px;
+}
+.m-policy-kicker {
+  color: var(--m-blue);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+.m-policy-content h1 {
+  margin-top: 12px;
+  font-size: clamp(38px, 6vw, 58px);
+  font-weight: 680;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+.m-policy-content .m-policy-intro {
+  max-width: 670px;
+  margin-top: 20px;
+  color: #4f5868;
+  font-size: 18px;
+  line-height: 1.65;
+}
+.m-policy-updated {
+  margin-top: 20px;
+  color: var(--m-muted);
+  font-size: 12px;
+}
+.m-policy-content section {
+  margin-top: 42px;
+  padding-top: 28px;
+  border-top: 1px solid var(--m-line);
+}
+.m-policy-content h2 {
+  margin-bottom: 12px;
+  color: var(--m-ink);
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  line-height: 1.4;
+}
+.m-policy-content p + p {
+  margin-top: 15px;
+}
+.m-policy-content ul {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 16px;
+  padding-left: 22px;
+}
+.m-policy-content li {
+  padding-left: 4px;
+}
+.m-policy-content strong {
+  font-weight: 750;
+}
+.m-policy-contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 48px;
+  padding: 22px 24px;
+  border: 1px solid #d9ddd9;
+  border-left: 4px solid var(--m-blue);
+  border-radius: 7px;
+  background: #fff;
+}
+.m-policy-footer {
+  padding: 24px 0;
+  border-top: 1px solid var(--m-line);
+  background: #fff;
+  color: var(--m-muted);
+  font-size: 12px;
+}
+.m-policy-footer > div {
+  width: min(1180px, calc(100% - 64px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.m-policy-footer a {
+  color: var(--m-ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+@media (max-width: 560px) {
+  .m-policy-nav,
+  .m-policy-footer > div {
+    width: calc(100% - 36px);
+  }
+  .m-policy-nav {
+    min-height: 68px;
+  }
+  .m-policy-nav nav {
+    gap: 13px;
+    font-size: 11px;
+  }
+  .m-policy-shell {
+    width: calc(100% - 36px);
+  }
+  .m-policy-content {
+    padding-bottom: 58px;
+  }
+  .m-policy-content .m-policy-intro {
+    font-size: 16px;
+  }
+  .m-policy-content section {
+    margin-top: 32px;
+    padding-top: 23px;
+  }
+  .m-policy-content h2 {
+    font-size: 18px;
+  }
+  .m-policy-contact,
+  .m-policy-footer > div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .m-page *,
   .m-page *::before,

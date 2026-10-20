@@ -11,5 +11,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    {
+      url: "https://hub-one-azure.vercel.app/privacy",
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
   ];
 }
