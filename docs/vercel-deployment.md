@@ -60,3 +60,8 @@ Código `ec558a5`, deployment `dpl_BCunKVSmBHPR8J3hGtcXZ2weRLqY`, **READY**, no 
 ## Google Calendar · 2026-10-20
 
 O usuário configurou Google Calendar API e OAuth Web em modo Externo/Teste, adicionou conta de teste e escopo `calendar.app.created`. Vercel Production recebeu `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `HUB_INTEGRATION_ENCRYPTION_KEY`, `SUPABASE_SERVICE_ROLE_KEY` e `CRON_SECRET` como segredos de servidor. Deployment `dpl_CywxL4RVkrXpniYq7DPGjJjeHjMM` terminou READY e o alias público permaneceu ativo. Os 24 checks HTTP anônimos passaram; a conexão de uma conta Google e a sincronização continuam aguardando teste manual. [Metadados](validation/google-calendar/deployment.json).
+
+
+## Correção do status Google · 2026-10-20
+
+A tela agora atualiza o estado Google independentemente de falhas ao consultar conexões/webhooks e mostra erro de autenticação do endpoint de status. Código `db79aae`, deployment `dpl_3qFqt3YDgA34cQridiwT6wpipUSf` READY no alias estável. Build, 10 unitários e 24 checks HTTP públicos passaram. A conexão OAuth com conta real segue pendente. [Relatório](validation/google-calendar/ui-status-fix.json).

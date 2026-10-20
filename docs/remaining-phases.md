@@ -55,3 +55,7 @@ Consulte [Configuração dos serviços](service-activation.md), [Primeiro acesso
 ### Google Calendar · 2026-10-20
 
 Cliente OAuth, audiência de teste, conta permitida e escopo `calendar.app.created` configurados. Segredos de produção instalados na Vercel e deployment `dpl_CywxL4RVkrXpniYq7DPGjJjeHjMM` READY. **24/24 checks HTTP anônimos de produção passaram**; isso não executa consentimento OAuth nem sincronização. Próximo passo: abrir Integrações no Hub, conectar a conta autorizada e validar um evento. [Evidência](validation/google-calendar/deployment.json).
+
+### Correção do status de integrações · 2026-10-20
+
+O endpoint autenticado confirmou `google: true`; a tela escondia o estado quando consultas de calendário/webhook falhavam. Agora busca e exibe o status dos provedores separadamente. Deployment `dpl_3qFqt3YDgA34cQridiwT6wpipUSf` READY; 10 unitários e 24 checks HTTP públicos passaram. O consentimento/sincronização Google com conta real continua pendente. [Evidência](validation/google-calendar/ui-status-fix.json).
