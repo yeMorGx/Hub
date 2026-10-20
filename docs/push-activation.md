@@ -31,3 +31,11 @@ Os [24 checks HTTP públicos](validation/push/production-http.log) passaram apó
 Nenhum dispositivo estava inscrito durante os checks; `processed=0` e `sent=0`. Isso demonstra a configuração/execução do serviço, não a entrega por FCM/Mozilla/Apple nem o comportamento do sistema operacional.
 
 O usuário precisa atualizar o Hub, entrar com MFA, abrir o perfil e clicar em **Ativar notificações**, concedendo permissão. Depois, validar uma menção recebida e um lembrete; testar desativação e saída/troca de conta. iOS/iPadOS exige PWA instalada. As notificações contêm avisos genéricos, e a cópia local de mensagens é uma configuração separada.
+
+## Ativação no Brave
+
+Se a permissão de notificações estiver concedida mas a inscrição push falhar, abra `brave://settings/privacy` e confira **Usar serviços do Google para mensagens push**. Ative a opção se quiser receber push pelo Brave, recarregue o Hub e tente novamente. A permissão de notificações do site também precisa estar habilitada. Uma rede que bloqueia o serviço push pode causar a mesma falha.
+
+No diagnóstico de 20/10/2026, a chave pública de produção era um ponto P-256 válido de 65 bytes e correspondia à configuração do serviço. Nenhum dispositivo estava inscrito naquele momento; a configuração do Brave e a entrega no aparelho ainda dependem de validação pelo usuário.
+
+O fluxo solicita permissão diretamente no clique, antes de aguardar o service worker, e diferencia falhas de permissão, inicialização, inscrição no navegador e registro no Hub. A espera pelo service worker tem limite de 15 segundos. A interface só restaura o estado ativo de uma inscrição local quando ela pertence à conta atual.
