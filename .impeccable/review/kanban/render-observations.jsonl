@@ -1,0 +1,4 @@
+{"screen": "desktop", "status": 200, "errors": [], "documentWidth": 1440, "viewportWidth": 1440}
+{"screen": "editor-desktop", "errors": [], "documentWidth": 1440, "viewportWidth": 1440}
+{"screen": "mobile", "status": 200, "errors": [], "documentWidth": 390, "viewportWidth": 390}
+{"screen": "editor-mobile", "errors": [], "documentWidth": 390, "viewportWidth": 390}

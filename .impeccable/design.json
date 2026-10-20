@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "product": "Hub",
+  "mode": "operate",
+  "reference": "https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard",
+  "font": "Manrope Variable",
+  "icons": "@phosphor-icons/react",
+  "tokens": {"background":"#101112","rail":"#0c0d0e","surface":"#191b1d","border":"#2b2d30","text":"#f0f0f1","muted":"#a0a2a6","accent":"#e26540","radius":14},
+  "surface": {"name":"Hoje","desktop":"focus, work, meetings, weekly calendar, team context","mobile":"focus, meetings, daily calendar, team context"},
+  "status": "implemented adaptation; Supabase Auth/MFA, workspace onboarding, RPC adapter and PWA implemented; browser-local demonstration at /demo; authenticated flows await real-account validation",
+  "review": {
+    "auth_ui_verdict": "ship",
+    "scope": ["desktop login", "mobile login", "desktop signup", "desktop recovery request", "512px PWA icon"],
+    "evidence": ".impeccable/review/auth/",
+    "limits": "No private-screen or MFA captures; no real account, email or end-to-end authentication validation; device installation unverified"
+  }
+}

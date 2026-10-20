@@ -1,0 +1,6 @@
+{"screen": "desktop", "url": "http://127.0.0.1:3000/login", "status": 200, "heading": "Bom ter você por aqui.", "errors": [], "documentWidth": 1440, "viewportWidth": 1440}
+{"icon": 180, "status": 200, "type": "image/png", "bytes": 2025}
+{"icon": 192, "status": 200, "type": "image/png", "bytes": 2131}
+{"icon": 512, "status": 200, "type": "image/png", "bytes": 9633}
+{"manifest_status": 200, "errors": []}
+{"screen": "mobile", "url": "http://127.0.0.1:3000/login", "status": 200, "heading": "Bom ter você por aqui.", "errors": [], "documentWidth": 390, "viewportWidth": 390}

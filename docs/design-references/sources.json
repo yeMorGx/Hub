@@ -1,0 +1,122 @@
+[
+  {
+    "capture": "highperform.png",
+    "url": "https://dribbble.com/shots/26592640-HighPerform-Team-Dashboard",
+    "title": "HighPerform - Team Dashboard by Dipa Product for Dipa Inhouse on Dribbble",
+    "http_status": 202,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  },
+  {
+    "capture": "productivity.png",
+    "url": "https://dribbble.com/shots/27258621-Productivity-App-UI-Task-Management-Team-Dashboard",
+    "title": "Productivity App UI — Task Management & Team Dashboard by Sk Nahid Hasan on Dribbble",
+    "http_status": 200,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  },
+  {
+    "capture": "orenji-chat.png",
+    "url": "https://dribbble.com/shots/13944513-Team-Chat-App-VisualExploration",
+    "title": "Team Chat App - #VisualExploration by Alzea Arafat for Orenji Studio on Dribbble",
+    "http_status": 200,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  },
+  {
+    "capture": "hiver-chat.png",
+    "url": "https://dribbble.com/shots/25446536-Hiver-Team-Chat",
+    "title": "Hiver - Team Chat by Filip Legierski on Dribbble",
+    "http_status": 200,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  },
+  {
+    "capture": "sandro-time.png",
+    "url": "https://dribbble.com/shots/22096862-Time-Tracking-Dashboard",
+    "title": "Time Tracking Dashboard by Sandro Tavartkiladze on Dribbble",
+    "http_status": 200,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  },
+  {
+    "capture": "worksy.png",
+    "url": "https://dribbble.com/shots/27258367-Worksy-Clock-In-SaaS-Time-Tracking-Dashboard",
+    "title": "Worksy Clock-In - SaaS Time Tracking Dashboard by Ryt Brothers LLC for Ryt Brothers on Dribbble",
+    "http_status": 200,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  },
+  {
+    "capture": "calendar-shakuro.png",
+    "url": "https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard",
+    "title": "Team Management Calendar UI Dashboard by Shakuro UI/UX for Shakuro on Dribbble",
+    "http_status": 202,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  },
+  {
+    "capture": "calendar-taskflow.png",
+    "url": "https://dribbble.com/shots/27112768-TaskFlow-Team-Calendar-Event-Management-Dashboard-SaaS-Web",
+    "title": "TaskFlow — Team Calendar & Event Management Dashboard | SaaS Web by Ilias Miah for Confidency on Dribbble",
+    "http_status": 200,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  },
+  {
+    "capture": "mobbin-sites.png",
+    "url": "https://mobbin.com/discover/sites/latest",
+    "title": "403: Forbidden",
+    "http_status": 403,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  },
+  {
+    "capture": "mobbin-apps.png",
+    "url": "https://mobbin.com/discover/apps/web/latest",
+    "title": "403: Forbidden",
+    "http_status": 403,
+    "captured_at": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1100
+    },
+    "method": "Chromium / Playwright screenshot; interface concepts inspected visually; interactions not tested"
+  }
+]

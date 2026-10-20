@@ -1,0 +1,28 @@
+
+> hub-team@0.1.0 test:public
+> node --test scripts/public.test.mjs
+
+✔ sem sessão, / exige login (268.569039ms)
+✔ sem sessão, /mfa exige login (31.825608ms)
+✔ /login responde sem permitir cache compartilhado (10.663047ms)
+✔ /reset-password responde sem permitir cache compartilhado (12.133985ms)
+✔ /auth/callback retorna ao login quando o link é incompleto/inválido (15.658689ms)
+✔ /auth/callback?next=https%3A%2F%2Fexample.invalid%2F retorna ao login quando o link é incompleto/inválido (13.285111ms)
+✔ /auth/confirm retorna ao login quando o link é incompleto/inválido (17.904572ms)
+✔ /auth/confirm?token_hash=not-a-real-token&type=unknown retorna ao login quando o link é incompleto/inválido (6.353244ms)
+✔ manifest contém escopo e ícones da PWA (43.154946ms)
+✔ ícone 180 é um PNG com dimensões corretas (20.251495ms)
+✔ ícone 192 é um PNG com dimensões corretas (18.818533ms)
+✔ ícone 512 é um PNG com dimensões corretas (31.741997ms)
+✔ service worker é servido para a raiz sem cache persistente do script (5.409951ms)
+✔ página offline está disponível sem sessão (7.320241ms)
+✔ /demo retorna o HTML público esperado antes da hidratação (15.558736ms)
+✔ /demo/kanban retorna o HTML público esperado antes da hidratação (77.291219ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 713.979456
