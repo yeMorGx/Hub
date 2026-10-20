@@ -5,7 +5,7 @@ Solicitação: avisar dentro do aplicativo quando houver uma nova versão do ins
 ## Comportamento
 
 - Disponível a partir do instalador Windows **0.1.2**. O instalador anterior precisa ser substituído manualmente uma vez, pois não permite consultar sua versão nativa nem abrir o download pelo comando novo.
-- Verifica na abertura, a cada hora e no retorno ao foco/visibilidade, respeitando intervalo mínimo de cinco minutos entre tentativas.
+- Verifica releases do instalador na abertura, a cada hora e ao voltar ao foco. Builds do site são conferidos na abertura, a cada cinco minutos e ao voltar ao foco.
 - Exibe um aviso sem bloquear o trabalho: versão disponível, **Baixar atualização** e **Depois**. Depois dispensa aquela versão pela sessão da janela; uma versão diferente pode ser anunciada.
 - Baixar atualização abre o navegador padrão no instalador oficial. O usuário executa/confirma a instalação; não há download ou reinício automático. Se o navegador não abrir, aparece erro com possibilidade de tentar novamente.
 - Também detecta uma publicação nova do site na abertura, a cada cinco minutos e ao voltar ao foco. O aviso **Atualizar agora** recarrega a janela do app; não baixa nem reinstala o executável.
