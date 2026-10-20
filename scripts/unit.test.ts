@@ -496,3 +496,15 @@ test("desktop só anuncia release estável publicada com instalador oficial", ()
   assert.deepEqual(readDesktopRelease(release), {version: "0.1.2"});
   for (const patch of [{draft:true}, {prerelease:true}, {tag_name:"v0.1.2"}, {assets:[]}, {assets:[{...release.assets[0],browser_download_url:"https://evil.test/app.exe"}]}]) assert.equal(readDesktopRelease({...release,...patch}), null);
 });
+
+import { GET as desktopUpdate } from "../app/api/desktop/update/route";
+test("desktop endpoint trata ausência de release e falhas sem expor dados internos", async () => {
+  globalThis.fetch = async () => new Response(null, {status:404});
+  assert.deepEqual(await (await desktopUpdate()).json(), {release:null});
+  globalThis.fetch = async () => { throw new Error("private upstream fixture"); };
+  const response = await desktopUpdate();
+  assert.equal(response.status,503);
+  assert.equal(JSON.stringify(await response.json()).includes("private upstream"),false);
+  globalThis.fetch = async () => Response.json({draft:true,tag_name:"desktop-v0.1.3"});
+  assert.deepEqual(await (await desktopUpdate()).json(), {release:null});
+});

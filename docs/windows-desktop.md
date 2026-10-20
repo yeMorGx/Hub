@@ -45,3 +45,7 @@ Ainda exigem validação manual no computador do usuário: login/MFA real, timer
 - Build web, 18 unitários e mocks IPC Windows/macOS passaram. O frontend atualizado foi publicado em `dpl_75Pdia5EWHUvh2dwpsKaqcmY7xHP` READY e os 29 HTTP de produção passaram.
 
 Assinatura reconhecida e teste autenticado no computador do usuário permanecem pendentes. O certificado foi explicitamente informado como indisponível; esta entrega não afirma assinatura ou eliminação de avisos do Windows.
+
+## Avisos de novas versões
+
+O instalador 0.1.2 adiciona consulta de versão e abertura controlada do download para [avisos de atualização dentro do app](desktop-updates.md). A migração de 0.1.1 para 0.1.2 precisa ser feita manualmente uma vez. A consulta só anuncia releases estáveis publicadas; rascunhos não disparam o aviso. A instalação permanece manual, sem assinatura e sem reinício automático.
