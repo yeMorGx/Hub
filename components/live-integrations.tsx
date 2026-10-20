@@ -45,31 +45,55 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
     };
   }, []);
   async function refresh() {
-    try {
-      const results = await Promise.all([
-        hub.client
-          .from("calendar_connections")
-          .select("*")
-          .eq("team_id", hub.teamId),
-        hub.client
-          .from("incoming_webhooks")
-          .select(
-            "id,team_id,channel_id,created_by,name,enabled,last_called_at,created_at",
-          )
-          .eq("team_id", hub.teamId),
-        fetch("/api/integrations/status", { cache: "no-store" }).then((r) =>
-          r.json(),
-        ),
-      ]);
-      for (const r of results.slice(0, 2))
-        if ("error" in r && r.error) throw r.error;
-      if (!alive.current) return;
-      setConnections(results[0].data || []);
-      setHooks(results[1].data || []);
-      setStatus(results[2]);
-    } catch (e) {
-      if (alive.current) setError(errorMessage(e));
+    const results = await Promise.allSettled([
+      hub.client
+        .from("calendar_connections")
+        .select("*")
+        .eq("team_id", hub.teamId),
+      hub.client
+        .from("incoming_webhooks")
+        .select(
+          "id,team_id,channel_id,created_by,name,enabled,last_called_at,created_at",
+        )
+        .eq("team_id", hub.teamId),
+      fetch("/api/integrations/status", { cache: "no-store" }).then(
+        async (response) => ({
+          ok: response.ok,
+          data: (await response.json()) as Record<string, unknown>,
+        }),
+      ),
+    ]);
+    if (!alive.current) return;
+
+    const failures: string[] = [];
+    const [connections, webhooks, providerStatus] = results;
+    if (connections.status === "fulfilled" && !connections.value.error) {
+      setConnections(connections.value.data || []);
+    } else {
+      failures.push("Não foi possível carregar as conexões do time.");
     }
+    if (webhooks.status === "fulfilled" && !webhooks.value.error) {
+      setHooks(webhooks.value.data || []);
+    } else {
+      failures.push("Não foi possível carregar as conexões do time.");
+    }
+    if (
+      providerStatus.status === "fulfilled" &&
+      providerStatus.value.ok &&
+      typeof providerStatus.value.data.google === "boolean" &&
+      typeof providerStatus.value.data.outlook === "boolean"
+    ) {
+      setStatus(providerStatus.value.data as Record<string, boolean>);
+    } else {
+      setStatus({});
+      const message =
+        providerStatus.status === "fulfilled" &&
+        typeof providerStatus.value.data.error === "string"
+          ? providerStatus.value.data.error
+          : "Não foi possível verificar a configuração dos provedores.";
+      failures.unshift(message);
+    }
+    setError(failures[0] || "");
   }
   useEffect(() => {
     void refresh();
