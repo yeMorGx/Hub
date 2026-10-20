@@ -8,6 +8,8 @@ Vercel Production/Preview já têm `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUP
 
 ## Google Calendar
 
+**Configuração em andamento concluída em 20/10/2026:** API habilitada; OAuth Web client criado; público Externo em modo Teste, conta de teste e escopo `calendar.app.created` configurados. Client ID/secret, chave AES-256 e credenciais do worker estão na Vercel Production. Callback registrado: `https://hub-one-azure.vercel.app/api/integrations/google/callback`. Deploy `dpl_dpl_CywxL4RVkrXpniYq7DPGjJjeHjMM` READY. Falta conectar uma conta no Hub e validar OAuth/sincronização real; modo Teste permite somente os usuários adicionados. [Deploy e checks](validation/google-calendar/deployment.json).
+
 1. Crie um cliente OAuth Web no Google Cloud, configure a tela de consentimento e habilite Calendar API.
 2. Cadastre o callback `https://hub-one-azure.vercel.app/api/integrations/google/callback`.
 3. Na Vercel, cadastre `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET` e `HUB_INTEGRATION_ENCRYPTION_KEY` (32 bytes aleatórios em hexadecimal, 64 caracteres). Preserve a chave de cifra: trocá-la exige reconectar os calendários.

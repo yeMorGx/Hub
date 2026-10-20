@@ -9,7 +9,7 @@ Continuação solicitada: avançar por todas as fases, mantendo o trabalho indep
 | 0–1 | Auth, MFA, times/papéis, RLS, Presence, canais/DMs, timer, agenda/RSVP e PWA | Usuário informou cadastro/MFA concluídos. URLs Auth conferidas e Realtime privado configurado. Validação entre duas contas ainda pendente. |
 | 2 | Threads, reações, menções, fixadas, busca, arquivos/imagens/áudio privados; Kanban; check-ins diários/semanais; Markdown; pautas/atas; notificações e lembretes internos | Migrações e RPCs aplicadas. Push autorizado e serviço ativado; entrega em aparelho aguarda inscrição/teste. |
 | 3 | Relatórios por pessoa/projeto/cliente com CSV/PDF; metas e timer esquecido; escalas/trocas; ausências com aprovação; datas opcionais | Migração aplicada; UI e testes locais concluídos. Sem gravações de negócio feitas em contas de produção para validar a interface. |
-| 4 | Microsoft/Azure OAuth SSO; auditoria; canais e arquivos restritos; OAuth/sincronização Google/Outlook; webhooks de entrada; comandos no chat | Auditoria e receptor `hub-webhook` aplicados/publicados. SSO e calendários aguardam configuração de provedores/variáveis. |
+| 4 | Microsoft/Azure OAuth SSO; auditoria; canais e arquivos restritos; OAuth/sincronização Google/Outlook; webhooks de entrada; comandos no chat | Auditoria e `hub-webhook` publicados. Google OAuth/API e variáveis Production configuradas; aguardam conexão e sincronização real. Outlook e Azure SSO aguardam configuração de provedor. |
 | 5 | LiveKit voz/vídeo/tela; leitor offline cifrado; Tauri com atalho do timer e não lidas | Leitor e código de chamada entregues. LiveKit aguarda credenciais. Instaladores **sem assinatura** gerados em Windows/macOS/Linux; instalação e execução nativas ainda não exercitadas. |
 | Opcional | Expo | Não implementado: o escopo o condiciona à insuficiência da PWA, ainda não demonstrada. |
 
@@ -37,7 +37,7 @@ Consulta remota confirmou **32/32 tabelas públicas com RLS**. Políticas privad
 
 ## Evidência e limitações
 
-Validação final local: **82 SQL + 10 unitários + 24 HTTP + 7 Chromium**, todos passando; três builds desktop concluídos. [Relatório e logs](validation-phases-2-5.md).
+Validação final local: **83 SQL + 10 unitários + 24 HTTP + 7 Chromium**, todos passando; três builds desktop concluídos. [Relatório e logs](validation-phases-2-5.md).
 
 - Testes SQL locais usam PostgreSQL WASM/PGlite com contratos mínimos de Auth/Realtime/Storage. Não são testes contra usuários reais do Supabase.
 - Testes unitários usam mocks HTTP para os provedores. Não houve OAuth real, sincronização real nem chamada LiveKit real.
@@ -51,3 +51,7 @@ Validação final local: **82 SQL + 10 unitários + 24 HTTP + 7 Chromium**, todo
 ## Ativação externa
 
 Consulte [Configuração dos serviços](service-activation.md), [Primeiro acesso](first-access.md) e [Publicação Vercel](vercel-deployment.md). Nunca coloque segredos no chat, no código público ou em variáveis `NEXT_PUBLIC_*`.
+
+### Google Calendar · 2026-10-20
+
+Cliente OAuth, audiência de teste, conta permitida e escopo `calendar.app.created` configurados. Segredos de produção instalados na Vercel e deployment `dpl_CywxL4RVkrXpniYq7DPGjJjeHjMM` READY. **24/24 checks HTTP anônimos de produção passaram**; isso não executa consentimento OAuth nem sincronização. Próximo passo: abrir Integrações no Hub, conectar a conta autorizada e validar um evento. [Evidência](validation/google-calendar/deployment.json).

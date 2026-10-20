@@ -55,3 +55,8 @@ Auth URLs e Realtime privado foram conferidos posteriormente; fluxos com contas 
 Código `ec558a5`, deployment `dpl_BCunKVSmBHPR8J3hGtcXZ2weRLqY`, **READY**, no mesmo alias público. [URL imutável](https://hub-80tzg1tky-yemorgxs-projects.vercel.app). Production recebeu a chave VAPID pública e `NEXT_PUBLIC_PUSH_ENABLED=true`; Preview permanece sem push. Chave privada e segredo de agendamento ficam no Supabase, fora da Vercel.
 
 83 SQL e 10 unitários locais passaram; 24/24 HTTP de produção passaram após este deploy. Função e cron reais responderam HTTP 200. Entrega no aparelho ainda exige permissão do usuário. [Registro completo](push-activation.md).
+
+
+## Google Calendar · 2026-10-20
+
+O usuário configurou Google Calendar API e OAuth Web em modo Externo/Teste, adicionou conta de teste e escopo `calendar.app.created`. Vercel Production recebeu `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `HUB_INTEGRATION_ENCRYPTION_KEY`, `SUPABASE_SERVICE_ROLE_KEY` e `CRON_SECRET` como segredos de servidor. Deployment `dpl_CywxL4RVkrXpniYq7DPGjJjeHjMM` terminou READY e o alias público permaneceu ativo. Os 24 checks HTTP anônimos passaram; a conexão de uma conta Google e a sincronização continuam aguardando teste manual. [Metadados](validation/google-calendar/deployment.json).
