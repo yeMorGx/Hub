@@ -1,0 +1,50 @@
+{
+  "codeCommit": "e4a9ec7",
+  "migration": "20261020150000",
+  "supabase": {
+    "applied": true,
+    "rls": true,
+    "authenticatedDirectSelect": false,
+    "authenticatedOnlyRpcs": 6,
+    "invitationsCreatedByValidation": 0
+  },
+  "localTests": {
+    "database": 94,
+    "unit": 11,
+    "http": 28
+  },
+  "browserViewports": [
+    [
+      1440,
+      900
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "browserCoverage": [
+    "public invitation and cookie lifecycle",
+    "signup selection without submitting",
+    "same-origin and unauthenticated denial",
+    "component forms with fixture RPCs"
+  ],
+  "deferred": [
+    "automatic email delivery"
+  ],
+  "manualPending": [
+    "complete invitation acceptance with a second real account"
+  ],
+  "deployment": {
+    "id": "dpl_6NxwxGBd28w3YXMHKPWzk464hGVo",
+    "url": "https://hub-kcq6p2oof-yemorgxs-projects.vercel.app",
+    "productionUrl": "https://hub-one-azure.vercel.app",
+    "readyState": "READY",
+    "target": "production"
+  },
+  "productionHttp": {
+    "passed": 28,
+    "failed": 0,
+    "command": "NODE_USE_ENV_PROXY=1 HUB_APP_URL=https://hub-one-azure.vercel.app npm run test:public"
+  }
+}

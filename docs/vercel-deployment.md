@@ -65,3 +65,8 @@ O usuário configurou Google Calendar API e OAuth Web em modo Externo/Teste, adi
 ## Correção do status Google · 2026-10-20
 
 A tela agora atualiza o estado Google independentemente de falhas ao consultar conexões/webhooks e mostra erro de autenticação do endpoint de status. Código `db79aae`, deployment `dpl_3qFqt3YDgA34cQridiwT6wpipUSf` READY no alias estável. Build, 10 unitários e 24 checks HTTP públicos passaram. O usuário confirmou a conexão OAuth Google; falta validar a sincronização real dos eventos. [Relatório](validation/google-calendar/ui-status-fix.json).
+
+
+## Chat e convites de equipe · 2026-10-20
+
+Correção do compositor de chat `5b93b60` publicada no deployment `dpl_3sBsmf4f3tSqmW8JLqeXzsPUfBLv`. Convites por link e gestão de membros `e4a9ec7` publicados em `dpl_6NxwxGBd28w3YXMHKPWzk464hGVo`, **READY**, com o mesmo alias de produção. Migração `20261020150000` aplicada; 94 SQL, 11 unitários e 28 HTTP locais passaram. Após o deploy, 28 HTTP públicos de produção passaram. Envio automático de convites por e-mail adiado pelo usuário; aceite real com segunda conta ainda requer validação manual. [Fluxos, verificações e capturas](team-invitations.md).

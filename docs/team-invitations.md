@@ -34,3 +34,7 @@ A tabela privada não armazena token bruto. A auditoria registra as mudanças se
 ## Correção da conversa entregue junto
 
 Commit `5b93b60`: painel de chat limita sua altura; histórico recebe a rolagem e a caixa de mensagem permanece dentro do painel. O scroll automático agora altera somente o histórico. Uma fixture CSS com 103 mensagens em desktop e mobile confirmou deslocamento zero da caixa ao adicionar mensagens. Essa fixture não é uma captura da sessão autenticada do usuário.
+
+## Resultado da publicação
+
+Código `e4a9ec7`, deployment `dpl_6NxwxGBd28w3YXMHKPWzk464hGVo`, **READY** no [endereço de produção](https://hub-one-azure.vercel.app). Os 28 testes HTTP públicos passaram após a publicação, incluindo os endpoints de convites. No ambiente cloud, Node precisa de `NODE_USE_ENV_PROXY=1` para usar a rede configurada; a primeira tentativa sem essa opção falhou por timeout de rede e foi repetida com o proxy. [Log de produção](validation/team-invitations/production-http.log) e [metadados](validation/team-invitations/deployment.json).
