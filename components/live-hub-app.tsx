@@ -67,6 +67,11 @@ import { LiveManagement } from "./live-management";
 import { LiveCollaboration } from "./live-collaboration";
 import { LiveBoard, type TaskInput } from "./live-board";
 import { LiveCalendar } from "./live-calendar";
+import {
+  calendarRange,
+  moveCalendarDate,
+  type CalendarView,
+} from "@/lib/hub/calendar";
 import { LiveOnboarding } from "./live-onboarding";
 import { PersonAvatar, PeopleAvatars, HubDialog, EmptyState } from "./hub-ui";
 const navigation = [
@@ -104,9 +109,8 @@ type Modal =
 export function LiveHubApp({ userId }: { userId: string }) {
   const [now, setNow] = useState(0),
     [page, setPage] = useState<LivePage>("overview"),
-    [weekOffset, setWeekOffset] = useState(0),
-    [calendarView, setCalendarView] = useState<"week" | "day">("week"),
-    [activeDay, setActiveDay] = useState(0);
+    [calendarDate, setCalendarDate] = useState("2026-01-05"),
+    [calendarView, setCalendarView] = useState<CalendarView>("week");
   const [collaborationInitialTab, setCollaborationInitialTab] = useState<
     "notes" | "notifications"
   >("notes");
@@ -119,7 +123,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
       setPage("integrations");
     const current = new Date();
     setNow(current.getTime());
-    setActiveDay((current.getDay() + 6) % 7);
+    setCalendarDate(dayKey(current));
     if (window.matchMedia("(max-width:520px)").matches) setCalendarView("day");
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
@@ -130,12 +134,18 @@ export function LiveHubApp({ userId }: { userId: string }) {
     () => mondayOf(new Date(`${todayKey}T12:00:00`)),
     [todayKey],
   );
-  const monday = useMemo(
-    () => dateAt(currentMonday, weekOffset * 7),
-    [currentMonday, weekOffset],
+  const selectedDate = useMemo(
+    () => new Date(`${calendarDate}T12:00:00`),
+    [calendarDate],
   );
-  const rangeStart = monday.toISOString(),
-    rangeEnd = dateAt(monday, 7).toISOString();
+  const activeDay = (selectedDate.getDay() + 6) % 7;
+  const monday = useMemo(() => mondayOf(selectedDate), [selectedDate]);
+  const range = useMemo(
+    () => calendarRange(selectedDate, calendarView),
+    [selectedDate, calendarView],
+  );
+  const rangeStart = range.start.toISOString(),
+    rangeEnd = range.end.toISOString();
   const hub = useHub(userId, rangeStart, rangeEnd, todayKey),
     data = hub.snapshot;
   const [modal, setModal] = useState<Modal>(null),
@@ -283,7 +293,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
     setPopover(false);
     setModal(next);
   }
-  function newEvent(date = today, hour = 10) {
+  function newEvent(date = selectedDate, hour = 10) {
     const start = new Date(date);
     start.setHours(Math.floor(hour), Math.round((hour % 1) * 60), 0, 0);
     setEventStart(toLocalInput(start.toISOString()));
@@ -301,18 +311,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
     openModal("time");
   }
   function moveCalendar(direction: number) {
-    if (calendarView === "week") {
-      setWeekOffset((v) => v + direction);
-      return;
-    }
-    const next = activeDay + direction;
-    if (next < 0) {
-      setActiveDay(6);
-      setWeekOffset((v) => v - 1);
-    } else if (next > 6) {
-      setActiveDay(0);
-      setWeekOffset((v) => v + 1);
-    } else setActiveDay(next);
+    setCalendarDate(
+      dayKey(moveCalendarDate(selectedDate, calendarView, direction)),
+    );
   }
   async function signOut() {
     await clearVault().catch(() => {});
@@ -423,13 +424,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
     );
     if (result.ok) {
       setModal(null);
-      setWeekOffset(
-        Math.round(
-          (mondayOf(start).getTime() - currentMonday.getTime()) / 604800000,
-        ),
-      );
-      setActiveDay((start.getDay() + 6) % 7);
-      if (start.getDay() === 0 || start.getDay() === 6) setCalendarView("day");
+      setCalendarDate(dayKey(start));
       setEventId(result.value);
     }
   }
@@ -1117,15 +1112,18 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     <LiveCalendar
                       hub={hub}
                       monday={monday}
+                      date={selectedDate}
+                      onDate={(date) => setCalendarDate(dayKey(date))}
                       today={today}
                       day={activeDay}
                       view={calendarView}
                       onView={setCalendarView}
-                      onDay={setActiveDay}
+                      onDay={(day) =>
+                        setCalendarDate(dayKey(dateAt(monday, day)))
+                      }
                       onMove={moveCalendar}
                       onToday={() => {
-                        setWeekOffset(0);
-                        setActiveDay((today.getDay() + 6) % 7);
+                        setCalendarDate(dayKey(today));
                       }}
                       onNew={newEvent}
                       onSelect={(event) => setEventId(event.id)}
@@ -1678,7 +1676,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         <strong>Gerencie quem participa do time.</strong>
                         <p>
                           Convide pelo e-mail da pessoa e compartilhe o link. Na
-                          mesma tela, você pode editar papéis e suspender acessos.
+                          mesma tela, você pode editar papéis e suspender
+                          acessos.
                         </p>
                       </div>
                     </div>
@@ -2556,7 +2555,11 @@ export function LiveHubApp({ userId }: { userId: string }) {
           </HubDialog>
         )}
       {modal === "member" && hub.isAdmin && (
-        <HubDialog title="Pessoas e convites" onClose={() => setModal(null)} wide>
+        <HubDialog
+          title="Pessoas e convites"
+          onClose={() => setModal(null)}
+          wide
+        >
           <TeamAccess hub={hub} onClose={() => setModal(null)} />
         </HubDialog>
       )}

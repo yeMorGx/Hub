@@ -171,8 +171,9 @@ test("renovação preserva refresh token quando provedor não o repete", async (
 });
 
 test("sala remove somente identidades fora do roster e propaga falhas do servidor", async () => {
-  const { removeDisallowedParticipants } =
-    await import("../lib/livekit/permissions");
+  const { removeDisallowedParticipants } = await import(
+    "../lib/livekit/permissions"
+  );
   const removed: string[] = [];
   const service = {
     listParticipants: async () => [
@@ -218,13 +219,181 @@ test("sala remove somente identidades fora do roster e propaga falhas do servido
 });
 
 test("convites usam tokens aleatórios de 256 bits, hash SHA-256 e formato estrito", async () => {
-  const { invitationToken, validInvitationToken } = await import("../lib/invitations/token");
+  const { invitationToken, validInvitationToken } = await import(
+    "../lib/invitations/token"
+  );
   const { createHash } = await import("node:crypto");
-  const first = invitationToken(), second = invitationToken();
+  const first = invitationToken(),
+    second = invitationToken();
   assert.equal(Buffer.from(first.token, "base64url").length, 32);
   assert.ok(validInvitationToken(first.token));
   assert.notEqual(first.token, second.token);
-  assert.equal(first.hash, createHash("sha256").update(first.token).digest("hex"));
-  for (const invalid of [null, undefined, 123, "", "a".repeat(42), "a".repeat(44), "=".repeat(43), `${first.token}\n`])
+  assert.equal(
+    first.hash,
+    createHash("sha256").update(first.token).digest("hex"),
+  );
+  for (const invalid of [
+    null,
+    undefined,
+    123,
+    "",
+    "a".repeat(42),
+    "a".repeat(44),
+    "=".repeat(43),
+    `${first.token}\n`,
+  ])
     assert.equal(validInvitationToken(invalid), false);
+});
+
+test("agenda mensal cobre semanas inteiras, inclusive ano anterior e fevereiro bissexto", async () => {
+  const { calendarDays, calendarRange } = await import("../lib/hub/calendar");
+  const { dayKey } = await import("../lib/hub/dates");
+  const january = calendarRange(new Date(2026, 0, 15), "month");
+  assert.equal(dayKey(january.start), "2025-12-29");
+  assert.equal(dayKey(january.end), "2026-02-02");
+  const february = calendarDays(new Date(2024, 1, 15), "month");
+  assert.equal(february.length, 35);
+  assert.ok(february.some((day) => dayKey(day) === "2024-02-29"));
+  assert.equal(calendarDays(new Date(2026, 2, 15), "month").length, 42);
+  assert.equal(calendarDays(new Date(2027, 1, 15), "month").length, 28);
+  assert.equal(calendarDays(new Date(2026, 9, 20), "week").length, 7);
+  assert.equal(calendarDays(new Date(2026, 9, 20), "day").length, 1);
+});
+test("agenda navega por mês sem saltar fevereiro e por dia/semana incluindo fins de semana", async () => {
+  const { moveCalendarDate } = await import("../lib/hub/calendar");
+  const { dayKey } = await import("../lib/hub/dates");
+  assert.equal(
+    dayKey(moveCalendarDate(new Date(2026, 0, 31), "month", 1)),
+    "2026-02-28",
+  );
+  assert.equal(
+    dayKey(moveCalendarDate(new Date(2024, 2, 31), "month", -1)),
+    "2024-02-29",
+  );
+  assert.equal(
+    dayKey(moveCalendarDate(new Date(2026, 11, 20), "month", 1)),
+    "2027-01-20",
+  );
+  assert.equal(
+    dayKey(moveCalendarDate(new Date(2026, 9, 23), "day", 1)),
+    "2026-10-24",
+  );
+  assert.equal(
+    dayKey(moveCalendarDate(new Date(2026, 9, 25), "week", 1)),
+    "2026-11-01",
+  );
+});
+test("agenda divide eventos na meia-noite sem repetir término na abertura do dia seguinte", async () => {
+  const { eventDaySegment, overlapsPeriod } = await import(
+    "../lib/hub/calendar"
+  );
+  const day = new Date(2026, 9, 23),
+    tomorrow = new Date(2026, 9, 24);
+  const event = {
+    starts_at: new Date(2026, 9, 23, 22).toISOString(),
+    ends_at: new Date(2026, 9, 24, 2).toISOString(),
+  };
+  assert.deepEqual(eventDaySegment(event, day), {
+    start: 22,
+    end: 24,
+    continuesBefore: false,
+    continuesAfter: true,
+    key: "2026-10-23",
+  });
+  assert.deepEqual(eventDaySegment(event, tomorrow), {
+    start: 0,
+    end: 2,
+    continuesBefore: true,
+    continuesAfter: false,
+    key: "2026-10-24",
+  });
+  const midnight = { ...event, ends_at: tomorrow.toISOString() };
+  assert.equal(eventDaySegment(midnight, tomorrow), null);
+  assert.equal(
+    overlapsPeriod(midnight, tomorrow, new Date(2026, 9, 25)),
+    false,
+  );
+});
+test("agenda carrega todas as páginas com filtros de time, intervalo e cancelamento", async () => {
+  const { loadCalendarEvents } = await import("../lib/hub/calendar-events");
+  const pages = [
+      Array.from({ length: 500 }, (_, i) => ({
+        id: String(i).padStart(4, "0"),
+      })),
+      [{ id: "0500" }],
+    ],
+    calls: unknown[][] = [];
+  const client = {
+    from: (table: string) => {
+      const call: unknown[] = [table];
+      calls.push(call);
+      const query: any = {};
+      for (const name of ["select", "eq", "is", "gt", "lt", "order", "limit"])
+        query[name] = (...args: unknown[]) => {
+          call.push([name, ...args]);
+          return query;
+        };
+      query.then = (resolve: any) =>
+        Promise.resolve({ data: pages.shift(), error: null }).then(resolve);
+      return query;
+    },
+  };
+  const result = await loadCalendarEvents(
+    client as any,
+    "team",
+    "start",
+    "end",
+  );
+  assert.equal(result.length, 501);
+  assert.equal(calls.length, 2);
+  for (const call of calls) {
+    assert.ok(
+      call.some(
+        (item) =>
+          JSON.stringify(item) === JSON.stringify(["eq", "team_id", "team"]),
+      ),
+    );
+    assert.ok(
+      call.some(
+        (item) =>
+          JSON.stringify(item) === JSON.stringify(["is", "cancelled_at", null]),
+      ),
+    );
+    assert.ok(
+      call.some(
+        (item) =>
+          JSON.stringify(item) === JSON.stringify(["gt", "ends_at", "start"]),
+      ),
+    );
+    assert.ok(
+      call.some(
+        (item) =>
+          JSON.stringify(item) === JSON.stringify(["lt", "starts_at", "end"]),
+      ),
+    );
+  }
+  assert.ok(
+    calls[1].some(
+      (item) => JSON.stringify(item) === JSON.stringify(["gt", "id", "0499"]),
+    ),
+  );
+});
+test("agenda interrompe uma paginação obsoleta e propaga falhas de consulta", async () => {
+  const { loadCalendarEvents } = await import("../lib/hub/calendar-events");
+  assert.deepEqual(
+    await loadCalendarEvents({} as any, "team", "start", "end", () => false),
+    [],
+  );
+  const query: any = {};
+  for (const name of ["select", "eq", "is", "gt", "lt", "order", "limit"])
+    query[name] = () => query;
+  query.then = (resolve: any) =>
+    Promise.resolve({ data: null, error: new Error("Fixture failure") }).then(
+      resolve,
+    );
+  await assert.rejects(
+    () =>
+      loadCalendarEvents({ from: () => query } as any, "team", "start", "end"),
+    /Fixture failure/,
+  );
 });

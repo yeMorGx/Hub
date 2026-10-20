@@ -12,6 +12,8 @@ import {
   type Row,
 } from "./types";
 
+import { loadCalendarEvents } from "./calendar-events";
+
 type Functions = Database["public"]["Functions"];
 function rows<T>(response: { data: T[] | null; error: unknown }): T[] {
   if (response.error) throw response.error;
@@ -199,8 +201,8 @@ export function useHub(
         channelMemberships,
         entries,
         activeTimers,
-        events,
-        todayEvents,
+        eventPage,
+        todayEventPage,
         unread,
       ] = await Promise.all([
         loadTasks(),
@@ -238,26 +240,22 @@ export function useHub(
           .eq("user_id", userId)
           .is("ended_at", null)
           .limit(1),
-        client
-          .from("events")
-          .select("*")
-          .eq("team_id", teamId)
-          .is("cancelled_at", null)
-          .gte("ends_at", rangeStart)
-          .lt("starts_at", rangeEnd)
-          .order("starts_at")
-          .limit(500),
+        loadCalendarEvents(
+          client,
+          teamId,
+          rangeStart,
+          rangeEnd,
+          () => mounted.current && serial === teamGeneration.current,
+        ),
         todayInsideRange
-          ? Promise.resolve({ data: [], error: null })
-          : client
-              .from("events")
-              .select("*")
-              .eq("team_id", teamId)
-              .is("cancelled_at", null)
-              .gt("ends_at", todayStart.toISOString())
-              .lt("starts_at", todayEnd.toISOString())
-              .order("starts_at")
-              .limit(500),
+          ? Promise.resolve([])
+          : loadCalendarEvents(
+              client,
+              teamId,
+              todayStart.toISOString(),
+              todayEnd.toISOString(),
+              () => mounted.current && serial === teamGeneration.current,
+            ),
         client
           .from("channel_unread_counts")
           .select("*")
@@ -275,10 +273,7 @@ export function useHub(
         ],
         eventRows = [
           ...new Map(
-            [...rows(events), ...rows(todayEvents)].map((event) => [
-              event.id,
-              event,
-            ]),
+            [...eventPage, ...todayEventPage].map((event) => [event.id, event]),
           ).values(),
         ].sort((a, b) => a.starts_at.localeCompare(b.starts_at)),
         unreadRows = rows(unread);

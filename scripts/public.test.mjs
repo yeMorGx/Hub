@@ -202,3 +202,9 @@ test("convite pendente: token inválido é recusado; cookie é privado e pode se
   assert.equal(dismissed.status, 200);
   assert.match(dismissed.headers.get("set-cookie") || "", /Max-Age=0/i);
 });
+
+test("prévia do calendário é pública e declara seus dados fictícios", async () => {
+  const response = await request("/demo/calendar");
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /dados fictícios/);
+});

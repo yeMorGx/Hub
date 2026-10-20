@@ -69,6 +69,9 @@ export function OperationsDemo() {
               </button>
             ))}
           </nav>
+          <a className="text-button" href="/demo/calendar">
+            Explorar calendário
+          </a>
           <small>Uma prévia das próximas ferramentas do seu time.</small>
         </aside>
         <main>

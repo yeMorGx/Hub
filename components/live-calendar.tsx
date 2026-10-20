@@ -10,7 +10,14 @@ import {
 } from "@phosphor-icons/react";
 import type { HubController } from "@/lib/hub/use-hub";
 import type { Row } from "@/lib/hub/types";
-import { dayKey, dateAt, hourLabel, localHour } from "@/lib/hub/dates";
+import { dayKey, dateAt, hourLabel } from "@/lib/hub/dates";
+import {
+  calendarDays,
+  calendarRange,
+  eventDaySegment,
+  overlapsPeriod,
+  type CalendarView,
+} from "@/lib/hub/calendar";
 import { PeopleAvatars } from "./hub-ui";
 const days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 type SegmentEvent = { event: Row<"events">; start: number; end: number };
@@ -42,6 +49,8 @@ function eventLanes(items: SegmentEvent[]) {
 export function LiveCalendar({
   hub,
   monday,
+  date,
+  onDate,
   today,
   day,
   view,
@@ -55,10 +64,12 @@ export function LiveCalendar({
 }: {
   hub: HubController;
   monday: Date;
+  date: Date;
+  onDate: (date: Date) => void;
   today: Date;
   day: number;
-  view: "week" | "day";
-  onView: (view: "week" | "day") => void;
+  view: CalendarView;
+  onView: (view: CalendarView) => void;
   onDay: (day: number) => void;
   onMove: (direction: number) => void;
   onToday: () => void;
@@ -68,34 +79,23 @@ export function LiveCalendar({
 }) {
   const [filter, setFilter] = useState("all"),
     [filterOpen, setFilterOpen] = useState(false);
+  const range = calendarRange(date, view);
+  const monthDays = view === "month" ? calendarDays(date, "month") : [];
   const events = hub.snapshot.events.filter(
     (e) =>
       (filter === "all" || e.kind === filter) &&
-      new Date(e.starts_at) < dateAt(monday, 7) &&
-      new Date(e.ends_at) > monday,
+      overlapsPeriod(e, range.start, range.end),
   );
-  const visibleDays = view === "week" ? [0, 1, 2, 3, 4] : [day];
+  const visibleDays = view === "week" ? [0, 1, 2, 3, 4, 5, 6] : [day];
   const segments = visibleDays.map((index) => {
     const start = dateAt(monday, index);
-    const end = dateAt(start, 1);
     return {
       index,
       start,
-      events: events
-        .filter(
-          (e) => new Date(e.starts_at) < end && new Date(e.ends_at) > start,
-        )
-        .map((event) => ({
-          event,
-          start:
-            new Date(event.starts_at) <= start
-              ? 0
-              : localHour(new Date(event.starts_at)),
-          end:
-            new Date(event.ends_at) >= end
-              ? 24
-              : localHour(new Date(event.ends_at)),
-        })),
+      events: events.flatMap((event) => {
+        const segment = eventDaySegment(event, start);
+        return segment ? [{ event, ...segment }] : [];
+      }),
     };
   });
   const startHour = Math.min(
@@ -110,25 +110,28 @@ export function LiveCalendar({
     { length: endHour - startHour + 1 },
     (_, i) => i + startHour,
   );
-  const endOfWeek = dateAt(monday, 4);
+  const endOfWeek = dateAt(monday, 6);
   const label =
-    view === "day"
-      ? dateAt(monday, day).toLocaleDateString("pt-BR", {
-          weekday: "short",
-          day: "numeric",
-          month: "long",
-        })
-      : monday.getMonth() === endOfWeek.getMonth()
-        ? `${monday.getDate()} – ${endOfWeek.getDate()} de ${endOfWeek.toLocaleDateString("pt-BR", { month: "long" })}, ${endOfWeek.getFullYear()}`
-        : `${monday.toLocaleDateString("pt-BR", { day: "numeric", month: "short" })} – ${endOfWeek.toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" })}`;
+    view === "month"
+      ? date.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })
+      : view === "day"
+        ? dateAt(monday, day).toLocaleDateString("pt-BR", {
+            weekday: "short",
+            day: "numeric",
+            month: "long",
+          })
+        : monday.getMonth() === endOfWeek.getMonth()
+          ? `${monday.getDate()} – ${endOfWeek.getDate()} de ${endOfWeek.toLocaleDateString("pt-BR", { month: "long" })}, ${endOfWeek.getFullYear()}`
+          : `${monday.toLocaleDateString("pt-BR", { day: "numeric", month: "short" })} – ${endOfWeek.toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" })}`;
   return (
     <section
       className={`calendar-section ${full ? "calendar-full" : ""}`}
       aria-label="Agenda do time"
+      aria-busy={hub.teamLoading}
     >
       <div className="section-heading calendar-heading">
         <div className="heading-with-count">
-          <h2>{full ? "Agenda do time" : "Sua semana"}</h2>
+          <h2>{full ? "Agenda do time" : "Sua agenda"}</h2>
           <button
             className={`filter-button ${filter !== "all" ? "filter-active" : ""}`}
             aria-expanded={filterOpen}
@@ -156,7 +159,14 @@ export function LiveCalendar({
           )}
         </div>
         <div className="calendar-actions">
-          <div className="segmented">
+          <div className="segmented" aria-label="Visualização da agenda">
+            <button
+              className={view === "month" ? "selected" : ""}
+              aria-pressed={view === "month"}
+              onClick={() => onView("month")}
+            >
+              Mês
+            </button>
             <button
               className={view === "week" ? "selected" : ""}
               aria-pressed={view === "week"}
@@ -187,7 +197,13 @@ export function LiveCalendar({
         <div className="date-controls">
           <button
             className="icon-button"
-            aria-label={view === "week" ? "Semana anterior" : "Dia anterior"}
+            aria-label={
+              view === "month"
+                ? "Mês anterior"
+                : view === "week"
+                  ? "Semana anterior"
+                  : "Dia anterior"
+            }
             onClick={() => onMove(-1)}
           >
             <CaretLeft size={15} />
@@ -195,7 +211,13 @@ export function LiveCalendar({
           <span>{label}</span>
           <button
             className="icon-button"
-            aria-label={view === "week" ? "Próxima semana" : "Próximo dia"}
+            aria-label={
+              view === "month"
+                ? "Próximo mês"
+                : view === "week"
+                  ? "Próxima semana"
+                  : "Próximo dia"
+            }
             onClick={() => onMove(1)}
           >
             <CaretRight size={15} />
@@ -208,7 +230,7 @@ export function LiveCalendar({
           className="timezone"
           title={Intl.DateTimeFormat().resolvedOptions().timeZone}
         >
-          {view === "week" ? "Seg–sex · " : ""}GMT
+          {view === "week" ? "Seg–dom · " : ""}GMT
           {-today.getTimezoneOffset() / 60 >= 0 ? "+" : ""}
           {-today.getTimezoneOffset() / 60}
         </span>
@@ -218,97 +240,186 @@ export function LiveCalendar({
           Atualizando agenda…
         </p>
       )}
-      <div className="calendar-scroll">
-        <div
-          className={`calendar-grid ${view === "day" ? "day-view" : ""}`}
-          style={{ "--days": visibleDays.length } as React.CSSProperties}
-        >
-          <div className="time-gutter-header">
-            <Clock size={14} />
-          </div>
-          {segments.map((s) => (
-            <button
-              key={s.index}
-              className={`day-header ${dayKey(s.start) === dayKey(today) ? "is-today" : ""}`}
-              onClick={() => {
-                onDay(s.index);
-                onView("day");
-              }}
-            >
-              <span>{days[s.index]}</span>
-              <strong>{String(s.start.getDate()).padStart(2, "0")}</strong>
-              {dayKey(s.start) === dayKey(today) && (
-                <span className="day-today">Hoje</span>
-              )}
-            </button>
-          ))}
-          <div
-            className="time-gutter"
-            style={{ height: (endHour - startHour) * 84 }}
-          >
-            {hours.map((hour) => (
-              <span key={hour} style={{ top: (hour - startHour) * 84 }}>
-                {hourLabel(hour)}
-              </span>
+      {view === "month" ? (
+        <div className="calendar-month" aria-label={label}>
+          <div className="month-weekdays" aria-hidden="true">
+            {days.map((day) => (
+              <span key={day}>{day}</span>
             ))}
           </div>
-          {segments.map((segment) => (
+          <div className="month-grid">
+            {monthDays.map((cell) => {
+              const entries = events
+                .filter((event) => overlapsPeriod(event, cell, dateAt(cell, 1)))
+                .sort(
+                  (a, b) =>
+                    a.starts_at.localeCompare(b.starts_at) ||
+                    a.id.localeCompare(b.id),
+                );
+              const isToday = dayKey(cell) === dayKey(today);
+              const openDay = () => {
+                onDate(cell);
+                onView("day");
+              };
+              return (
+                <div
+                  key={dayKey(cell)}
+                  className={`month-cell ${cell.getMonth() !== date.getMonth() ? "outside-month" : ""} ${isToday ? "month-today" : ""}`}
+                >
+                  <div className="month-cell-header">
+                    <button
+                      className="month-date"
+                      aria-current={isToday ? "date" : undefined}
+                      aria-label={`Abrir dia ${cell.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" })}`}
+                      onClick={openDay}
+                    >
+                      {cell.getDate()}
+                    </button>
+                    {hub.canParticipate && (
+                      <button
+                        className="month-add"
+                        aria-label={`Criar evento em ${cell.toLocaleDateString("pt-BR")}`}
+                        onClick={() => onNew(cell)}
+                      >
+                        <Plus size={12} />
+                      </button>
+                    )}
+                  </div>
+                  <div className="month-events">
+                    {entries.slice(0, 3).map((event) => {
+                      const continues = new Date(event.starts_at) < cell;
+                      const time = continues
+                        ? "Continua"
+                        : new Date(event.starts_at).toLocaleTimeString(
+                            "pt-BR",
+                            { hour: "2-digit", minute: "2-digit" },
+                          );
+                      return (
+                        <button
+                          key={event.id}
+                          className={`month-event month-event-${event.kind}`}
+                          title={`${time} · ${event.title}`}
+                          onClick={() => onSelect(event)}
+                        >
+                          <span>{time}</span>
+                          <strong>{event.title}</strong>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {entries.length > 3 && (
+                    <button className="month-more" onClick={openDay}>
+                      +{entries.length - 3} eventos
+                    </button>
+                  )}
+                  {entries.length > 0 && (
+                    <button
+                      className="month-count"
+                      aria-label={`${entries.length} ${entries.length === 1 ? "evento" : "eventos"} em ${cell.toLocaleDateString("pt-BR")}`}
+                      onClick={openDay}
+                    >
+                      <span aria-hidden="true" className="month-count-dot" />
+                      {entries.length}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div className="calendar-scroll">
+          <div
+            className={`calendar-grid ${view === "day" ? "day-view" : "week-view"}`}
+            style={{ "--days": visibleDays.length } as React.CSSProperties}
+          >
+            <div className="time-gutter-header">
+              <Clock size={14} />
+            </div>
+            {segments.map((s) => (
+              <button
+                key={s.index}
+                className={`day-header ${dayKey(s.start) === dayKey(today) ? "is-today" : ""}`}
+                onClick={() => {
+                  onDay(s.index);
+                  onView("day");
+                }}
+              >
+                <span>{days[s.index]}</span>
+                <strong>{String(s.start.getDate()).padStart(2, "0")}</strong>
+                {dayKey(s.start) === dayKey(today) && (
+                  <span className="day-today">Hoje</span>
+                )}
+              </button>
+            ))}
             <div
-              key={segment.index}
-              className={`day-column ${dayKey(segment.start) === dayKey(today) ? "today-column" : ""}`}
+              className="time-gutter"
               style={{ height: (endHour - startHour) * 84 }}
             >
-              {hours.slice(0, -1).map((hour) => (
-                <button
-                  key={hour}
-                  className="hour-cell"
-                  disabled={!hub.canParticipate}
-                  aria-label={`Criar evento ${days[segment.index]} às ${hourLabel(hour)}`}
-                  style={{ height: 84 }}
-                  onClick={() => onNew(segment.start, hour)}
-                />
+              {hours.map((hour) => (
+                <span key={hour} style={{ top: (hour - startHour) * 84 }}>
+                  {hourLabel(hour)}
+                </span>
               ))}
-              {eventLanes(segment.events).map(
-                ({ event, start, end, lane, lanes }) => {
-                  const attendees = hub.snapshot.people.filter((p) =>
-                    hub.snapshot.attendees.some(
-                      (a) => a.event_id === event.id && a.user_id === p.id,
-                    ),
-                  );
-                  return (
-                    <button
-                      title={`${event.title} · ${hourLabel(start)} – ${hourLabel(end)}`}
-                      className={`calendar-event event-${event.kind === "meeting" ? "blue" : "orange"} ${end - start < 0.75 ? "event-compact" : ""}`}
-                      key={event.id}
-                      style={{
-                        left: `calc(${(lane / lanes) * 100}% + 4px)`,
-                        width: `calc(${100 / lanes}% - 8px)`,
-                        right: "auto",
-                        top: (start - startHour) * 84 + 3,
-                        height: Math.max((end - start) * 84 - 6, 30),
-                      }}
-                      onClick={() => onSelect(event)}
-                    >
-                      <span className="event-time">
-                        {hourLabel(start)} – {hourLabel(end)}
-                      </span>
-                      <strong>{event.title}</strong>
-                      {end - start >= 1 && (
-                        <span className="event-project">
-                          {event.kind === "meeting" ? "Reunião" : "Evento"}
-                        </span>
-                      )}
-                      {end - start >= 1.25 && (
-                        <PeopleAvatars people={attendees} />
-                      )}
-                    </button>
-                  );
-                },
-              )}
             </div>
-          ))}
+            {segments.map((segment) => (
+              <div
+                key={segment.index}
+                className={`day-column ${dayKey(segment.start) === dayKey(today) ? "today-column" : ""}`}
+                style={{ height: (endHour - startHour) * 84 }}
+              >
+                {hours.slice(0, -1).map((hour) => (
+                  <button
+                    key={hour}
+                    className="hour-cell"
+                    disabled={!hub.canParticipate}
+                    aria-label={`Criar evento ${days[segment.index]} às ${hourLabel(hour)}`}
+                    style={{ height: 84 }}
+                    onClick={() => onNew(segment.start, hour)}
+                  />
+                ))}
+                {eventLanes(segment.events).map(
+                  ({ event, start, end, lane, lanes }) => {
+                    const attendees = hub.snapshot.people.filter((p) =>
+                      hub.snapshot.attendees.some(
+                        (a) => a.event_id === event.id && a.user_id === p.id,
+                      ),
+                    );
+                    return (
+                      <button
+                        title={`${event.title} · ${hourLabel(start)} – ${hourLabel(end)}`}
+                        className={`calendar-event event-${event.kind === "meeting" ? "blue" : "orange"} ${end - start < 0.75 ? "event-compact" : ""}`}
+                        key={event.id}
+                        style={{
+                          left: `calc(${(lane / lanes) * 100}% + 4px)`,
+                          width: `calc(${100 / lanes}% - 8px)`,
+                          right: "auto",
+                          top: (start - startHour) * 84 + 3,
+                          height: Math.max((end - start) * 84 - 6, 30),
+                        }}
+                        onClick={() => onSelect(event)}
+                      >
+                        <span className="event-time">
+                          {hourLabel(start)} – {hourLabel(end)}
+                        </span>
+                        <strong>{event.title}</strong>
+                        {end - start >= 1 && (
+                          <span className="event-project">
+                            {event.kind === "meeting" ? "Reunião" : "Evento"}
+                          </span>
+                        )}
+                        {end - start >= 1.25 && (
+                          <PeopleAvatars people={attendees} />
+                        )}
+                      </button>
+                    );
+                  },
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <div className="calendar-footer">
         <span>
           <i className="legend-dot blue" />
