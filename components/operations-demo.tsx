@@ -101,7 +101,7 @@ export function OperationsDemo() {
           )}{" "}
           {page === "management" && <LiveManagement hub={hub} />}{" "}
           {page === "integrations" && <LiveIntegrations hub={hub} />}{" "}
-          {page === "calls" && <LiveCalls hub={hub} />}{" "}
+          {page === "calls" && <LiveCalls hub={hub} demo />}{" "}
           {page === "chat" && (
             <section className="demo-advanced-chat">
               <div className="chat-header">

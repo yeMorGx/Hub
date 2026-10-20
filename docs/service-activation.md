@@ -45,6 +45,8 @@ O botão “Entrar com Microsoft” usa o OAuth Azure do Supabase; MFA/AAL2 cont
 
 ## Chamadas LiveKit
 
+O usuário escolheu esta etapa e ainda não possui projeto LiveKit Cloud. A integração foi revisada; as três variáveis não estão na Vercel Production. Próximo passo: criar conta/projeto **Hub**. [Preparação, roteiro e limites](livekit-activation.md).
+
 Cadastre somente no servidor: `LIVEKIT_URL` (wss/https do projeto), `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`. O navegador recebe apenas token temporário e URL, nunca o segredo. Tokens são emitidos para o canal autorizado e a identidade vem da sessão verificada.
 
 Teste com duas contas: áudio, vídeo, compartilhamento de tela, reconexão, recusa de microfone/câmera, saída e perda de acesso ao canal. A verificação de participantes chama a API de salas; mantenha essa API alcançável. Clientes que deixam de confirmar acesso encerram a chamada. Teste a revogação com o provedor real antes de usar canais sensíveis. Não há gravação de chamadas nesta entrega.

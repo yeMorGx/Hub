@@ -13,7 +13,13 @@ const CallRoom = dynamic(() => import("./live-call-room"), {
   ssr: false,
   loading: () => <p role="status">Preparando chamada…</p>,
 });
-export function LiveCalls({ hub }: { hub: HubController }) {
+export function LiveCalls({
+  hub,
+  demo = false,
+}: {
+  hub: HubController;
+  demo?: boolean;
+}) {
   const [channel, setChannel] = useState(""),
     [video, setVideo] = useState(false),
     [audio, setAudio] = useState(true),
@@ -26,23 +32,55 @@ export function LiveCalls({ hub }: { hub: HubController }) {
       room: string;
     } | null>(null);
   const alive = useRef(true);
+  const [statusError, setStatusError] = useState("");
+  const [statusAttempt, setStatusAttempt] = useState(0);
   useEffect(() => {
     alive.current = true;
-    fetch("/api/integrations/status", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((r) => {
-        if (alive.current) setEnabled(Boolean(r.livekit));
+    const controller = new AbortController();
+    setEnabled(null);
+    setStatusError("");
+    if (demo) {
+      setEnabled(false);
+      return () => {
+        alive.current = false;
+        controller.abort();
+      };
+    }
+    fetch("/api/integrations/status", {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok)
+          throw new Error(
+            response.status === 401
+              ? "Sua sessão expirou. Entre novamente para acessar as chamadas."
+              : "Não foi possível conferir o serviço de chamadas. Tente novamente.",
+          );
+        const result = await response.json();
+        if (typeof result.livekit !== "boolean")
+          throw new Error(
+            "Resposta inválida do serviço de chamadas. Tente novamente.",
+          );
+        if (!controller.signal.aborted) setEnabled(result.livekit);
       })
-      .catch(() => {
-        if (alive.current) setEnabled(false);
+      .catch((e) => {
+        if (!controller.signal.aborted)
+          setStatusError(
+            e instanceof Error
+              ? e.message
+              : "Não foi possível conectar ao serviço de chamadas.",
+          );
       });
     return () => {
       alive.current = false;
+      controller.abort();
     };
-  }, []);
+  }, [statusAttempt, demo]);
   useEffect(() => {
     if (!call || !channel) return;
     let checking = false;
+    const controller = new AbortController();
     const check = async () => {
       if (checking) return;
       checking = true;
@@ -51,12 +89,14 @@ export function LiveCalls({ hub }: { hub: HubController }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ channelId: channel }),
+          signal: controller.signal,
         });
-        if (!response.ok) {
+        if (!response.ok && !controller.signal.aborted) {
           setCall(null);
           setError("Seu acesso ao canal mudou. A chamada foi encerrada.");
         }
       } catch {
+        if (controller.signal.aborted) return;
         setCall(null);
         setError(
           "Não foi possível confirmar seu acesso à sala. Entre novamente.",
@@ -66,10 +106,20 @@ export function LiveCalls({ hub }: { hub: HubController }) {
       }
     };
     const timer = setInterval(check, 20000);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      controller.abort();
+    };
   }, [call, channel, hub.client, hub.userId]);
+  const availableChannels = hub.snapshot.channels.filter(
+    (c) =>
+      !c.archived_at &&
+      hub.snapshot.channelMemberships.some((m) => m.channel_id === c.id),
+  );
+  const channelReady =
+    availableChannels.some((c) => c.id === channel) && hub.canParticipate;
   async function join() {
-    if (busy || !channel) return;
+    if (busy || !channelReady || !enabled) return;
     setBusy(true);
     setError("");
     try {
@@ -79,7 +129,15 @@ export function LiveCalls({ hub }: { hub: HubController }) {
         body: JSON.stringify({ channelId: channel }),
       });
       const data = await r.json();
-      if (!r.ok) throw new Error(data.error);
+      if (!r.ok) {
+        if (!alive.current) return;
+        setError(
+          typeof data.error === "string"
+            ? data.error
+            : "Não foi possível entrar na chamada.",
+        );
+        return;
+      }
       if (alive.current) setCall(data);
     } catch (e) {
       if (alive.current) setError(errorMessage(e));
@@ -122,13 +180,11 @@ export function LiveCalls({ hub }: { hub: HubController }) {
               disabled={busy}
             >
               <option value="">Escolha onde conversar</option>
-              {hub.snapshot.channels
-                .filter((c) => !c.archived_at)
-                .map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.kind === "dm" ? "Conversa direta" : `#${c.name}`}
-                  </option>
-                ))}
+              {availableChannels.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.kind === "dm" ? "Conversa direta" : `#${c.name}`}
+                </option>
+              ))}
             </select>
           </label>
           <label className="checkbox-label">
@@ -149,9 +205,32 @@ export function LiveCalls({ hub }: { hub: HubController }) {
             <VideoCamera size={18} />
             Entrar com câmera
           </label>
+          {enabled === null && !statusError && (
+            <p role="status" className="muted">
+              Conferindo serviço de chamadas…
+            </p>
+          )}
+          {statusError && (
+            <div role="alert" className="form-error">
+              <p>{statusError}</p>
+              <button
+                className="text-button"
+                onClick={() => setStatusAttempt((attempt) => attempt + 1)}
+              >
+                Tentar novamente
+              </button>
+            </div>
+          )}
+          {!availableChannels.length && (
+            <p className="muted">
+              Entre em um canal do time para participar de uma chamada.
+            </p>
+          )}
           {enabled === false && (
             <p className="inline-notice">
-              As chamadas aguardam a configuração do LiveKit pelo administrador.
+              {demo
+                ? "Esta é uma prévia. Entre no Hub para usar as chamadas do seu time."
+                : "As chamadas aguardam a configuração do LiveKit pelo administrador."}
             </p>
           )}
           {error && (
@@ -161,7 +240,7 @@ export function LiveCalls({ hub }: { hub: HubController }) {
           )}
           <button
             className="primary-button"
-            disabled={busy || !channel || !enabled}
+            disabled={busy || !channelReady || !enabled}
             onClick={join}
           >
             {busy ? "Conectando…" : "Entrar na sala"}

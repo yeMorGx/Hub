@@ -1,10 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import {
-  LiveKitRoom,
-  VideoConference,
-  RoomAudioRenderer,
-} from "@livekit/components-react";
+import { LiveKitRoom, VideoConference } from "@livekit/components-react";
 import { Room, RoomEvent } from "livekit-client";
 import "@livekit/components-styles";
 export default function LiveCallRoom({
@@ -64,7 +60,6 @@ export default function LiveCallRoom({
         }
       >
         <VideoConference />
-        <RoomAudioRenderer />
       </LiveKitRoom>
     </section>
   );
