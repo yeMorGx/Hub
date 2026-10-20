@@ -5931,3 +5931,21 @@ input[type="time"] {
 .desktop-update-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
 .desktop-update-actions button { min-height: 44px; }
 @media (max-width: 600px) { .desktop-update { right: 16px; bottom: 16px; padding: 20px; } }
+
+.live-call > .lk-room-container { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+.live-call .lk-video-conference { flex: 1; min-height: 0; }
+.call-header-actions { display: flex; align-items: center; gap: 10px; }
+.call-screen-share-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 8px 12px; border: 1px solid #3b3e42; border-radius: 8px; background: #222528; color: #f0f0f1; font-size: 12px; font-weight: 650; }
+.call-screen-share-toggle:hover { border-color: #55595f; background: #2b2e32; }
+.call-screen-share-toggle[data-lk-enabled="true"] { border-color: #b45b42; background: #39251f; color: #ffc0aa; }
+.call-screen-share-stop-icon, .call-screen-share-stop-label { display: none; }
+.call-screen-share-toggle[data-lk-enabled="true"] .call-screen-share-start-icon,
+.call-screen-share-toggle[data-lk-enabled="true"] .call-screen-share-start-label { display: none; }
+.call-screen-share-toggle[data-lk-enabled="true"] .call-screen-share-stop-icon,
+.call-screen-share-toggle[data-lk-enabled="true"] .call-screen-share-stop-label { display: inline; }
+.live-call .lk-control-bar [data-lk-source="screen_share"] { display: none; }
+@media (max-width: 700px) {
+  .call-header { gap: 12px; }
+  .call-header-actions { flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+  .call-screen-share-toggle { padding: 7px 9px; font-size: 11px; }
+}
