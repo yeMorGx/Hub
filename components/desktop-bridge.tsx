@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { setDesktopUnread } from "@/lib/desktop/badge";
 import type { HubController } from "@/lib/hub/use-hub";
 function isDesktop() {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
@@ -59,21 +60,22 @@ export function DesktopBridge({ hub }: { hub: HubController }) {
     (sum, n) => sum + n,
     0,
   );
+  const badgeQueue = useRef(Promise.resolve());
   useEffect(() => {
     if (!isDesktop()) return;
-    void import("@tauri-apps/api/window")
-      .then(({ getCurrentWindow }) =>
-        getCurrentWindow().setBadgeCount(unread || undefined),
-      )
+    badgeQueue.current = badgeQueue.current
+      .then(() => setDesktopUnread(unread))
       .catch(() => {});
-    return () => {
-      void import("@tauri-apps/api/window")
-        .then(({ getCurrentWindow }) =>
-          getCurrentWindow().setBadgeCount(undefined),
-        )
-        .catch(() => {});
-    };
   }, [unread]);
+  useEffect(
+    () => () => {
+      if (!isDesktop()) return;
+      badgeQueue.current = badgeQueue.current
+        .then(() => setDesktopUnread(0))
+        .catch(() => {});
+    },
+    [],
+  );
   useEffect(() => {
     document.title = unread
       ? `(${unread > 99 ? "99+" : unread}) Hub — Seu time, conectado`
