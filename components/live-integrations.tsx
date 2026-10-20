@@ -50,12 +50,6 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
         .from("calendar_connections")
         .select("*")
         .eq("team_id", hub.teamId),
-      hub.client
-        .from("incoming_webhooks")
-        .select(
-          "id,team_id,channel_id,created_by,name,enabled,last_called_at,created_at",
-        )
-        .eq("team_id", hub.teamId),
       fetch("/api/integrations/status", { cache: "no-store" }).then(
         async (response) => ({
           ok: response.ok,
@@ -66,14 +60,9 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
     if (!alive.current) return;
 
     const failures: string[] = [];
-    const [connections, webhooks, providerStatus] = results;
+    const [connections, providerStatus] = results;
     if (connections.status === "fulfilled" && !connections.value.error) {
       setConnections(connections.value.data || []);
-    } else {
-      failures.push("Não foi possível carregar as conexões do time.");
-    }
-    if (webhooks.status === "fulfilled" && !webhooks.value.error) {
-      setHooks(webhooks.value.data || []);
     } else {
       failures.push("Não foi possível carregar as conexões do time.");
     }
@@ -93,11 +82,25 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
           : "Não foi possível verificar a configuração dos provedores.";
       failures.unshift(message);
     }
+    if (tab === "webhooks") {
+      const webhooks = await hub.client
+        .from("incoming_webhooks")
+        .select(
+          "id,team_id,channel_id,created_by,name,enabled,last_called_at,created_at",
+        )
+        .eq("team_id", hub.teamId);
+      if (!alive.current) return;
+      if (webhooks.error) {
+        failures.push("Não foi possível carregar os webhooks do time.");
+      } else {
+        setHooks(webhooks.data || []);
+      }
+    }
     setError(failures[0] || "");
   }
   useEffect(() => {
     void refresh();
-  }, [hub.teamId]);
+  }, [hub.teamId, tab]);
   async function api(path: string, body: unknown) {
     const response = await fetch(path, {
       method: "POST",
@@ -152,8 +155,12 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
     } while (more && round < 10 && alive.current);
     if (!alive.current) return;
     setConflicts(pending);
+    const summary =
+      count === 0
+        ? "Sincronização concluída. Nenhuma alteração encontrada."
+        : `${count} alteração${count === 1 ? "" : "ões"} sincronizada${count === 1 ? "" : "s"}.`;
     setNotice(
-      `${count} alteração(ões) sincronizada(s).${more ? " Há mais eventos; sincronize novamente." : ""}`,
+      `${summary}${more ? " Há mais eventos; sincronize novamente." : ""}`,
     );
     await refresh();
     await hub.refreshTeam();

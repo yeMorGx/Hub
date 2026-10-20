@@ -1753,6 +1753,10 @@ export type Database = {
         Args: { p_connection_id: string }
         Returns: string
       }
+      complete_calendar_sync: {
+        Args: { p_connection_id: string; p_token: string }
+        Returns: undefined
+      }
       claim_notification_deliveries: {
         Args: { p_message_id?: string }
         Returns: {

@@ -35,6 +35,7 @@ export async function syncCalendar(
     p_connection_id: connectionId,
   });
   if (claim.error) throw new Error("Há outra sincronização em andamento.");
+  let completed = false;
   try {
     const encrypted = await client.rpc("calendar_connection_secret", {
       p_connection_id: connectionId,
@@ -269,11 +270,19 @@ export async function syncCalendar(
         });
       }
     }
-    return { processed, more, conflicts };
-  } finally {
-    await client.rpc("release_calendar_sync", {
+    const completion = await client.rpc("complete_calendar_sync", {
       p_connection_id: connectionId,
       p_token: claim.data,
     });
+    if (completion.error)
+      throw new Error("Não foi possível registrar a sincronização concluída.");
+    completed = true;
+    return { processed, more, conflicts };
+  } finally {
+    if (!completed)
+      await client.rpc("release_calendar_sync", {
+        p_connection_id: connectionId,
+        p_token: claim.data,
+      });
   }
 }
