@@ -985,3 +985,13 @@ scenario('Calendário automático: worker só serviço, ator limitado à conexã
  await sqlError('select public.calendar_worker_dispatch($1,$2)',[id,'calendar_connection_secret'],'42501');
  assert.equal((await rpc('calendar_background',['jobs'])).length,0);
 });
+scenario('Chamadas: roster exige MFA e canal e elimina associações revogadas',async()=>{
+ await login(users.alice);assert.ok((await query('select user_id from public.call_channel_roster($1)',[ids.general])).rows.some(r=>r.user_id===users.alice));
+ await login(users.bob);await sqlError('select * from public.call_channel_roster($1)',[ids.general],'42501');
+ await login(users.alice,'aal1');await sqlError('select * from public.call_channel_roster($1)',[ids.general],'42501');
+ await db.exec('reset role');await query('update public.team_members set is_active=false where team_id=$1 and user_id=$2',[ids.red,users.alice]);
+ await login(users.leader);assert.ok(!(await query('select user_id from public.call_channel_roster($1)',[ids.general])).rows.some(r=>r.user_id===users.alice));
+});
+scenario('Calendário: resolução pode restaurar um evento cancelado com versão atual',async()=>{
+ await login(users.alice);const connection=await rpc('save_calendar_connection',[ids.red,'google','calendar-restore','ciphertext-restore-fixture']);const event=await rpc('apply_calendar_event',[connection,'Importado','2030-01-01T10:00Z','2030-01-01T11:00Z']);await rpc('cancel_event',[event]);const version=await scalar('select updated_at from public.events where id=$1',[event]);await rpc('apply_calendar_event',[connection,'Restaurado','2030-01-01T10:00Z','2030-01-01T11:00Z','',event,version,false]);assert.equal(await scalar('select cancelled_at from public.events where id=$1',[event]),null);
+});

@@ -47,21 +47,25 @@ export function LiveCalls({ hub }: { hub: HubController }) {
       if (checking) return;
       checking = true;
       try {
-        const { data, error } = await hub.client
-          .from("channel_members")
-          .select("user_id")
-          .eq("channel_id", channel)
-          .eq("user_id", hub.userId)
-          .single();
-        if (error || !data) {
+        const response = await fetch("/api/livekit/access", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ channelId: channel }),
+        });
+        if (!response.ok) {
           setCall(null);
           setError("Seu acesso ao canal mudou. A chamada foi encerrada.");
         }
+      } catch {
+        setCall(null);
+        setError(
+          "Não foi possível confirmar seu acesso à sala. Entre novamente.",
+        );
       } finally {
         checking = false;
       }
     };
-    const timer = setInterval(check, 30000);
+    const timer = setInterval(check, 20000);
     return () => clearInterval(timer);
   }, [call, channel, hub.client, hub.userId]);
   async function join() {

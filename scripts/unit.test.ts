@@ -169,3 +169,50 @@ test("renovação preserva refresh token quando provedor não o repete", async (
   assert.equal(renewed.refreshToken, token.refreshToken);
   assert.equal(renewed.accessToken, "renewed");
 });
+
+test("sala remove somente identidades fora do roster e propaga falhas do servidor", async () => {
+  const { removeDisallowedParticipants } =
+    await import("../lib/livekit/permissions");
+  const removed: string[] = [];
+  const service = {
+    listParticipants: async () => [
+      { identity: "active" },
+      { identity: "revoked" },
+      { identity: "not-a-user" },
+    ],
+    removeParticipant: async (_room: string, id: string) => {
+      removed.push(id);
+    },
+  };
+  assert.equal(
+    await removeDisallowedParticipants(service, "room", new Set(["active"])),
+    2,
+  );
+  assert.deepEqual(removed, ["revoked", "not-a-user"]);
+  assert.equal(
+    await removeDisallowedParticipants(
+      {
+        ...service,
+        listParticipants: async () => {
+          throw { code: "not_found" };
+        },
+      },
+      "room",
+      new Set(),
+    ),
+    0,
+  );
+  await assert.rejects(
+    removeDisallowedParticipants(
+      {
+        ...service,
+        listParticipants: async () => {
+          throw new Error("API down");
+        },
+      },
+      "room",
+      new Set(),
+    ),
+    /API down/,
+  );
+});

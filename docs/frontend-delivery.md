@@ -24,7 +24,9 @@ npm run start
 
 - `/`: aplicativo integrado ao Supabase, com login e MFA exigidos antes do workspace.
 - `/demo/kanban`: quadro fictício sem Supabase, somente em memória; recarregar restaura os exemplos.
+- `/demo/operations`: exemplos de colaboração, gestão, conversas, integrações e preparação de chamadas com fixtures em memória; recarregar restaura os exemplos.
 - `/demo`: primeira entrega visual com dados fictícios e armazenamento local na chave `hub.frontend.demo.v1`. Pode ser explorada sem conta e sem credenciais de projeto.
+- `/offline.html`: entrada do leitor de conversas previamente salvas neste dispositivo; exige uma cópia e sua senha local.
 
 ## Frontend implementado
 
@@ -49,3 +51,17 @@ Capturas em `.impeccable/review/` e `.impeccable/review/auth/`. A [revisão visu
 O quadro segue o modo Operate existente: três colunas no desktop e colunas empilhadas no celular, mantendo grafite, laranja, Manrope e Phosphor. Não houve mudança durável no sistema visual.
 
 A compilação Next.js/TypeScript passou. Capturas da demonstração e editor em `.impeccable/review/kanban/` receberam veredito independente `ship`, restrito à superfície capturada. Não houve testes funcionais/suítes, contas, e-mails ou dados reais de negócio. A integração autenticada e o comportamento multiusuário permanecem sem validação real. [Escopo e evidências](phase-2-kanban.md).
+
+## Incremento de colaboração, gestão e clientes — 20/10/2026
+
+`live-collaboration.tsx` apresenta documentos Markdown com prévia, check-ins, pautas/atas e notificações. `advanced-conversation.tsx` acrescenta respostas, reações, mensagens fixadas, busca, menções e anexos. `live-management.tsx` reúne relatórios de horas com CSV/PDF, metas, escalas/trocas, ausências, datas do time e clientes/projetos. A implementação dessas interfaces e seus caminhos de dados não equivale a validação autenticada dos fluxos.
+
+`live-integrations.tsx` apresenta calendários Google/Outlook e conflitos, webhooks e auditoria conforme permissões; `live-calls.tsx` apresenta preparação de sala. OAuth Google/Outlook, SSO Azure e LiveKit exigem configuração externa e não estão ativos. A RPC de lembretes no app está aplicada. A função de push não foi implantada e aguarda aprovação explícita.
+
+`offline-settings.tsx` oferece ativação, desbloqueio e exclusão de uma cópia cifrada no IndexedDB. A senha é local, exclusiva e tem no mínimo 12 caracteres. Limites: 10 canais, 200 mensagens por canal, sem anexos e expiração em 7 dias; sair da conta apaga a cópia. O aviso de acesso desatualizado explica que a cópia pode ser lida após mudança de permissão no servidor. O service worker não deve armazenar respostas autenticadas; essa cópia opcional tem seu próprio armazenamento cifrado.
+
+O desktop Tauri foi compilado no CI como webview remoto da aplicação de produção. Os instaladores de Windows, macOS e Linux são **sem assinatura**, disponíveis no [run de build](https://github.com/yeMorGx/Hub/actions/runs/39365001709). `desktop-bridge.tsx` liga Ctrl/Cmd+Shift+H ao timer e indica não lidas com badge no macOS e título como alternativa nos demais sistemas. Instalação, execução e comportamento desses recursos em dispositivos desktop não foram testados.
+
+As novas superfícies mantêm a autoridade visual Shakuro e os tokens existentes em [DESIGN.md](../DESIGN.md): grafite, laranja quente, Manrope, Phosphor, bordas discretas e hierarquia em português. Formulários se empilham no celular; a tabela de relatórios mantém rolagem horizontal contida com orientação visível. Não houve mudança no sistema visual.
+
+A [revisão final independente](../.impeccable/review/phases-2-5/finish-review.md) abriu as 16 capturas desktop/celular e deu `ship` **somente às superfícies capturadas da demonstração fictícia e à entrada offline**, sem bloqueios visuais materiais identificados. A captura mobile do chat mostra a parte inferior da conversa rolável e não comprova posição inicial ou comportamento da rolagem. Não foram validados por essa revisão interações, teclado/leitor de tela, autenticação, autorização, persistência, cálculos/exportações, conexão com provedores, criptografia/sincronização offline, instalação ou áudio/vídeo real. As verificações anteriores de ausência de erros JavaScript e overflow raiz foram relatadas no handoff, sem repetição independente pelo revisor. Este parecer não ativa nem aprova integralmente as fases 2–5.

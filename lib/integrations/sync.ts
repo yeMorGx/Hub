@@ -76,24 +76,32 @@ export async function syncCalendar(
     ]);
     if (eventsResult.error || linksResult.error)
       throw new Error("Não foi possível consultar o calendário.");
-    if (eventsResult.data.length > 1000 || linksResult.data.length > 1000)
-      throw new Error("Use um período menor (até 1.000 eventos).");
+    if (eventsResult.data.length >= 1000 || linksResult.data.length >= 1000)
+      throw new Error(
+        "A conexão atingiu o limite de consulta (1.000 registros). Revise os vínculos antes de continuar.",
+      );
     const events = new Map(eventsResult.data.map((e) => [e.id, e])),
       links = linksResult.data,
       byExternal = new Map(links.map((l) => [l.external_id, l]));
     // Include mapped events moved outside the selected period. Absence from a range is never deletion.
-    const absent = links.filter((l) => !events.has(l.event_id));
-    if (absent.length) {
+    // Only fetch mapped Hub events moved outside the interval when their provider
+    // event is actually in this interval. Historical links must not trigger thousands
+    // of out-of-range provider requests or be mistaken for deletions.
+    const externalIds = new Set(external.map((item) => item.id));
+    const absent = links.filter(
+      (link) => !events.has(link.event_id) && externalIds.has(link.external_id),
+    );
+    for (let offset = 0; offset < absent.length; offset += 100) {
       const result = await client
         .from("events")
         .select("*")
         .eq("team_id", connection.team_id)
         .in(
           "id",
-          absent.map((l) => l.event_id),
+          absent.slice(offset, offset + 100).map((link) => link.event_id),
         );
       if (result.error) throw new Error("Falha ao consultar vínculos.");
-      for (const e of result.data || []) events.set(e.id, e);
+      for (const event of result.data || []) events.set(event.id, event);
     }
     let processed = 0,
       more = false;
@@ -143,7 +151,14 @@ export async function syncCalendar(
       const externalChanged = listed
         ? listed.updated !== link.external_updated_at
         : true;
-      if (!hubChanged && !externalChanged) continue;
+      if (
+        !hubChanged &&
+        (!externalChanged ||
+          (!listed &&
+            link.external_updated_at === "deleted" &&
+            event.cancelled_at))
+      )
+        continue;
       if (processed >= 15) {
         more = true;
         continue;

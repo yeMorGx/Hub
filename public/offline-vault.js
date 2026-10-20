@@ -1,16 +1,142 @@
 /* Shared by the signed-in app and the public, read-only offline viewer. No credentials are stored. */
-const DB='hub-offline-v1',MAX_AGE=7*86400000;
-let active=null;
-function database(){return new Promise((resolve,reject)=>{const request=indexedDB.open(DB,1);request.onupgradeneeded=()=>request.result.createObjectStore('vault');request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(new Error('Armazenamento local indisponível.'));});}
-async function stored(mode,operation){const db=await database();return new Promise((resolve,reject)=>{const tx=db.transaction('vault',mode),request=operation(tx.objectStore('vault'));let result;request.onsuccess=()=>{result=request.result};tx.oncomplete=()=>{db.close();resolve(result)};tx.onerror=()=>{db.close();reject(new Error('Não foi possível acessar a cópia offline.'))};tx.onabort=tx.onerror;});}
-const encode=bytes=>Array.from(new Uint8Array(bytes));
-async function derive(passphrase,salt){if(passphrase.length<12)throw new Error('Use uma senha offline com pelo menos 12 caracteres.');const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(passphrase),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:new Uint8Array(salt),iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);}
-async function encrypt(key,value){const iv=crypto.getRandomValues(new Uint8Array(12)),data=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(JSON.stringify(value)));return {iv:encode(iv),data:encode(data)};}
-async function decrypt(key,value){const bytes=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(value.iv)},key,new Uint8Array(value.data));return JSON.parse(new TextDecoder().decode(bytes));}
-export async function hasVault(){return Boolean(await stored('readonly',store=>store.get('record')));}
-export async function enableVault(userId,passphrase){const salt=encode(crypto.getRandomValues(new Uint8Array(16))),key=await derive(passphrase,salt),payload={userId,updatedAt:Date.now(),channels:[]};const encrypted=await encrypt(key,payload);await stored('readwrite',s=>s.put({salt,...encrypted},'record'));active={userId,key,salt,payload};}
-export async function unlockVault(passphrase,userId){const record=await stored('readonly',s=>s.get('record'));if(!record)throw new Error('Nenhuma conversa foi salva neste dispositivo.');try{const key=await derive(passphrase,record.salt),payload=await decrypt(key,record);if(userId&&payload.userId!==userId)throw new Error('Esta cópia pertence a outra conta.');if(Date.now()-payload.updatedAt>MAX_AGE){await clearVault();throw new Error('A cópia expirou. Entre no Hub para atualizar.');}active={userId:payload.userId,key,salt:record.salt,payload};return payload;}catch(e){if(e.message?.includes('expirou')||e.message?.includes('outra conta'))throw e;throw new Error('Não foi possível desbloquear. Confira a senha offline.');}}
-export function vaultUnlocked(userId){return Boolean(active&&active.userId===userId);}
-export async function saveConversation(userId,channel){if(!active||active.userId!==userId)return;const current=active;const payload={...current.payload,updatedAt:Date.now(),channels:[channel,...current.payload.channels.filter(c=>c.id!==channel.id)].slice(0,10)};const encrypted=await encrypt(current.key,payload);if(active!==current)return;await stored('readwrite',s=>active===current?s.put({salt:current.salt,...encrypted},'record'):s.get('record'));if(active===current)current.payload=payload;}
-export async function clearVault(){active=null;await stored('readwrite',s=>s.delete('record'));}
-export function lockVault(){active=null;}
+const DB = "hub-offline-v1",
+  MAX_AGE = 7 * 86400000;
+let active = null;
+let saving = Promise.resolve();
+function database() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB, 1);
+    request.onupgradeneeded = () => request.result.createObjectStore("vault");
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () =>
+      reject(new Error("Armazenamento local indisponível."));
+  });
+}
+async function stored(mode, operation) {
+  const db = await database();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("vault", mode),
+      request = operation(tx.objectStore("vault"));
+    let result;
+    request.onsuccess = () => {
+      result = request.result;
+    };
+    tx.oncomplete = () => {
+      db.close();
+      resolve(result);
+    };
+    tx.onerror = () => {
+      db.close();
+      reject(new Error("Não foi possível acessar a cópia offline."));
+    };
+    tx.onabort = tx.onerror;
+  });
+}
+const encode = (bytes) => Array.from(new Uint8Array(bytes));
+async function derive(passphrase, salt) {
+  if (passphrase.length < 12)
+    throw new Error("Use uma senha offline com pelo menos 12 caracteres.");
+  const material = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(passphrase),
+    "PBKDF2",
+    false,
+    ["deriveKey"],
+  );
+  return crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: new Uint8Array(salt),
+      iterations: 310000,
+      hash: "SHA-256",
+    },
+    material,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"],
+  );
+}
+async function encrypt(key, value) {
+  const iv = crypto.getRandomValues(new Uint8Array(12)),
+    data = await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      key,
+      new TextEncoder().encode(JSON.stringify(value)),
+    );
+  return { iv: encode(iv), data: encode(data) };
+}
+async function decrypt(key, value) {
+  const bytes = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: new Uint8Array(value.iv) },
+    key,
+    new Uint8Array(value.data),
+  );
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+export async function hasVault() {
+  return Boolean(await stored("readonly", (store) => store.get("record")));
+}
+export async function enableVault(userId, passphrase) {
+  const salt = encode(crypto.getRandomValues(new Uint8Array(16))),
+    key = await derive(passphrase, salt),
+    payload = { userId, updatedAt: Date.now(), channels: [] };
+  const encrypted = await encrypt(key, payload);
+  await stored("readwrite", (s) => s.put({ salt, ...encrypted }, "record"));
+  active = { userId, key, salt, payload };
+}
+export async function unlockVault(passphrase, userId) {
+  const record = await stored("readonly", (s) => s.get("record"));
+  if (!record) throw new Error("Nenhuma conversa foi salva neste dispositivo.");
+  try {
+    const key = await derive(passphrase, record.salt),
+      payload = await decrypt(key, record);
+    if (userId && payload.userId !== userId)
+      throw new Error("Esta cópia pertence a outra conta.");
+    if (Date.now() - payload.updatedAt > MAX_AGE) {
+      await clearVault();
+      throw new Error("A cópia expirou. Entre no Hub para atualizar.");
+    }
+    active = { userId: payload.userId, key, salt: record.salt, payload };
+    return payload;
+  } catch (e) {
+    if (e.message?.includes("expirou") || e.message?.includes("outra conta"))
+      throw e;
+    throw new Error("Não foi possível desbloquear. Confira a senha offline.");
+  }
+}
+export function vaultUnlocked(userId) {
+  return Boolean(active && active.userId === userId);
+}
+export function saveConversation(userId, channel) {
+  saving = saving
+    .catch(() => {})
+    .then(async () => {
+      if (!active || active.userId !== userId) return;
+      const current = active,
+        payload = {
+          ...current.payload,
+          updatedAt: Date.now(),
+          channels: [
+            { ...channel, messages: channel.messages.slice(-200) },
+            ...current.payload.channels.filter((c) => c.id !== channel.id),
+          ].slice(0, 10),
+        };
+      const encrypted = await encrypt(current.key, payload);
+      if (active !== current) return;
+      await stored("readwrite", (s) =>
+        active === current
+          ? s.put({ salt: current.salt, ...encrypted }, "record")
+          : s.get("record"),
+      );
+      if (active === current) current.payload = payload;
+    });
+  return saving;
+}
+
+export async function clearVault() {
+  active = null;
+  await stored("readwrite", (s) => s.delete("record"));
+}
+export function lockVault() {
+  active = null;
+}

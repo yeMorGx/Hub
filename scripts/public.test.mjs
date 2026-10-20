@@ -96,3 +96,50 @@ for (const path of ["/demo", "/demo/kanban"]) {
     );
   });
 }
+
+for (const path of ["/api/integrations/status", "/api/integrations/jobs"]) {
+  test(`${path} recusa acesso sem sessão ou segredo de job`, async () => {
+    const response = await request(path);
+    assert.equal(response.status, 401);
+    assert.match(response.headers.get("cache-control") || "", /no-store/);
+  });
+}
+for (const path of [
+  "/api/livekit/token",
+  "/api/livekit/access",
+  "/api/integrations/google/sync",
+  "/api/integrations/google/disconnect",
+]) {
+  test(`${path} exige sessão MFA para POST de origem permitida`, async () => {
+    const response = await fetch(new URL(path, base), {
+      method: "POST",
+      headers: {
+        Origin: "https://hub-one-azure.vercel.app",
+        "Content-Type": "application/json",
+      },
+      body: "{}",
+      redirect: "manual",
+    });
+    assert.equal(response.status, 401);
+    assert.match(response.headers.get("cache-control") || "", /no-store/);
+  });
+}
+test("calendário Outlook responde ao desafio como texto sem refletir HTML executável", async () => {
+  const value = "<fixture-validation>";
+  const response = await fetch(
+    new URL(
+      "/api/integrations/webhooks/outlook?validationToken=" +
+        encodeURIComponent(value),
+      base,
+    ),
+    { method: "POST" },
+  );
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") || "", /text\/plain/);
+  assert.equal(await response.text(), value);
+});
+test("demonstração operacional é pública e declara seus dados fictícios", async () => {
+  const response = await request("/demo/operations");
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /dados fictícios/);
+});

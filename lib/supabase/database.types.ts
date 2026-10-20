@@ -1735,6 +1735,12 @@ export type Database = {
         }
         Returns: Json
       }
+      call_channel_roster: {
+        Args: { p_channel_id: string }
+        Returns: {
+          user_id: string
+        }[]
+      }
       cancel_absence: { Args: { p_absence_id: string }; Returns: undefined }
       cancel_event: { Args: { p_event_id: string }; Returns: undefined }
       claim_calendar_sync: {

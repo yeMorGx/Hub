@@ -18,7 +18,7 @@ create index notifications_delivery_idx on public.notifications(created_at) wher
 create function public.claim_notification_deliveries(p_message_id uuid default null) returns setof public.notifications
 language sql security definer set search_path='' as $$
  with claimed as (
- select id from public.notifications where delivered_at is null and delivery_attempts<4
+ select id from public.notifications where delivered_at is null and read_at is null and delivery_attempts<4
  and (delivery_claimed_at is null or delivery_claimed_at<clock_timestamp()-interval '5 minutes')
  and (p_message_id is null or message_id=p_message_id)
  order by created_at for update skip locked limit 20

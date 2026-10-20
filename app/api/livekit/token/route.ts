@@ -1,3 +1,4 @@
+import { enforceRoomAccess } from "@/lib/livekit/access";
 import { AccessToken } from "livekit-server-sdk";
 import { sameOrigin } from "@/lib/integrations/config";
 import {
@@ -55,10 +56,11 @@ export async function POST(request: Request) {
         { error: "Você precisa participar deste canal." },
         403,
       );
+    await enforceRoomAccess(session.client, channel.id, channel.team_id);
     const token = new AccessToken(key, secret, {
       identity: session.userId,
       name: profile?.display_name || "Pessoa do time",
-      ttl: "5m",
+      ttl: "30s",
     });
     token.addGrant({
       roomJoin: true,

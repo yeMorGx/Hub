@@ -370,6 +370,9 @@ export function LiveManagement({ hub }: { hub: HubController }) {
                       </div>
                     ))}
                   </div>
+                  <p className="table-scroll-hint">
+                    Deslize a tabela para ver todas as colunas.
+                  </p>
                   <div className="table-scroll">
                     <table className="workspace-table">
                       <thead>

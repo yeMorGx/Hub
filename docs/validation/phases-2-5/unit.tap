@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: comandos reconhecem ações, textos comuns e ajuda
+ok 1 - comandos reconhecem ações, textos comuns e ajuda
+  ---
+  duration_ms: 2.901954
+  type: 'test'
+  ...
+# Subtest: reunião valida data e horário, usa 30 minutos e rejeita passado
+ok 2 - reunião valida data e horário, usa 30 minutos e rejeita passado
+  ---
+  duration_ms: 15.620983
+  type: 'test'
+  ...
+# Subtest: AES-GCM cifra com nonce aleatório e rejeita adulteração ou chave errada
+ok 3 - AES-GCM cifra com nonce aleatório e rejeita adulteração ou chave errada
+  ---
+  duration_ms: 1.535844
+  type: 'test'
+  ...
+# Subtest: state compara tamanho/conteúdo e PKCE produz SHA256 base64url
+ok 4 - state compara tamanho/conteúdo e PKCE produz SHA256 base64url
+  ---
+  duration_ms: 0.301107
+  type: 'test'
+  ...
+# Subtest: OAuth fixa destinos oficiais, PKCE e callback configurado
+ok 5 - OAuth fixa destinos oficiais, PKCE e callback configurado
+  ---
+  duration_ms: 1.166816
+  type: 'test'
+  ...
+# Subtest: Google exporta com ID determinístico, sem convites e com precondição
+ok 6 - Google exporta com ID determinístico, sem convites e com precondição
+  ---
+  duration_ms: 21.461197
+  type: 'test'
+  ...
+# Subtest: Outlook cancela via DELETE e leitura ausente retorna null
+ok 7 - Outlook cancela via DELETE e leitura ausente retorna null
+  ---
+  duration_ms: 0.972651
+  type: 'test'
+  ...
+# Subtest: Outlook recusa paginação fora do Graph
+ok 8 - Outlook recusa paginação fora do Graph
+  ---
+  duration_ms: 1.475666
+  type: 'test'
+  ...
+# Subtest: renovação preserva refresh token quando provedor não o repete
+ok 9 - renovação preserva refresh token quando provedor não o repete
+  ---
+  duration_ms: 0.858152
+  type: 'test'
+  ...
+# Subtest: sala remove somente identidades fora do roster e propaga falhas do servidor
+ok 10 - sala remove somente identidades fora do roster e propaga falhas do servidor
+  ---
+  duration_ms: 9.564568
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 308.484942

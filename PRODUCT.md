@@ -14,7 +14,7 @@ Telas do app: Hoje, Calendário, Tarefas, Conversas, Minhas horas e Pessoas. Tim
 
 Tarefas inclui Kanban com criação, edição, filtros, mudança de etapa, arquivamento e timer ligado ao card. Colunas: A fazer, Em andamento e Concluído. Detalhes em [Kanban da Fase 2](docs/phase-2-kanban.md).
 
-A demonstração fictícia continua em `/demo`, com armazenamento local separado. `/demo/kanban` demonstra o quadro somente em memória, sem backend. Seus dados nunca são usados como dados reais do time.
+A demonstração fictícia continua em `/demo`, com armazenamento local separado. `/demo/kanban` demonstra o quadro somente em memória, sem backend. `/demo/operations` reúne exemplos de colaboração, gestão, conversas, integrações e preparação de chamadas, também em memória; recarregar restaura os exemplos. Seus dados nunca são usados como dados reais do time.
 
 As migrações das fases 0/1 e do Kanban da Fase 2 já estão aplicadas. A integração compilou, mas os fluxos autenticados ainda aguardam validação com uma conta real e seu autenticador. Não tratar implementação como comprovação de MFA, RLS ou Realtime ponta a ponta. Detalhes em docs/supabase-app-integration.md.
 
@@ -24,4 +24,12 @@ O usuário escolheu o dashboard escuro da Shakuro: timer em destaque, navegaçã
 
 ## Limites
 
-A Fase 2 está parcialmente implementada: chat avançado, standups, documentos Markdown e lembretes ainda são futuros. Relatórios avançados, chamadas integradas, pausa de timer e SSO continuam nas fases previstas. Login com Azure ainda não está configurado. Horas têm duração oficial calculada no servidor; indicadores de Presence não são prova de identidade ou frequência. Não colocar credenciais administrativas no cliente, nem dados protegidos no cache do service worker.
+As superfícies implementadas ampliam o produto, mas não comprovam todas as fases ativas. Colaboração inclui documentos Markdown, check-ins, pautas/atas e notificações; conversas incluem respostas, reações, mensagens fixadas, busca, menções e anexos. Gestão reúne relatórios com exportação CSV/PDF, metas, escalas e trocas, ausências, datas do time e clientes/projetos. A RPC de lembretes no app está aplicada; a função de push não foi implantada e aguarda aprovação explícita.
+
+Integrações apresentam calendários Google/Outlook, conflitos de sincronização, webhooks e auditoria conforme o papel do usuário. OAuth Google/Outlook, SSO Azure e salas LiveKit dependem de configuração externa e não estão ativos. Preparar uma chamada na interface não comprova áudio/vídeo real. Pausa de timer continua fora da entrega. Horas têm duração oficial calculada no servidor; indicadores de Presence não são prova de identidade ou frequência. Não colocar credenciais administrativas no cliente, nem dados protegidos no cache do service worker.
+
+Conversas offline são opcionais por dispositivo, em IndexedDB cifrado, com senha local exclusiva de pelo menos 12 caracteres: até 10 canais e 200 mensagens por canal, sem anexos, com expiração em 7 dias e exclusão ao sair da conta. A interface avisa que uma cópia pode continuar legível após mudança de acesso no servidor; ela não representa autorização atual. O leitor em `/offline.html` não comprova sincronização ou criptografia validada em execução.
+
+O cliente desktop Tauri usa a aplicação hospedada em um webview remoto. Instaladores sem assinatura para Windows, macOS e Linux foram compilados no [GitHub Actions](https://github.com/yeMorGx/Hub/actions/runs/39365001709). Há atalho Ctrl/Cmd+Shift+H para iniciar/encerrar timer e indicação de não lidas por badge no macOS, com título como alternativa nos demais sistemas. Instalação e execução desktop ainda não foram testadas.
+
+A revisão visual final das novas superfícies recebeu `ship` somente para 16 capturas desktop/celular da demonstração fictícia e entrada offline. Não valida interações, acessibilidade completa, rotas autenticadas, autorização, persistência, cálculos/exportações, provedores, sincronização offline ou chamadas reais. [Entrega e evidências](docs/frontend-delivery.md).

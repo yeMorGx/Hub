@@ -57,6 +57,12 @@ export function OfflineSettings({ userId }: { userId: string }) {
               type="password"
               minLength={12}
               autoComplete="new-password"
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  if (pass.length >= 12 && !busy) void enable();
+                }
+              }}
               value={pass}
               onChange={(e) => setPass(e.target.value)}
               placeholder="Pelo menos 12 caracteres"

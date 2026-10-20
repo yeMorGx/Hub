@@ -82,8 +82,8 @@ class PublicBrowserChecks(unittest.TestCase):
         self.page.wait_for_function('navigator.serviceWorker.controller !== null')
         self.context.set_offline(True)
         self.page.goto(BASE + '/')
-        expect(self.page.get_by_role('heading', name='Seu time espera por você.')).to_be_visible()
-        expect(self.page.locator('body')).to_contain_text('Você está sem conexão.')
+        expect(self.page.get_by_role('heading', name='Conversas, mesmo sem conexão.')).to_be_visible()
+        expect(self.page.locator('body')).to_contain_text('Sua senha offline')
         paths = self.page.evaluate('''async () => {
           const requests = (await Promise.all((await caches.keys()).map(async key =>
             (await (await caches.open(key)).keys()).map(request => new URL(request.url).pathname)
@@ -92,10 +92,57 @@ class PublicBrowserChecks(unittest.TestCase):
         }''')
         self.assertIn('/offline.html', paths)
         for path in paths:
-            self.assertTrue(path in ['/offline.html', '/pwa/icon/192', '/pwa/icon/512'] or path.startswith('/_next/static/'), path)
+            self.assertTrue(path in ['/offline.html', '/offline.css', '/offline-reader.js', '/offline-vault.js', '/pwa/icon/192', '/pwa/icon/512'] or path.startswith('/_next/static/'), path)
         self.context.set_offline(False)
         self.page.goto(BASE + '/login')
         expect(self.page.get_by_role('heading', name='Bom ter você por aqui.')).to_be_visible()
+
+    def test_offline_messages_are_encrypted_and_require_local_password(self):
+        self.page.goto(BASE + '/login')
+        self.page.wait_for_function('navigator.serviceWorker.controller !== null')
+        result = self.page.evaluate("""async () => {
+          const vault = await import('/offline-vault.js');
+          await vault.enableVault('fixture-user', 'fixture-only-password-123');
+          await vault.saveConversation('fixture-user', {id:'fixture-channel', name:'Canal local', savedAt:Date.now(), messages:[{id:'fixture-message', author:'Pessoa fictícia', body:'CONTEUDO_PRIVADO_FIXTURE', createdAt:new Date().toISOString()}]});
+          vault.lockVault();
+          const record = await new Promise((resolve,reject)=>{const r=indexedDB.open('hub-offline-v1',1);r.onsuccess=()=>{const db=r.result,tx=db.transaction('vault');const q=tx.objectStore('vault').get('record');q.onsuccess=()=>resolve(q.result);tx.oncomplete=()=>db.close()};r.onerror=reject});
+          let wrong=false;try{await vault.unlockVault('wrong-password-fixture')}catch{wrong=true}
+          let other=false;try{await vault.unlockVault('fixture-only-password-123','different-user')}catch{other=true}
+          return {raw:JSON.stringify(record),wrong,other};
+        }""")
+        self.assertNotIn('CONTEUDO_PRIVADO_FIXTURE', result['raw'])
+        self.assertNotIn('Pessoa fictícia', result['raw'])
+        self.assertTrue(result['wrong'])
+        self.assertTrue(result['other'])
+        self.context.set_offline(True)
+        self.page.goto(BASE + '/offline.html')
+        self.page.get_by_label('Sua senha offline').fill('fixture-only-password-123')
+        self.page.get_by_role('button', name='Desbloquear', exact=True).click()
+        expect(self.page.locator('#messages')).to_contain_text('CONTEUDO_PRIVADO_FIXTURE')
+        self.page.get_by_role('button',name='Bloquear',exact=True).click()
+        expect(self.page.locator('#messages')).to_be_empty()
+        self.assertEqual(self.page.locator('textarea').count(),0)
+        self.context.set_offline(False)
+
+    def test_demo_reports_export_csv_and_pdf(self):
+        self.page.goto(BASE + '/demo/operations')
+        self.page.get_by_role('button',name='Gestão',exact=True).click()
+        self.page.get_by_role('button',name='Gerar relatório',exact=True).click()
+        expect(self.page.locator('body')).to_contain_text('13,25 h')
+        with self.page.expect_download() as csv_info:
+            self.page.get_by_role('button',name='CSV',exact=True).click()
+        csv = csv_info.value
+        with open(csv.path(),'r',encoding='utf-8-sig') as file:
+            content=file.read()
+        self.assertIn('Marina Costa',content)
+        self.assertIn('Lançamento Hub',content)
+        with self.page.expect_download() as pdf_info:
+            self.page.get_by_role('button',name='PDF',exact=True).click()
+        pdf = pdf_info.value
+        with open(pdf.path(),'rb') as file:
+            content=file.read()
+        self.assertTrue(content.startswith(b'%PDF-'))
+        self.assertGreater(len(content),3000)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
