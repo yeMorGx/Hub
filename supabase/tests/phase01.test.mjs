@@ -7,6 +7,7 @@ import { readFile, readdir } from 'node:fs/promises';
 // PostgreSQL real em WASM. Auth/Realtime são contratos mínimos de teste;
 // estes testes não substituem uma execução na stack Supabase completa.
 let db;
+const declaredTables=new Set(),declaredFunctions=new Set();
 const users = Object.fromEntries(['admin', 'leader', 'alice', 'bob', 'blueLeader', 'outsider']
   .map((name, i) => [name, `00000000-0000-0000-0000-${String(i + 1).padStart(12, '0')}`]));
 const ids = {};
@@ -70,10 +71,19 @@ before(async () => {
       $$ select nullif(current_setting('realtime.topic', true), '') $$;
     grant usage on schema realtime to authenticated;
     create publication supabase_realtime;
+    create schema storage;
+    create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
+    create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text,metadata jsonb,unique(bucket_id,name));
+    alter table storage.objects enable row level security;
+    grant usage on schema storage to authenticated;
+    grant select,insert,delete on storage.objects to authenticated;
   `);
   debug('Aplicando migração');
   for (const migration of (await readdir(new URL('../migrations/', import.meta.url))).filter(name => /^\d+_.+\.sql$/.test(name)).sort()) {
-    await db.exec(await readFile(new URL(`../migrations/${migration}`, import.meta.url), 'utf8'));
+    const sql=await readFile(new URL(`../migrations/${migration}`, import.meta.url),'utf8');
+    for(const match of sql.matchAll(/create\s+table\s+public\.([a-z_]+)/gi))declaredTables.add(match[1]);
+    for(const match of sql.matchAll(/create\s+(?:or\s+replace\s+)?function\s+public\.([a-z_]+)/gi))declaredFunctions.add(match[1]);
+    await db.exec(sql);
   }
   debug('Criando dados de teste');
   for (const [name, id] of Object.entries(users)) {
@@ -123,10 +133,10 @@ before(async () => {
 });
 after(async () => { if (db) await db.close(); });
 
-scenario('RLS habilitado em todas as 14 tabelas do app; view usa permissões do chamador', async () => {
+scenario('RLS habilitado em todas as tabelas declaradas do app; view usa permissões do chamador', async () => {
   const { rows } = await query(`select relname, relrowsecurity from pg_class c
     join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and relkind='r'`);
-  assert.equal(rows.length, 14);
+  assert.deepEqual(rows.map(r=>r.relname).sort(),[...declaredTables].sort());
   assert.ok(rows.every(row => row.relrowsecurity));
   assert.deepEqual(await scalar("select reloptions from pg_class where oid='public.channel_unread_counts'::regclass"), ['security_invoker=true']);
 });
@@ -135,7 +145,7 @@ scenario('RPCs não são executáveis por anon; funções privilegiadas fixam se
   const { rows } = await query(`select p.oid::regprocedure::text as name, p.proconfig,
     has_function_privilege('anon',p.oid,'execute') as anon_exec from pg_proc p
     join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prokind='f'`);
-  assert.equal(rows.length, 30);
+  assert.equal(rows.length, declaredFunctions.size);
   assert.ok(rows.every(row => !row.anon_exec), JSON.stringify(rows));
   assert.ok(rows.every(row => row.proconfig.includes('search_path=""')));
   assert.equal(await scalar("select has_function_privilege('authenticated','private.active_team_user(uuid,uuid)','execute')"), false);
@@ -487,7 +497,7 @@ scenario('Realtime: Presence e typing privados exigem escopo, MFA e tópico cons
 
 scenario('publicação inclui dados do MVP, sem DELETE de membros de canal', async () => {
   const tables = (await query("select tablename from pg_publication_tables where pubname='supabase_realtime'")).rows.map(r => r.tablename).sort();
-  assert.deepEqual(tables, ['channels','event_attendees','events','member_statuses','messages','projects','tasks','team_members','time_entries','workspace_members'].sort());
+  assert.deepEqual(tables, ['channels','event_attendees','events','member_statuses','messages','projects','tasks','team_members','time_entries','workspace_members','message_reactions','message_pins','attachments','team_notes','standups','meeting_documents','notifications','clients','time_goals','shifts','shift_swaps','absences'].sort());
   assert.ok(!tables.includes('channel_members'));
 });
 
@@ -762,4 +772,216 @@ scenario('Kanban: FK de horas impede associação a tarefa de outro time', async
   await db.exec('reset role');
   await sqlError(`insert into public.time_entries(team_id,user_id,task_id,description,source,started_at,ended_at)
     values ($1,$2,$3,'FK','manual','2020-02-01T08:00Z','2020-02-01T09:00Z')`, [ids.blue, users.alice, id], '23503');
+});
+
+scenario('Colaboração: threads não atravessam canal, retry preserva a resposta original', async () => {
+ await login(users.alice);
+ const key=randomUUID();
+ const reply=await rpc('send_rich_message',[ids.general,key,'Resposta',ids.generalMessage]);
+ assert.equal(await scalar('select reply_to from public.messages where id=$1',[reply]),ids.generalMessage);
+ assert.equal(await rpc('send_rich_message',[ids.general,key,'Outra resposta',null]),reply);
+ await sqlError('select public.send_rich_message($1,$2,$3,$4)',[ids.general,randomUUID(),'Resposta',ids.secretMessage],'22023');
+ await sqlError('select public.send_rich_message($1,$2,$3,$4)',[ids.general,randomUUID(),'Resposta aninhada',reply],'22023');
+});
+scenario('Colaboração: reações são próprias, fixação exige moderação e RLS protege canal', async () => {
+ await login(users.alice);
+ await rpc('react_to_message',[ids.generalMessage,'heart',true]);
+ await rpc('react_to_message',[ids.generalMessage,'heart',true]);
+ assert.equal(await count('select count(*) from public.message_reactions'),1);
+ await rpc('react_to_message',[ids.generalMessage,'heart',false]);
+ assert.equal(await scalar('select active from public.message_reactions'),false);
+ await sqlError('select public.pin_message($1,$2)',[ids.generalMessage,true],'42501');
+ await login(users.leader);await rpc('pin_message',[ids.generalMessage,true]);
+ await login(users.bob);
+ assert.equal(await count('select count(*) from public.message_pins'),0);
+ await sqlError('select public.react_to_message($1,$2,$3)',[ids.generalMessage,'like',true],'42501');
+});
+scenario('Colaboração: menções notificam somente participantes, sem duplicar no retry', async () => {
+ await login(users.leader);
+ const key=randomUUID();const msg=await rpc('send_rich_message',[ids.general,key,'Oi',null,[],[users.alice,users.bob,users.outsider]]);
+ await rpc('send_rich_message',[ids.general,key,'Oi',null,[],[users.alice]]);
+ await login(users.alice);
+ assert.equal(await count('select count(*) from public.notifications'),1);
+ const n=await scalar('select id from public.notifications');await rpc('mark_notification_read',[n]);
+ assert.ok(await scalar('select read_at from public.notifications'));
+ await login(users.bob);assert.equal(await count('select count(*) from public.notifications'),0);
+ await login(users.alice);
+ await sqlError('select public.send_rich_message($1,$2,$3,$4,$5,$6,$7)',[ids.general,randomUUID(),'@canal',null,[],[],true],'42501');
+});
+scenario('Colaboração: arquivos privados exigem reserva própria, canal e vínculo válido', async () => {
+ await login(users.alice);
+ const id=await rpc('reserve_attachment',[ids.secret,'teste.txt','text/plain',10]);
+ const path=await scalar('select object_path from public.attachments where id=$1',[id]);
+ await query('insert into storage.objects(bucket_id,name) values ($1,$2)',['hub-files',path]);
+ await rpc('finish_attachment',[id]);
+ const msg=await rpc('send_rich_message',[ids.secret,randomUUID(),'',null,[id]]);
+ assert.equal(await scalar('select message_id from public.attachments where id=$1',[id]),msg);
+ await login(users.leader);assert.equal(await count('select count(*) from storage.objects'),1);
+ await login(users.bob);assert.equal(await count('select count(*) from storage.objects'),0);
+ await sqlError('insert into storage.objects(bucket_id,name) values ($1,$2)',['hub-files','forged-path'],'42501');
+ await login(users.alice);await rpc('remove_attachment',[id]);
+ await query('delete from storage.objects where name=$1',[path]);
+ assert.equal(await count('select count(*) from storage.objects'),0);
+ await sqlError('select public.reserve_attachment($1,$2,$3,$4)',[ids.secret,'teste.html','text/html',10],'22023');
+});
+scenario('Colaboração: notas têm versão, colaboração e arquivamento restrito', async () => {
+ await login(users.alice);const id=await rpc('save_team_note',[ids.red,'Documento','# Conteúdo']);
+ await login(users.bob);await rpc('save_team_note',[ids.red,'Documento','Revisão',id,1]);
+ await sqlError('select public.save_team_note($1,$2,$3,$4,$5)',[ids.red,'Stale','Perdido',id,1],'40001');
+ await sqlError('select public.save_team_note($1,$2,$3,$4,$5,$6)',[ids.red,'Arquivo','Revisão',id,2,true],'42501');
+ await login(users.outsider);assert.equal(await count('select count(*) from public.team_notes'),0);
+});
+scenario('Colaboração: check-in é próprio e pauta/ata é do organizador ou gestor', async () => {
+ await login(users.alice);const date=await scalar('select current_date::text');
+ const id=await rpc('save_standup',[ids.red,date,'daily','Ontem','Hoje','','steady']);
+ assert.equal(await rpc('save_standup',[ids.red,date,'daily','Atualizado','Hoje','','great']),id);
+ await sqlError('select public.save_meeting_documents($1,$2,$3)',[ids.event,'Pauta','Ata'],'42501');
+ await login(users.leader);await rpc('save_meeting_documents',[ids.event,'Pauta','Ata']);
+ await sqlError('select public.save_meeting_documents($1,$2,$3)',[ids.event,'Stale','Ata'],'40001');
+ await login(users.alice);assert.equal(await scalar('select agenda from public.meeting_documents'),'Pauta');
+});
+scenario('Colaboração: assinatura push só pertence à conta e todas as novas tabelas exigem MFA', async () => {
+ await login(users.alice);await rpc('register_push_subscription',['https://fcm.googleapis.com/fcm/send/local-fixture','x'.repeat(40),'y'.repeat(30)]);
+ await login(users.bob);assert.equal(await count('select count(*) from public.push_subscriptions'),0);
+ await login(users.alice,'aal1');
+ for(const tbl of ['team_notes','standups','meeting_documents','message_reactions','message_pins','attachments','notifications','push_subscriptions']) assert.equal(await count(`select count(*) from public.${tbl}`),0);
+ await sqlError('select public.save_team_note($1,$2,$3)',[ids.red,'Bloqueado','Texto'],'42501');
+});
+scenario('Colaboração: busca respeita participação, histórico removido e paginação',async()=>{
+ await login(users.leader);
+ const msg=await rpc('send_rich_message',[ids.general,randomUUID(),'Planejamento sprint semanal']);
+ assert.equal((await query('select id from public.search_channel_messages($1,$2)',[ids.general,'planejamento'])).rows[0].id,msg);
+ assert.equal(await count('select count(*) from public.search_channel_messages($1,$2,$3)',[ids.general,'planejamento',1]),0);
+ await rpc('delete_message',[msg]);
+ assert.equal(await count('select count(*) from public.search_channel_messages($1,$2)',[ids.general,'planejamento']),0);
+ await login(users.bob);
+ await sqlError('select * from public.search_channel_messages($1,$2)',[ids.general,'planejamento'],'42501');
+ await login(users.alice);
+ await sqlError('select public.register_push_subscription($1,$2,$3)',['https://127.0.0.1/private','x'.repeat(40),'y'.repeat(30)],'22023');
+});
+scenario('Entrega push: configuração privada e claims da fila são inacessíveis a usuários',async()=>{
+ await query("insert into private.delivery_settings(id,public_key,private_key,job_secret) values(true,'fixture-public','fixture-private','fixture-job')");
+ await login(users.admin);
+ await sqlError('select * from private.delivery_settings',[],'42501');
+ await sqlError('select public.delivery_configuration()',[],'42501');
+ await sqlError('select * from public.claim_notification_deliveries()',[],'42501');
+ await db.exec('reset role;set role service_role');
+ assert.equal((await scalar('select public.delivery_configuration()')).public_key,'fixture-public');
+});
+scenario('Gestão: relatórios respeitam papel, cliente e corte nas fronteiras do período',async()=>{
+ await login(users.leader);const client=await rpc('save_client',[ids.red,'Cliente A']);await rpc('set_project_client',[ids.project,client]);
+ await login(users.alice);const own=(await query('select * from public.report_time_entries($1,$2,$3,$4,$5,$6)',[ids.red,'2020-01-01T08:30Z','2020-01-01T09:00Z',null,null,client])).rows;
+ assert.equal(own.length,1);assert.equal(Number(own[0].duration_seconds),1800);assert.equal(own[0].user_id,users.alice);
+ await sqlError('select * from public.report_time_entries($1,$2,$3,$4)',[ids.red,'2020-01-01','2020-01-02',users.bob],'42501');
+ await login(users.leader);assert.equal(await count('select count(*) from public.report_time_entries($1,$2,$3)',[ids.red,'2020-01-01','2020-01-02']),3);
+ await login(users.outsider);await sqlError('select * from public.report_time_entries($1,$2,$3)',[ids.red,'2020-01-01','2020-01-02'],'42501');
+});
+scenario('Gestão: metas são próprias ou da liderança e não revelam metas de colegas',async()=>{
+ await login(users.alice);await rpc('set_time_goal',[ids.red,users.alice,2400,120]);
+ await sqlError('select public.set_time_goal($1,$2,$3)',[ids.red,users.bob,100],'42501');
+ await login(users.bob);assert.equal(await count('select count(*) from public.time_goals'),0);
+ await login(users.leader);assert.equal(await count('select count(*) from public.time_goals'),1);
+});
+scenario('Gestão: ausências ocultam motivo e exigem outra liderança para aprovação',async()=>{
+ await login(users.alice);const id=await rpc('request_absence',[ids.red,'medical','2030-05-01','2030-05-03','Motivo privado']);
+ await login(users.bob);assert.equal(await count('select count(*) from public.absences'),0);
+ await sqlError('select public.decide_absence($1,$2)',[id,'approved'],'42501');
+ await login(users.leader);await rpc('decide_absence',[id,'approved','Aprovado']);
+ await login(users.bob);const schedule=(await query('select * from public.absence_schedule($1,$2,$3)',[ids.red,'2030-05-01','2030-05-04'])).rows;
+ assert.equal(schedule.length,1);assert.deepEqual(Object.keys(schedule[0]).sort(),['ends_on','starts_on','user_id']);
+ await login(users.leader);const own=await rpc('request_absence',[ids.red,'vacation','2030-06-01','2030-06-03','']);
+ await sqlError('select public.decide_absence($1,$2)',[own,'approved'],'22023');
+});
+scenario('Gestão: turno não se sobrepõe e troca exige aceite e aprovação',async()=>{
+ await login(users.leader);const shift=await rpc('save_shift',[ids.red,users.alice,'Plantão','2030-01-01T08:00Z','2030-01-01T16:00Z']);
+ await sqlError('select public.save_shift($1,$2,$3,$4,$5)',[ids.red,users.alice,'Sobreposição','2030-01-01T10:00Z','2030-01-01T18:00Z'],'23P01');
+ await login(users.alice);const request=await rpc('request_shift_swap',[shift,users.bob]);
+ await login(users.leader);await sqlError('select public.decide_shift_swap($1,$2)',[request,'approved'],'42501');
+ await login(users.bob);await rpc('decide_shift_swap',[request,'accepted']);
+ await login(users.leader);await rpc('decide_shift_swap',[request,'approved']);
+ assert.equal(await scalar('select user_id from public.shifts where id=$1',[shift]),users.bob);
+});
+scenario('Gestão: datas do time são compartilhadas sem permitir editar aniversário alheio',async()=>{
+ await login(users.alice);const id=await rpc('save_team_date',[ids.red,'Aniversário de Alice','2000-05-10',true]);
+ await login(users.bob);assert.equal(await count('select count(*) from public.team_dates'),1);
+ await sqlError('select public.save_team_date($1,$2,$3,$4,$5)',[ids.red,'Alterado','2000-05-10',true,id],'42501');
+ await login(users.outsider);assert.equal(await count('select count(*) from public.team_dates'),0);
+});
+scenario('Integrações: auditoria é imutável para clientes e só admin da organização lê',async()=>{
+ await login(users.alice);await rpc('save_team_note',[ids.red,'Nota auditada','SEGREDO_DO_CONTEUDO']);
+ assert.equal(await count('select count(*) from public.audit_events'),0);
+ await login(users.leader);assert.equal(await count('select count(*) from public.audit_events'),0);
+ await login(users.admin);assert.ok(await count("select count(*) from public.audit_events where entity_table='team_notes'")>0);
+ assert.equal(await count("select count(*) from public.audit_events where changes::text like '%SEGREDO_DO_CONTEUDO%'"),0);
+ await sqlError('delete from public.audit_events',[],'42501');
+ await login(users.outsider);assert.equal(await count('select count(*) from public.audit_events where workspace_id=$1',[ids.workspace]),0);
+});
+scenario('Integrações: webhook exige moderação, token válido e caller de serviço',async()=>{
+ await login(users.alice);await sqlError('select public.create_incoming_webhook($1,$2)',[ids.general,'Sem permissão'],'42501');
+ await login(users.leader);const hook=await rpc('create_incoming_webhook',[ids.general,'Alertas']);
+ await sqlError('select token_hash from public.incoming_webhooks',[],'42501');
+ await sqlError('select public.accept_incoming_webhook($1,$2,$3,$4)',[hook.id,hook.token,'Alerta','evt-1'],'42501');
+ await db.exec('reset role;set role service_role');
+ const id=await rpc('accept_incoming_webhook',[hook.id,hook.token,'Alerta','evt-1']);
+ assert.equal(await rpc('accept_incoming_webhook',[hook.id,hook.token,'Alerta','evt-1']),id);
+ await sqlError('select public.accept_incoming_webhook($1,$2,$3,$4)',[hook.id,'x'.repeat(64),'Invasão','evt-2'],'42501');
+ await login(users.alice);assert.equal(await scalar('select source from public.messages where id=$1',[id]),'webhook');
+ await login(users.leader);await rpc('set_incoming_webhook',[hook.id,false]);
+ await db.exec('reset role;set role service_role');
+ await sqlError('select public.accept_incoming_webhook($1,$2,$3,$4)',[hook.id,hook.token,'Desativado','evt-3'],'42501');
+});
+scenario('Integrações: credencial de calendário é cifrada e acessível só ao próprio usuário',async()=>{
+ await login(users.alice);const id=await rpc('save_calendar_connection',[ids.red,'google','fixture-calendar','ciphertext-only-test-fixture']);
+ assert.equal(await rpc('calendar_connection_secret',[id]),'ciphertext-only-test-fixture');
+ await login(users.admin);assert.equal(await count('select count(*) from public.calendar_connections'),0);
+ await sqlError('select public.calendar_connection_secret($1)',[id],'42501');
+ await login(users.alice);await sqlError('select * from private.calendar_credentials',[],'42501');
+ await rpc('save_calendar_event_link',[id,ids.event,'external-id','stamp','2030-01-01T00:00Z']);
+ await rpc('disconnect_calendar',[id]);assert.equal(await count('select count(*) from public.calendar_event_links'),0);
+});
+scenario('Bot: comandos são atômicos, idempotentes e usam o ator autenticado',async()=>{
+ await login(users.alice);const key=randomUUID();
+ const message=await rpc('run_channel_command',[ids.general,key,'start_timer','Trabalho de Alice']);
+ assert.equal(await rpc('run_channel_command',[ids.general,key,'start_timer','Trabalho de Alice']),message);
+ assert.equal(await count('select count(*) from public.time_entries where ended_at is null'),1);
+ assert.equal(await scalar('select source from public.messages where id=$1',[message]),'command');
+ await rpc('run_channel_command',[ids.general,randomUUID(),'stop_timer']);
+ assert.equal(await count('select count(*) from public.time_entries where ended_at is null'),0);
+ await login(users.bob);await sqlError('select public.run_channel_command($1,$2,$3)',[ids.general,randomUUID(),'start_timer'],'42501');
+});
+scenario('Calendários: lease impede jobs concorrentes e versões impedem sobrescrita',async()=>{
+ await login(users.alice);const connection=await rpc('save_calendar_connection',[ids.red,'outlook','calendar-1','ciphertext-local-fixture']);
+ const lease=await rpc('claim_calendar_sync',[connection]);
+ await sqlError('select public.claim_calendar_sync($1)',[connection],'55000');
+ await rpc('release_calendar_sync',[connection,randomUUID()]);await sqlError('select public.claim_calendar_sync($1)',[connection],'55000');
+ await rpc('release_calendar_sync',[connection,lease]);assert.ok(await rpc('claim_calendar_sync',[connection]));
+ const event=await rpc('apply_calendar_event',[connection,'Importado','2030-01-01T10:00Z','2030-01-01T11:00Z']);
+ await sqlError('select public.apply_calendar_event($1,$2,$3,$4,$5,$6,$7)',[connection,'Stale','2030-01-01T10:00Z','2030-01-01T11:00Z','',event,'2020-01-01T00:00Z'],'40001');
+ await rpc('save_calendar_event_link',[connection,event,'external-1','stamp','2030-01-01']);
+ await rpc('save_calendar_connection',[ids.red,'outlook','calendar-2','ciphertext-new-local-fixture']);assert.equal(await count('select count(*) from public.calendar_event_links'),0);
+});
+scenario('Lembretes: reunião e timer são próprios, deduplicados e exigem MFA',async()=>{
+ await login(users.alice);
+ const event=await rpc('save_event',[ids.red,'Reunião em breve',new Date(Date.now()+10*60000).toISOString(),new Date(Date.now()+40*60000).toISOString(),'meeting']);
+ const timer=await rpc('start_timer',[ids.red,null,'Timer esquecido']);await rpc('set_time_goal',[ids.red,users.alice,2400,30]);
+ await db.exec('reset role');await query("update public.time_entries set started_at=clock_timestamp()-interval '1 hour' where id=$1",[timer]);
+ await login(users.alice);await rpc('refresh_my_reminders',[ids.red]);await rpc('refresh_my_reminders',[ids.red]);
+ assert.equal(await count('select count(*) from public.notifications where event_id=$1',[event]),1);
+ assert.equal(await count("select count(*) from public.notifications where kind='timer'"),1);
+ await login(users.bob);assert.equal(await count('select count(*) from public.notifications'),0);
+ await login(users.outsider);await sqlError('select public.refresh_my_reminders($1)',[ids.red],'42501');
+ await login(users.alice,'aal1');await sqlError('select public.refresh_my_reminders($1)',[ids.red],'42501');
+});
+scenario('Calendário automático: worker só serviço, ator limitado à conexão ativa e fila deduplicada',async()=>{
+ await login(users.alice);const id=await rpc('save_calendar_connection',[ids.red,'google','calendar-worker','ciphertext-worker-fixture']);
+ await sqlError('select public.calendar_background($1,$2)',['queue',id],'42501');
+ await sqlError('select public.calendar_worker_dispatch($1,$2)',[id,'calendar_connection_secret'],'42501');
+ await db.exec('reset role;set role service_role');
+ assert.equal(await rpc('calendar_worker_dispatch',[id,'calendar_connection_secret']),'ciphertext-worker-fixture');
+ await rpc('calendar_background',['queue',id]);await rpc('calendar_background',['queue',id]);
+ assert.equal((await rpc('calendar_background',['jobs'])).length,1);
+ await sqlError('select public.calendar_worker_dispatch($1,$2)',[id,'delete_everything'],'22023');
+ await db.exec('reset role');await query('update public.team_members set is_active=false where team_id=$1 and user_id=$2',[ids.red,users.alice]);await db.exec('set role service_role');
+ await sqlError('select public.calendar_worker_dispatch($1,$2)',[id,'calendar_connection_secret'],'42501');
+ assert.equal((await rpc('calendar_background',['jobs'])).length,0);
 });

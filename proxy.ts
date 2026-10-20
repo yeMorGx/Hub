@@ -29,7 +29,9 @@ export async function proxy(request: NextRequest) {
   response.headers.set("Pragma", "no-cache");
   const isAuthCallback =
     request.nextUrl.pathname === "/auth/callback" ||
-    request.nextUrl.pathname === "/auth/confirm";
+    request.nextUrl.pathname === "/auth/confirm" ||
+    (request.nextUrl.pathname.startsWith("/api/integrations/") &&
+      request.nextUrl.pathname.endsWith("/callback"));
   response.headers.set(
     "Referrer-Policy",
     isAuthCallback ? "no-referrer" : "strict-origin-when-cross-origin",

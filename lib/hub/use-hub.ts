@@ -1,4 +1,5 @@
 "use client";
+import { clearVault } from "@/public/offline-vault.js";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { errorMessage } from "@/lib/supabase/errors";
@@ -78,7 +79,9 @@ export function useHub(
       if (identityError || !identity?.claims.sub) {
         setSnapshot(null);
         setBootstrap(null);
-        window.location.replace("/login");
+        void clearVault()
+          .catch(() => {})
+          .finally(() => window.location.replace("/login"));
         return;
       }
       if (identity.claims.sub !== userId) {
@@ -549,7 +552,9 @@ export function useHub(
         teamGeneration.current++;
         setSnapshot(null);
         setBootstrap(null);
-        window.location.replace("/");
+        void clearVault()
+          .catch(() => {})
+          .finally(() => window.location.replace("/"));
         return;
       }
       if (event === "SIGNED_OUT") {
@@ -557,7 +562,9 @@ export function useHub(
         teamGeneration.current++;
         setSnapshot(null);
         setBootstrap(null);
-        window.location.replace("/login");
+        void clearVault()
+          .catch(() => {})
+          .finally(() => window.location.replace("/login"));
       }
       if (event === "TOKEN_REFRESHED") {
         setTimeout(() => {

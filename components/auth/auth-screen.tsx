@@ -119,6 +119,33 @@ export function AuthScreen({ configured }: { configured: boolean }) {
           <span>{notice}</span>
         </div>
       )}
+      {mode === "login" &&
+        process.env.NEXT_PUBLIC_AZURE_SSO_ENABLED === "true" && (
+          <button
+            type="button"
+            className="secondary-button azure-signin"
+            disabled={busy || !configured}
+            onClick={async () => {
+              setBusy(true);
+              setError("");
+              try {
+                const { error } = await createClient().auth.signInWithOAuth({
+                  provider: "azure",
+                  options: {
+                    scopes: "email",
+                    redirectTo: `${location.origin}/auth/callback`,
+                  },
+                });
+                if (error) throw error;
+              } catch (e) {
+                setError(errorMessage(e));
+                setBusy(false);
+              }
+            }}
+          >
+            Entrar com Microsoft
+          </button>
+        )}
       <form className="auth-form" onSubmit={submit}>
         {mode === "signup" && (
           <label>

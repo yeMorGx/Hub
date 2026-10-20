@@ -125,7 +125,24 @@ export function useChannel(
           }
           void refresh();
         },
-      )
+      );
+    for (const table of [
+      "message_reactions",
+      "message_pins",
+      "attachments",
+    ] as const) {
+      typing.on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table,
+          filter: `channel_id=eq.${channelId}`,
+        },
+        () => void refresh(),
+      );
+    }
+    typing
       .on("broadcast", { event: "typing" }, () => {
         setTypingUntil(Date.now() + 3500);
         setTick(Date.now());

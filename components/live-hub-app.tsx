@@ -3,6 +3,8 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
   SquaresFour,
   Columns,
+  BookOpenText,
+  ChartBar,
   CalendarDots,
   ChatCircleText,
   Timer as TimerIcon,
@@ -12,6 +14,7 @@ import {
   CaretLeft,
   ArrowUpRight,
   ArrowRight,
+  Headphones,
   Plus,
   MagnifyingGlass,
   Play,
@@ -36,6 +39,9 @@ import {
   ShieldCheck,
   UserPlus,
 } from "@phosphor-icons/react";
+import { clearVault } from "@/public/offline-vault.js";
+import { OfflineSettings } from "./offline-settings";
+import { PushSettings } from "./push-settings";
 import { InstallApp } from "./pwa";
 import { useHub } from "@/lib/hub/use-hub";
 import { useChannel } from "@/lib/hub/use-channel";
@@ -51,6 +57,13 @@ import {
   toLocalInput,
 } from "@/lib/hub/dates";
 import { errorMessage } from "@/lib/supabase/errors";
+import { AdvancedConversation } from "./advanced-conversation";
+import { NotificationBell } from "./notification-bell";
+import { DesktopBridge } from "./desktop-bridge";
+import { LiveCalls } from "./live-calls";
+import { LiveIntegrations } from "./live-integrations";
+import { LiveManagement } from "./live-management";
+import { LiveCollaboration } from "./live-collaboration";
 import { LiveBoard, type TaskInput } from "./live-board";
 import { LiveCalendar } from "./live-calendar";
 import { LiveOnboarding } from "./live-onboarding";
@@ -62,6 +75,11 @@ const navigation = [
   { id: "chat", label: "Conversas", icon: ChatCircleText },
   { id: "hours", label: "Minhas horas", icon: TimerIcon },
   { id: "people", label: "Pessoas", icon: UsersThree },
+  { id: "collaboration", label: "Colaboração", icon: BookOpenText },
+  { id: "management", label: "Gestão", icon: ChartBar },
+  { id: "calls", label: "Chamadas", icon: Headphones },
+  { id: "integrations", label: "Integrações", icon: ShieldCheck },
+  { id: "more", label: "Mais", icon: DotsThree },
 ] as const;
 const availabilityLabels: Record<string, string> = {
   online: "Disponível",
@@ -88,7 +106,16 @@ export function LiveHubApp({ userId }: { userId: string }) {
     [weekOffset, setWeekOffset] = useState(0),
     [calendarView, setCalendarView] = useState<"week" | "day">("week"),
     [activeDay, setActiveDay] = useState(0);
+  const [collaborationInitialTab, setCollaborationInitialTab] = useState<
+    "notes" | "notifications"
+  >("notes");
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("inbox") === "1") {
+      setCollaborationInitialTab("notifications");
+      setPage("collaboration");
+    }
+    if (new URLSearchParams(window.location.search).get("integrations") === "1")
+      setPage("integrations");
     const current = new Date();
     setNow(current.getTime());
     setActiveDay((current.getDay() + 6) % 7);
@@ -177,19 +204,6 @@ export function LiveHubApp({ userId }: { userId: string }) {
     setDraft("");
     retryMessage.current = null;
   }, [channelId]);
-  useEffect(() => {
-    if (
-      page !== "chat" ||
-      !channelMembership ||
-      !channel.messages.length ||
-      !stickyBottom.current
-    )
-      return;
-    chatEnd.current?.scrollIntoView({ block: "nearest" });
-    void channel.markRead(
-      channel.messages[channel.messages.length - 1].ordinal,
-    );
-  }, [page, channelId, channel.messages, Boolean(channelMembership)]);
   useEffect(() => {
     function keyboard(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -300,6 +314,24 @@ export function LiveHubApp({ userId }: { userId: string }) {
     } else setActiveDay(next);
   }
   async function signOut() {
+    await clearVault().catch(() => {});
+    if ("serviceWorker" in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.getRegistration();
+        const subscription = await registration?.pushManager.getSubscription();
+        if (subscription) {
+          await hub
+            .rpc("unregister_push_subscription", {
+              p_endpoint: subscription.endpoint,
+            })
+            .catch(() => {});
+          await subscription.unsubscribe();
+        }
+      } catch {}
+      try {
+        localStorage.removeItem("hub.push.owner");
+      } catch {}
+    }
     const { error } = await hub.client.auth.signOut({ scope: "local" });
     if (error) hub.notify(errorMessage(error), true);
     else window.location.replace("/login");
@@ -636,7 +668,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
           {navigation.map((item) => (
             <button
               key={item.id}
-              className={`rail-button ${page === item.id ? "active" : ""}`}
+              className={`rail-button ${page === item.id ? "active" : ""} ${["hours", "people", "collaboration", "management", "integrations", "calls"].includes(item.id) ? "nav-secondary" : ""} ${item.id === "more" ? "mobile-more-button" : ""}`}
               onClick={() => navigate(item.id)}
               aria-label={item.label}
               aria-current={page === item.id ? "page" : undefined}
@@ -677,6 +709,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
           </button>
         </div>
       </aside>
+      <DesktopBridge hub={hub} />
       <div className="app-content">
         <header className="topbar">
           <div className="workspace-wrap">
@@ -783,6 +816,13 @@ export function LiveHubApp({ userId }: { userId: string }) {
             >
               <ArrowClockwise size={20} />
             </button>
+            <NotificationBell
+              hub={hub}
+              onOpen={() => {
+                setCollaborationInitialTab("notifications");
+                navigate("collaboration");
+              }}
+            />
             <button
               className="top-avatar"
               aria-label="Meu perfil"
@@ -810,7 +850,15 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         ? "O trabalho flui melhor em uma boa conversa."
                         : page === "hours"
                           ? "Seu tempo, com mais clareza."
-                          : `${hub.currentTeam?.name ?? "Seu time"} · pessoas e trabalho em comum.`}
+                          : page === "collaboration"
+                            ? "O contexto do trabalho, sempre ao alcance."
+                            : page === "management"
+                              ? "Planeje a capacidade e acompanhe o trabalho do time."
+                              : page === "integrations"
+                                ? "Conecte suas ferramentas e acompanhe as alterações."
+                                : page === "calls"
+                                  ? "Quando uma conversa ao vivo faz diferença."
+                                  : `${hub.currentTeam?.name ?? "Seu time"} · pessoas e trabalho em comum.`}
               </p>
             </div>
             <div className="page-heading-actions">
@@ -1228,6 +1276,65 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     </div>
                   </aside>
                 </div>
+              )}
+              {page === "calls" && <LiveCalls key={hub.teamId} hub={hub} />}
+              {page === "integrations" && (
+                <LiveIntegrations key={hub.teamId} hub={hub} />
+              )}
+              {page === "management" && (
+                <LiveManagement key={hub.teamId} hub={hub} />
+              )}
+              {page === "collaboration" && (
+                <LiveCollaboration
+                  key={`${hub.teamId}:${collaborationInitialTab}`}
+                  hub={hub}
+                  initialTab={collaborationInitialTab}
+                  onOpenChannel={(id) => {
+                    setChannelId(id);
+                    setShowChannelList(false);
+                    navigate("chat");
+                  }}
+                />
+              )}
+              {page === "more" && (
+                <section
+                  className="module-directory"
+                  aria-label="Outros módulos"
+                >
+                  {navigation
+                    .filter((item) =>
+                      [
+                        "hours",
+                        "people",
+                        "collaboration",
+                        "management",
+                        "integrations",
+                        "calls",
+                      ].includes(item.id),
+                    )
+                    .map((item) => (
+                      <button key={item.id} onClick={() => navigate(item.id)}>
+                        <item.icon size={24} />
+                        <span>
+                          <strong>{item.label}</strong>
+                          <small>
+                            {item.id === "hours"
+                              ? "Timer e registros de trabalho"
+                              : item.id === "people"
+                                ? "Disponibilidade e pessoas do time"
+                                : item.id === "integrations"
+                                  ? "Calendários conectados, webhooks e auditoria"
+                                  : item.id === "calls"
+                                    ? "Voz, vídeo e compartilhamento de tela"
+                                    : item.id === "management"
+                                      ? "Relatórios, metas, escalas e ausências"
+                                      : "Documentos, check-ins, pautas e notificações"}
+                          </small>
+                        </span>
+                        <ArrowRight size={18} />
+                      </button>
+                    ))}
+                </section>
               )}
               {page === "board" && (
                 <LiveBoard
@@ -1785,245 +1892,18 @@ export function LiveHubApp({ userId }: { userId: string }) {
                             }
                           />
                         ) : (
-                          <>
-                            <div
-                              className="messages-area"
-                              ref={messagesArea}
-                              onScroll={(e) => {
-                                const element = e.currentTarget;
-                                const bottom =
-                                  element.scrollHeight -
-                                    element.scrollTop -
-                                    element.clientHeight <
-                                  50;
-                                stickyBottom.current = bottom;
-                                setAtBottom(bottom);
-                                if (bottom && channel.messages.length)
-                                  void channel.markRead(
-                                    channel.messages[
-                                      channel.messages.length - 1
-                                    ].ordinal,
-                                  );
-                              }}
-                            >
-                              {channel.hasOlder && (
-                                <button
-                                  className="load-older-button"
-                                  disabled={channel.loadingOlder}
-                                  onClick={() => {
-                                    stickyBottom.current = false;
-                                    setAtBottom(false);
-                                    void channel.loadOlder();
-                                  }}
-                                >
-                                  {channel.loadingOlder
-                                    ? "Carregando…"
-                                    : "Carregar mensagens anteriores"}
-                                </button>
-                              )}
-                              {channel.loading ? (
-                                <div className="auth-loading">
-                                  <CircleNotch className="spinning" size={20} />
-                                  Carregando conversa…
-                                </div>
-                              ) : channel.error ? (
-                                <div className="form-alert" role="alert">
-                                  {channel.error}
-                                  <button
-                                    className="text-button"
-                                    onClick={() => void channel.refresh()}
-                                  >
-                                    Tentar novamente
-                                  </button>
-                                </div>
-                              ) : !channel.messages.length ? (
-                                <div className="conversation-start">
-                                  <span className="channel-heading-icon">
-                                    <ChatCircleText size={30} />
-                                  </span>
-                                  <h3>
-                                    {selectedChannel.kind === "dm"
-                                      ? `Converse com ${channelName(selectedChannel).split(" ")[0]}`
-                                      : `Bem-vindo ao #${selectedChannel.name}`}
-                                  </h3>
-                                  <p>
-                                    Envie a primeira mensagem. Boas conversas
-                                    fazem o trabalho acontecer.
-                                  </p>
-                                </div>
-                              ) : (
-                                channel.messages.map((message, index) => {
-                                  const previous = channel.messages[index - 1];
-                                  const showDate =
-                                    !previous ||
-                                    dayKey(new Date(previous.created_at)) !==
-                                      dayKey(new Date(message.created_at));
-                                  return (
-                                    <div key={message.id}>
-                                      {showDate && (
-                                        <div className="chat-date-divider">
-                                          <span>
-                                            {new Date(
-                                              message.created_at,
-                                            ).toLocaleDateString("pt-BR", {
-                                              day: "numeric",
-                                              month: "long",
-                                              year: "numeric",
-                                            })}
-                                          </span>
-                                        </div>
-                                      )}
-                                      <article
-                                        className={`message ${message.author_id === userId ? "own-message" : ""}`}
-                                      >
-                                        <PersonAvatar
-                                          name={personName(message.author_id)}
-                                          id={message.author_id}
-                                        />
-                                        <div>
-                                          <div className="message-meta">
-                                            <strong>
-                                              {personName(message.author_id)}
-                                            </strong>
-                                            {message.author_id === userId && (
-                                              <span className="you-tag">
-                                                você
-                                              </span>
-                                            )}
-                                            <time dateTime={message.created_at}>
-                                              {new Date(
-                                                message.created_at,
-                                              ).toLocaleTimeString("pt-BR", {
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                              })}
-                                            </time>
-                                            {message.updated_at !==
-                                              message.created_at &&
-                                              !message.deleted_at && (
-                                                <small className="message-edited">
-                                                  editada
-                                                </small>
-                                              )}
-                                          </div>
-                                          <p
-                                            className={
-                                              message.deleted_at
-                                                ? "message-deleted"
-                                                : ""
-                                            }
-                                          >
-                                            {message.deleted_at
-                                              ? "Mensagem removida"
-                                              : message.body}
-                                          </p>
-                                        </div>
-                                        {!message.deleted_at &&
-                                          (message.author_id === userId ||
-                                            channelMembership.role ===
-                                              "moderator") && (
-                                            <button
-                                              className="icon-button message-actions"
-                                              aria-label="Opções da mensagem"
-                                              onClick={() => {
-                                                setEditingMessage(message);
-                                                openModal("message");
-                                              }}
-                                            >
-                                              <DotsThree size={18} />
-                                            </button>
-                                          )}
-                                      </article>
-                                    </div>
-                                  );
-                                })
-                              )}
-                              <div ref={chatEnd} />
-                            </div>
-                            {!atBottom && (
-                              <button
-                                className="new-messages-button"
-                                onClick={() => {
-                                  stickyBottom.current = true;
-                                  setAtBottom(true);
-                                  chatEnd.current?.scrollIntoView({
-                                    block: "nearest",
-                                  });
-                                  if (channel.messages.length)
-                                    void channel.markRead(
-                                      channel.messages[
-                                        channel.messages.length - 1
-                                      ].ordinal,
-                                    );
-                                }}
-                              >
-                                Ir para mensagens recentes{" "}
-                                <ArrowRight size={14} />
-                              </button>
-                            )}
-                            <span className="typing-indicator" role="status">
-                              {channel.isTyping ? "Alguém está digitando…" : ""}
-                            </span>
-                            <form
-                              className="message-form"
-                              onSubmit={sendMessage}
-                            >
-                              <label className="sr-only" htmlFor="live-message">
-                                Sua mensagem
-                              </label>
-                              <textarea
-                                id="live-message"
-                                value={draft}
-                                onChange={(e) => {
-                                  setDraft(e.target.value);
-                                  if (e.target.value.trim())
-                                    channel.publishTyping();
-                                }}
-                                placeholder={`Conversar ${selectedChannel.kind === "dm" ? `com ${channelName(selectedChannel).split(" ")[0]}` : `em #${selectedChannel.name}`}…`}
-                                maxLength={10000}
-                                rows={2}
-                                onKeyDown={(e) => {
-                                  if (
-                                    e.key === "Enter" &&
-                                    !e.shiftKey &&
-                                    !e.nativeEvent.isComposing
-                                  ) {
-                                    e.preventDefault();
-                                    e.currentTarget.form?.requestSubmit();
-                                  }
-                                }}
-                              />
-                              <div className="composer-bottom">
-                                <span>
-                                  <kbd>Enter</kbd> para enviar ·{" "}
-                                  <kbd>Shift + Enter</kbd> para nova linha
-                                </span>
-                                <button
-                                  className="send-button"
-                                  type="submit"
-                                  aria-label="Enviar mensagem"
-                                  disabled={
-                                    hub.busy ||
-                                    !draft.trim() ||
-                                    hub.connection === "offline"
-                                  }
-                                >
-                                  {hub.busy ? (
-                                    <CircleNotch
-                                      className="spinning"
-                                      size={18}
-                                    />
-                                  ) : (
-                                    <PaperPlaneTilt size={19} weight="fill" />
-                                  )}
-                                </button>
-                              </div>
-                            </form>
-                            <p className="chat-local-note">
-                              Somente os participantes deste canal têm acesso às
-                              mensagens.
-                            </p>
-                          </>
+                          <AdvancedConversation
+                            key={channelId}
+                            hub={hub}
+                            channel={channel}
+                            channelId={channelId}
+                            moderator={channelMembership.role === "moderator"}
+                            personName={personName}
+                            onEdit={(message) => {
+                              setEditingMessage(message);
+                              openModal("message");
+                            }}
+                          />
                         )}
                       </>
                     )}
@@ -2505,6 +2385,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
             </div>
           </form>
           <InstallApp />
+          <OfflineSettings userId={userId} />
+          <PushSettings hub={hub} />
           <div className="profile-account-actions">
             <label>
               Seu identificador<code>{userId}</code>

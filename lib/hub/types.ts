@@ -44,4 +44,9 @@ export type LivePage =
   | "chat"
   | "hours"
   | "people"
-  | "board";
+  | "board"
+  | "collaboration"
+  | "more"
+  | "management"
+  | "integrations"
+  | "calls";

@@ -1,0 +1,9 @@
+export type CachedConversation={id:string;name:string;savedAt:number;messages:{id:string;author:string;body:string;createdAt:string}[]};
+export type VaultPayload={userId:string;updatedAt:number;channels:CachedConversation[]};
+export function hasVault():Promise<boolean>;
+export function enableVault(userId:string,passphrase:string):Promise<void>;
+export function unlockVault(passphrase:string,userId?:string):Promise<VaultPayload>;
+export function vaultUnlocked(userId:string):boolean;
+export function saveConversation(userId:string,channel:CachedConversation):Promise<void>;
+export function clearVault():Promise<void>;
+export function lockVault():void;

@@ -14,6 +14,270 @@ export type Database = {
   }
   public: {
     Tables: {
+      absences: {
+        Row: {
+          created_at: string
+          decided_by: string | null
+          decision_note: string
+          ends_on: string
+          id: string
+          kind: string
+          note: string
+          starts_on: string
+          status: string
+          team_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          decided_by?: string | null
+          decision_note?: string
+          ends_on: string
+          id?: string
+          kind: string
+          note?: string
+          starts_on: string
+          status?: string
+          team_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          decided_by?: string | null
+          decision_note?: string
+          ends_on?: string
+          id?: string
+          kind?: string
+          note?: string
+          starts_on?: string
+          status?: string
+          team_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "absences_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "absences_team_id_user_id_fkey"
+            columns: ["team_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["team_id", "user_id"]
+          },
+        ]
+      }
+      attachments: {
+        Row: {
+          byte_size: number
+          channel_id: string
+          created_at: string
+          created_by: string
+          filename: string
+          id: string
+          message_id: string | null
+          mime_type: string
+          object_path: string
+          state: string
+          team_id: string
+        }
+        Insert: {
+          byte_size: number
+          channel_id: string
+          created_at?: string
+          created_by: string
+          filename: string
+          id?: string
+          message_id?: string | null
+          mime_type: string
+          object_path: string
+          state?: string
+          team_id: string
+        }
+        Update: {
+          byte_size?: number
+          channel_id?: string
+          created_at?: string
+          created_by?: string
+          filename?: string
+          id?: string
+          message_id?: string | null
+          mime_type?: string
+          object_path?: string
+          state?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attachments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attachments_team_id_channel_id_fkey"
+            columns: ["team_id", "channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["team_id", "id"]
+          },
+          {
+            foreignKeyName: "attachments_team_id_channel_id_message_id_fkey"
+            columns: ["team_id", "channel_id", "message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["team_id", "channel_id", "id"]
+          },
+        ]
+      }
+      audit_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          changes: Json
+          entity_id: string
+          entity_table: string
+          id: number
+          occurred_at: string
+          team_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          changes?: Json
+          entity_id: string
+          entity_table: string
+          id?: never
+          occurred_at?: string
+          team_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          changes?: Json
+          entity_id?: string
+          entity_table?: string
+          id?: never
+          occurred_at?: string
+          team_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_events_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_events_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      calendar_connections: {
+        Row: {
+          calendar_id: string
+          created_at: string
+          id: string
+          last_synced_at: string | null
+          provider: string
+          sync_locked_until: string | null
+          sync_token: string | null
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          calendar_id: string
+          created_at?: string
+          id?: string
+          last_synced_at?: string | null
+          provider: string
+          sync_locked_until?: string | null
+          sync_token?: string | null
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          calendar_id?: string
+          created_at?: string
+          id?: string
+          last_synced_at?: string | null
+          provider?: string
+          sync_locked_until?: string | null
+          sync_token?: string | null
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_connections_team_id_user_id_fkey"
+            columns: ["team_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["team_id", "user_id"]
+          },
+        ]
+      }
+      calendar_event_links: {
+        Row: {
+          connection_id: string
+          event_id: string
+          external_id: string
+          external_updated_at: string | null
+          hub_updated_at: string | null
+          synced_at: string
+          team_id: string
+        }
+        Insert: {
+          connection_id: string
+          event_id: string
+          external_id: string
+          external_updated_at?: string | null
+          hub_updated_at?: string | null
+          synced_at?: string
+          team_id: string
+        }
+        Update: {
+          connection_id?: string
+          event_id?: string
+          external_id?: string
+          external_updated_at?: string | null
+          hub_updated_at?: string | null
+          synced_at?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_event_links_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "calendar_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendar_event_links_team_id_event_id_fkey"
+            columns: ["team_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["team_id", "id"]
+          },
+        ]
+      }
       channel_members: {
         Row: {
           channel_id: string
@@ -127,6 +391,45 @@ export type Database = {
           },
         ]
       }
+      clients: {
+        Row: {
+          archived_at: string | null
+          created_by: string
+          id: string
+          name: string
+          team_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_by: string
+          id?: string
+          name: string
+          team_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_by?: string
+          id?: string
+          name?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clients_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_attendees: {
         Row: {
           event_id: string
@@ -229,6 +532,116 @@ export type Database = {
           },
         ]
       }
+      incoming_webhooks: {
+        Row: {
+          channel_id: string
+          created_at: string
+          created_by: string
+          enabled: boolean
+          id: string
+          last_called_at: string | null
+          name: string
+          team_id: string
+          token_hash: string
+        }
+        Insert: {
+          channel_id: string
+          created_at?: string
+          created_by: string
+          enabled?: boolean
+          id?: string
+          last_called_at?: string | null
+          name: string
+          team_id: string
+          token_hash: string
+        }
+        Update: {
+          channel_id?: string
+          created_at?: string
+          created_by?: string
+          enabled?: boolean
+          id?: string
+          last_called_at?: string | null
+          name?: string
+          team_id?: string
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incoming_webhooks_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incoming_webhooks_team_id_channel_id_fkey"
+            columns: ["team_id", "channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["team_id", "id"]
+          },
+        ]
+      }
+      meeting_documents: {
+        Row: {
+          agenda: string
+          event_id: string
+          minutes: string
+          team_id: string
+          updated_at: string
+          updated_by: string
+          version: number
+        }
+        Insert: {
+          agenda?: string
+          event_id: string
+          minutes?: string
+          team_id: string
+          updated_at?: string
+          updated_by: string
+          version?: number
+        }
+        Update: {
+          agenda?: string
+          event_id?: string
+          minutes?: string
+          team_id?: string
+          updated_at?: string
+          updated_by?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_documents_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meeting_documents_team_id_event_id_fkey"
+            columns: ["team_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["team_id", "id"]
+          },
+          {
+            foreignKeyName: "meeting_documents_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meeting_documents_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_statuses: {
         Row: {
           body: string
@@ -267,6 +680,93 @@ export type Database = {
           },
         ]
       }
+      message_pins: {
+        Row: {
+          active: boolean
+          channel_id: string
+          message_id: string
+          pinned_by: string
+          team_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          channel_id: string
+          message_id: string
+          pinned_by: string
+          team_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          channel_id?: string
+          message_id?: string
+          pinned_by?: string
+          team_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_pins_pinned_by_fkey"
+            columns: ["pinned_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_pins_team_id_channel_id_message_id_fkey"
+            columns: ["team_id", "channel_id", "message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["team_id", "channel_id", "id"]
+          },
+        ]
+      }
+      message_reactions: {
+        Row: {
+          active: boolean
+          channel_id: string
+          message_id: string
+          reaction: string
+          team_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          channel_id: string
+          message_id: string
+          reaction: string
+          team_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          channel_id?: string
+          message_id?: string
+          reaction?: string
+          team_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reactions_team_id_channel_id_message_id_fkey"
+            columns: ["team_id", "channel_id", "message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["team_id", "channel_id", "id"]
+          },
+          {
+            foreignKeyName: "message_reactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           author_id: string
@@ -277,8 +777,11 @@ export type Database = {
           deleted_at: string | null
           id: string
           ordinal: number
+          reply_to: string | null
+          source: string
           team_id: string
           updated_at: string
+          webhook_id: string | null
         }
         Insert: {
           author_id: string
@@ -289,8 +792,11 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           ordinal: number
+          reply_to?: string | null
+          source?: string
           team_id: string
           updated_at?: string
+          webhook_id?: string | null
         }
         Update: {
           author_id?: string
@@ -301,8 +807,11 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           ordinal?: number
+          reply_to?: string | null
+          source?: string
           team_id?: string
           updated_at?: string
+          webhook_id?: string | null
         }
         Relationships: [
           {
@@ -318,6 +827,98 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "channels"
             referencedColumns: ["team_id", "id"]
+          },
+          {
+            foreignKeyName: "messages_thread_scope_fk"
+            columns: ["team_id", "channel_id", "reply_to"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["team_id", "channel_id", "id"]
+          },
+          {
+            foreignKeyName: "messages_webhook_id_fkey"
+            columns: ["webhook_id"]
+            isOneToOne: false
+            referencedRelation: "incoming_webhooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          channel_id: string | null
+          created_at: string
+          dedupe_key: string
+          delivered_at: string | null
+          event_id: string | null
+          id: string
+          kind: string
+          message_id: string | null
+          read_at: string | null
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          channel_id?: string | null
+          created_at?: string
+          dedupe_key: string
+          delivered_at?: string | null
+          event_id?: string | null
+          id?: string
+          kind: string
+          message_id?: string | null
+          read_at?: string | null
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          channel_id?: string | null
+          created_at?: string
+          dedupe_key?: string
+          delivered_at?: string | null
+          event_id?: string | null
+          id?: string
+          kind?: string
+          message_id?: string | null
+          read_at?: string | null
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_team_id_channel_id_message_id_fkey"
+            columns: ["team_id", "channel_id", "message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["team_id", "channel_id", "id"]
+          },
+          {
+            foreignKeyName: "notifications_team_id_event_id_fkey"
+            columns: ["team_id", "event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["team_id", "id"]
+          },
+          {
+            foreignKeyName: "notifications_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -351,6 +952,7 @@ export type Database = {
       projects: {
         Row: {
           archived_at: string | null
+          client_id: string | null
           created_at: string
           created_by: string
           description: string
@@ -361,6 +963,7 @@ export type Database = {
         }
         Insert: {
           archived_at?: string | null
+          client_id?: string | null
           created_at?: string
           created_by: string
           description?: string
@@ -371,6 +974,7 @@ export type Database = {
         }
         Update: {
           archived_at?: string | null
+          client_id?: string | null
           created_at?: string
           created_by?: string
           description?: string
@@ -388,11 +992,216 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "projects_team_id_client_id_fkey"
+            columns: ["team_id", "client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["team_id", "id"]
+          },
+          {
             foreignKeyName: "projects_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
             referencedRelation: "teams"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_subscriptions: {
+        Row: {
+          auth_key: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_id: string
+        }
+        Insert: {
+          auth_key: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_id: string
+        }
+        Update: {
+          auth_key?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shift_swaps: {
+        Row: {
+          created_at: string
+          decided_by: string | null
+          id: string
+          requested_by: string
+          shift_id: string
+          status: string
+          target_user_id: string
+          team_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          decided_by?: string | null
+          id?: string
+          requested_by: string
+          shift_id: string
+          status?: string
+          target_user_id: string
+          team_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          decided_by?: string | null
+          id?: string
+          requested_by?: string
+          shift_id?: string
+          status?: string
+          target_user_id?: string
+          team_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shift_swaps_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shift_swaps_team_id_requested_by_fkey"
+            columns: ["team_id", "requested_by"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["team_id", "user_id"]
+          },
+          {
+            foreignKeyName: "shift_swaps_team_id_shift_id_fkey"
+            columns: ["team_id", "shift_id"]
+            isOneToOne: false
+            referencedRelation: "shifts"
+            referencedColumns: ["team_id", "id"]
+          },
+          {
+            foreignKeyName: "shift_swaps_team_id_target_user_id_fkey"
+            columns: ["team_id", "target_user_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["team_id", "user_id"]
+          },
+        ]
+      }
+      shifts: {
+        Row: {
+          cancelled_at: string | null
+          created_by: string
+          ends_at: string
+          id: string
+          label: string
+          starts_at: string
+          team_id: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_by: string
+          ends_at: string
+          id?: string
+          label: string
+          starts_at: string
+          team_id: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_by?: string
+          ends_at?: string
+          id?: string
+          label?: string
+          starts_at?: string
+          team_id?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shifts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shifts_team_id_user_id_fkey"
+            columns: ["team_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["team_id", "user_id"]
+          },
+        ]
+      }
+      standups: {
+        Row: {
+          accomplished: string
+          blockers: string
+          id: string
+          kind: string
+          mood: string
+          period_on: string
+          planned: string
+          team_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accomplished?: string
+          blockers?: string
+          id?: string
+          kind: string
+          mood?: string
+          period_on: string
+          planned?: string
+          team_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accomplished?: string
+          blockers?: string
+          id?: string
+          kind?: string
+          mood?: string
+          period_on?: string
+          planned?: string
+          team_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "standups_team_id_user_id_fkey"
+            columns: ["team_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["team_id", "user_id"]
           },
         ]
       }
@@ -476,6 +1285,48 @@ export type Database = {
           },
         ]
       }
+      team_dates: {
+        Row: {
+          created_by: string
+          happens_on: string
+          id: string
+          label: string
+          recurs_yearly: boolean
+          team_id: string
+        }
+        Insert: {
+          created_by: string
+          happens_on: string
+          id?: string
+          label: string
+          recurs_yearly?: boolean
+          team_id: string
+        }
+        Update: {
+          created_by?: string
+          happens_on?: string
+          id?: string
+          label?: string
+          recurs_yearly?: boolean
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_dates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_dates_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_members: {
         Row: {
           is_active: boolean
@@ -515,6 +1366,67 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "workspace_members"
             referencedColumns: ["workspace_id", "user_id"]
+          },
+        ]
+      }
+      team_notes: {
+        Row: {
+          archived_at: string | null
+          body: string
+          created_at: string
+          created_by: string
+          id: string
+          team_id: string
+          title: string
+          updated_at: string
+          updated_by: string
+          version: number
+        }
+        Insert: {
+          archived_at?: string | null
+          body?: string
+          created_at?: string
+          created_by: string
+          id?: string
+          team_id: string
+          title: string
+          updated_at?: string
+          updated_by: string
+          version?: number
+        }
+        Update: {
+          archived_at?: string | null
+          body?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          team_id?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_notes_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_notes_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -627,6 +1539,38 @@ export type Database = {
           },
         ]
       }
+      time_goals: {
+        Row: {
+          forgotten_after_minutes: number
+          team_id: string
+          updated_at: string
+          user_id: string
+          weekly_minutes: number
+        }
+        Insert: {
+          forgotten_after_minutes?: number
+          team_id: string
+          updated_at?: string
+          user_id: string
+          weekly_minutes: number
+        }
+        Update: {
+          forgotten_after_minutes?: number
+          team_id?: string
+          updated_at?: string
+          user_id?: string
+          weekly_minutes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_goals_team_id_user_id_fkey"
+            columns: ["team_id", "user_id"]
+            isOneToOne: true
+            referencedRelation: "team_members"
+            referencedColumns: ["team_id", "user_id"]
+          },
+        ]
+      }
       workspace_members: {
         Row: {
           is_active: boolean
@@ -727,6 +1671,23 @@ export type Database = {
       }
     }
     Functions: {
+      absence_schedule: {
+        Args: { p_from: string; p_team_id: string; p_to: string }
+        Returns: {
+          ends_on: string
+          starts_on: string
+          user_id: string
+        }[]
+      }
+      accept_incoming_webhook: {
+        Args: {
+          p_body: string
+          p_event_id: string
+          p_token: string
+          p_webhook_id: string
+        }
+        Returns: string
+      }
       add_manual_time_entry: {
         Args: {
           p_description?: string
@@ -737,11 +1698,49 @@ export type Database = {
         }
         Returns: string
       }
+      apply_calendar_event: {
+        Args: {
+          p_cancelled?: boolean
+          p_connection_id: string
+          p_description?: string
+          p_ends_at: string
+          p_event_id?: string
+          p_expected_updated_at?: string
+          p_starts_at: string
+          p_title: string
+        }
+        Returns: string
+      }
       archive_task: {
         Args: { p_expected_version: number; p_task_id: string }
         Returns: undefined
       }
+      calendar_background: {
+        Args: {
+          p_connection_id?: string
+          p_operation: string
+          p_payload?: Json
+        }
+        Returns: Json
+      }
+      calendar_connection_secret: {
+        Args: { p_connection_id: string }
+        Returns: string
+      }
+      calendar_worker_dispatch: {
+        Args: {
+          p_arguments?: Json
+          p_connection_id: string
+          p_operation: string
+        }
+        Returns: Json
+      }
+      cancel_absence: { Args: { p_absence_id: string }; Returns: undefined }
       cancel_event: { Args: { p_event_id: string }; Returns: undefined }
+      claim_calendar_sync: {
+        Args: { p_connection_id: string }
+        Returns: string
+      }
       create_channel: {
         Args: {
           p_kind?: Database["public"]["Enums"]["channel_kind"]
@@ -751,12 +1750,28 @@ export type Database = {
         }
         Returns: string
       }
+      create_incoming_webhook: {
+        Args: { p_channel_id: string; p_name: string }
+        Returns: Json
+      }
       create_team: {
         Args: { p_name: string; p_workspace_id: string }
         Returns: string
       }
       create_workspace: { Args: { p_name: string }; Returns: string }
+      decide_absence: {
+        Args: { p_absence_id: string; p_note?: string; p_status: string }
+        Returns: undefined
+      }
+      decide_shift_swap: {
+        Args: { p_action: string; p_request_id: string }
+        Returns: undefined
+      }
       delete_message: { Args: { p_message_id: string }; Returns: undefined }
+      disconnect_calendar: {
+        Args: { p_connection_id: string }
+        Returns: undefined
+      }
       edit_message: {
         Args: { p_body: string; p_message_id: string }
         Returns: undefined
@@ -771,6 +1786,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      finish_attachment: {
+        Args: { p_attachment_id: string }
+        Returns: undefined
+      }
       invite_event_attendee: {
         Args: { p_event_id: string; p_user_id: string }
         Returns: undefined
@@ -781,6 +1800,10 @@ export type Database = {
       }
       mark_channel_read: {
         Args: { p_channel_id: string; p_through_ordinal: number }
+        Returns: undefined
+      }
+      mark_notification_read: {
+        Args: { p_notification_id: string }
         Returns: undefined
       }
       move_task: {
@@ -795,13 +1818,81 @@ export type Database = {
         Args: { p_other_user_id: string; p_team_id: string }
         Returns: string
       }
+      pin_message: {
+        Args: { p_active: boolean; p_message_id: string }
+        Returns: undefined
+      }
+      react_to_message: {
+        Args: { p_active: boolean; p_message_id: string; p_reaction: string }
+        Returns: undefined
+      }
       recover_channel_moderator: {
         Args: { p_channel_id: string; p_user_id: string }
+        Returns: undefined
+      }
+      refresh_my_reminders: { Args: { p_team_id: string }; Returns: undefined }
+      register_push_subscription: {
+        Args: { p_auth: string; p_endpoint: string; p_p256dh: string }
+        Returns: string
+      }
+      release_calendar_sync: {
+        Args: { p_connection_id: string; p_token: string }
+        Returns: undefined
+      }
+      remove_attachment: {
+        Args: { p_attachment_id: string }
         Returns: undefined
       }
       remove_channel_member: {
         Args: { p_channel_id: string; p_user_id: string }
         Returns: undefined
+      }
+      report_time_entries: {
+        Args: {
+          p_after?: string
+          p_client_id?: string
+          p_from: string
+          p_project_id?: string
+          p_team_id: string
+          p_to: string
+          p_user_id?: string
+        }
+        Returns: {
+          client_id: string
+          client_name: string
+          description: string
+          display_name: string
+          duration_seconds: number
+          ended_at: string
+          entry_id: string
+          project_id: string
+          project_name: string
+          started_at: string
+          user_id: string
+        }[]
+      }
+      request_absence: {
+        Args: {
+          p_ends_on: string
+          p_kind: string
+          p_note?: string
+          p_starts_on: string
+          p_team_id: string
+        }
+        Returns: string
+      }
+      request_shift_swap: {
+        Args: { p_shift_id: string; p_target_user_id: string }
+        Returns: string
+      }
+      reserve_attachment: {
+        Args: {
+          p_byte_size: number
+          p_channel_id: string
+          p_filename: string
+          p_mime_type: string
+        }
+        Returns: string
       }
       respond_to_event: {
         Args: {
@@ -809,6 +1900,46 @@ export type Database = {
           p_response: Database["public"]["Enums"]["attendance_response"]
         }
         Returns: undefined
+      }
+      run_channel_command: {
+        Args: {
+          p_action: string
+          p_channel_id: string
+          p_client_id: string
+          p_description?: string
+          p_ends_at?: string
+          p_starts_at?: string
+          p_timezone?: string
+        }
+        Returns: string
+      }
+      save_calendar_connection: {
+        Args: {
+          p_calendar_id: string
+          p_ciphertext: string
+          p_provider: string
+          p_team_id: string
+        }
+        Returns: string
+      }
+      save_calendar_event_link: {
+        Args: {
+          p_connection_id: string
+          p_event_id: string
+          p_external_id: string
+          p_external_updated_at: string
+          p_hub_updated_at: string
+        }
+        Returns: undefined
+      }
+      save_client: {
+        Args: {
+          p_archived?: boolean
+          p_client_id?: string
+          p_name: string
+          p_team_id: string
+        }
+        Returns: string
       }
       save_event: {
         Args: {
@@ -824,12 +1955,46 @@ export type Database = {
         }
         Returns: string
       }
+      save_meeting_documents: {
+        Args: {
+          p_agenda: string
+          p_event_id: string
+          p_expected_version?: number
+          p_minutes: string
+        }
+        Returns: undefined
+      }
       save_project: {
         Args: {
           p_archived?: boolean
           p_description?: string
           p_name: string
           p_project_id?: string
+          p_team_id: string
+        }
+        Returns: string
+      }
+      save_shift: {
+        Args: {
+          p_cancelled?: boolean
+          p_ends_at: string
+          p_expected_version?: number
+          p_label: string
+          p_shift_id?: string
+          p_starts_at: string
+          p_team_id: string
+          p_user_id: string
+        }
+        Returns: string
+      }
+      save_standup: {
+        Args: {
+          p_accomplished: string
+          p_blockers: string
+          p_kind: string
+          p_mood?: string
+          p_period_on: string
+          p_planned: string
           p_team_id: string
         }
         Returns: string
@@ -848,8 +2013,70 @@ export type Database = {
         }
         Returns: string
       }
+      save_team_date: {
+        Args: {
+          p_date_id?: string
+          p_delete?: boolean
+          p_happens_on: string
+          p_label: string
+          p_recurs_yearly?: boolean
+          p_team_id: string
+        }
+        Returns: string
+      }
+      save_team_note: {
+        Args: {
+          p_archived?: boolean
+          p_body: string
+          p_expected_version?: number
+          p_note_id?: string
+          p_team_id: string
+          p_title: string
+        }
+        Returns: string
+      }
+      search_channel_messages: {
+        Args: {
+          p_before_ordinal?: number
+          p_channel_id: string
+          p_query: string
+        }
+        Returns: {
+          author_id: string
+          body: string
+          channel_id: string
+          client_id: string
+          created_at: string
+          deleted_at: string | null
+          id: string
+          ordinal: number
+          reply_to: string | null
+          source: string
+          team_id: string
+          updated_at: string
+          webhook_id: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "messages"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       send_message: {
         Args: { p_body: string; p_channel_id: string; p_client_id: string }
+        Returns: string
+      }
+      send_rich_message: {
+        Args: {
+          p_attachment_ids?: string[]
+          p_body: string
+          p_channel_id: string
+          p_client_id: string
+          p_mention_channel?: boolean
+          p_mention_ids?: string[]
+          p_reply_to?: string
+        }
         Returns: string
       }
       set_channel_archived: {
@@ -864,12 +2091,29 @@ export type Database = {
         }
         Returns: undefined
       }
+      set_incoming_webhook: {
+        Args: { p_enabled: boolean; p_webhook_id: string }
+        Returns: undefined
+      }
+      set_project_client: {
+        Args: { p_client_id?: string; p_project_id: string }
+        Returns: undefined
+      }
       set_team_member: {
         Args: {
           p_is_active?: boolean
           p_role: Database["public"]["Enums"]["team_role"]
           p_team_id: string
           p_user_id: string
+        }
+        Returns: undefined
+      }
+      set_time_goal: {
+        Args: {
+          p_forgotten_after_minutes?: number
+          p_team_id: string
+          p_user_id: string
+          p_weekly_minutes: number
         }
         Returns: undefined
       }
@@ -902,6 +2146,10 @@ export type Database = {
       }
       stop_timer: { Args: { p_entry_id: string }; Returns: string }
       touch_last_seen: { Args: never; Returns: undefined }
+      unregister_push_subscription: {
+        Args: { p_endpoint: string }
+        Returns: undefined
+      }
     }
     Enums: {
       attendance_response: "pending" | "accepted" | "tentative" | "declined"
