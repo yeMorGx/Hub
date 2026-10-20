@@ -1,6 +1,10 @@
 # Ativação de voz, vídeo e tela compartilhada
 
-## Estado em 20/10/2026
+## Estado atual
+
+LiveKit configurado em Production. Na repetição solicitada pelo usuário, a consulta autenticada de leitura à API de salas passou durante o build. Deployment `dpl_4vBFWx39U1PeisxEhZR8sJMr6gRP` READY em https://hub-one-azure.vercel.app, com 29 testes HTTP de produção passando. A verificação não criou salas nem copiou o segredo para o workspace. Áudio, vídeo, tela compartilhada e revogação com duas contas reais ainda aguardam validação manual. [Resultado](validation/livekit-activation/success.json).
+
+## Histórico da preparação em 20/10/2026
 
 O usuário escolheu avançar para chamadas e informou que ainda não criou um projeto LiveKit Cloud. A consulta aos nomes das variáveis Vercel Production confirmou ausência de `LIVEKIT_URL`, `LIVEKIT_API_KEY` e `LIVEKIT_API_SECRET`. Nenhuma conta, projeto pago ou assinatura externa foi criado pelo agente.
 

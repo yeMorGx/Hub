@@ -80,3 +80,8 @@ Código `8c71025`, deployment `dpl_GV1JJtczg93jhZDx7mYpn3FC2qEM`, **READY**, no 
 ## Preparação LiveKit · 2026-10-20
 
 `f264930`, deployment `dpl_BQdHgMyoxdQsn9XgW5JuZNa8JK71` READY. Corrigida duplicação do renderer de áudio e melhorados lobby/status/cancelamento de verificações antigas. Build, TypeScript, 16 unitários, lobby com sala fictícia em duas larguras e 29 HTTP locais/produção passaram. Usuário ainda precisa criar projeto LiveKit Cloud e configurar as três variáveis de servidor. Chamadas reais permanecem desativadas. [Roteiro](livekit-activation.md).
+
+
+## LiveKit configurado · 2026-10-20
+
+Após o cadastro/correção das credenciais pelo usuário, o novo deploy executou `HUB_VERIFY_LIVEKIT=1` e confirmou autenticação na consulta de leitura à API de salas. Código de origem `97ce9f1`, deployment `dpl_4vBFWx39U1PeisxEhZR8sJMr6gRP` READY no alias estável. 29 HTTP de produção passaram. Nenhuma sala ou conta foi criada pelo check e nenhum segredo foi impresso ou retirado da Vercel. Áudio, vídeo e tela com usuários reais ainda precisam de validação. [Evidência](validation/livekit-activation/success.json).

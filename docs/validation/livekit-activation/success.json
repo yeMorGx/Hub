@@ -1,0 +1,17 @@
+{
+  "deployment": {
+    "id": "dpl_4vBFWx39U1PeisxEhZR8sJMr6gRP",
+    "url": "https://hub-fk0bvpoqx-yemorgxs-projects.vercel.app",
+    "productionUrl": "https://hub-one-azure.vercel.app",
+    "readyState": "READY"
+  },
+  "sourceCommit": "97ce9f1",
+  "credentialCheck": "PASS",
+  "checkMode": "authenticated ListRooms, read-only, Vercel build",
+  "productionHttp": {
+    "passed": 29,
+    "failed": 0
+  },
+  "realRoomsCreated": 0,
+  "mediaValidated": false
+}
