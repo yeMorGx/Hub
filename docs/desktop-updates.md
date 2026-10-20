@@ -8,7 +8,8 @@ Solicitação: avisar dentro do aplicativo quando houver uma nova versão do ins
 - Verifica na abertura, a cada hora e no retorno ao foco/visibilidade, respeitando intervalo mínimo de cinco minutos entre tentativas.
 - Exibe um aviso sem bloquear o trabalho: versão disponível, **Baixar atualização** e **Depois**. Depois dispensa aquela versão pela sessão da janela; uma versão diferente pode ser anunciada.
 - Baixar atualização abre o navegador padrão no instalador oficial. O usuário executa/confirma a instalação; não há download ou reinício automático. Se o navegador não abrir, aparece erro com possibilidade de tentar novamente.
-- O site hospedado continua recebendo alterações diretamente; o aviso compara versões nativas do instalador.
+- Também detecta uma publicação nova do site na abertura, a cada cinco minutos e ao voltar ao foco. O aviso **Atualizar agora** recarrega a janela do app; não baixa nem reinstala o executável.
+- O site hospedado recebe alterações diretamente. O aviso de recarga compara builds web; o aviso de download compara versões nativas do instalador.
 - Falhas de rede, indisponibilidade do GitHub e instaladores antigos não interrompem a aplicação. Nenhum aviso é mostrado no navegador web comum.
 
 ## Publicar uma versão que apareça no app
@@ -20,6 +21,8 @@ Solicitação: avisar dentro do aplicativo quando houver uma nova versão do ins
 5. A release deve ser a release estável mais recente do repositório e conter `Hub_X.Y.Z_x64-setup.exe`. A consulta usa `/releases/latest`; uma release mais recente de outra finalidade não será anunciada como atualização desktop.
 
 O endpoint público `/api/desktop/update` consulta somente o repositório fixo `yeMorGx/Hub`, com cache de cinco minutos e timeout. Não usa credenciais. Só retorna a versão se a release estiver publicada, estável, com tag e arquivo estritamente correspondentes e URL no repositório oficial. O comando nativo aceita apenas três componentes numéricos; constrói a URL fixa e não aceita URLs arbitrárias. Não foram adicionadas permissões de shell/arquivos ao frontend.
+
+O identificador público de build é gerado por `next.config.ts` para cada deployment, incluído no frontend e servido sem cache por `/api/app-version`. O app compara os dois identificadores a cada cinco minutos e ao voltar ao foco. Para começar a usar este aviso, o Hub aberto precisa carregar a versão do site que contém o verificador; basta fechar e abrir a janela uma vez, sem reinstalar.
 
 Isto **não é o Tauri Updater**: não instala pacotes automaticamente e não substitui uma assinatura Authenticode. O instalador segue sem assinatura e poderá gerar avisos de editor desconhecido. O download usa HTTPS/GitHub; não há verificação criptográfica independente de pacote pelo cliente.
 
