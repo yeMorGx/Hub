@@ -20,6 +20,12 @@
 - [Estado do serviço](validation/push/service-state.json) e [execução real do cron](validation/push/cron-verification.json): job bem-sucedido e resposta pg_net HTTP 200. Consulta de ACL confirmou que usuários não podem obter a configuração privada.
 - Busca pelos valores de chave privada, job secret e token administrativo encontrou zero ocorrências nos arquivos versionados e nos assets JS/CSS do browser gerados localmente. Os valores não foram gravados nos relatórios.
 
+## Publicação
+
+Código `ec558a5` publicado em produção: deployment `dpl_BCunKVSmBHPR8J3hGtcXZ2weRLqY`, estado **READY**. [URL imutável](https://hub-80tzg1tky-yemorgxs-projects.vercel.app); alias https://hub-one-azure.vercel.app. [Metadados](validation/push/deployment.json).
+
+Os [24 checks HTTP públicos](validation/push/production-http.log) passaram após o deploy, sem falhas/skips e sem criar contas ou enviar e-mails.
+
 ## Validação pendente no aparelho
 
 Nenhum dispositivo estava inscrito durante os checks; `processed=0` e `sent=0`. Isso demonstra a configuração/execução do serviço, não a entrega por FCM/Mozilla/Apple nem o comportamento do sistema operacional.

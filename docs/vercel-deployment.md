@@ -31,23 +31,9 @@ O build remoto instalou as dependências pelo lockfile, compilou Next.js 16.4.2,
 
 Os checks usam consultas anônimas: redirecionamento para login, cabeçalhos sem cache, callbacks inválidos, manifest, dimensões PNG dos ícones, service worker, página offline e HTML das demonstrações. Não criaram contas nem enviaram e-mails. Os 59 cenários SQL e os cinco cenários Chromium anteriores continuam sendo evidência local, conforme o [relatório de validação](validation-2026-10-20.md).
 
-## Primeiro acesso: configuração ainda necessária
+## Primeiro acesso: configuração conferida em 20/10/2026
 
-A interface MCP disponível não oferece edição das configurações de Auth/Realtime. Elas não foram alteradas por esta publicação.
-
-Abra [Supabase → Authentication → URL Configuration](https://supabase.com/dashboard/project/mjaidgzqsztwygdyzkeq/auth/url-configuration) e configure:
-
-| Campo | Valor |
-| --- | --- |
-| Site URL | `https://hub-one-azure.vercel.app` |
-| Redirect URL | `https://hub-one-azure.vercel.app/auth/callback` |
-| Redirect URL para recuperação | `https://hub-one-azure.vercel.app/auth/callback?next=/reset-password` |
-
-Salve antes do cadastro. Os templates padrão usam o fluxo PKCE de `/auth/callback`; templates por token devem seguir as instruções de `supabase-app-integration.md`. O cadastro por e-mail está habilitado, com confirmação obrigatória.
-
-Em Realtime → Settings, confira/desative **Allow public access** antes do piloto. A aplicação já usa rooms privados. Ainda precisam ser exercitados com pessoas reais: confirmação de e-mail, TOTP/AAL2, gravações na interface e entrega Realtime entre duas contas.
-
-Após configurar as URLs, abra [o login](https://hub-one-azure.vercel.app/login), crie a conta, confirme o e-mail e configure o autenticador. [Guia completo de primeiro acesso](first-access.md).
+Site URL e redirects de callback/recuperação foram conferidos pela API oficial do Supabase; Realtime `private_only=true` foi aplicado e relido. O usuário informou que concluiu cadastro, confirmação e MFA. A sessão real e o Realtime entre duas contas ainda precisam de validação na interface. [Guia de primeiro acesso](first-access.md).
 
 ## Atualizações futuras
 
@@ -60,6 +46,12 @@ Código `ab5452f` publicado por CLI após build, 82 SQL, 10 unitários, 24 HTTP 
 
 Depois da publicação, os **24 testes HTTP de produção** passaram, sem contas/e-mails/gravações de negócio. [Relatório atualizado](validation-phases-2-5.md). Nova prévia: [demonstração operacional](https://hub-one-azure.vercel.app/demo/operations), com fixtures em memória.
 
-`.vercelignore` também exclui `/src-tauri/` e `/.github/`. Arquivos de ambiente e chaves continuam fora do upload. Não foram configuradas credenciais de Google/Microsoft/LiveKit nem ativado push. O cron diário de `/api/integrations/jobs` só aceita o `CRON_SECRET` quando configurado; a cadência Hobby é limitada para uso contínuo. [Ativação e limites](service-activation.md).
+`.vercelignore` também exclui `/src-tauri/` e `/.github/`. Arquivos de ambiente e chaves continuam fora do upload. Naquela publicação não foram configuradas credenciais de Google/Microsoft/LiveKit nem ativado push; a ativação posterior está registrada abaixo. O cron diário de `/api/integrations/jobs` só aceita o `CRON_SECRET` quando configurado; a cadência Hobby é limitada para uso contínuo. [Ativação e limites](service-activation.md).
 
-A configuração de Auth/Realtime no painel e os fluxos com contas reais continuam pendentes de confirmação. Os instaladores Tauri foram gerados separadamente no GitHub Actions e não fazem parte do deploy Vercel.
+Auth URLs e Realtime privado foram conferidos posteriormente; fluxos com contas reais continuam com os limites descritos acima. Os instaladores Tauri foram gerados separadamente no GitHub Actions e não fazem parte do deploy Vercel.
+
+## Ativação push · 2026-10-20
+
+Código `ec558a5`, deployment `dpl_BCunKVSmBHPR8J3hGtcXZ2weRLqY`, **READY**, no mesmo alias público. [URL imutável](https://hub-80tzg1tky-yemorgxs-projects.vercel.app). Production recebeu a chave VAPID pública e `NEXT_PUBLIC_PUSH_ENABLED=true`; Preview permanece sem push. Chave privada e segredo de agendamento ficam no Supabase, fora da Vercel.
+
+83 SQL e 10 unitários locais passaram; 24/24 HTTP de produção passaram após este deploy. Função e cron reais responderam HTTP 200. Entrega no aparelho ainda exige permissão do usuário. [Registro completo](push-activation.md).
