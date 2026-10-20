@@ -24,6 +24,12 @@ export function errorMessage(error: unknown): string {
       "Você não tem acesso a esta ação. Atualize a página ou fale com o administrador.",
   };
   if (messages[message]) return messages[message];
+  if (
+    /^(Convite |Esta pessoa já participa|Aguarde um minuto antes de reenviar|Limite de convites atingido|Seu acesso está suspenso|Reative o acesso à organização)/.test(
+      message,
+    )
+  )
+    return message;
   if (/rate limit|too many|security purposes/i.test(message))
     return "Muitas tentativas. Aguarde um pouco antes de tentar novamente.";
   if (/password.*(least|characters|weak)/i.test(message))

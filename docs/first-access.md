@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-O aplicativo está publicado em **https://hub-one-azure.vercel.app**, no projeto Vercel `yemorgxs-projects/hub`. Em 20/10/2026, o usuário informou ter concluído cadastro, confirmação de e-mail e MFA. A URL principal e os dois callbacks de Auth foram conferidos; Realtime está com `private_only=true`. O fluxo com duas contas ainda não foi exercitado nesta sessão. Publicar o ambiente de desenvolvimento é uma etapa separada da hospedagem do app.
+O aplicativo está publicado em **https://hub-one-azure.vercel.app**, no projeto Vercel `yemorgxs-projects/hub`. Em 20/10/2026, o usuário informou ter concluído cadastro, confirmação de e-mail e MFA. A URL principal e os dois callbacks de Auth foram conferidos; Realtime está com `private_only=true`. O usuário confirmou a entrega de push em conversa direta entre duas contas; o restante da validação manual permanece por exercício. Publicar o ambiente de desenvolvimento é uma etapa separada da hospedagem do app.
 
 O código da aplicação está preparado na branch `codex/hub-foundation-kanban`, para revisão em PR rascunho. O commit inicial de `main` contém apenas a base anterior. Use a branch da aplicação ao configurar uma hospedagem de revisão; a publicação de produção deve usar a versão revisada. Não houve merge. O deploy foi feito pela CLI a partir do checkout da aplicação; a integração automática com o GitHub não foi configurada.
 
@@ -44,7 +44,11 @@ Senha, QR/chave TOTP e códigos devem permanecer com o usuário; não são neces
 
 ## Validar com uma segunda pessoa
 
-A segunda pessoa cria/confirma sua própria conta e configura o MFA. Compartilha apenas o UUID do perfil. O administrador a adiciona ao workspace/time pelo app.
+O administrador abre **Pessoas → Convidar pessoa**, informa o e-mail e o papel no time e copia o link. Compartilhe esse link diretamente com a pessoa. O envio automático por e-mail foi adiado por escolha do usuário.
+
+A pessoa abre o link, entra ou cria sua conta com o mesmo e-mail, confirma o e-mail, configura o MFA e seleciona **Aceitar convite**. Se confirmar o cadastro em outro navegador, deve reabrir o link original nesse navegador depois de entrar. O convite vale por sete dias. Não concede acesso antes do aceite nem permite contornar uma suspensão.
+
+Na mesma tela, **Membros** permite editar papéis e suspender a participação no time; **Convites** permite revogar ou gerar novo link (invalida o anterior). Um intervalo mínimo de um minuto evita reenvios repetidos. O último administrador ativo não pode ser removido. Papéis de administrador valem para toda a organização; suspender apenas a participação no time preserva essas permissões de gestão.
 
 Verifique troca de mensagens, presença, digitação, não lidas, RSVP e mudanças do Kanban entre duas sessões. Cada pessoa deve acessar somente os dados permitidos pelo seu papel. Confirme início/parada de horas no card e bloqueio de um segundo timer; revogue uma associação e confira corte de acesso e encerramento do timer.
 

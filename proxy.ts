@@ -28,6 +28,7 @@ export async function proxy(request: NextRequest) {
   response.headers.set("Cache-Control", "private, no-store, max-age=0");
   response.headers.set("Pragma", "no-cache");
   const isAuthCallback =
+    request.nextUrl.pathname === "/invite" ||
     request.nextUrl.pathname === "/auth/callback" ||
     request.nextUrl.pathname === "/auth/confirm" ||
     (request.nextUrl.pathname.startsWith("/api/integrations/") &&

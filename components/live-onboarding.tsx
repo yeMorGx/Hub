@@ -5,7 +5,6 @@ import {
   ArrowRight,
   SignOut,
   CircleNotch,
-  Copy,
   CheckCircle,
 } from "@phosphor-icons/react";
 import type { HubController } from "@/lib/hub/use-hub";
@@ -69,8 +68,8 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
         <h2>Vamos preparar seu espaço.</h2>
         <p>
           Olá, {hub.bootstrap?.profile.display_name.split(" ")[0]}. Crie um
-          workspace e seu primeiro time, ou compartilhe seu identificador com o
-          administrador para receber acesso.
+          workspace e seu primeiro time, ou abra o link de convite enviado pelo
+          administrador para participar de um time existente.
         </p>
       </div>
       {error && (
@@ -138,23 +137,9 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
       <div className="onboarding-invite">
         <strong>Seu time já usa o Hub?</strong>
         <p>
-          Peça ao administrador para adicionar este identificador. Atualize a
-          página depois de receber acesso.
+          Peça um link de convite ao administrador e aceite com o e-mail
+          convidado. Depois de entrar no time, seu acesso aparece aqui.
         </p>
-        <button
-          className="copy-id"
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(hub.userId);
-              hub.notify("Identificador copiado.");
-            } catch {
-              hub.notify("Selecione e copie seu identificador abaixo.", true);
-            }
-          }}
-        >
-          <code>{hub.userId}</code>
-          <Copy size={15} />
-        </button>
         <button className="text-button" onClick={() => void hub.refreshAll()}>
           Conferir meu acesso <ArrowRight size={14} />
         </button>

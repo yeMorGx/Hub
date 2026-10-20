@@ -1,7 +1,7 @@
 import { PGlite } from '@electric-sql/pglite';
 import { before, after, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 
 // PostgreSQL real em WASM. Auth/Realtime são contratos mínimos de teste;
@@ -53,7 +53,7 @@ before(async () => {
     create role service_role nologin bypassrls;
     create schema auth;
     create table auth.users (
-      id uuid primary key, aud text, role text, email text,
+      id uuid primary key, aud text, role text, email text, email_confirmed_at timestamptz default now(),
       raw_app_meta_data jsonb not null default '{}', raw_user_meta_data jsonb not null default '{}'
     );
     create function auth.jwt() returns jsonb language sql stable as
@@ -88,7 +88,7 @@ before(async () => {
   debug('Criando dados de teste');
   for (const [name, id] of Object.entries(users)) {
     // Papéis nos metadados de usuário não podem conceder permissões.
-    await query('insert into auth.users(id, raw_user_meta_data) values ($1, $2)', [id, {
+    await query('insert into auth.users(id, email, raw_user_meta_data) values ($1, $2, $3)', [id, `${name}@example.test`, {
       display_name: name, role: 'admin',
     }]);
   }
@@ -1038,4 +1038,123 @@ scenario('Push: mensagem comum em canal não cria aviso de DM',async()=>{
  const message=await rpc('send_message',[ids.general,randomUUID(),'Conversa do canal']);
  await db.exec('reset role');
  assert.equal(await count('select count(*) from public.notifications where message_id=$1',[message]),0);
+});
+
+const inviteToken = n => Buffer.alloc(32,n).toString('base64url');
+const inviteHash = n => createHash('sha256').update(inviteToken(n)).digest('hex');
+async function inviteOutsider(n=1, role='member') {
+  await login(users.admin);
+  return rpc('create_team_invitation',[ids.red,'outsider@example.test',role,inviteHash(n)]);
+}
+scenario('Convites: somente admin com MFA cria/lista/revoga; criar não concede acesso',async()=>{
+ const invitation=await inviteOutsider();
+ assert.equal(invitation.email,'outsider@example.test');
+ const access=await rpc('list_team_access',[ids.red]);
+ assert.equal(access.invitations[0].status,'pending');
+ assert.ok(!JSON.stringify(access).includes(inviteHash(1)));
+ await login(users.leader);
+ await sqlError('select public.create_team_invitation($1,$2,$3,$4)',[ids.red,'new@example.test','member',inviteHash(2)],'42501');
+ await sqlError('select public.list_team_access($1)',[ids.red],'42501');
+ await sqlError('select public.revoke_team_invitation($1)',[invitation.id],'42501');
+ await login(users.admin,'aal1');
+ await sqlError('select public.create_team_invitation($1,$2,$3,$4)',[ids.red,'new@example.test','member',inviteHash(2)],'42501');
+ await login(users.outsider);
+ assert.equal(await count('select count(*) from public.team_members where team_id=$1',[ids.red]),0);
+ await sqlError('select * from private.team_invitations',[],'42501');
+});
+scenario('Convites: aceite exige e-mail confirmado correspondente e MFA',async()=>{
+ await inviteOutsider();
+ await login(users.bob);
+ await sqlError('select public.preview_team_invitation($1)',[inviteToken(1)],'22023');
+ await login(users.outsider,'aal1');
+ await sqlError('select public.accept_team_invitation($1)',[inviteToken(1)],'42501');
+ await db.exec('reset role');
+ await query('update auth.users set email_confirmed_at=null where id=$1',[users.outsider]);
+ await login(users.outsider);
+ await sqlError('select public.accept_team_invitation($1)',[inviteToken(1)],'22023');
+ await sqlError('select public.preview_team_invitation($1)',['invalid'],'22023');
+});
+scenario('Convites: aceite idempotente entra como líder só no time convidado e no canal público geral',async()=>{
+ await inviteOutsider(1,'leader');
+ await login(users.outsider);
+ assert.equal((await rpc('preview_team_invitation',[inviteToken(1)])).role,'leader');
+ assert.equal(await rpc('accept_team_invitation',[inviteToken(1)]),ids.red);
+ assert.equal(await rpc('accept_team_invitation',[inviteToken(1)]),ids.red);
+ assert.equal(await scalar('select role from public.workspace_members where workspace_id=$1 and user_id=$2',[ids.workspace,users.outsider]),'member');
+ assert.equal(await scalar('select role from public.team_members where team_id=$1 and user_id=$2',[ids.red,users.outsider]),'leader');
+ assert.equal(await count('select count(*) from public.channel_members where channel_id=$1 and user_id=$2',[ids.general,users.outsider]),1);
+ assert.equal(await count('select count(*) from public.channels where id=$1',[ids.secret]),0);
+ assert.equal(await count('select count(*) from public.team_members where team_id=$1',[ids.blue]),0);
+ await login(users.admin);
+ await rpc('set_team_member',[ids.red,users.outsider,'member',false]);
+ await login(users.outsider);
+ await rpc('accept_team_invitation',[inviteToken(1)]);
+ await db.exec('reset role');
+ assert.equal(await scalar('select is_active from public.team_members where team_id=$1 and user_id=$2',[ids.red,users.outsider]),false);
+});
+scenario('Convites: revogação, expiração e perda da administração do emissor invalidam o link',async()=>{
+ const invitation=await inviteOutsider();
+ await rpc('revoke_team_invitation',[invitation.id]);
+ await login(users.outsider);
+ await sqlError('select public.accept_team_invitation($1)',[inviteToken(1)],'22023');
+ await db.exec('reset role');
+ await query("update private.team_invitations set revoked_at=null,expires_at=clock_timestamp()-interval '1 second' where id=$1",[invitation.id]);
+ await login(users.outsider);
+ await sqlError('select public.accept_team_invitation($1)',[inviteToken(1)],'22023');
+ await db.exec('reset role');
+ await query("update private.team_invitations set expires_at=clock_timestamp()+interval '1 day' where id=$1",[invitation.id]);
+ await query("update public.workspace_members set role='member' where workspace_id=$1 and user_id=$2",[ids.workspace,users.admin]);
+ await login(users.outsider);
+ await sqlError('select public.accept_team_invitation($1)',[inviteToken(1)],'22023');
+});
+scenario('Convites: reenvio tem intervalo mínimo e invalida o link anterior; limites e e-mail são validados',async()=>{
+ const invitation=await inviteOutsider();
+ await sqlError('select public.create_team_invitation($1,$2,$3,$4)',[ids.red,'outsider@example.test','member',inviteHash(2)],'53300');
+ await sqlError('select public.create_team_invitation($1,$2,$3,$4)',[ids.red,'bad email','member',inviteHash(2)],'22023');
+ await sqlError('select public.create_team_invitation($1,$2,$3,$4)',[ids.red,'alice@example.test','member',inviteHash(2)],'22023');
+ await db.exec('reset role');
+ await query("update private.team_invitations set created_at=clock_timestamp()-interval '2 minutes' where id=$1",[invitation.id]);
+ await inviteOutsider(2);
+ await login(users.outsider);
+ await sqlError('select public.accept_team_invitation($1)',[inviteToken(1)],'22023');
+ await rpc('accept_team_invitation',[inviteToken(2)]);
+});
+scenario('Convites: aceite preserva papel existente na organização e não reativa suspensão',async()=>{
+ await login(users.admin);
+ await rpc('set_workspace_member',[ids.workspace,users.outsider,'admin']);
+ await inviteOutsider();
+ await login(users.outsider);
+ await rpc('accept_team_invitation',[inviteToken(1)]);
+ assert.equal(await scalar('select role from public.workspace_members where workspace_id=$1 and user_id=$2',[ids.workspace,users.outsider]),'admin');
+ await login(users.admin);
+ await rpc('set_team_member',[ids.red,users.outsider,'member',false]);
+ await db.exec('reset role');
+ await query("update private.team_invitations set created_at=clock_timestamp()-interval '2 minutes'");
+ await inviteOutsider(2);
+ await login(users.outsider);
+ await sqlError('select public.accept_team_invitation($1)',[inviteToken(2)],'42501');
+});
+scenario('Gestão de membros: mudanças são atômicas, protegem último admin e encerram timer suspenso',async()=>{
+ await login(users.admin);
+ await sqlError('select public.manage_team_access($1,$2,$3,$4,$5)',[ids.red,users.admin,'member','member',false],'23514');
+ assert.equal(await scalar('select is_active from public.team_members where team_id=$1 and user_id=$2',[ids.red,users.admin]),true);
+ await rpc('manage_team_access',[ids.red,users.alice,'admin','leader',true]);
+ await rpc('manage_team_access',[ids.red,users.admin,'member','member',true]);
+ await sqlError('select public.manage_team_access($1,$2,$3,$4,$5)',[ids.red,users.bob,'admin','leader',true],'42501');
+ await login(users.bob);
+ await rpc('start_timer',[ids.red]);
+ await login(users.alice);
+ await rpc('manage_team_access',[ids.red,users.bob,'member','member',false]);
+ await db.exec('reset role');
+ assert.equal(await count('select count(*) from public.time_entries where team_id=$1 and user_id=$2 and ended_at is null',[ids.red,users.bob]),0);
+});
+scenario('Convites: auditoria não armazena e-mail nem hash do token e tabela privada não permite acesso direto',async()=>{
+ await inviteOutsider();
+ await db.exec('reset role');
+ const audit=await scalar("select changes from public.audit_events where entity_table='team_invitations' limit 1");
+ assert.ok(audit);
+ assert.ok(!JSON.stringify(audit).includes('outsider@example.test'));
+ assert.ok(!JSON.stringify(audit).includes(inviteHash(1)));
+ await db.exec('set role service_role');
+ await sqlError('select * from private.team_invitations',[],'42501');
 });

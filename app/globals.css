@@ -5804,3 +5804,82 @@ input[type="time"] {
 
 .workspace-module-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px}.workspace-module-heading h2{font-size:22px;letter-spacing:-.6px;font-weight:650;margin:10px 0}.workspace-module-heading p{font-size:13px;line-height:1.7;color:var(--muted)}.workspace-module .eyebrow{font-size:10px;letter-spacing:1.6px;color:var(--muted)}.workspace-module-heading>.icon-button{flex-shrink:0}.table-scroll-hint{display:none}
 @media(max-width:700px){.operations-demo-layout{grid-template-columns:minmax(0,1fr)}.operations-demo-layout>aside{min-width:0}.table-scroll-hint{display:block;margin:12px 0;font-size:11px;color:var(--muted)}}
+
+/* Convites e gestão de acesso */
+.team-access {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.team-access .workspace-tabs {
+  margin: 0;
+}
+.team-access .dialog-form {
+  margin: 0;
+}
+.invitation-share {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  min-width: 0;
+}
+.invitation-share label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+}
+.invitation-share input {
+  width: 100%;
+  min-width: 0;
+}
+.invitation-share strong,
+.invitation-list strong {
+  overflow-wrap: anywhere;
+}
+.invitation-share small,
+.invitation-list small {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.invitation-share .outline-button {
+  justify-self: start;
+}
+.invitation-list {
+  display: grid;
+  gap: 12px;
+}
+.invitation-list article {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  min-width: 0;
+}
+.invitation-list article > div:first-child {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+.invitation-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.invitation-actions {
+  display: grid;
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .invitation-list article {
+    flex-direction: column;
+  }
+  .invitation-share {
+    padding: 16px;
+  }
+}

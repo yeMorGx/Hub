@@ -18,6 +18,8 @@ export function AuthScreen({ configured }: { configured: boolean }) {
     [notice, setNotice] = useState(""),
     [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("mode") === "signup")
+      setMode("signup");
     if (
       new URLSearchParams(window.location.search).get("notice") ===
       "link-expired"

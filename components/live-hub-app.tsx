@@ -58,6 +58,7 @@ import {
 } from "@/lib/hub/dates";
 import { errorMessage } from "@/lib/supabase/errors";
 import { AdvancedConversation } from "./advanced-conversation";
+import { TeamAccess } from "./team-access";
 import { NotificationBell } from "./notification-bell";
 import { DesktopBridge } from "./desktop-bridge";
 import { LiveCalls } from "./live-calls";
@@ -537,26 +538,6 @@ export function LiveHubApp({ userId }: { userId: string }) {
       setShowChannelList(false);
     }
   }
-  async function addMember(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const fields = new FormData(e.currentTarget);
-    const result = await hub.mutate(async () => {
-      const id = String(fields.get("user")).trim();
-      await hub.rpc("set_workspace_member", {
-        p_workspace_id: hub.workspace!.id,
-        p_user_id: id,
-        p_role: String(fields.get("workspaceRole")) as "admin" | "member",
-        p_is_active: true,
-      });
-      await hub.rpc("set_team_member", {
-        p_team_id: hub.teamId,
-        p_user_id: id,
-        p_role: String(fields.get("teamRole")) as "leader" | "member",
-        p_is_active: true,
-      });
-    }, "Acesso da pessoa atualizado.");
-    if (result.ok) setModal(null);
-  }
   async function createTeam(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fields = new FormData(e.currentTarget);
@@ -898,7 +879,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   onClick={() => openModal("member")}
                 >
                   <UserPlus size={17} />
-                  Adicionar pessoa
+                  Convidar pessoa
                 </button>
               ) : (
                 <span className="team-pill">
@@ -1694,10 +1675,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     <div className="admin-access-note">
                       <ShieldCheck size={20} />
                       <div>
-                        <strong>Os papéis são controlados pelo banco.</strong>
+                        <strong>Gerencie quem participa do time.</strong>
                         <p>
-                          Use Adicionar pessoa para cadastrar ou atualizar o
-                          acesso de uma conta já criada.
+                          Convide pelo e-mail da pessoa e compartilhe o link. Na
+                          mesma tela, você pode editar papéis e suspender acessos.
                         </p>
                       </div>
                     </div>
@@ -2575,58 +2556,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
           </HubDialog>
         )}
       {modal === "member" && hub.isAdmin && (
-        <HubDialog
-          title="Adicionar ou atualizar acesso"
-          onClose={() => setModal(null)}
-        >
-          <form className="dialog-form" onSubmit={addMember}>
-            <p className="demo-note">
-              A pessoa deve criar e confirmar sua conta primeiro. Ela pode
-              copiar o identificador no perfil ou na tela de entrada do
-              workspace.
-            </p>
-            <label>
-              Identificador da pessoa
-              <input
-                name="user"
-                required
-                autoFocus
-                pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
-                placeholder="UUID da conta"
-              />
-            </label>
-            <label>
-              Papel no workspace
-              <select name="workspaceRole" defaultValue="member">
-                <option value="member">Membro</option>
-                <option value="admin">Administrador</option>
-              </select>
-            </label>
-            <label>
-              Papel neste time
-              <select name="teamRole" defaultValue="member">
-                <option value="member">Membro</option>
-                <option value="leader">Líder</option>
-              </select>
-            </label>
-            <p className="demo-note">
-              O acesso vale para {hub.workspace?.name} e {hub.currentTeam?.name}
-              . Contas existentes terão esses papéis atualizados.
-            </p>
-            <div className="dialog-actions">
-              <button
-                type="button"
-                className="outline-button"
-                onClick={() => setModal(null)}
-              >
-                Voltar
-              </button>
-              <button className="primary-button" disabled={hub.busy}>
-                <UserPlus size={16} />
-                Salvar acesso
-              </button>
-            </div>
-          </form>
+        <HubDialog title="Pessoas e convites" onClose={() => setModal(null)} wide>
+          <TeamAccess hub={hub} onClose={() => setModal(null)} />
         </HubDialog>
       )}
       {modal === "team" && hub.isAdmin && (

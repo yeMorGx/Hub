@@ -4,6 +4,8 @@ import assert from "node:assert/strict";
 // Run against an already-started Hub. No accounts, emails or business writes.
 const base = new URL(process.env.HUB_APP_URL || "http://127.0.0.1:3000");
 assert.ok(["http:", "https:"].includes(base.protocol));
+const allowedOrigin =
+  process.env.HUB_APP_ORIGIN || "https://hub-one-azure.vercel.app";
 const request = (path) =>
   fetch(new URL(path, base), {
     redirect: "manual",
@@ -114,7 +116,7 @@ for (const path of [
     const response = await fetch(new URL(path, base), {
       method: "POST",
       headers: {
-        Origin: "https://hub-one-azure.vercel.app",
+        Origin: allowedOrigin,
         "Content-Type": "application/json",
       },
       body: "{}",
@@ -142,4 +144,61 @@ test("demonstração operacional é pública e declara seus dados fictícios", a
   const response = await request("/demo/operations");
   assert.equal(response.status, 200);
   assert.match(await response.text(), /dados fictícios/);
+});
+
+test("convite público responde sem cache e sem enviar referência", async () => {
+  const response = await request("/invite");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("cache-control") || "", /no-store/);
+  assert.equal(response.headers.get("referrer-policy"), "no-referrer");
+  assert.match(await response.text(), /Seu time está esperando/);
+});
+for (const path of ["/api/team-invitations", "/api/team-invitations/accept"]) {
+  test(`${path} exige sessão MFA e rejeita origem externa`, async () => {
+    for (const [origin, expected] of [
+      [allowedOrigin, 401],
+      ["https://external.invalid", 403],
+    ]) {
+      const response = await fetch(new URL(path, base), {
+        method: "POST",
+        headers: { Origin: origin, "Content-Type": "application/json" },
+        body: "{}",
+      });
+      assert.equal(response.status, expected);
+      assert.match(response.headers.get("cache-control") || "", /no-store/);
+    }
+  });
+}
+test("convite pendente: token inválido é recusado; cookie é privado e pode ser descartado", async () => {
+  const url = new URL("/api/team-invitations/pending", base);
+  const headers = { Origin: allowedOrigin, "Content-Type": "application/json" };
+  const invalid = await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ token: "invalid" }),
+  });
+  assert.equal(invalid.status, 400);
+  const crossOrigin = await fetch(url, {
+    method: "POST",
+    headers: { ...headers, Origin: "https://external.invalid" },
+    body: JSON.stringify({ token: "a".repeat(43) }),
+  });
+  assert.equal(crossOrigin.status, 403);
+  // Token fictício: guardar a intenção de abrir um convite não cria associação.
+  const valid = await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ token: "a".repeat(43) }),
+  });
+  assert.equal(valid.status, 200);
+  const cookie = valid.headers.get("set-cookie") || "";
+  assert.match(cookie, /HttpOnly/i);
+  assert.match(cookie, /SameSite=lax/i);
+  const preview = await fetch(url, {
+    headers: { Cookie: cookie.split(";")[0] },
+  });
+  assert.equal(preview.status, 401);
+  const dismissed = await fetch(url, { method: "DELETE", headers });
+  assert.equal(dismissed.status, 200);
+  assert.match(dismissed.headers.get("set-cookie") || "", /Max-Age=0/i);
 });

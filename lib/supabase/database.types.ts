@@ -1677,6 +1677,30 @@ export type Database = {
       }
     }
     Functions: {
+      create_team_invitation: {
+        Args: { p_team_id: string; p_email: string; p_role: Database["public"]["Enums"]["team_role"]; p_token_hash: string }
+        Returns: Json
+      }
+      list_team_access: {
+        Args: { p_team_id: string }
+        Returns: Json
+      }
+      revoke_team_invitation: {
+        Args: { p_invitation_id: string }
+        Returns: undefined
+      }
+      preview_team_invitation: {
+        Args: { p_token: string }
+        Returns: Json
+      }
+      accept_team_invitation: {
+        Args: { p_token: string }
+        Returns: string
+      }
+      manage_team_access: {
+        Args: { p_team_id: string; p_user_id: string; p_workspace_role: Database["public"]["Enums"]["workspace_role"]; p_team_role: Database["public"]["Enums"]["team_role"]; p_is_active: boolean }
+        Returns: undefined
+      }
       absence_schedule: {
         Args: { p_from: string; p_team_id: string; p_to: string }
         Returns: {

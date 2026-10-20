@@ -216,3 +216,15 @@ test("sala remove somente identidades fora do roster e propaga falhas do servido
     /API down/,
   );
 });
+
+test("convites usam tokens aleatórios de 256 bits, hash SHA-256 e formato estrito", async () => {
+  const { invitationToken, validInvitationToken } = await import("../lib/invitations/token");
+  const { createHash } = await import("node:crypto");
+  const first = invitationToken(), second = invitationToken();
+  assert.equal(Buffer.from(first.token, "base64url").length, 32);
+  assert.ok(validInvitationToken(first.token));
+  assert.notEqual(first.token, second.token);
+  assert.equal(first.hash, createHash("sha256").update(first.token).digest("hex"));
+  for (const invalid of [null, undefined, 123, "", "a".repeat(42), "a".repeat(44), "=".repeat(43), `${first.token}\n`])
+    assert.equal(validInvitationToken(invalid), false);
+});
