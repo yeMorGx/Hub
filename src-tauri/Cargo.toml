@@ -1,6 +1,6 @@
 [package]
 name = "hub-desktop"
-version = "0.1.0"
+version = "0.1.1"
 description = "Hub — seu time, conectado"
 authors = ["Hub"]
 edition = "2021"
@@ -11,3 +11,4 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 tauri = { version = "2", features = [] }
 tauri-plugin-global-shortcut = "2"
+tauri-plugin-single-instance = "2"
