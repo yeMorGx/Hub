@@ -397,3 +397,57 @@ test("agenda interrompe uma paginação obsoleta e propaga falhas de consulta", 
     /Fixture failure/,
   );
 });
+
+test("verificação LiveKit é opt-in, somente leitura e não expõe erros do provedor", async () => {
+  const { verifyLivekitConfiguration } = await import(
+    "../lib/livekit/verify-configuration.mjs"
+  );
+  assert.deepEqual(await verifyLivekitConfiguration({}), { checked: false });
+  const env = {
+    HUB_VERIFY_LIVEKIT: "1",
+    LIVEKIT_URL: "wss://fixture.livekit.cloud",
+    LIVEKIT_API_KEY: "fixture-key",
+    LIVEKIT_API_SECRET: "fixture-secret",
+  };
+  const calls: unknown[] = [];
+  assert.deepEqual(
+    await verifyLivekitConfiguration(env, (...args: unknown[]) => ({
+      listRooms: async () => {
+        calls.push(args);
+        return [];
+      },
+    })),
+    { checked: true },
+  );
+  assert.deepEqual(calls, [
+    ["https://fixture.livekit.cloud", "fixture-key", "fixture-secret"],
+  ]);
+  await assert.rejects(
+    () => verifyLivekitConfiguration({ ...env, LIVEKIT_API_SECRET: "" }),
+    /faltam variáveis/,
+  );
+  for (const url of [
+    "https://fixture.livekit.cloud",
+    "wss://user:pass@fixture.livekit.cloud",
+    "wss://fixture.livekit.cloud/token?key=secret",
+    "bad-url",
+  ]) {
+    await assert.rejects(
+      () => verifyLivekitConfiguration({ ...env, LIVEKIT_URL: url }),
+      /URL WebSocket/,
+    );
+  }
+  await assert.rejects(
+    () =>
+      verifyLivekitConfiguration(env, () => ({
+        listRooms: async () => {
+          throw new Error("fixture-secret raw provider error");
+        },
+      })),
+    (error) => {
+      assert.ok(error instanceof Error);
+      assert.ok(!error.message.includes("fixture-secret"));
+      return /não foi possível autenticar/.test(error.message);
+    },
+  );
+});
