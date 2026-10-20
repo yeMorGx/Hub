@@ -67,3 +67,7 @@ Visão mensal, semana de sete dias, navegação por datas e paginação de event
 ### Desktop Windows · 2026-10-20
 
 Usuário escolheu Windows e não possui certificado. Prévia 0.1.1 testada nativamente e anexada a rascunho GitHub com SHA-256 verificado. O contador Windows usa overlay em vez da API de badge não suportada nessa plataforma. [Instalação, evidências e limitações](windows-desktop.md).
+
+### Aviso de atualização Windows · 2026-10-20
+
+Prévia nativa 0.1.2 entregue e testada no Windows, com aviso de releases estáveis dentro do app e download iniciado por ação do usuário. A passagem da versão anterior para 0.1.2 precisa ser manual uma vez. O aviso/erro/adiamento foram testados com API e IPC simulados; o smoke nativo verifica instalação e abertura. Assinatura comercial permanece adiada pelo usuário. [Entrega e operação](desktop-updates.md).
