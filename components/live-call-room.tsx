@@ -25,7 +25,24 @@ export default function LiveCallRoom({
       () => new Room({ adaptiveStream: true, dynacast: true }),
       [],
     ),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [isDesktopApp, setIsDesktopApp] = useState(false);
+  const screenCaptureOptions = useMemo(
+    () => ({
+      resolution: { width: 2560, height: 1440, frameRate: 60 },
+      contentHint: "detail" as const,
+      ...(isDesktopApp
+        ? {
+            video: { displaySurface: "window" as const },
+            selfBrowserSurface: "exclude" as const,
+          }
+        : {}),
+    }),
+    [isDesktopApp],
+  );
+  useEffect(() => {
+    setIsDesktopApp("__TAURI_INTERNALS__" in window);
+  }, []);
   useEffect(() => {
     const failed = () =>
       setError(
@@ -59,11 +76,12 @@ export default function LiveCallRoom({
               source={Track.Source.ScreenShare}
               showIcon={false}
               className="call-screen-share-toggle"
-              title="Até 1440p e 60 FPS, conforme o navegador e a conexão"
-              captureOptions={{
-                resolution: { width: 2560, height: 1440, frameRate: 60 },
-                contentHint: "detail",
-              }}
+              title={
+                isDesktopApp
+                  ? "No seletor do Windows, escolha a janela do Hub ou uma tela. Até 1440p e 60 FPS, conforme o sistema e a conexão."
+                  : "Até 1440p e 60 FPS, conforme o navegador e a conexão"
+              }
+              captureOptions={screenCaptureOptions}
               publishOptions={{
                 screenShareEncoding: {
                   maxBitrate: 10_000_000,
