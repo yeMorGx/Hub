@@ -52,3 +52,14 @@ Após configurar as URLs, abra [o login](https://hub-one-azure.vercel.app/login)
 ## Atualizações futuras
 
 A hospedagem foi feita por upload da CLI, sem conectar deploy automático ao GitHub. `main` ainda contém o commit inicial; conectar Git sem escolher a branch correta pode tentar publicar essa base incompleta. Revise o PR da aplicação e defina a estratégia de branch antes de ativar deploys automáticos.
+
+
+## Atualização das Fases 2–5 · 2026-10-20 UTC
+
+Código `ab5452f` publicado por CLI após build, 82 SQL, 10 unitários, 24 HTTP e 7 Chromium locais passando. Deployment `dpl_8S2nBXaXuomeNFFyLr217ia1Rhsw` terminou **READY** e recebeu o mesmo alias de produção. [URL imutável](https://hub-7q1xp4in5-yemorgxs-projects.vercel.app).
+
+Depois da publicação, os **24 testes HTTP de produção** passaram, sem contas/e-mails/gravações de negócio. [Relatório atualizado](validation-phases-2-5.md). Nova prévia: [demonstração operacional](https://hub-one-azure.vercel.app/demo/operations), com fixtures em memória.
+
+`.vercelignore` também exclui `/src-tauri/` e `/.github/`. Arquivos de ambiente e chaves continuam fora do upload. Não foram configuradas credenciais de Google/Microsoft/LiveKit nem ativado push. O cron diário de `/api/integrations/jobs` só aceita o `CRON_SECRET` quando configurado; a cadência Hobby é limitada para uso contínuo. [Ativação e limites](service-activation.md).
+
+A configuração de Auth/Realtime no painel e os fluxos com contas reais continuam pendentes de confirmação. Os instaladores Tauri foram gerados separadamente no GitHub Actions e não fazem parte do deploy Vercel.

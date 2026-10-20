@@ -75,3 +75,10 @@ O Kanban passou na compilação e recebeu revisão visual da demonstração.
 Permissões, concorrência, timer e Realtime ainda aguardam validação autenticada
 ponta a ponta. A Fase 2 permanece parcial: chat avançado, standups, documentos
 Markdown e lembretes ainda são futuros.
+
+
+## Colaboração, gestão e integrações
+
+As superfícies das Fases 2–5 estão implementadas; [estado e limites por fase](docs/remaining-phases.md), [ativação dos serviços](docs/service-activation.md) e [validação/publicação](docs/validation-phases-2-5.md). Veja `/demo/operations` para a demonstração com dados fictícios, separada do app autenticado.
+
+Instaladores desktop preview: [GitHub Actions](https://github.com/yeMorGx/Hub/actions/runs/39365001709). Compilação concluída em Windows/macOS/Linux; binários sem assinatura e execução nativa ainda não validada. Expo segue opcional.

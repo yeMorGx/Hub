@@ -15,6 +15,17 @@ Data: 2026-10-20 UTC. Autorização explícita do usuário para criar/executar t
 | Supabase remoto | 32 tabelas públicas, 32 com RLS habilitado | Consulta somente de metadados; nenhum conteúdo de usuário lido |
 | `hub-webhook` publicado | ACTIVE v1; POST sem token retornou 403 | Solicitação sem credenciais a UUID inexistente; nenhuma mensagem criada |
 
+## Publicação conferida
+
+Vercel Production: **READY**, código `ab5452f`, deployment `dpl_8S2nBXaXuomeNFFyLr217ia1Rhsw`.
+
+- [Aplicação](https://hub-one-azure.vercel.app)
+- [Nova demonstração](https://hub-one-azure.vercel.app/demo/operations)
+- [Deployment imutável](https://hub-7q1xp4in5-yemorgxs-projects.vercel.app)
+- `NODE_USE_ENV_PROXY=1 HUB_APP_URL=https://hub-one-azure.vercel.app npm run test:public`: **24/24**, zero falhas/skips. [Log HTTP de produção](validation/phases-2-5/http-production.log).
+
+Isso confirma os contratos públicos após deploy; não comprova os fluxos autenticados nem ativa provedores sem credenciais.
+
 ## O que as verificações demonstram
 
 SQL cobre isolamento por workspace/time/canal, MFA, papéis, timer e sobreposição, eventos/RSVP, Kanban, threads/menções/anexos, edição por versão, relatórios, metas, aprovação de ausências e trocas, auditoria, webhook idempotente, credencial cifrada, leases, workers de serviço, roster de chamadas e restauração de evento cancelado. PGlite executa PostgreSQL com contratos mínimos simulados de Auth/Realtime/Storage; não é a stack Supabase completa.
