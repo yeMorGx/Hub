@@ -45,9 +45,9 @@
 test at scripts/public.test.mjs:157:3
 ✖ /api/team-invitations/accept exige sessão MFA e rejeita origem externa (5051.329098ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
-  
+
   503 !== 401
-  
+
       at TestContext.<anonymous> (file:///workspace/Hub/scripts/public.test.mjs:167:14)
       at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
       at async Test.run (node:internal/test_runner/test:1389:7)
@@ -63,9 +63,9 @@ test at scripts/public.test.mjs:157:3
 test at scripts/public.test.mjs:206:1
 ✖ prévia do calendário é pública e declara seus dados fictícios (5022.0709ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
-  
+
   503 !== 200
-  
+
       at TestContext.<anonymous> (file:///workspace/Hub/scripts/public.test.mjs:208:10)
       at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
       at async Test.run (node:internal/test_runner/test:1389:7)
