@@ -28,3 +28,7 @@ Após configurar, publicar novamente, conferir comunicação com a API de salas 
 - Scripts `scripts/fixtures/calls-lobby.tsx`, `scripts/fixtures/calls-room.tsx` e `scripts/calls-browser.py` só participam dessa fixture. Para reproduzir: compilar com esbuild, alias `next/dynamic` para `./scripts/fixtures/calls-room.tsx` e saída `/tmp/hub-calls-lobby-fixture.js`; depois executar o script Python com Playwright/Chromium. Não são parte da aplicação publicada.
 
 [Logs](validation/livekit-preparation/). Os testes não comprovam qualidade de áudio, vídeo, compartilhamento ou conexão ao LiveKit real.
+
+## Publicação da preparação
+
+Código `f264930`, deployment `dpl_BQdHgMyoxdQsn9XgW5JuZNa8JK71` READY em https://hub-one-azure.vercel.app. 29 HTTP locais e 29 de produção passaram; `npx tsc --noEmit` passou com as fixtures incluídas. A prévia pública foi conferida no navegador: zero erros JS, zero consultas de status autenticado e zero escritas. Não há configuração LiveKit nem chamada real concluída.

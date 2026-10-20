@@ -1,0 +1,22 @@
+{
+  "codeCommit": "f264930",
+  "deployment": {
+    "id": "dpl_BQdHgMyoxdQsn9XgW5JuZNa8JK71",
+    "url": "https://hub-a7ndy9bo6-yemorgxs-projects.vercel.app",
+    "productionUrl": "https://hub-one-azure.vercel.app",
+    "readyState": "READY"
+  },
+  "local": {
+    "unitPassed": 16,
+    "httpPassed": 29,
+    "browserLobbyViewports": [
+      1440,
+      390
+    ],
+    "realMedia": false,
+    "typecheckPassed": true
+  },
+  "productionHttpPassed": 29,
+  "providerConfigured": false,
+  "blocker": "User needs to create LiveKit Cloud project and configure server credentials"
+}

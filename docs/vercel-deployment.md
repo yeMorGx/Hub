@@ -75,3 +75,8 @@ Correção do compositor de chat `5b93b60` publicada no deployment `dpl_3sBsmf4f
 ## Agenda mensal e fins de semana · 2026-10-20
 
 Código `8c71025`, deployment `dpl_GV1JJtczg93jhZDx7mYpn3FC2qEM`, **READY**, no alias estável. Mês/semana/dia, sete dias na semana, eventos que atravessam dias e paginação de eventos. Sem novas migrações ou credenciais. Build, 94 SQL, 16 unitários em dois fusos, 29 HTTP locais e Chromium em duas larguras passaram. Em produção, 29 HTTP passaram na repetição completa após dois HTTP 503 transitórios na primeira execução. [Evidências e limites](calendar-completion.md).
+
+
+## Preparação LiveKit · 2026-10-20
+
+`f264930`, deployment `dpl_BQdHgMyoxdQsn9XgW5JuZNa8JK71` READY. Corrigida duplicação do renderer de áudio e melhorados lobby/status/cancelamento de verificações antigas. Build, TypeScript, 16 unitários, lobby com sala fictícia em duas larguras e 29 HTTP locais/produção passaram. Usuário ainda precisa criar projeto LiveKit Cloud e configurar as três variáveis de servidor. Chamadas reais permanecem desativadas. [Roteiro](livekit-activation.md).
