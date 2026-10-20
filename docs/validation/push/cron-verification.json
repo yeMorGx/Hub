@@ -1,0 +1,22 @@
+{
+  "job": {
+    "active": true,
+    "schedule": "* * * * *"
+  },
+  "runs": [
+    {
+      "count": 1,
+      "status": "succeeded"
+    }
+  ],
+  "responses": [
+    {
+      "id": 1,
+      "created": "2026-10-20T11:06:00.153695+00:00",
+      "had_error": false,
+      "status_code": 200
+    }
+  ],
+  "registered_devices": 0,
+  "private_config_protected": true
+}

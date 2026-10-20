@@ -1,0 +1,49 @@
+
+> hub-team@0.1.0 build
+> next build
+
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 197ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.2s
+  Running TypeScript ...
+  Finished TypeScript in 14.5s ...
+  Collecting page data using 4 workers ...
+  Generating static pages using 4 workers (0/16) ...
+  Generating static pages using 4 workers (4/16) 
+  Generating static pages using 4 workers (8/16) 
+  Generating static pages using 4 workers (12/16) 
+✓ Generating static pages using 4 workers (16/16) in 653ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/integrations/[provider]/callback
+├ ƒ /api/integrations/[provider]/connect
+├ ƒ /api/integrations/[provider]/disconnect
+├ ƒ /api/integrations/[provider]/sync
+├ ƒ /api/integrations/jobs
+├ ƒ /api/integrations/status
+├ ƒ /api/integrations/webhooks/[provider]
+├ ƒ /api/livekit/access
+├ ƒ /api/livekit/token
+├ ƒ /auth/callback
+├ ƒ /auth/confirm
+├ ○ /demo
+├ ○ /demo/kanban
+├ ○ /demo/operations
+├ ○ /login
+├ ○ /manifest.webmanifest
+├ ƒ /mfa
+├ ƒ /pwa/icon/[size]
+└ ○ /reset-password
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -995,3 +995,14 @@ scenario('Chamadas: roster exige MFA e canal e elimina associações revogadas',
 scenario('Calendário: resolução pode restaurar um evento cancelado com versão atual',async()=>{
  await login(users.alice);const connection=await rpc('save_calendar_connection',[ids.red,'google','calendar-restore','ciphertext-restore-fixture']);const event=await rpc('apply_calendar_event',[connection,'Importado','2030-01-01T10:00Z','2030-01-01T11:00Z']);await rpc('cancel_event',[event]);const version=await scalar('select updated_at from public.events where id=$1',[event]);await rpc('apply_calendar_event',[connection,'Restaurado','2030-01-01T10:00Z','2030-01-01T11:00Z','',event,version,false]);assert.equal(await scalar('select cancelled_at from public.events where id=$1',[event]),null);
 });
+scenario('Entrega push: notificações lidas não são reclamadas e retries respeitam lease/limite',async()=>{
+ await login(users.leader);const readMessage=await rpc('send_rich_message',[ids.general,randomUUID(),'Já lida',null,[],[users.alice]]);
+ await login(users.alice);const readNotification=await scalar('select id from public.notifications where message_id=$1',[readMessage]);await rpc('mark_notification_read',[readNotification]);
+ await db.exec('reset role;set role service_role');assert.equal(await count('select count(*) from public.claim_notification_deliveries()'),0);
+ await login(users.leader);const message=await rpc('send_rich_message',[ids.general,randomUUID(),'Nova menção',null,[],[users.alice]]);
+ await db.exec('reset role;set role service_role');let claimed=(await query('select id,delivery_attempts from public.claim_notification_deliveries($1)',[message])).rows;
+ assert.equal(claimed.length,1);assert.equal(claimed[0].delivery_attempts,1);assert.equal(await count('select count(*) from public.claim_notification_deliveries($1)',[message]),0);
+ await db.exec('reset role');await query("update public.notifications set delivery_claimed_at=clock_timestamp()-interval '6 minutes',delivery_attempts=3 where id=$1",[claimed[0].id]);
+ await db.exec('set role service_role');claimed=(await query('select id,delivery_attempts from public.claim_notification_deliveries($1)',[message])).rows;assert.equal(claimed[0].delivery_attempts,4);
+ await db.exec('reset role');await query("update public.notifications set delivery_claimed_at=clock_timestamp()-interval '6 minutes' where id=$1",[claimed[0].id]);await db.exec('set role service_role');assert.equal(await count('select count(*) from public.claim_notification_deliveries($1)',[message]),0);
+});

@@ -850,6 +850,8 @@ export type Database = {
           created_at: string
           dedupe_key: string
           delivered_at: string | null
+          delivery_attempts: number
+          delivery_claimed_at: string | null
           event_id: string | null
           id: string
           kind: string
@@ -863,6 +865,8 @@ export type Database = {
           created_at?: string
           dedupe_key: string
           delivered_at?: string | null
+          delivery_attempts?: number
+          delivery_claimed_at?: string | null
           event_id?: string | null
           id?: string
           kind: string
@@ -876,6 +880,8 @@ export type Database = {
           created_at?: string
           dedupe_key?: string
           delivered_at?: string | null
+          delivery_attempts?: number
+          delivery_claimed_at?: string | null
           event_id?: string | null
           id?: string
           kind?: string
@@ -1747,6 +1753,30 @@ export type Database = {
         Args: { p_connection_id: string }
         Returns: string
       }
+      claim_notification_deliveries: {
+        Args: { p_message_id?: string }
+        Returns: {
+          channel_id: string | null
+          created_at: string
+          dedupe_key: string
+          delivered_at: string | null
+          delivery_attempts: number
+          delivery_claimed_at: string | null
+          event_id: string | null
+          id: string
+          kind: string
+          message_id: string | null
+          read_at: string | null
+          team_id: string
+          user_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "notifications"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       create_channel: {
         Args: {
           p_kind?: Database["public"]["Enums"]["channel_kind"]
@@ -1774,6 +1804,7 @@ export type Database = {
         Returns: undefined
       }
       delete_message: { Args: { p_message_id: string }; Returns: undefined }
+      delivery_configuration: { Args: never; Returns: Json }
       disconnect_calendar: {
         Args: { p_connection_id: string }
         Returns: undefined

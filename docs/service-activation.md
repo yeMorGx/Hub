@@ -4,7 +4,7 @@ O código pode ser publicado com as integrações desabilitadas. As telas mostra
 
 ## Configuração existente
 
-Vercel Production/Preview já têm `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. A URL oficial é `https://hub-one-azure.vercel.app`. Auth Site URL, allowlist dos callbacks e opção de Realtime privado precisam ser conferidos no painel conforme [Primeiro acesso](first-access.md).
+Vercel Production/Preview já têm `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. A URL oficial é `https://hub-one-azure.vercel.app`. Auth Site URL e os dois callbacks foram conferidos. O Realtime foi configurado com `private_only=true`. O usuário informou ter concluído cadastro, confirmação e MFA. [Primeiro acesso](first-access.md).
 
 ## Google Calendar
 
@@ -53,11 +53,22 @@ O receptor `hub-webhook` já está publicado no Supabase. Um moderador cria a co
 
 Reutilizar `event_id` torna o retry idempotente. Limite de uma nova mensagem por segundo por webhook; texto de até 10.000 caracteres. Revogue pela tela se o token for exposto. Não cole o token em URLs ou registros públicos.
 
-## Push — autorização pendente
+## Push — serviço ativado
 
-Não ativado. A revisão automática exigiu autorização explícita para armazenar VAPID/job secret em tabela privada e publicar `hub-notifications` com autenticação própria e `verify_jwt:false`. A pergunta já foi enviada e não houve resposta registrada.
+Autorização explícita recebida em 20/10/2026. Migração `20261020110148_notification_delivery.sql` aplicada; `hub-notifications` publicada como ACTIVE v1, com `verify_jwt:false` no gateway e validação própria de JWT/AAL2/autoria ou segredo de agendamento. VAPID privada e job secret ficam na tabela privada `private.delivery_settings`, inacessível a usuários anônimos/autenticados. Somente a chave VAPID pública e a flag foram cadastradas na Vercel Production.
 
-Após a autorização, aplicar exclusivamente a migração pendente de entrega, gravar as chaves geradas com acesso de serviço, publicar a função e configurar `NEXT_PUBLIC_VAPID_PUBLIC_KEY` e `NEXT_PUBLIC_PUSH_ENABLED=true` na Vercel. Não habilitar o botão antes de validar uma assinatura real, expiração e revogação. iOS requer PWA instalada. Sem push, menções/lembretes continuam disponíveis no sino do app quando ele atualiza.
+O job `hub-notifications` executa a cada minuto no Supabase; já houve execução bem-sucedida com retorno HTTP 200. Chamadas sem sessão ou com segredo incorreto retornaram 401, e origem não permitida retornou 403. Esses checks não demonstram entrega a um aparelho.
+
+Para aderir no navegador:
+
+1. Atualize o Hub e entre com MFA.
+2. Abra o avatar → Meu perfil e role até **Notificações neste dispositivo**.
+3. Clique em **Ativar notificações** e aceite a permissão do navegador.
+4. Valide uma menção recebida de outra pessoa e um lembrete; confirme também desativação e troca de conta. No iPhone/iPad, instale a PWA na tela inicial antes de habilitar.
+
+Cada navegador/dispositivo precisa aderir. Os avisos usam texto genérico, sem conteúdo de mensagens no payload; destinos de clique ficam na origem do Hub. Leitura da notificação exclui sua entrega pendente, e retries usam lease/limite de tentativas. Sair da conta remove a inscrição desse navegador quando possível. Uma chave VAPID nova exige reinscrição; não rotacionar sem planejar essa troca.
+
+[Validação da ativação](push-activation.md). A entrega real no dispositivo ainda está pendente de inscrição/teste pelo usuário.
 
 ## Desktop
 

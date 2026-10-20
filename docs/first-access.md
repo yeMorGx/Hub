@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-O aplicativo está publicado em **https://hub-one-azure.vercel.app**, no projeto Vercel `yemorgxs-projects/hub`. O usuário ainda não criou sua conta. O build de produção e 16 checks HTTP da URL pública passaram; os callbacks do Supabase ainda precisam ser configurados antes do primeiro cadastro. Publicar o ambiente de desenvolvimento é uma etapa separada da hospedagem do app.
+O aplicativo está publicado em **https://hub-one-azure.vercel.app**, no projeto Vercel `yemorgxs-projects/hub`. Em 20/10/2026, o usuário informou ter concluído cadastro, confirmação de e-mail e MFA. A URL principal e os dois callbacks de Auth foram conferidos; Realtime está com `private_only=true`. O fluxo com duas contas ainda não foi exercitado nesta sessão. Publicar o ambiente de desenvolvimento é uma etapa separada da hospedagem do app.
 
 O código da aplicação está preparado na branch `codex/hub-foundation-kanban`, para revisão em PR rascunho. O commit inicial de `main` contém apenas a base anterior. Use a branch da aplicação ao configurar uma hospedagem de revisão; a publicação de produção deve usar a versão revisada. Não houve merge. O deploy foi feito pela CLI a partir do checkout da aplicação; a integração automática com o GitHub não foi configurada.
 
@@ -17,7 +17,7 @@ A publicação na Vercel já foi executada com autorização do usuário, após 
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: chave **publishable**, obtida no painel do projeto. Nunca use `service_role` ou secret key.
 4. Publique e obtenha a URL HTTPS efetiva. Mudanças nessas variáveis públicas exigem novo build.
 
-Não é necessário aplicar novamente as migrações: as três existentes já estão no projeto Supabase.
+Não aplique novamente as migrações já registradas. O [estado por fase](remaining-phases.md) registra as migrações e configurações atuais.
 
 ## Supabase após obter a URL
 
@@ -30,7 +30,7 @@ Em **Authentication → URL Configuration**:
 
 Nesta publicação, `ORIGEM` é `https://hub-one-azure.vercel.app`. Não use o endereço interno do servidor nem mantenha curingas amplos para domínios de terceiros.
 
-Em **Realtime → Settings**, desative **Allow public access** antes do piloto. Os clientes usam rooms privados e as políticas já estão no banco. Essa configuração ainda não foi inspecionada/alterada nesta sessão.
+Em **Realtime → Settings**, desative **Allow public access** antes do piloto. Os clientes usam rooms privados e as políticas já estão no banco. Essa configuração foi aplicada e lida novamente como `private_only=true` em 20/10/2026.
 
 ## Criar a primeira conta
 

@@ -1,0 +1,27 @@
+[
+  {
+    "check": "invalid-job-secret",
+    "status": 401,
+    "expected": 401
+  },
+  {
+    "check": "message-without-session",
+    "status": 401,
+    "expected": 401
+  },
+  {
+    "check": "foreign-origin",
+    "status": 403,
+    "expected": 403
+  },
+  {
+    "check": "scheduled-job",
+    "status": 200,
+    "expected": 200,
+    "result": {
+      "ok": true,
+      "processed": 0,
+      "sent": 0
+    }
+  }
+]

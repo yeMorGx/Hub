@@ -24,7 +24,7 @@ O usuário escolheu o dashboard escuro da Shakuro: timer em destaque, navegaçã
 
 ## Limites
 
-As superfícies implementadas ampliam o produto, mas não comprovam todas as fases ativas. Colaboração inclui documentos Markdown, check-ins, pautas/atas e notificações; conversas incluem respostas, reações, mensagens fixadas, busca, menções e anexos. Gestão reúne relatórios com exportação CSV/PDF, metas, escalas e trocas, ausências, datas do time e clientes/projetos. A RPC de lembretes no app está aplicada; a função de push não foi implantada e aguarda aprovação explícita.
+As superfícies implementadas ampliam o produto, mas não comprovam todas as fases ativas. Colaboração inclui documentos Markdown, check-ins, pautas/atas e notificações; conversas incluem respostas, reações, mensagens fixadas, busca, menções e anexos. Gestão reúne relatórios com exportação CSV/PDF, metas, escalas e trocas, ausências, datas do time e clientes/projetos. A RPC de lembretes no app está aplicada; a função de push está publicada após autorização explícita, com chave privada restrita ao servidor e adesão por dispositivo. A entrega real ainda precisa ser confirmada em um navegador inscrito.
 
 Integrações apresentam calendários Google/Outlook, conflitos de sincronização, webhooks e auditoria conforme o papel do usuário. OAuth Google/Outlook, SSO Azure e salas LiveKit dependem de configuração externa e não estão ativos. Preparar uma chamada na interface não comprova áudio/vídeo real. Pausa de timer continua fora da entrega. Horas têm duração oficial calculada no servidor; indicadores de Presence não são prova de identidade ou frequência. Não colocar credenciais administrativas no cliente, nem dados protegidos no cache do service worker.
 

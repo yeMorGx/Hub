@@ -6,8 +6,8 @@ Continuação solicitada: avançar por todas as fases, mantendo o trabalho indep
 
 | Fase | Código entregue | Situação operacional |
 | --- | --- | --- |
-| 0–1 | Auth, MFA, times/papéis, RLS, Presence, canais/DMs, timer, agenda/RSVP e PWA | Base já publicada; primeiro cadastro/MFA e duas contas ainda precisam ser exercitados. Configuração Auth/Realtime no painel continua pendente de confirmação. |
-| 2 | Threads, reações, menções, fixadas, busca, arquivos/imagens/áudio privados; Kanban; check-ins diários/semanais; Markdown; pautas/atas; notificações e lembretes internos | Migração e RPCs aplicadas. Push implementado, **não ativado**: falta autorização específica para gravar configuração privada e publicar a função. |
+| 0–1 | Auth, MFA, times/papéis, RLS, Presence, canais/DMs, timer, agenda/RSVP e PWA | Usuário informou cadastro/MFA concluídos. URLs Auth conferidas e Realtime privado configurado. Validação entre duas contas ainda pendente. |
+| 2 | Threads, reações, menções, fixadas, busca, arquivos/imagens/áudio privados; Kanban; check-ins diários/semanais; Markdown; pautas/atas; notificações e lembretes internos | Migrações e RPCs aplicadas. Push autorizado e serviço ativado; entrega em aparelho aguarda inscrição/teste. |
 | 3 | Relatórios por pessoa/projeto/cliente com CSV/PDF; metas e timer esquecido; escalas/trocas; ausências com aprovação; datas opcionais | Migração aplicada; UI e testes locais concluídos. Sem gravações de negócio feitas em contas de produção para validar a interface. |
 | 4 | Microsoft/Azure OAuth SSO; auditoria; canais e arquivos restritos; OAuth/sincronização Google/Outlook; webhooks de entrada; comandos no chat | Auditoria e receptor `hub-webhook` aplicados/publicados. SSO e calendários aguardam configuração de provedores/variáveis. |
 | 5 | LiveKit voz/vídeo/tela; leitor offline cifrado; Tauri com atalho do timer e não lidas | Leitor e código de chamada entregues. LiveKit aguarda credenciais. Instaladores **sem assinatura** gerados em Windows/macOS/Linux; instalação e execução nativas ainda não exercitadas. |
@@ -33,7 +33,7 @@ Consulta remota confirmou **32/32 tabelas públicas com RLS**. Políticas privad
 
 `hub-webhook` está ACTIVE, versão 1. Usa token exclusivo no cabeçalho, autorização de canal, limite de payload/frequência e `event_id` idempotente. Não há token de webhook de produção criado nesta entrega.
 
-**Somente local, não aplicada:** `20261020030000_notification_delivery.sql`. A revisão automática rejeitou a gravação de VAPID/job secret em tabela privada e publicação de `hub-notifications` com `verify_jwt:false`; a pergunta de autorização específica permanece pendente. O código valida JWT/AAL2/autoria para usuários e segredo para cron. Não contornar esse bloqueio com outro método. O frontend mantém push desabilitado.
+**Push aplicado:** autorização específica recebida; `20261020110148_notification_delivery.sql` substitui o nome local provisório anterior. `hub-notifications` ACTIVE v1 e cron por minuto conferidos. Apenas chave VAPID pública/flag ficam na Vercel; chave privada e segredo permanecem em tabela privada. [Ativação e limites](push-activation.md).
 
 ## Evidência e limitações
 
