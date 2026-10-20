@@ -1,0 +1,44 @@
+
+> hub-team@0.1.0 test:public
+> node --test scripts/public.test.mjs
+
+✔ sem sessão, / exige login (674.215199ms)
+✔ sem sessão, /mfa exige login (279.119867ms)
+✔ /login responde sem permitir cache compartilhado (204.39928ms)
+✔ /reset-password responde sem permitir cache compartilhado (283.348906ms)
+✔ /auth/callback retorna ao login quando o link é incompleto/inválido (334.127336ms)
+✔ /auth/callback?next=https%3A%2F%2Fexample.invalid%2F retorna ao login quando o link é incompleto/inválido (224.073503ms)
+✔ /auth/confirm retorna ao login quando o link é incompleto/inválido (183.567973ms)
+✔ /auth/confirm?token_hash=not-a-real-token&type=unknown retorna ao login quando o link é incompleto/inválido (169.73195ms)
+✔ manifest contém escopo e ícones da PWA (194.073771ms)
+✔ ícone 180 é um PNG com dimensões corretas (614.742448ms)
+✔ ícone 192 é um PNG com dimensões corretas (254.528292ms)
+✔ ícone 512 é um PNG com dimensões corretas (148.436813ms)
+✔ service worker é servido para a raiz sem cache persistente do script (35.852502ms)
+✔ página offline está disponível sem sessão (32.194098ms)
+✔ /demo retorna o HTML público esperado antes da hidratação (265.544165ms)
+✔ /demo/kanban retorna o HTML público esperado antes da hidratação (275.850983ms)
+✔ /api/integrations/status recusa acesso sem sessão ou segredo de job (160.685432ms)
+✔ /api/integrations/jobs recusa acesso sem sessão ou segredo de job (347.49846ms)
+✔ /api/livekit/token exige sessão MFA para POST de origem permitida (167.192251ms)
+✔ /api/livekit/access exige sessão MFA para POST de origem permitida (148.624611ms)
+✔ /api/integrations/google/sync exige sessão MFA para POST de origem permitida (154.898993ms)
+✔ /api/integrations/google/disconnect exige sessão MFA para POST de origem permitida (194.07177ms)
+✔ calendário Outlook responde ao desafio como texto sem refletir HTML executável (183.319009ms)
+✔ demonstração operacional é pública e declara seus dados fictícios (288.693855ms)
+✔ convite público responde sem cache e sem enviar referência (266.400017ms)
+✔ /api/team-invitations exige sessão MFA e rejeita origem externa (277.139414ms)
+✔ /api/team-invitations/accept exige sessão MFA e rejeita origem externa (289.292047ms)
+✔ convite pendente: token inválido é recusado; cookie é privado e pode ser descartado (710.873887ms)
+✔ prévia do calendário é pública e declara seus dados fictícios (224.748794ms)
+✔ site público apresenta o produto e leva à central de downloads (347.314598ms)
+✔ downloads expõe o instalador oficial e informa versão e assinatura pendente (232.673577ms)
+✔ marketing publica apenas as páginas públicas no sitemap e serve imagem social (391.229544ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8709.988038

@@ -37,3 +37,11 @@ A ausência de assinatura de código é informada na central e no FAQ. Publicar 
 - Quatro capturas em `validation/marketing/`. Imagens foram carregadas antes das capturas; uma captura inicial com imagem lazy fora da viewport foi descartada.
 
 Publicação e checks em produção são registrados ao concluir o deployment.
+
+## Publicação concluída
+
+- https://hub-one-azure.vercel.app/site
+- https://hub-one-azure.vercel.app/download
+- Deployment `dpl_3Z2MUArkXCcBHn1MRgjJNfxQKKzw`, READY; 32/32 verificações HTTP públicas em produção passaram, incluindo as rotas privadas existentes. [Deployment](validation/marketing/deployment.json) e [log](validation/marketing/production-http.log).
+- Download público do instalador confirmado por GET anônimo e por clique no Chromium, com SHA-256 idêntico ao artefato Windows aprovado.
+- Documentação visual revisada separadamente; tokens públicos foram acrescentados em um escopo próprio de DESIGN.md e `.impeccable/design.json`, preservando a autoridade visual do aplicativo.
