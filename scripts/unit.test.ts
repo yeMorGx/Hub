@@ -451,3 +451,37 @@ test("verificação LiveKit é opt-in, somente leitura e não expõe erros do pr
     },
   );
 });
+
+test("verificação LiveKit distingue credenciais recusadas de rede sem refletir dados do provedor", async () => {
+  const { verifyLivekitConfiguration } = await import(
+    "../lib/livekit/verify-configuration.mjs"
+  );
+  const env = {
+    HUB_VERIFY_LIVEKIT: "1",
+    LIVEKIT_URL: "wss://fixture.livekit.cloud",
+    LIVEKIT_API_KEY: "fixture-key",
+    LIVEKIT_API_SECRET: "fixture-secret",
+  };
+  for (const [failure, expected] of [
+    [{ status: 401 }, /credenciais/],
+    [{ status: 403 }, /credenciais/],
+    [{ status: 404 }, /URL WebSocket/],
+    [{ status: 503 }, /HTTP 5xx/],
+    [new TypeError("fixture-secret"), /falha de conexão/],
+    [{ name: "TimeoutError" }, /tempo limite/],
+  ] as const) {
+    await assert.rejects(
+      () =>
+        verifyLivekitConfiguration(env, () => ({
+          listRooms: async () => {
+            throw failure;
+          },
+        })),
+      (error) => {
+        assert.ok(error instanceof Error);
+        assert.ok(!error.message.includes("fixture-secret"));
+        return expected.test(error.message);
+      },
+    );
+  }
+});
