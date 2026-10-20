@@ -85,3 +85,8 @@ Código `8c71025`, deployment `dpl_GV1JJtczg93jhZDx7mYpn3FC2qEM`, **READY**, no 
 ## LiveKit configurado · 2026-10-20
 
 Após o cadastro/correção das credenciais pelo usuário, o novo deploy executou `HUB_VERIFY_LIVEKIT=1` e confirmou autenticação na consulta de leitura à API de salas. Código de origem `97ce9f1`, deployment `dpl_4vBFWx39U1PeisxEhZR8sJMr6gRP` READY no alias estável. 29 HTTP de produção passaram. Nenhuma sala ou conta foi criada pelo check e nenhum segredo foi impresso ou retirado da Vercel. Áudio, vídeo e tela com usuários reais ainda precisam de validação. [Evidência](validation/livekit-activation/success.json).
+
+
+## Ponte desktop Windows · 2026-10-20
+
+Frontend `1727770`, deployment `dpl_75Pdia5EWHUvh2dwpsKaqcmY7xHP` READY e 29 HTTP de produção passando. Ajusta overlay de não lidas no Windows e libera recursos de imagem, preservando o comportamento web. A ponte requer as permissões do novo instalador 0.1.1; clientes anteriores mantêm o título de não lidas como alternativa. [Teste nativo e instalador](windows-desktop.md).

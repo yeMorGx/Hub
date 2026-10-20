@@ -1,0 +1,26 @@
+{
+  "platform": "Windows",
+  "installer": "Hub_0.1.1_x64-setup.exe",
+  "sha256": "03994f7b1e97493c513d229f861f99c87aedb2f736cc009bccbc9d6a2015a25b",
+  "signature": "NotSigned",
+  "signed": false,
+  "installed": true,
+  "windowOpened": true,
+  "loginPageLoaded": true,
+  "singleInstance": true,
+  "shortcutRestoredWindow": true,
+  "uninstalled": true,
+  "accountsCreated": 0,
+  "businessWrites": 0,
+  "runId": 39451467705,
+  "sourceCommit": "172777068dbe271df0334af8f020218ebf4177fe",
+  "artifactId": 12278927557,
+  "draftRelease": "https://github.com/yeMorGx/Hub/releases/tag/untagged-fdbab96ffab6178ad2f2",
+  "assetUploadRunId": 39452866615,
+  "assetBytes": 2315527,
+  "crates": {
+    "tauri": "2.12.4",
+    "tauri-plugin-global-shortcut": "2.4.1",
+    "tauri-plugin-single-instance": "2.5.4"
+  }
+}

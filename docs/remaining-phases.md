@@ -10,7 +10,7 @@ Continuação solicitada: avançar por todas as fases, mantendo o trabalho indep
 | 2 | Threads, reações, menções, fixadas, busca, arquivos/imagens/áudio privados; Kanban; check-ins diários/semanais; Markdown; pautas/atas; notificações e lembretes internos | Migrações e RPCs aplicadas. Push autorizado e serviço ativado; usuário confirmou entrega de push em DM no Brave. |
 | 3 | Relatórios por pessoa/projeto/cliente com CSV/PDF; metas e timer esquecido; escalas/trocas; ausências com aprovação; datas opcionais | Migração aplicada; UI e testes locais concluídos. Sem gravações de negócio feitas em contas de produção para validar a interface. |
 | 4 | Microsoft/Azure OAuth SSO; auditoria; canais e arquivos restritos; OAuth/sincronização Google/Outlook; webhooks de entrada; comandos no chat | Auditoria e `hub-webhook` publicados. Google OAuth/API e variáveis Production configuradas; conexão Google confirmada pelo usuário; falta validar sincronização manual e eventos. Outlook e Azure SSO aguardam configuração de provedor. |
-| 5 | LiveKit voz/vídeo/tela; leitor offline cifrado; Tauri com atalho do timer e não lidas | Leitor e código de chamada entregues. LiveKit configurado; API autenticada e deploy publicado. Teste de mídia entre duas contas ainda pendente. Instaladores **sem assinatura** gerados em Windows/macOS/Linux; instalação e execução nativas ainda não exercitadas. |
+| 5 | LiveKit voz/vídeo/tela; leitor offline cifrado; Tauri com atalho do timer e não lidas | Leitor e código de chamada entregues. LiveKit configurado; API autenticada e deploy publicado. Teste de mídia entre duas contas ainda pendente. Windows 0.1.1 sem assinatura: instalação, login renderizado, instância única, atalho e desinstalação testados em runner Windows. Prévia em rascunho. Assinatura e teste autenticado local pendentes; macOS/Linux mantêm as prévias anteriores. |
 | Opcional | Expo | Não implementado: o escopo o condiciona à insuficiência da PWA, ainda não demonstrada. |
 
 Prévia pública das novas superfícies: `/demo/operations`, com dados fictícios em memória e sem acesso ao banco do time. A rota `/` mantém sessão/AAL2. A prévia não é evidência de integração autenticada.
@@ -63,3 +63,7 @@ O endpoint autenticado confirmou `google: true`; a tela escondia o estado quando
 ### Complemento da agenda · 2026-10-20
 
 Visão mensal, semana de sete dias, navegação por datas e paginação de eventos entregues. A prévia pública `/demo/calendar` usa eventos fictícios e o mesmo componente. Build, 16 unitários em dois fusos, 94 SQL e 29 HTTP locais passaram; navegador desktop/mobile validado sem gravações reais. [Escopo e evidências](calendar-completion.md).
+
+### Desktop Windows · 2026-10-20
+
+Usuário escolheu Windows e não possui certificado. Prévia 0.1.1 testada nativamente e anexada a rascunho GitHub com SHA-256 verificado. O contador Windows usa overlay em vez da API de badge não suportada nessa plataforma. [Instalação, evidências e limitações](windows-desktop.md).
