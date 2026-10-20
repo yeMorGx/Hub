@@ -6,7 +6,7 @@ Continuação solicitada: avançar por todas as fases, mantendo o trabalho indep
 
 | Fase | Código entregue | Situação operacional |
 | --- | --- | --- |
-| 0–1 | Auth, MFA, times/papéis, convites por link e gestão de membros, RLS, Presence, canais/DMs, timer, agenda mensal/semanal/diária e RSVP e PWA | Usuário informou cadastro/MFA concluídos. URLs Auth conferidas e Realtime privado configurado. Troca de DM e entrega push confirmadas pelo usuário; demais fluxos manuais pendentes. |
+| 0–1 | Auth, MFA, times/papéis, convites por link e gestão de membros, RLS, Presence, canais/DMs, timer, agenda mensal/semanal/diária com RSVP e PWA | Usuário informou cadastro/MFA concluídos. URLs Auth conferidas e Realtime privado configurado. Troca de DM e entrega push confirmadas pelo usuário; demais fluxos manuais pendentes. |
 | 2 | Threads, reações, menções, fixadas, busca, arquivos/imagens/áudio privados; Kanban; check-ins diários/semanais; Markdown; pautas/atas; notificações e lembretes internos | Migrações e RPCs aplicadas. Push autorizado e serviço ativado; usuário confirmou entrega de push em DM no Brave. |
 | 3 | Relatórios por pessoa/projeto/cliente com CSV/PDF; metas e timer esquecido; escalas/trocas; ausências com aprovação; datas opcionais | Migração aplicada; UI e testes locais concluídos. Sem gravações de negócio feitas em contas de produção para validar a interface. |
 | 4 | Microsoft/Azure OAuth SSO; auditoria; canais e arquivos restritos; OAuth/sincronização Google/Outlook; webhooks de entrada; comandos no chat | Auditoria e `hub-webhook` publicados. Google OAuth/API e variáveis Production configuradas; conexão Google confirmada pelo usuário; falta validar sincronização manual e eventos. Outlook e Azure SSO aguardam configuração de provedor. |

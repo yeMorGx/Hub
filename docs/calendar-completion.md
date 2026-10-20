@@ -26,3 +26,9 @@ Entrega de 20/10/2026, após convites e gestão de membros. Complementa as Fases
 A verificação no navegador usa a prévia pública e um relógio fixado em 20/10/2026. A paginação usa respostas HTTP simuladas nos testes unitários. A suíte SQL é local/PGlite com contratos mínimos de Auth/Realtime; não substitui sessões reais. O fluxo autenticado completo com agenda real ainda deve ser exercitado pelo time. As duas configurações de fuso não demonstram todos os casos de horas repetidas durante mudança de horário de verão.
 
 [Logs e capturas](validation/calendar-completion/).
+
+## Publicação
+
+Código `8c71025`, deployment `dpl_GV1JJtczg93jhZDx7mYpn3FC2qEM`, **READY** no [Hub](https://hub-one-azure.vercel.app). Prévia: [calendário com dados fictícios](https://hub-one-azure.vercel.app/demo/calendar).
+
+Após a publicação, 29 testes HTTP passaram. A primeira execução recebeu HTTP 503 em duas consultas; as requisições independentes imediatas retornaram os status esperados (200 e 401), e a suíte completa foi repetida com zero falhas. Os dois logs foram preservados. Comando no ambiente cloud: `NODE_USE_ENV_PROXY=1 HUB_APP_URL=https://hub-one-azure.vercel.app npm run test:public`.

@@ -70,3 +70,8 @@ A tela agora atualiza o estado Google independentemente de falhas ao consultar c
 ## Chat e convites de equipe · 2026-10-20
 
 Correção do compositor de chat `5b93b60` publicada no deployment `dpl_3sBsmf4f3tSqmW8JLqeXzsPUfBLv`. Convites por link e gestão de membros `e4a9ec7` publicados em `dpl_6NxwxGBd28w3YXMHKPWzk464hGVo`, **READY**, com o mesmo alias de produção. Migração `20261020150000` aplicada; 94 SQL, 11 unitários e 28 HTTP locais passaram. Após o deploy, 28 HTTP públicos de produção passaram. Envio automático de convites por e-mail adiado pelo usuário; aceite real com segunda conta ainda requer validação manual. [Fluxos, verificações e capturas](team-invitations.md).
+
+
+## Agenda mensal e fins de semana · 2026-10-20
+
+Código `8c71025`, deployment `dpl_GV1JJtczg93jhZDx7mYpn3FC2qEM`, **READY**, no alias estável. Mês/semana/dia, sete dias na semana, eventos que atravessam dias e paginação de eventos. Sem novas migrações ou credenciais. Build, 94 SQL, 16 unitários em dois fusos, 29 HTTP locais e Chromium em duas larguras passaram. Em produção, 29 HTTP passaram na repetição completa após dois HTTP 503 transitórios na primeira execução. [Evidências e limites](calendar-completion.md).
