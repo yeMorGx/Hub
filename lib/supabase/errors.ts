@@ -5,6 +5,10 @@ export function errorMessage(error: unknown): string {
       : typeof error === "object" && error && "message" in error
         ? String(error.message)
         : "";
+  const code =
+    typeof error === "object" && error && "code" in error
+      ? String(error.code)
+      : "";
   const messages: Record<string, string> = {
     "Invalid login credentials":
       "E-mail ou senha incorretos. Confira e tente novamente.",
@@ -30,8 +34,18 @@ export function errorMessage(error: unknown): string {
     )
   )
     return message;
-  if (/rate limit|too many|security purposes/i.test(message))
-    return "Muitas tentativas. Aguarde um pouco antes de tentar novamente.";
+  if (
+    code === "over_email_send_rate_limit" ||
+    /email.*rate limit|rate limit.*email/i.test(message)
+  )
+    return "O envio de e-mail atingiu um limite temporário do serviço. Aguarde um pouco antes de tentar novamente.";
+  if (/security purposes/i.test(message))
+    return "O serviço pediu uma pausa antes de aceitar esta solicitação. Isso não confirma que você fez várias tentativas. Aguarde um pouco e tente novamente.";
+  if (
+    code === "over_request_rate_limit" ||
+    /rate limit|too many/i.test(message)
+  )
+    return "O serviço limitou temporariamente esta solicitação. Isso não significa necessariamente que você tentou várias vezes. Aguarde um pouco e tente novamente.";
   if (/password.*(least|characters|weak)/i.test(message))
     return "Use uma senha mais forte, com pelo menos 12 caracteres.";
   if (/TOTP|verification.*code|challenge.*expired/i.test(message))
