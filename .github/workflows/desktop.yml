@@ -7,6 +7,10 @@ on:
         type: choice
         options: [windows, all]
         default: windows
+      publishRun:
+        description: Successful Windows run to attach to an existing draft (empty builds installers)
+        type: string
+        default: ''
   push:
     branches: [codex/hub-foundation-kanban]
     paths: [src-tauri/**, scripts/windows-smoke.ps1, package.json, package-lock.json, .github/workflows/desktop.yml]
@@ -14,6 +18,7 @@ permissions:
   contents: read
 jobs:
   package:
+    if: ${{ inputs.publishRun == '' }}
     strategy:
       fail-fast: false
       matrix:
@@ -52,3 +57,17 @@ jobs:
             ${{ runner.temp }}/hub-desktop-evidence/**
           if-no-files-found: error
           retention-days: 14
+
+  publish-draft:
+    if: github.event_name == 'workflow_dispatch' && inputs.publishRun != ''
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Attach verified Windows installer to draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.publishRun }}
+        run: node scripts/publish-desktop-draft.mjs
