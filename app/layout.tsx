@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/manrope";
 import "./globals.css";
 import { ServiceWorkerRegistration } from "@/components/pwa";
+import { DesktopUpdate } from "@/components/desktop-update";
 export const metadata: Metadata = {
   title: "Hub — Seu time, conectado",
   description:
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body>
         {children}
         <ServiceWorkerRegistration />
+        <DesktopUpdate />
       </body>
     </html>
   );

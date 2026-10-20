@@ -10,8 +10,27 @@ fn show_main_window(app: &tauri::AppHandle) {
     }
 }
 
+#[tauri::command]
+fn open_desktop_update(version: String) -> Result<(), String> {
+    // Only official, stable Windows installers; never accept a caller-supplied URL.
+    let parts: Vec<&str> = version.split('.').collect();
+    if parts.len() != 3 || parts.iter().any(|p| p.is_empty() || p.len() > 6 || !p.bytes().all(|b| b.is_ascii_digit())) {
+        return Err("Versão inválida.".into());
+    }
+    #[cfg(target_os = "windows")]
+    {
+        let url = format!("https://github.com/yeMorGx/Hub/releases/download/desktop-v{0}/Hub_{0}_x64-setup.exe", version);
+        std::process::Command::new("explorer.exe").arg(url).spawn()
+            .map_err(|_| "Não foi possível abrir o navegador.".to_string())?;
+        Ok(())
+    }
+    #[cfg(not(target_os = "windows"))]
+    Err("Atualização disponível somente no Windows.".into())
+}
+
 fn main() {
     tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![open_desktop_update])
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             show_main_window(app);
         }))

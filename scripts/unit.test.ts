@@ -485,3 +485,14 @@ test("verificação LiveKit distingue credenciais recusadas de rede sem refletir
     );
   }
 });
+
+import { isNewerVersion, readDesktopRelease } from "../lib/desktop/updates";
+test("desktop compara versões numericamente e recusa prévias e valores malformados", () => {
+  assert.equal(isNewerVersion("0.1.10", "0.1.9"), true);
+  for (const version of ["0.1.1", "0.1.0", "0.1.2-beta", "https://evil.test", "1.2"]) assert.equal(isNewerVersion(version, "0.1.1"), false);
+});
+test("desktop só anuncia release estável publicada com instalador oficial", () => {
+  const release = { draft: false, prerelease: false, tag_name: "desktop-v0.1.2", assets: [{name: "Hub_0.1.2_x64-setup.exe", state: "uploaded", size: 100, browser_download_url: "https://github.com/yeMorGx/Hub/releases/download/desktop-v0.1.2/Hub_0.1.2_x64-setup.exe"}] };
+  assert.deepEqual(readDesktopRelease(release), {version: "0.1.2"});
+  for (const patch of [{draft:true}, {prerelease:true}, {tag_name:"v0.1.2"}, {assets:[]}, {assets:[{...release.assets[0],browser_download_url:"https://evil.test/app.exe"}]}]) assert.equal(readDesktopRelease({...release,...patch}), null);
+});
