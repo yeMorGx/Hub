@@ -6,7 +6,7 @@
 
 - Migração `20261020110148_notification_delivery.sql` aplicada e registrada no histórico; substitui o arquivo provisório `20261020030000_notification_delivery.sql`.
 - VAPID gerada com `web-push`; chave privada e segredo de agendamento armazenados somente em `private.delivery_settings` (RLS e ACL restrita a serviço).
-- `hub-notifications` publicada como ACTIVE v1; `verify_jwt:false` no gateway, com autenticação na própria função por JWT/AAL2/autoria ou segredo do agendamento.
+- `hub-notifications` publicada como ACTIVE v2; `verify_jwt:false` no gateway, com autenticação na própria função por JWT/AAL2/autoria ou segredo do agendamento.
 - Cron `hub-notifications`: `* * * * *`, ativo. Durante a preparação ficou pausado; só foi habilitado após a função responder corretamente.
 - Vercel Production: `NEXT_PUBLIC_VAPID_PUBLIC_KEY` e `NEXT_PUBLIC_PUSH_ENABLED=true`. Nenhuma chave privada foi configurada no frontend ou na Vercel.
 - Tipos do banco regenerados. Nenhuma conta ou inscrição fictícia foi criada em produção.
@@ -49,3 +49,5 @@ A migração `20261020133000_direct_message_notifications.sql` faz o envio de DM
 O payload mostra apenas “Você recebeu uma nova mensagem direta.”, sem remetente ou conteúdo da conversa. O cliente tenta iniciar a entrega após enviar; o job executado a cada minuto também processa a fila.
 
 Validação local: **86/86 testes SQL passaram**, cobrindo destinatário ativo, isolamento entre usuários, retry, DM com menção e canais comuns. O build de produção passou. A entrega real de uma nova DM no dispositivo ainda precisa ser confirmada pelo usuário.
+
+Publicação: commit `c4b7d1d`, migração aplicada e registrada no Supabase, função `hub-notifications` ACTIVE v2 e Vercel Production `dpl_7WwMHyt7DTfjKpSKXPG7tBf8gzKC` READY no alias oficial. A função recusou JWT inválido com HTTP 401. Após a publicação, um dispositivo continuava inscrito e o job retornava HTTP 200; nenhuma nova DM havia entrado na fila naquele momento.

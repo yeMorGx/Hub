@@ -57,7 +57,7 @@ Reutilizar `event_id` torna o retry idempotente. Limite de uma nova mensagem por
 
 ## Push — serviço ativado
 
-Autorização explícita recebida em 20/10/2026. Migração `20261020110148_notification_delivery.sql` aplicada; `hub-notifications` publicada como ACTIVE v1, com `verify_jwt:false` no gateway e validação própria de JWT/AAL2/autoria ou segredo de agendamento. VAPID privada e job secret ficam na tabela privada `private.delivery_settings`, inacessível a usuários anônimos/autenticados. Somente a chave VAPID pública e a flag foram cadastradas na Vercel Production.
+Autorização explícita recebida em 20/10/2026. Migrações `20261020110148_notification_delivery.sql` e `20261020133000_direct_message_notifications.sql` aplicadas; `hub-notifications` publicada como ACTIVE v2, com `verify_jwt:false` no gateway e validação própria de JWT/AAL2/autoria ou segredo de agendamento. Mensagens diretas, menções e lembretes entram na fila de push. VAPID privada e job secret ficam na tabela privada `private.delivery_settings`, inacessível a usuários anônimos/autenticados. Somente a chave VAPID pública e a flag foram cadastradas na Vercel Production.
 
 O job `hub-notifications` executa a cada minuto no Supabase; já houve execução bem-sucedida com retorno HTTP 200. Chamadas sem sessão ou com segredo incorreto retornaram 401, e origem não permitida retornou 403. Esses checks não demonstram entrega a um aparelho.
 
