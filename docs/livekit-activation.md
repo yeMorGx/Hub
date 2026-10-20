@@ -32,3 +32,11 @@ Após configurar, publicar novamente, conferir comunicação com a API de salas 
 ## Publicação da preparação
 
 Código `f264930`, deployment `dpl_BQdHgMyoxdQsn9XgW5JuZNa8JK71` READY em https://hub-one-azure.vercel.app. 29 HTTP locais e 29 de produção passaram; `npx tsc --noEmit` passou com as fixtures incluídas. A prévia pública foi conferida no navegador: zero erros JS, zero consultas de status autenticado e zero escritas. Não há configuração LiveKit nem chamada real concluída.
+
+## Tentativa de ativação com credenciais · 20/10/2026
+
+O usuário criou projeto e cadastrou as três variáveis em Production. A presença dos nomes foi conferida sem retirar o segredo da Vercel. Uma verificação opt-in (`--build-env HUB_VERIFY_LIVEKIT=1`) autentica somente uma consulta de leitura à API de salas durante o build. Não cria salas, remove participantes ou publica informações das salas. O verificador é inativo em deploys sem essa flag.
+
+A primeira consulta não autenticou; a repetição com diagnóstico explícito confirmou resposta **HTTP 401/403**. Dois deploys falharam antes do build Next.js e não substituíram o alias de produção. A configuração ainda não está ativada. 18 testes unitários e TypeScript passaram, incluindo distinção de falhas de autenticação/rede e ausência de dados sensíveis nos erros. [Evidência](validation/livekit-activation/).
+
+**Dependência do usuário:** conferir a URL do projeto e substituir `LIVEKIT_API_KEY` / `LIVEKIT_API_SECRET` na Vercel Production por um novo par obtido na página de API Keys desse mesmo projeto. Não usar token de participante, chave de outra integração ou credenciais de outro projeto. Depois de salvar, repetir o deploy com a verificação. Nenhuma chave deve ser enviada pelo chat.

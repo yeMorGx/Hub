@@ -45,7 +45,7 @@ O botão “Entrar com Microsoft” usa o OAuth Azure do Supabase; MFA/AAL2 cont
 
 ## Chamadas LiveKit
 
-O usuário escolheu esta etapa e ainda não possui projeto LiveKit Cloud. A integração foi revisada; as três variáveis não estão na Vercel Production. Próximo passo: criar conta/projeto **Hub**. [Preparação, roteiro e limites](livekit-activation.md).
+O usuário criou o projeto LiveKit Cloud e cadastrou as três variáveis na Vercel Production. A consulta autenticada ao provedor foi recusada com HTTP 401/403; os deploys de ativação foram interrompidos e o alias anterior foi preservado. Próximo passo: corrigir o par API Key/Secret e conferir a URL do mesmo projeto. [Preparação, roteiro e limites](livekit-activation.md).
 
 Cadastre somente no servidor: `LIVEKIT_URL` (wss/https do projeto), `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`. O navegador recebe apenas token temporário e URL, nunca o segredo. Tokens são emitidos para o canal autorizado e a identidade vem da sessão verificada.
 

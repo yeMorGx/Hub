@@ -1,0 +1,26 @@
+{
+  "codeCommit": "45a5f63",
+  "configuredNamesPresent": [
+    "LIVEKIT_URL",
+    "LIVEKIT_API_KEY",
+    "LIVEKIT_API_SECRET"
+  ],
+  "configurationValid": false,
+  "providerCheck": "HTTP 401/403 credentials or permissions rejected",
+  "attempts": [
+    {
+      "id": "dpl_7SidEnq1MGu1zHXNQ12P1pxkyvS7",
+      "state": "ERROR"
+    },
+    {
+      "id": "dpl_4eUYba4EiS8eyzMxoT4zvZKVEwDY",
+      "state": "ERROR"
+    }
+  ],
+  "productionReplaced": false,
+  "unitTestsPassed": 18,
+  "typescriptPassed": true,
+  "realRoomsCreated": 0,
+  "realCallsTested": false,
+  "existingProductionLoginStatus": 200
+}
