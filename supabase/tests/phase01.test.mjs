@@ -804,7 +804,7 @@ scenario('Colaboração: menções notificam somente participantes, sem duplicar
  assert.equal(await count('select count(*) from public.notifications'),1);
  const n=await scalar('select id from public.notifications');await rpc('mark_notification_read',[n]);
  assert.ok(await scalar('select read_at from public.notifications'));
- await login(users.bob);assert.equal(await count('select count(*) from public.notifications'),0);
+ await login(users.bob);assert.equal(await count('select count(*) from public.notifications where message_id=$1',[msg]),0);
  await login(users.alice);
  await sqlError('select public.send_rich_message($1,$2,$3,$4,$5,$6,$7)',[ids.general,randomUUID(),'@canal',null,[],[],true],'42501');
 });
@@ -968,7 +968,7 @@ scenario('Lembretes: reunião e timer são próprios, deduplicados e exigem MFA'
  await login(users.alice);await rpc('refresh_my_reminders',[ids.red]);await rpc('refresh_my_reminders',[ids.red]);
  assert.equal(await count('select count(*) from public.notifications where event_id=$1',[event]),1);
  assert.equal(await count("select count(*) from public.notifications where kind='timer'"),1);
- await login(users.bob);assert.equal(await count('select count(*) from public.notifications'),0);
+ await login(users.bob);assert.equal(await count("select count(*) from public.notifications where kind in ('meeting','timer')"),0);
  await login(users.outsider);await sqlError('select public.refresh_my_reminders($1)',[ids.red],'42501');
  await login(users.alice,'aal1');await sqlError('select public.refresh_my_reminders($1)',[ids.red],'42501');
 });
@@ -998,11 +998,44 @@ scenario('Calendário: resolução pode restaurar um evento cancelado com versã
 scenario('Entrega push: notificações lidas não são reclamadas e retries respeitam lease/limite',async()=>{
  await login(users.leader);const readMessage=await rpc('send_rich_message',[ids.general,randomUUID(),'Já lida',null,[],[users.alice]]);
  await login(users.alice);const readNotification=await scalar('select id from public.notifications where message_id=$1',[readMessage]);await rpc('mark_notification_read',[readNotification]);
- await db.exec('reset role;set role service_role');assert.equal(await count('select count(*) from public.claim_notification_deliveries()'),0);
+ await db.exec('reset role;set role service_role');assert.equal(await count('select count(*) from public.claim_notification_deliveries($1)',[readMessage]),0);
  await login(users.leader);const message=await rpc('send_rich_message',[ids.general,randomUUID(),'Nova menção',null,[],[users.alice]]);
  await db.exec('reset role;set role service_role');let claimed=(await query('select id,delivery_attempts from public.claim_notification_deliveries($1)',[message])).rows;
  assert.equal(claimed.length,1);assert.equal(claimed[0].delivery_attempts,1);assert.equal(await count('select count(*) from public.claim_notification_deliveries($1)',[message]),0);
  await db.exec('reset role');await query("update public.notifications set delivery_claimed_at=clock_timestamp()-interval '6 minutes',delivery_attempts=3 where id=$1",[claimed[0].id]);
  await db.exec('set role service_role');claimed=(await query('select id,delivery_attempts from public.claim_notification_deliveries($1)',[message])).rows;assert.equal(claimed[0].delivery_attempts,4);
  await db.exec('reset role');await query("update public.notifications set delivery_claimed_at=clock_timestamp()-interval '6 minutes' where id=$1",[claimed[0].id]);await db.exec('set role service_role');assert.equal(await count('select count(*) from public.claim_notification_deliveries($1)',[message]),0);
+});
+scenario('Push: DM comum notifica só o destinatário e retries/menções não duplicam o aviso',async()=>{
+ await login(users.alice);
+ const key=randomUUID();
+ const message=await rpc('send_message',[ids.dm,key,'Mensagem direta']);
+ assert.equal(await rpc('send_message',[ids.dm,key,'Retry']),message);
+ const rich=await rpc('send_rich_message',[ids.dm,randomUUID(),'DM com menção',null,[],[users.bob,users.outsider]]);
+ assert.equal(await count('select count(*) from public.notifications where message_id=$1',[message]),0);
+ await login(users.bob);
+ assert.equal(await count('select count(*) from public.notifications where message_id=$1',[message]),1);
+ assert.equal(await scalar('select kind from public.notifications where message_id=$1',[message]),'message');
+ assert.equal(await count('select count(*) from public.notifications where message_id=$1',[rich]),1);
+ await login(users.leader);
+ assert.equal(await count('select count(*) from public.notifications where message_id=$1',[message]),0);
+ await login(users.outsider);
+ assert.equal(await count('select count(*) from public.notifications where message_id=$1',[rich]),0);
+ await db.exec('reset role;set role service_role');
+ const claimed=(await query('select user_id,kind from public.claim_notification_deliveries($1)',[message])).rows;
+ assert.deepEqual(claimed,[{user_id:users.bob,kind:'message'}]);
+});
+scenario('Push: DM não cria aviso para destinatário desativado',async()=>{
+ await login(users.admin);
+ await rpc('set_team_member',[ids.red,users.bob,'member',false]);
+ await login(users.alice);
+ const message=await rpc('send_message',[ids.dm,randomUUID(),'Destinatário desativado']);
+ await db.exec('reset role');
+ assert.equal(await count('select count(*) from public.notifications where message_id=$1',[message]),0);
+});
+scenario('Push: mensagem comum em canal não cria aviso de DM',async()=>{
+ await login(users.leader);
+ const message=await rpc('send_message',[ids.general,randomUUID(),'Conversa do canal']);
+ await db.exec('reset role');
+ assert.equal(await count('select count(*) from public.notifications where message_id=$1',[message]),0);
 });

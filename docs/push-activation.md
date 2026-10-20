@@ -39,3 +39,13 @@ Se a permissão de notificações estiver concedida mas a inscrição push falha
 No diagnóstico de 20/10/2026, a chave pública de produção era um ponto P-256 válido de 65 bytes e correspondia à configuração do serviço. Nenhum dispositivo estava inscrito naquele momento; a configuração do Brave e a entrega no aparelho ainda dependem de validação pelo usuário.
 
 O fluxo solicita permissão diretamente no clique, antes de aguardar o service worker, e diferencia falhas de permissão, inicialização, inscrição no navegador e registro no Hub. A espera pelo service worker tem limite de 15 segundos. A interface só restaura o estado ativo de uma inscrição local quando ela pertence à conta atual.
+
+## Mensagens diretas
+
+Após a ativação no Brave, havia um dispositivo registrado, mensagens diretas recentes e nenhuma notificação gerada. A implementação anterior criava avisos de chat somente para menções explícitas; uma DM comum não entrava na fila.
+
+A migração `20261020133000_direct_message_notifications.sql` faz o envio de DM criar uma notificação do tipo `message` para o outro participante ativo. A criação ocorre na mesma transação da mensagem, inclusive no envio básico; o identificador da mensagem mantém o retry idempotente e evita duplicação se também houver menção. O serviço revalida a participação antes de enviar o push. Mensagens comuns em canais não geram esse aviso de DM; menções continuam gerando o aviso correspondente.
+
+O payload mostra apenas “Você recebeu uma nova mensagem direta.”, sem remetente ou conteúdo da conversa. O cliente tenta iniciar a entrega após enviar; o job executado a cada minuto também processa a fila.
+
+Validação local: **86/86 testes SQL passaram**, cobrindo destinatário ativo, isolamento entre usuários, retry, DM com menção e canais comuns. O build de produção passou. A entrega real de uma nova DM no dispositivo ainda precisa ser confirmada pelo usuário.

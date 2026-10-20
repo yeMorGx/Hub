@@ -174,8 +174,8 @@ export function PushSettings({ hub }: { hub: HubController }) {
     <section className="push-settings">
       <h3>Notificações neste dispositivo</h3>
       <p>
-        Receba menções e lembretes. No iPhone, instale a PWA na tela inicial
-        para ativar.
+        Receba mensagens diretas, menções e lembretes. No iPhone, instale a PWA
+        na tela inicial para ativar.
       </p>
       <button
         className="outline-button"

@@ -55,7 +55,7 @@ Deno.serve(async request=>{
    let retry=false;
    await Promise.all((subscriptions||[]).map(async s=>{
     if(!validEndpoint(s.endpoint)){await admin.from('push_subscriptions').delete().eq('id',s.id);return;}
-    try{await webpush.sendNotification({endpoint:s.endpoint,keys:{p256dh:s.p256dh,auth:s.auth_key}},JSON.stringify({id:n.id,title:'Hub',body:n.kind==='mention'?'Você recebeu uma nova menção.':n.kind==='meeting'?'Uma reunião começa nos próximos 15 minutos.':n.kind==='timer'?'Seu timer passou do limite de alerta configurado.':'Há uma atualização para você.',url:'https://hub-one-azure.vercel.app/?inbox=1'}),{vapidDetails:{subject:'https://hub-one-azure.vercel.app',publicKey:cfg.public_key,privateKey:cfg.private_key},TTL:900,timeout:5000});sent++;}
+    try{await webpush.sendNotification({endpoint:s.endpoint,keys:{p256dh:s.p256dh,auth:s.auth_key}},JSON.stringify({id:n.id,title:'Hub',body:n.kind==='message'?'Você recebeu uma nova mensagem direta.':n.kind==='mention'?'Você recebeu uma nova menção.':n.kind==='meeting'?'Uma reunião começa nos próximos 15 minutos.':n.kind==='timer'?'Seu timer passou do limite de alerta configurado.':'Há uma atualização para você.',url:'https://hub-one-azure.vercel.app/?inbox=1'}),{vapidDetails:{subject:'https://hub-one-azure.vercel.app',publicKey:cfg.public_key,privateKey:cfg.private_key},TTL:900,timeout:5000});sent++;}
     catch(e){const status=(e as {statusCode?:number}).statusCode;if(status===404||status===410)await admin.from('push_subscriptions').delete().eq('id',s.id);else retry=true;}
    }));
    if(!retry)await admin.from('notifications').update({delivered_at:new Date().toISOString()}).eq('id',n.id);

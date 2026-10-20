@@ -535,7 +535,7 @@ export function LiveCollaboration({
               <div className="workspace-section-heading">
                 <div>
                   <h2>Seu contexto, em dia</h2>
-                  <p>Menções e avisos dos times aos quais você tem acesso.</p>
+                  <p>Mensagens diretas, menções e avisos dos seus times.</p>
                 </div>
               </div>
               {data.notifications.length ? (
@@ -548,11 +548,13 @@ export function LiveCollaboration({
                       <Bell size={20} />
                       <div>
                         <strong>
-                          {n.kind === "mention"
-                            ? "Você foi mencionado em uma conversa"
-                            : n.kind === "meeting"
-                              ? "Uma reunião está próxima"
-                              : "Novo aviso do time"}
+                          {n.kind === "message"
+                            ? "Você recebeu uma mensagem direta"
+                            : n.kind === "mention"
+                              ? "Você foi mencionado em uma conversa"
+                              : n.kind === "meeting"
+                                ? "Uma reunião está próxima"
+                                : "Novo aviso do time"}
                         </strong>
                         <small>
                           {new Date(n.created_at).toLocaleString("pt-BR")}
