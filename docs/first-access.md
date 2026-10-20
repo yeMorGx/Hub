@@ -2,13 +2,13 @@
 
 ## Estado atual
 
-O usuário ainda não tem conta e o aplicativo não tem URL pública. O build está disponível no ambiente de desenvolvimento. Publicar esse ambiente não cria uma hospedagem pública do Hub.
+O aplicativo está publicado em **https://hub-one-azure.vercel.app**, no projeto Vercel `yemorgxs-projects/hub`. O usuário ainda não criou sua conta. O build de produção e 16 checks HTTP da URL pública passaram; os callbacks do Supabase ainda precisam ser configurados antes do primeiro cadastro. Publicar o ambiente de desenvolvimento é uma etapa separada da hospedagem do app.
 
-O código da aplicação está preparado na branch `codex/hub-foundation-kanban`, para revisão em PR rascunho. O commit inicial de `main` contém apenas a base anterior. Use a branch da aplicação ao configurar uma hospedagem de revisão; a publicação de produção deve usar a versão revisada. Não houve merge nem deploy nesta etapa.
+O código da aplicação está preparado na branch `codex/hub-foundation-kanban`, para revisão em PR rascunho. O commit inicial de `main` contém apenas a base anterior. Use a branch da aplicação ao configurar uma hospedagem de revisão; a publicação de produção deve usar a versão revisada. Não houve merge. O deploy foi feito pela CLI a partir do checkout da aplicação; a integração automática com o GitHub não foi configurada.
 
 ## Publicar o frontend
 
-O caminho sugerido é Vercel com o preset Next.js. Não há integração ou credencial de hospedagem disponível nesta sessão; a publicação não foi executada.
+A publicação na Vercel já foi executada com autorização do usuário, após login oficial. O preset Next.js e os comandos de instalação/build estão em `vercel.json`. As instruções abaixo servem para reproduzir a hospedagem ou conectar a integração Git futuramente. Veja o [registro do deploy](vercel-deployment.md).
 
 1. Revise a branch `codex/hub-foundation-kanban` do repositório `yeMorGx/Hub`, preservando o `.env.local` ignorado e sem chaves administrativas. O PR rascunho está identificado na entrega da conversa.
 2. Importe esse repositório na Vercel. A raiz do projeto é a raiz do repositório, e o comando de build é `npm run build`.
@@ -28,7 +28,7 @@ Em **Authentication → URL Configuration**:
 - Autorize também `ORIGEM/auth/callback?next=/reset-password` para o fluxo de recuperação implementado.
 - Se usar templates por `token_hash`, ajuste-os para o handler `/auth/confirm`, conforme `supabase-app-integration.md`.
 
-Substitua `ORIGEM` pelo domínio real. Não use o endereço interno do servidor nem mantenha curingas amplos para domínios de terceiros.
+Nesta publicação, `ORIGEM` é `https://hub-one-azure.vercel.app`. Não use o endereço interno do servidor nem mantenha curingas amplos para domínios de terceiros.
 
 Em **Realtime → Settings**, desative **Allow public access** antes do piloto. Os clientes usam rooms privados e as políticas já estão no banco. Essa configuração ainda não foi inspecionada/alterada nesta sessão.
 

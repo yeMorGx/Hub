@@ -2,6 +2,8 @@
 
 App instalável para comunicação, agenda e controle de horas do time.
 
+**Publicado:** https://hub-one-azure.vercel.app · [Estado do deploy e primeiro acesso](docs/vercel-deployment.md).
+
 O banco das Fases 0 e 1 e o incremento Kanban da Fase 2 estão aplicados no Supabase. O frontend segue a
 referência escura da Shakuro escolhida pelo usuário. A rota principal agora
 implementa login/MFA, onboarding e integração de horas, eventos, canais e

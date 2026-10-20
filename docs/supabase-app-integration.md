@@ -43,7 +43,7 @@ Quando houver uma URL pública do app:
 3. Em Realtime → Settings, desative **Allow public access** antes do piloto. Todas as assinaturas implementadas são privadas e usam os tópicos previstos nas políticas.
 4. Sirva por HTTPS para instalação PWA e funcionamento normal das APIs do navegador fora de localhost.
 
-Estas configurações de hospedagem/Realtime não foram alteradas automaticamente nesta etapa. A URL pública de produção ainda não foi definida.
+Estas configurações de hospedagem/Realtime não foram alteradas automaticamente nesta etapa. O app foi publicado posteriormente em https://hub-one-azure.vercel.app. As configurações Auth/Realtime acima continuam pendentes; veja `vercel-deployment.md`.
 
 ## Fluxos implementados
 

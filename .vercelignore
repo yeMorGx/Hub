@@ -1,0 +1,16 @@
+/.agents/
+/.impeccable/
+/.git/
+/.vercel/
+/.next/
+/node_modules/
+/docs/
+/supabase/
+/scripts/
+/.env*
+/skills-lock.json
+/AGENTS.md
+/DESIGN.md
+/PRODUCT.md
+/design-qa.md
+/README.md
