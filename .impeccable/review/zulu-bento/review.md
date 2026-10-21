@@ -19,4 +19,8 @@ Capturas desktop e celular confirmam os blocos Bento, imagem doméstica, leitura
 
 ## Limites
 
-Não é auditoria integral de acessibilidade nem validação de sessão autenticada, MFA, RLS ou mutações reais. Os callbacks/RPCs existentes foram preservados; formulários foram exercitados em fixture local. Não há novo código nativo nem novo instalador nesta entrega. Publicação e verificação pública serão registradas separadamente.
+Não é auditoria integral de acessibilidade nem validação de sessão autenticada, MFA, RLS ou mutações reais. Os callbacks/RPCs existentes foram preservados; formulários foram exercitados em fixture local. Não há novo código nativo nem novo instalador nesta entrega. Publicação e verificação pública registradas em `deployment.json`.
+
+## Produção
+
+Vercel confirmou READY e o alias público. Passaram 32 checks HTTP e os seis cenários do navegador (cinco larguras de tela mais fixture de formulário). Imagem local respondeu no navegador. Evidências em `production-browser.jsonl`, `production-http.log` e capturas `production-1440.png`/`production-390.png`. O teste de imagem usa fetch do navegador para respeitar o proxy de rede do ambiente.

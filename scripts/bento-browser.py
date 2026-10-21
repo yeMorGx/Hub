@@ -18,7 +18,7 @@ with sync_playwright() as p:
   assert page.get_by_role('radiogroup',name='Visualização da agenda').count()==1
   assert page.locator('.today-office-person .avatar [data-slot=avatar-fallback]').count()==1
   assert '/dashboard/home-office.webp' in page.locator('.today-home-office').evaluate('e=>getComputedStyle(e,"::before").backgroundImage')
-  assert page.request.get(BASE+'/dashboard/home-office.webp').ok
+  assert page.evaluate('(url)=>fetch(url).then(response=>response.ok)', BASE+'/dashboard/home-office.webp')
   blocks={c:page.locator('.'+c).bounding_box() for c in ['today-focus','today-home-office','today-journey']}
   if w>1200:assert abs(blocks['today-focus']['y']-blocks['today-home-office']['y'])<2 and blocks['today-home-office']['x']>blocks['today-focus']['x']
   assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')

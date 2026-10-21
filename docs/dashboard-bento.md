@@ -37,3 +37,7 @@ Não altera RPCs, RLS, assinatura desktop, migrações ou credenciais. O runtime
 Evidências em `.impeccable/review/zulu-bento/`. Os testes de navegador usam a demonstração em memória, mais uma fixture interceptada pelo Playwright para validar os componentes reais de formulário. Essa fixture nunca vira uma rota pública e não grava no Supabase. Verificar também os logs de publicação antes de afirmar que o deployment está pronto.
 
 A prévia comprova componentes, responsividade e interações locais; não comprova uma sessão autenticada, políticas RLS ponta a ponta nem desempenho em hardware desktop real.
+
+## Publicação
+
+Publicado na Vercel, deployment `dpl_HNoaPp92QB5ZZedXMTxJzfEx3LJN`, origem `8e726ca`, status READY. No endereço público passaram 32 checks HTTP, cinco larguras Bento e a fixture isolada de formulário. Detalhes e limites em `.impeccable/review/zulu-bento/deployment.json` e `review.md`.
