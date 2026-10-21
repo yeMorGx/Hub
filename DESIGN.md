@@ -14,6 +14,10 @@ A preferência explícita do usuário é priorizar o símbolo e reduzir texto na
 
 Identificadores técnicos de compatibilidade como `app.hub.team`, `Hub` no produto/arquivo de instalação nativo, repositório e chaves de registro/cache/cofre permanecem existentes. A marca visível ZULU não representa uma migração desses identificadores.
 
+### Referência obrigatória de componentes
+
+Por decisão do usuário, novos componentes e componentes retrabalhados devem partir dos componentes e exemplos oficiais **HeroUI v3**, conforme [a skill local obrigatória](.agents/skills/zulu-heroui/SKILL.md) e `AGENTS.md`. Adaptar os tokens à autoridade de cada superfície, preservando teclado, foco e acessibilidade. O catálogo e o guia React v3 oficiais foram consultados; esta orientação não significa migração das telas existentes nem instalação de dependências HeroUI. O efeito Prism escolhido pelo usuário continua sendo a referência especializada do fundo do timer.
+
 ## Tokens implementados
 
 | Token CSS | Valor | Uso |
@@ -41,7 +45,7 @@ A identidade clara substitui Shakuro, Manrope, grafite e laranja exclusivamente 
 
 #### Overview
 
-Modo **Operate**. Campos claros organizam a leitura; o bloco azul do timer concentra a atenção no trabalho atual. Navegação com rótulos, jornada branca e agenda compacta oferecem uma composição própria para Hoje. Contrato: [Dashboard Hoje](docs/dashboard-redesign.md).
+Modo **Operate**. Campos claros organizam a leitura; o bloco do timer com Prism concentra a atenção no trabalho atual. Navegação com rótulos, jornada branca e agenda compacta oferecem uma composição própria para Hoje. Contrato: [Dashboard Hoje](docs/dashboard-redesign.md).
 
 #### Colors
 
@@ -58,7 +62,9 @@ Valores normativos desta superfície, extraídos de `app/dashboard.css`:
 | `--muted`, `--quiet` | `#59667c` | Texto auxiliar |
 | `--accent` | `#294d94` | Ações e seleção |
 | `--accent-hover` | `#1f3e7b` | Ação em hover |
-| Fundo do timer | `#233f7b` | Foco no trabalho atual |
+| Base do timer | `#050505` | Fundo escuro do Prism |
+| Cores do Prism | `#050505`, `#66b3ff`, `#ffffff` | Preset original da Spell UI, somente no timer |
+| Overlay do timer | `#000000a3` | Mantém contraste do conteúdo sobre a animação |
 | Fundo de home office | `#edf0f6` | Faixa de escala |
 | `--green` | `#39714f` | Estado positivo |
 
@@ -68,13 +74,13 @@ Inter Variable, instalada por npm e servida localmente, rege a superfície clara
 
 #### Layout
 
-Sidebar expandida com rótulos (224px; 196px até 1200px), topo de 72px e conteúdo com 30px de margem interna, limitado a 1660px. O timer azul é horizontal, com atividade à esquerda e dígitos à direita; a jornada branca vem abaixo com horas do dia e saldos da semana e do mês em três colunas. Uma faixa azul clara mostra home office de hoje e próximo. A agenda branca usa 60px por hora, com rolagem interna de até 376px. Contexto lateral de 248px reúne encontros, presença, retomada e conversas.
+Sidebar expandida com rótulos (224px; 196px até 1200px), topo de 72px e conteúdo com 30px de margem interna, limitado a 1660px. O timer com Prism é horizontal, com atividade à esquerda e dígitos à direita; a jornada branca vem abaixo com horas do dia e saldos da semana e do mês em três colunas. Uma faixa azul clara mostra home office de hoje e próximo. A agenda branca usa 60px por hora, com rolagem interna de até 376px. Contexto lateral de 248px reúne encontros, presença, retomada e conversas.
 
 Até 1200px o contexto segue abaixo em duas colunas. Até 760px a sidebar dá lugar à barra inferior de 68px, o contexto passa a uma coluna, atividade e timer se empilham e a jornada coloca horas do dia acima de dois saldos paralelos. A agenda inicial abre no dia em telas até 520px; a semana continua disponível com rolagem interna.
 
 #### Elevation & Depth
 
-Campos brancos, fundos azulados, espaçamento e tipografia estruturam as camadas sem bordas decorativas. Painéis, navegação, controles, agenda, contexto, popovers e diálogos do dashboard não usam traços de contorno ou divisórias; campos de formulário usam fundo azulado. A seleção da agenda usa preenchimento, sem sombra decorativa; o timer mantém um campo azul sólido. Contornos de foco continuam visíveis e funcionais.
+Campos brancos, fundos azulados, espaçamento e tipografia estruturam as camadas sem bordas decorativas. Painéis, navegação, controles, agenda, contexto, popovers e diálogos do dashboard não usam traços de contorno ou divisórias; campos de formulário usam fundo azulado. A seleção da agenda usa preenchimento, sem sombra decorativa; o timer usa o fundo Prism descrito abaixo. Contornos de foco continuam visíveis e funcionais.
 
 #### Shapes
 
@@ -82,7 +88,9 @@ Contêiner principal com cantos de 14px; agenda com 10px; faixa de home office e
 
 #### Components
 
-Timer com ação branca sobre azul e encerramento secundário; jornada com progresso e configuração opcional; resumo de home office com erro, ausência e nova tentativa; calendário compacto com cabeçalho fixo; navegação com rótulos permanentes e estado ativo azul claro. O foco visível recebe contorno azul de 2px, afastado 4px; dentro do timer azul, o contorno é branco, com as mesmas dimensões. A legenda Eventos usa verde, acompanhando os blocos de evento desta superfície. No Windows compatível, uma barra de título de 36px acompanha o marfim e o azul de Hoje, com símbolo oficial ZULU de 24px, sem nome ou tagline adjacentes, indicador de mensagens não lidas e controles nativos de minimizar, maximizar/restaurar e fechar. A área da marca permite arrastar e o duplo clique alterna maximização; foco permanece visível. Contrato de compatibilidade e entrega: [barra desktop](docs/desktop-updates.md#barra-de-título-windows--implementação-014-pendente-de-publicação).
+Timer com ação branca sobre Prism escurecido e encerramento secundário; jornada com progresso e configuração opcional; resumo de home office com erro, ausência e nova tentativa; calendário compacto com cabeçalho fixo; navegação com rótulos permanentes e estado ativo azul claro. O foco visível recebe contorno azul de 2px, afastado 4px; dentro do timer escuro, o contorno é branco, com as mesmas dimensões. A legenda Eventos usa verde, acompanhando os blocos de evento desta superfície. No Windows compatível, uma barra de título de 36px acompanha o marfim e o azul de Hoje, com símbolo oficial ZULU de 24px, sem nome ou tagline adjacentes, indicador de mensagens não lidas e controles nativos de minimizar, maximizar/restaurar e fechar. A área da marca permite arrastar e o duplo clique alterna maximização; foco permanece visível. Contrato de compatibilidade e entrega: [barra desktop](docs/desktop-updates.md#barra-de-título-windows--014-publicada).
+
+O fundo de `.today-focus` usa o **AnimatedGradient, preset Prism original da Spell UI**, por escolha explícita do usuário. [Source fixado](https://github.com/xxtomm/spell-ui/blob/659b5c2ae405ea9e1c363e09cca7380a0d98e271/registry/spell-ui/animated-gradient.tsx), componente local `components/animated-gradient.tsx`, licença MIT em `docs/licenses/spell-ui-MIT.txt` e `public/licenses/spell-ui-MIT.txt`. Shader e preset foram preservados; a fase inicial avança 3 unidades de tempo do shader para evitar o primeiro quadro preto. O canvas decorativo fica atrás do conteúdo, sem receber interação. O overlay preto limita o fundo mais claro a `#5c5c5c`; o texto secundário `#ccd9f1` mantém contraste superior a 4,5:1. Renderização limitada a 30fps e DPR 1,5, pausada fora da tela ou com documento oculto; movimento reduzido usa quadro estático com redesenho no resize. Sem WebGL2, usa gradiente CSS. Este efeito pertence somente ao timer; a superfície marfim e a regra sem bordas decorativas permanecem.
 
 #### Do's and Don'ts
 
@@ -91,7 +99,7 @@ Timer com ação branca sobre azul e encerramento secundário; jornada com progr
 - **Do** manter rótulos separados para tempo da atividade, total do dia e saldos sobre o previsto até hoje.
 - **Don't** herdar o veredito visual da versão escura para esta composição clara.
 
-Revisão atual da superfície plana: **`ship`**, sem achados materiais na revisão independente das capturas em `.impeccable/review/dashboard-flat/`: `1440.png`, `390.png`, `desktop-titlebar.png` e `focus-1440.png`. Build, TypeScript, 29 testes unitários e os cenários de produção em 1440px/1280px/390px passaram; a barra Windows foi exercitada com IPC simulado. O smoke Windows da barra passou antes da atualização dos assets; o novo build com marca ZULU permanece pendente e a versão 0.1.4 ainda não foi publicada; esta evidência não comprova acessibilidade completa nem integração autenticada.
+A revisão independente anterior da superfície plana recebeu **`ship`**, sem achados materiais, nas capturas em `.impeccable/review/dashboard-flat/`. A marca atual e o Prism têm novas capturas em `.impeccable/review/zulu-prism/`, com barra desktop em `.impeccable/review/zulu-final/desktop-titlebar.png`; a revisão visual final do Prism recebeu **`ship`**, sem achados materiais. `scripts/prism-browser.py` passou com WebGL2 real em 1440px/390px, animação, movimento reduzido, fallback, contexto único estável e controles funcionais, sem overflow ou erros de página. Cenários de dashboard e barra simulada também passaram. A versão Windows 0.1.4 foi publicada com assinatura de atualização verificada e smoke nativo aprovado; arraste, fechar, recuperação e atualização real 0.1.3 → 0.1.4 têm limites descritos no contrato desktop. A evidência não comprova acessibilidade completa nem integração autenticada.
 
 ## Interações e limites
 

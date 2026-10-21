@@ -1,0 +1,18 @@
+﻿{
+    "platform":  "Windows",
+    "installer":  "Hub_0.1.4_x64-setup.exe",
+    "sha256":  "47ff27c6e337834a417477c0abc14462e09a57beb69ea5b90a662a2e8b430f34",
+    "signature":  "NotSigned",
+    "signed":  false,
+    "installed":  true,
+    "windowOpened":  true,
+    "loginPageLoaded":  true,
+    "customTitlebar":  true,
+    "maximizeRestored":  true,
+    "minimizeControl":  true,
+    "singleInstance":  true,
+    "shortcutRestoredWindow":  true,
+    "uninstalled":  true,
+    "accountsCreated":  0,
+    "businessWrites":  0
+}

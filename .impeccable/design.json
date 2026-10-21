@@ -20,15 +20,31 @@
     "scope": "Brand identity update; existing surface palettes and functional icon library remain",
     "technicalCompatibility": "app.hub.team, native Hub productName/setup filenames, repository, registry/cache/vault keys retained; no technical identity migration claimed"
   },
+  "componentStandard": {
+    "reference": "HeroUI v3 official components and examples",
+    "mandatorySkill": ".agents/skills/zulu-heroui/SKILL.md",
+    "scope": "All new and reworked UI components; preserve surface tokens, keyboard, focus and accessibility",
+    "state": "Official catalog and React v3 skill consulted; no existing UI migration or dependency installation claimed",
+    "specializedEffect": "Explicitly selected Spell UI Prism retained for timer background"
+  },
   "mode": "operate",
   "reference": "https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard",
   "font": "Manrope Variable",
   "icons": "@phosphor-icons/react",
-  "tokens": {"background":"#101112","rail":"#0c0d0e","surface":"#191b1d","border":"#2b2d30","text":"#f0f0f1","muted":"#a0a2a6","accent":"#e26540","radius":14},
+  "tokens": {
+    "background": "#101112",
+    "rail": "#0c0d0e",
+    "surface": "#191b1d",
+    "border": "#2b2d30",
+    "text": "#f0f0f1",
+    "muted": "#a0a2a6",
+    "accent": "#e26540",
+    "radius": 14
+  },
   "surface": {
     "name": "Hoje",
     "scope": ".dashboard-redesign; authenticated Hoje and /demo/dashboard only",
-    "desktop": "expanded labeled sidebar, blue horizontal timer above white journey, compact home-office strip and white calendar, lateral context",
+    "desktop": "expanded labeled sidebar, Prism horizontal timer above white journey, compact home-office strip and white calendar, lateral context",
     "mobile": "bottom navigation, stacked activity and timer, journey hours above two balances, sequential context",
     "sidebarWidth": "224px",
     "sidebarWidthAt1200": "196px",
@@ -41,14 +57,15 @@
   "dashboard": {
     "mode": "operate",
     "designDocument": "docs/dashboard-redesign.md",
-    "authority": "Explicit user choice of a new light identity replaces Shakuro for Hoje and its public preview only; other modules and marketing retain their existing authorities. Subsequent explicit user direction removes all decorative dashboard borders while preserving ivory, navy and Inter.",
+    "authority": "Explicit user choice of a new light identity replaces Shakuro for Hoje and its public preview only; other modules and marketing retain their existing authorities. Subsequent explicit user direction removes all decorative dashboard borders while preserving ivory, navy and Inter. User explicitly selected original Spell UI AnimatedGradient Prism for the timer card only.",
     "sources": [
       "components/today-dashboard.tsx",
       "components/live-hub-app.tsx",
       "app/dashboard.css",
       "components/desktop-titlebar.tsx",
       "app/desktop.css",
-      "src-tauri/src/titlebar.rs"
+      "src-tauri/src/titlebar.rs",
+      "components/animated-gradient.tsx"
     ],
     "preview": {
       "route": "/demo/dashboard",
@@ -87,21 +104,26 @@
       },
       "typescript": "passed",
       "desktopTitlebar": "scripts/desktop-titlebar-browser.py passed for web, legacy installer and mocked Windows: controls, drag, unread count and visible dashboard border scan; no native Windows proof",
-      "detector": "Impeccable detector unavailable; no detector pass claimed"
+      "detector": "Impeccable detector unavailable; no detector pass claimed",
+      "prism": "scripts/prism-browser.py passed actual WebGL2 animation, reduced motion and fallback at 1440px/390px; one stable context, working controls, no overflow/page errors"
     },
     "review": {
       "visual_verdict": "ship",
-      "scope": "Independent final review of flat dashboard desktop/mobile, keyboard focus and mocked Windows titlebar; local production interactions verified separately.",
-      "finding": "No material findings; functional focus outlines retained.",
-      "evidence": ".impeccable/review/dashboard-flat/",
+      "scope": "Final independent review of ZULU symbol-first branding, Prism timer, fallback/mobile states and refreshed marketing hero; runtime checks recorded separately.",
+      "finding": "No material finish gaps. Previous hold for old marketing logo closed by current dashboard captures.",
+      "evidence": ".impeccable/review/zulu-prism/; titlebar .impeccable/review/zulu-final/desktop-titlebar.png",
       "captures": [
         "1440.png",
         "390.png",
-        "desktop-titlebar.png",
-        "focus-1440.png"
+        "empty-1440.png",
+        "empty-390.png",
+        "fallback-1440.png",
+        "fallback-390.png",
+        "site-1440.png",
+        "site-390.png"
       ],
-      "limits": "No full product approval, complete accessibility audit, real-account authentication, MFA, RLS, Presence or real RPC persistence validation. Prior native smoke passed with old artwork; branded Windows build pending; 0.1.4 not published.",
-      "previousVerdict": "Current ship reviews the flat dashboard; previous light/dark verdicts are historical evidence."
+      "limits": "No complete accessibility, real-account authentication, MFA, RLS, Presence or RPC persistence validation. Windows 0.1.4 published after native smoke and signature verification; actual 0.1.3 to 0.1.4 upgrade unverified. Drag/close/recovery contracts supported by browser/code, not native automation.",
+      "previousVerdict": "Flat surface ship predates Prism and is historical evidence."
     },
     "font": "Inter Variable, npm-installed and locally served",
     "tokens": {
@@ -114,7 +136,7 @@
       "muted": "#59667c",
       "accent": "#294d94",
       "accentHover": "#1f3e7b",
-      "timerBackground": "#233f7b",
+      "timerBackground": "#050505",
       "homeOfficeBackground": "#edf0f6",
       "positive": "#39714f"
     },
@@ -122,7 +144,7 @@
     "focus": {
       "default": "2px solid #3764b6; outline-offset:4px",
       "insideTimer": "2px solid #ffffff; outline-offset:4px",
-      "verifiedContrast": "10.15:1"
+      "verifiedContrast": "Previous solid-blue timer measurement 10.15:1 is historical; Prism overlay caps brightest background at #5c5c5c and secondary text #ccd9f1 exceeds 4.5:1."
     },
     "flat": {
       "scope": ".dashboard-redesign only; other modules and marketing retain their authorities",
@@ -144,14 +166,45 @@
       ],
       "integration": "Rust desktop_titlebar command; fixed actions on own main window only",
       "compatibility": "native decorations retained on web, non-Windows and older installers; restore attempted after control errors/unmount; navigation starts with native decorations",
-      "release": "native version 0.1.4 not published; prior native smoke 39642679298 passed with old artwork; branded build 39645508848 at 34c3b0f2331ac07c9a8b6cdc48d3e02f4b97cbc3 pending",
-      "contract": "docs/desktop-updates.md#barra-de-título-windows--implementação-014-pendente-de-publicação"
+      "release": "0.1.4 published: build 39645508848 compiled/signed; retest 39648289490 passed native checks and crypto on same native tree 54aa364ba68e354496fdfe5d056adcc100486154; promotion 39648700277 succeeded",
+      "contract": "docs/desktop-updates.md#barra-de-título-windows--014-publicada"
+    },
+    "prism": {
+      "scope": ".today-focus only",
+      "source": "https://github.com/xxtomm/spell-ui/blob/659b5c2ae405ea9e1c363e09cca7380a0d98e271/registry/spell-ui/animated-gradient.tsx",
+      "implementation": "components/animated-gradient.tsx; original shader and Prism preset retained",
+      "license": [
+        "docs/licenses/spell-ui-MIT.txt",
+        "public/licenses/spell-ui-MIT.txt"
+      ],
+      "colors": [
+        "#050505",
+        "#66b3ff",
+        "#ffffff"
+      ],
+      "overlay": "#000000a3",
+      "contrast": "Brightest composited background #5c5c5c; secondary #ccd9f1 >4.5:1",
+      "lifecycle": "initial shader time +3; max DPR 1.5 and 30fps; stop offscreen/hidden; reduced motion static with resize redraw; CSS fallback without WebGL2"
+    },
+    "homeOfficeArtwork": {
+      "status": "No image added; waiting for user choice",
+      "measuredContainer": {
+        "1440px": "880x90px",
+        "1360px": "800x90px",
+        "390px": "354x175px"
+      }
     }
   },
   "status": "implemented adaptation; Supabase Auth/MFA, workspace onboarding, RPC adapter and PWA implemented; browser-local demonstration at /demo; authenticated flows await real-account validation",
   "review": {
     "auth_ui_verdict": "ship",
-    "scope": ["desktop login", "mobile login", "desktop signup", "desktop recovery request", "512px PWA icon"],
+    "scope": [
+      "desktop login",
+      "mobile login",
+      "desktop signup",
+      "desktop recovery request",
+      "512px PWA icon"
+    ],
     "evidence": ".impeccable/review/auth/",
     "limits": "No private-screen or MFA captures; no real account, email or end-to-end authentication validation; device installation unverified"
   },

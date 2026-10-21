@@ -1255,7 +1255,7 @@ html:has(.dashboard-redesign) {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: #0000009e;
+  background: #000000a3;
   pointer-events: none;
 }
 .today-focus > :not(.today-prism) { position: relative; z-index: 2; }

@@ -28,6 +28,9 @@ with sync_playwright() as p:
    page.get_by_role('button',name='Pausar para almoço',exact=True).click();page.get_by_role('button',name='Retomar trabalho',exact=True).click()
    page.get_by_label('Cenário da demonstração').select_option('empty')
    if mode=='reduced':page.screenshot(path=str(OUT/f'empty-{width}.png'),full_page=True)
+   if mode=='reduced':
+    old=page.evaluate('window.draws');page.set_viewport_size({'width':width-20,'height':height});page.wait_for_timeout(250)
+    assert page.evaluate('window.draws')>old
    assert not errors,errors
    print(json.dumps({'mode':mode,'width':width,'drawsBefore':before,'drawsAfter':after,'contexts':1,'timerControls':True,'overflow':False,'pageErrors':errors}),flush=True)
    page.close()

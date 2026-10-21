@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## ZULU: padrão obrigatório de componentes
+
+Antes de criar ou retrabalhar componentes de interface, leia [`.agents/skills/zulu-heroui/SKILL.md`](.agents/skills/zulu-heroui/SKILL.md). Por decisão explícita do usuário, **HeroUI v3 é a referência obrigatória**: use os componentes e exemplos oficiais, com seus comportamentos e acessibilidade, adaptando os tokens à identidade documentada em `DESIGN.md`. Isso inclui calendário, feedback, formulários, OTP, controles, layout, navegação e overlays. Não aplicar padrões HeroUI v2 nem inventar substitutos visuais. A marca ZULU prioriza o símbolo e pouco texto.

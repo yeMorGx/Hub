@@ -323,15 +323,20 @@ export default function AnimatedGradient({
       u_swirlIterations: gl.getUniformLocation(program, "u_swirlIterations"),
     };
 
+    let requestDraw = () => {};
     const resize = () => {
       const width = container.clientWidth;
       const height = container.clientHeight;
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-      canvas.width = width * pixelRatio;
-      canvas.height = height * pixelRatio;
+      const nextWidth = Math.max(1, Math.round(width * pixelRatio));
+      const nextHeight = Math.max(1, Math.round(height * pixelRatio));
+      if (canvas.width === nextWidth && canvas.height === nextHeight) return;
+      canvas.width = nextWidth;
+      canvas.height = nextHeight;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       gl.viewport(0, 0, canvas.width, canvas.height);
+      requestDraw();
     };
 
     resize();
@@ -383,6 +388,7 @@ export default function AnimatedGradient({
       if (frameIdRef.current !== undefined) cancelAnimationFrame(frameIdRef.current);
       frameIdRef.current = requestAnimationFrame(animate);
     };
+    requestDraw = resume;
     const intersection = new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;
       resume();

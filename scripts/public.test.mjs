@@ -53,6 +53,7 @@ test("manifest contém escopo e ícones da PWA", async () => {
   const response = await request("/manifest.webmanifest");
   assert.equal(response.status, 200);
   const manifest = await response.json();
+  assert.equal(manifest.short_name, "ZULU");
   assert.equal(manifest.display, "standalone");
   assert.equal(manifest.start_url, "/");
   assert.equal(manifest.scope, "/");
@@ -60,7 +61,7 @@ test("manifest contém escopo e ícones da PWA", async () => {
     assert.ok(
       manifest.icons.some(
         (icon) =>
-          icon.src === `/pwa/icon/${size}` && icon.sizes === `${size}x${size}`,
+          icon.src === `/pwa/icon/${size}?v=zulu-1` && icon.sizes === `${size}x${size}`,
       ),
     );
 });
@@ -222,11 +223,11 @@ test("downloads expõe o instalador oficial e informa versão e assinatura pende
   const response = await request("/download");
   assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /Hub_0\.1\.3_x64-setup\.exe/);
+  assert.match(html, /Hub_0\.1\.4_x64-setup\.exe/);
   assert.match(html, /não tem assinatura de código/);
   assert.match(html, /macOS/);
   assert.match(html, /Linux/);
-  assert.match(html, /a48fb048b5fff83f9c403ba5b15dcd1bcc2260a811fc899cd132b7cda46370f6/);
+  assert.match(html, /47ff27c6e337834a417477c0abc14462e09a57beb69ea5b90a662a2e8b430f34/);
 });
 test("marketing publica apenas as páginas públicas no sitemap e serve imagem social", async () => {
   const response = await request("/sitemap.xml");

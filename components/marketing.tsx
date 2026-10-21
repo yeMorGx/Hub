@@ -235,7 +235,7 @@ export function ProductExplorer() {
         >
           <Image
             key={view.id}
-            src={`/marketing/${view.id}-zulu.webp`}
+            src={view.id === "today" ? "/marketing/today-zulu-prism.webp" : `/marketing/${view.id}-zulu.webp`}
             alt={view.alt}
             width={1440}
             height={1000}
@@ -423,7 +423,7 @@ export function LandingPage() {
               </div>
               <div className="m-hero-screen">
                 <Image
-                  src="/marketing/today-zulu.webp"
+                  src="/marketing/today-zulu-prism.webp"
                   alt="Aplicativo ZULU: foco do dia, timer, reuniões e agenda do time. Dados de demonstração."
                   width={1440}
                   height={1000}

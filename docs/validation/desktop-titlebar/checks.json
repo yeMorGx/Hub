@@ -1,0 +1,44 @@
+{
+  "scope": "Hoje dashboard flat and Windows titlebar",
+  "sourceCommit": "cd3969a4880fef16fe27b519855d406136cb3be7",
+  "build": true,
+  "unitTestsPassed": 29,
+  "productionHttpChecksPassed": null,
+  "dashboardBrowserWidths": [
+    1440,
+    1280,
+    390
+  ],
+  "dashboardBorderScan": [
+    "week",
+    "month",
+    "day",
+    "filter",
+    "dialog"
+  ],
+  "titlebarBrowserModes": [
+    "web",
+    "legacy",
+    "enable-failure",
+    "action-failure",
+    "mocked Windows"
+  ],
+  "visualVerdict": "ship",
+  "detectorAvailable": false,
+  "businessWrites": 0,
+  "webDeployment": "pending final",
+  "nativeRun": 39648289490,
+  "nativeStatus": "passed",
+  "nativeBuiltRun": 39645508848,
+  "releasePublished": true,
+  "version": "0.1.4",
+  "prismModes": [
+    "actual WebGL2 animation",
+    "reduced motion with resize redraw",
+    "no WebGL2 fallback"
+  ],
+  "prismWidths": [
+    1440,
+    390
+  ]
+}

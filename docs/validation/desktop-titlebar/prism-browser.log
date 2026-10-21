@@ -1,0 +1,6 @@
+{"mode": "animated", "width": 1440, "drawsBefore": 19, "drawsAfter": 28, "contexts": 1, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "animated", "width": 390, "drawsBefore": 18, "drawsAfter": 27, "contexts": 1, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "reduced", "width": 1440, "drawsBefore": 2, "drawsAfter": 2, "contexts": 1, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "reduced", "width": 390, "drawsBefore": 2, "drawsAfter": 2, "contexts": 1, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "fallback", "width": 1440, "drawsBefore": 0, "drawsAfter": 0, "contexts": 1, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "fallback", "width": 390, "drawsBefore": 0, "drawsAfter": 0, "contexts": 1, "timerControls": true, "overflow": false, "pageErrors": []}
