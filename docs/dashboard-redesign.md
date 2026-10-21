@@ -1,5 +1,7 @@
 # Dashboard Hoje
 
+> A composição atual usa HeroUI v3 e Bento Grid: ver [contrato atual](dashboard-bento.md). As medidas e revisões da composição anterior neste documento são históricas.
+
 Produto atual: **ZULU**. Modo: **Operate**. O usuário aprovou explicitamente uma nova identidade clara para Hoje: marfim, superfícies brancas, tinta escura, azul profundo e Inter Variable. A escolha substitui a identidade Shakuro/Manrope/grafite/laranja somente em Hoje e `/demo/dashboard`, no escopo `.dashboard-redesign`. Os demais módulos, `/demo` original e o site público mantêm suas autoridades. A decisão posterior remove todas as bordas decorativas do dashboard, preservando marfim, azul profundo e Inter. Os valores normativos desta superfície estão em [DESIGN.md](../DESIGN.md#hoje--identidade-clara-aprovada).
 
 ## Composição aprovada

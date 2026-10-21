@@ -1,4 +1,6 @@
 "use client";
+import { ZuluButton } from "./dashboard-ui";
+import { Card, Chip, ProgressBar, Spinner } from "@heroui/react";
 import AnimatedGradient from "./animated-gradient";
 import {
   ArrowRight,
@@ -78,18 +80,25 @@ export function TodayOverview(props: TodayOverviewProps) {
         className={`today-workspace timer-${timer.state}`}
         aria-label="Timer e jornada"
       >
-        <div className="today-focus">
+        <Card className="today-focus">
           <div className="today-prism" aria-hidden="true">
-            <AnimatedGradient config={TIMER_GRADIENT} active={timer.state !== "running"} />
-            <AnimatedGradient config={WORKING_GRADIENT} active={timer.state === "running"} className="today-lava" />
+            <AnimatedGradient
+              config={TIMER_GRADIENT}
+              active={timer.state !== "running"}
+            />
+            <AnimatedGradient
+              config={WORKING_GRADIENT}
+              active={timer.state === "running"}
+              className="today-lava"
+            />
           </div>
-          <div className="today-section-heading">
-            <h2>Seu tempo, hoje</h2>
-            <span className={`today-timer-status ${timer.state}`}>
+          <Card.Header className="today-section-heading">
+            <Card.Title>Seu tempo, hoje</Card.Title>
+            <Chip className={`today-timer-status ${timer.state}`} size="sm">
               <i />
               {status}
-            </span>
-          </div>
+            </Chip>
+          </Card.Header>
           <div
             className="today-clock"
             role="timer"
@@ -105,7 +114,7 @@ export function TodayOverview(props: TodayOverviewProps) {
             </span>
           </div>
           <div className="today-timer-actions">
-            <button
+            <ZuluButton
               className="today-timer-primary"
               disabled={
                 busy || (timer.state === "idle" && !props.canParticipate)
@@ -113,7 +122,7 @@ export function TodayOverview(props: TodayOverviewProps) {
               onClick={props.onToggleTimer}
             >
               {busy ? (
-                <CircleNotch size={18} className="spinning" />
+                <Spinner size="sm" aria-label="Atualizando timer" />
               ) : timer.state === "running" ? (
                 <Coffee size={18} />
               ) : (
@@ -126,16 +135,16 @@ export function TodayOverview(props: TodayOverviewProps) {
                   : timer.description
                     ? "Iniciar timer"
                     : "Escolher atividade"}
-            </button>
+            </ZuluButton>
             {timer.state !== "idle" && (
-              <button
+              <ZuluButton
                 className="today-timer-stop"
                 disabled={busy}
                 onClick={props.onStopTimer}
               >
                 <Stop size={15} />
                 Encerrar e salvar
-              </button>
+              </ZuluButton>
             )}
           </div>
           {timer.state === "lunch" && (
@@ -143,18 +152,18 @@ export function TodayOverview(props: TodayOverviewProps) {
               O almoço não entra nas horas. Retome quando voltar.
             </p>
           )}
-        </div>
-        <div className="today-journey">
-          <div className="today-section-heading">
-            <h2>Sua jornada</h2>
-            <button
+        </Card>
+        <Card className="today-journey">
+          <Card.Header className="today-section-heading">
+            <Card.Title>Sua jornada</Card.Title>
+            <ZuluButton
               className="today-link"
               onClick={props.onHours}
               aria-label="Ver detalhes da jornada"
             >
               <ArrowUpRight size={18} />
-            </button>
-          </div>
+            </ZuluButton>
+          </Card.Header>
           <div className="today-journey-metrics">
             <div className="today-hours">
               <span>Trabalhadas hoje</span>
@@ -193,17 +202,16 @@ export function TodayOverview(props: TodayOverviewProps) {
           {configured ? (
             <>
               {today.expectedMinutes > 0 && (
-                <div
+                <ProgressBar
                   className="today-progress"
-                  role="progressbar"
+                  value={progress}
                   aria-label="Jornada de hoje"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={Math.floor(progress)}
                   aria-valuetext={`${shortDuration(today.actualSeconds)} de ${shortDuration(today.expectedMinutes * 60)}`}
                 >
-                  <span style={{ width: `${progress}%` }} />
-                </div>
+                  <ProgressBar.Track>
+                    <ProgressBar.Fill />
+                  </ProgressBar.Track>
+                </ProgressBar>
               )}
               <p className="today-hours-note">
                 {today.expectedMinutes === 0
@@ -212,13 +220,13 @@ export function TodayOverview(props: TodayOverviewProps) {
                     ? `Faltam ${shortDuration(remaining)} para completar o dia.`
                     : "Jornada de hoje cumprida."}
               </p>
-              <button
+              <ZuluButton
                 className="today-link today-schedule-link"
                 onClick={props.onSchedule}
               >
                 Meta do mês: {shortDuration(props.monthTargetMinutes * 60)}
                 <ArrowUpRight size={13} />
-              </button>
+              </ZuluButton>
             </>
           ) : (
             <div className="today-schedule-empty">
@@ -226,29 +234,33 @@ export function TodayOverview(props: TodayOverviewProps) {
                 Defina seus dias e horários para acompanhar metas e banco de
                 horas.
               </p>
-              <button className="today-link" onClick={props.onSchedule}>
+              <ZuluButton className="today-link" onClick={props.onSchedule}>
                 Configurar minha jornada
                 <ArrowRight size={15} />
-              </button>
+              </ZuluButton>
             </div>
           )}
-        </div>
+        </Card>
       </section>
-      <section className="today-home-office" aria-label="Resumo de home office">
-        <div className="today-office-title">
+      <Card
+        role="region"
+        className="today-home-office"
+        aria-label="Resumo de home office"
+      >
+        <Card.Header className="today-office-title">
           <House size={21} />
-          <h2>Home office</h2>
-        </div>
+          <Card.Title>Home office</Card.Title>
+        </Card.Header>
         {props.homeOfficeError ? (
           <div className="today-office-error">
             <p>Não foi possível carregar a escala.</p>
-            <button
+            <ZuluButton
               className="today-link"
               disabled={busy}
               onClick={props.onRetry}
             >
               Tentar novamente
-            </button>
+            </ZuluButton>
           </div>
         ) : (
           <>
@@ -302,14 +314,14 @@ export function TodayOverview(props: TodayOverviewProps) {
             </div>
           </>
         )}
-        <button
+        <ZuluButton
           className="today-link today-office-link"
           onClick={props.onHomeOffice}
         >
           Ver escala
           <ArrowUpRight size={15} />
-        </button>
-      </section>
+        </ZuluButton>
+      </Card>
     </>
   );
 }
@@ -347,15 +359,15 @@ export function TodayContext(props: TodayContextProps) {
       className="today-context"
       aria-label="Seu time e próximos compromissos"
     >
-      <section>
-        <div className="today-section-heading">
-          <h2>Encontros de hoje</h2>
+      <Card className="today-meetings-card">
+        <Card.Header className="today-section-heading">
+          <Card.Title>Encontros de hoje</Card.Title>
           <CalendarDots size={18} />
-        </div>
+        </Card.Header>
         {props.events.length ? (
           <div className="today-meetings">
             {props.events.slice(0, 3).map((event) => (
-              <button
+              <ZuluButton
                 key={event.id}
                 className="today-meeting"
                 onClick={() => props.onEvent(event)}
@@ -379,7 +391,7 @@ export function TodayContext(props: TodayContextProps) {
                   </small>
                 </span>
                 <ArrowUpRight size={15} />
-              </button>
+              </ZuluButton>
             ))}
           </div>
         ) : (
@@ -388,17 +400,17 @@ export function TodayContext(props: TodayContextProps) {
             Nenhum compromisso pela frente hoje.
           </p>
         )}
-        <button
+        <ZuluButton
           className="today-link today-context-link"
           onClick={props.onCalendar}
         >
           Abrir calendário
           <ArrowRight size={15} />
-        </button>
-      </section>
-      <section>
-        <div className="today-section-heading">
-          <h2>Por aqui agora</h2>
+        </ZuluButton>
+      </Card>
+      <Card className="today-people-card">
+        <Card.Header className="today-section-heading">
+          <Card.Title>Por aqui agora</Card.Title>
           <span className="today-online">
             {props.presence === "live"
               ? `${onlineCount} online`
@@ -406,7 +418,7 @@ export function TodayContext(props: TodayContextProps) {
                 ? "Conectando…"
                 : "Indisponível"}
           </span>
-        </div>
+        </Card.Header>
         <div className="today-team-list">
           {props.people.slice(0, 4).map((person) => {
             const status =
@@ -414,7 +426,7 @@ export function TodayContext(props: TodayContextProps) {
                 ? (props.online[person.id] ?? "offline")
                 : "unknown";
             return (
-              <button
+              <ZuluButton
                 key={person.id}
                 className="today-person"
                 onClick={() => props.onPerson(person)}
@@ -430,7 +442,7 @@ export function TodayContext(props: TodayContextProps) {
                     {person.body || statuses[status] || statuses.unknown}
                   </small>
                 </span>
-              </button>
+              </ZuluButton>
             );
           })}
         </div>
@@ -439,23 +451,23 @@ export function TodayContext(props: TodayContextProps) {
             As pessoas do time aparecerão aqui.
           </p>
         )}
-        <button
+        <ZuluButton
           className="today-link today-context-link"
           onClick={props.onPeople}
         >
           Ver todo o time
           <ArrowRight size={15} />
-        </button>
-      </section>
+        </ZuluButton>
+      </Card>
       {props.recent.length > 0 && (
-        <section>
-          <div className="today-section-heading">
-            <h2>Retomar atividade</h2>
+        <Card className="today-recent-card">
+          <Card.Header className="today-section-heading">
+            <Card.Title>Retomar atividade</Card.Title>
             <Clock size={17} />
-          </div>
+          </Card.Header>
           <div className="today-recent-list">
             {props.recent.slice(0, 2).map((entry) => (
-              <button
+              <ZuluButton
                 className="today-recent"
                 key={entry.id}
                 disabled={props.busy || !props.canRestart}
@@ -468,12 +480,12 @@ export function TodayContext(props: TodayContextProps) {
                   </strong>
                   <small>{entry.project}</small>
                 </span>
-              </button>
+              </ZuluButton>
             ))}
           </div>
-        </section>
+        </Card>
       )}
-      <button className="today-chat" onClick={props.onChat}>
+      <ZuluButton className="today-chat" onClick={props.onChat}>
         <ChatCircleText size={21} />
         <span>
           <strong>Conversas do time</strong>
@@ -484,7 +496,7 @@ export function TodayContext(props: TodayContextProps) {
           </small>
         </span>
         <ArrowUpRight size={17} />
-      </button>
+      </ZuluButton>
     </aside>
   );
 }

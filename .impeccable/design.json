@@ -24,8 +24,8 @@
     "reference": "HeroUI v3 official components and examples",
     "mandatorySkill": ".agents/skills/zulu-heroui/SKILL.md",
     "scope": "All new and reworked UI components; preserve surface tokens, keyboard, focus and accessibility",
-    "state": "Official catalog and React v3 skill consulted; no existing UI migration or dependency installation claimed",
-    "specializedEffect": "Explicitly selected Spell UI Prism retained for timer background"
+    "state": "HeroUI React/Styles 3.2.6 installed; Today, compact calendar controls and dialogs migrated through scoped official-component adapters; other modules retain native fallbacks",
+    "specializedEffect": "Original Spell UI Prism/Lava for timer; 650ms state-driven crossfade"
   },
   "mode": "operate",
   "reference": "https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard",
@@ -44,20 +44,20 @@
   "surface": {
     "name": "Hoje",
     "scope": ".dashboard-redesign; authenticated Hoje and /demo/dashboard only",
-    "desktop": "expanded labeled sidebar, Prism horizontal timer above white journey, compact home-office strip and white calendar, lateral context",
-    "mobile": "bottom navigation, stacked activity and timer, journey hours above two balances, sequential context",
+    "desktop": "12-column Bento: timer/journey/calendar span 8; photo home-office/meetings/people/recent/chat span 4",
+    "mobile": "Single-column Bento with 14px gaps and bottom navigation",
     "sidebarWidth": "224px",
     "sidebarWidthAt1200": "196px",
     "contextBelowAt": "1200px",
     "mobileNavigationAt": "760px",
     "initialDayViewAt": "520px",
     "calendarHourHeight": "60px",
-    "calendarMaxHeight": "376px"
+    "calendarMaxHeight": "460px"
   },
   "dashboard": {
     "mode": "operate",
-    "designDocument": "docs/dashboard-redesign.md",
-    "authority": "Explicit user choice of a new light identity replaces Shakuro for Hoje and its public preview only; other modules and marketing retain their existing authorities. Subsequent explicit user direction removes all decorative dashboard borders while preserving ivory, navy and Inter. User explicitly selected original Spell UI AnimatedGradient Prism for the timer card only.",
+    "designDocument": "docs/dashboard-bento.md",
+    "authority": "Explicit user choice of a new light identity replaces Shakuro for Hoje and its public preview only; other modules and marketing retain their existing authorities. Subsequent explicit user direction removes all decorative dashboard borders while preserving ivory, navy and Inter. User explicitly selected original Spell UI AnimatedGradient Prism for the timer card only. Subsequent explicit user choice adds Bento Grid, official HeroUI v3 controls and a home-office photo background.",
     "sources": [
       "components/today-dashboard.tsx",
       "components/live-hub-app.tsx",
@@ -65,7 +65,10 @@
       "components/desktop-titlebar.tsx",
       "app/desktop.css",
       "src-tauri/src/titlebar.rs",
-      "components/animated-gradient.tsx"
+      "components/animated-gradient.tsx",
+      "components/dashboard-ui.tsx",
+      "app/dashboard-bento.css",
+      "public/dashboard/home-office.webp"
     ],
     "preview": {
       "route": "/demo/dashboard",
@@ -137,10 +140,10 @@
       "accent": "#294d94",
       "accentHover": "#1f3e7b",
       "timerBackground": "#050505",
-      "homeOfficeBackground": "#edf0f6",
+      "homeOfficeBackground": "#22362e with local photograph and dark overlay",
       "positive": "#39714f"
     },
-    "tokenAuthority": "DESIGN.md#hoje--identidade-clara-aprovada; extracted from scoped app/dashboard.css",
+    "tokenAuthority": "DESIGN.md and docs/dashboard-bento.md; app/dashboard.css plus app/dashboard-bento.css",
     "focus": {
       "default": "2px solid #3764b6; outline-offset:4px",
       "insideTimer": "2px solid #ffffff; outline-offset:4px",
@@ -172,7 +175,7 @@
     "prism": {
       "scope": ".today-focus only",
       "source": "https://github.com/xxtomm/spell-ui/blob/659b5c2ae405ea9e1c363e09cca7380a0d98e271/registry/spell-ui/animated-gradient.tsx",
-      "implementation": "components/animated-gradient.tsx; original shader and Prism preset retained",
+      "implementation": "components/animated-gradient.tsx; original shader and Prism/Lava presets retained; timer-state crossfade",
       "license": [
         "docs/licenses/spell-ui-MIT.txt",
         "public/licenses/spell-ui-MIT.txt"
@@ -187,12 +190,15 @@
       "lifecycle": "initial shader time +3; max DPR 1.5 and 30fps; stop offscreen/hidden; reduced motion static with resize redraw; CSS fallback without WebGL2"
     },
     "homeOfficeArtwork": {
-      "status": "No image added; waiting for user choice",
-      "measuredContainer": {
-        "1440px": "880x90px",
-        "1360px": "800x90px",
-        "390px": "354x175px"
-      }
+      "status": "Implemented: local photograph with dark overlay and reduced-motion-aware hover",
+      "asset": "public/dashboard/home-office.webp",
+      "source": "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd",
+      "layout": "4 of 12 columns on desktop, 3 of 8 below 1200px, full width below 760px; content-driven height with 272px/250px minimum"
+    },
+    "bentoReview": {
+      "evidence": ".impeccable/review/zulu-bento",
+      "scope": "Primary-agent visual inspection of desktop/mobile and local fixture browser checks; no independent-review claim",
+      "limits": "No authenticated business writes or full accessibility audit"
     }
   },
   "status": "implemented adaptation; Supabase Auth/MFA, workspace onboarding, RPC adapter and PWA implemented; browser-local demonstration at /demo; authenticated flows await real-account validation",

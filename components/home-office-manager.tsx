@@ -1,4 +1,5 @@
 "use client";
+import { ZuluAlert, ZuluForm, ZuluLabel, ZuluInput, ZuluSelect, ZuluButton } from "./dashboard-ui";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
@@ -258,7 +259,7 @@ export function HomeOfficeManager({
           <span /><span /><span /><span /><span />
         </div>
       ) : loadError ? (
-        <div className="form-alert" role="alert">{loadError}</div>
+        <ZuluAlert className="form-alert" role="alert">{loadError}</ZuluAlert>
       ) : (
         <div className="home-office-manager">
           <p className="home-office-intro">
@@ -268,16 +269,16 @@ export function HomeOfficeManager({
           {hub.canManage ? (
             <div className="home-office-setup">
               <div className="home-office-form-grid">
-                <label>
+                <ZuluLabel>
                   Semana de referência
-                  <input type="date" required value={anchorWeek} onChange={(event) => setAnchorWeek(event.target.value)} />
+                  <ZuluInput type="date" required value={anchorWeek} onChange={(event) => setAnchorWeek(event.target.value)} />
                   <small>Use um domingo. O PDF começa em 04/10; a primeira escala acontece na segunda, 05/10.</small>
-                </label>
-                <label>
+                </ZuluLabel>
+                <ZuluLabel>
                   Lembrete no dia
-                  <span className="home-office-time-input"><Bell size={15} /><input type="time" required value={reminderTime} onChange={(event) => setReminderTime(event.target.value)} /></span>
+                  <span className="home-office-time-input"><Bell size={15} /><ZuluInput type="time" required value={reminderTime} onChange={(event) => setReminderTime(event.target.value)} /></span>
                   <small>Horário de Brasília. Cada pessoa recebe um aviso no dia do home office.</small>
-                </label>
+                </ZuluLabel>
               </div>
               <div className="home-office-roster">
                 <div className="home-office-section-title">
@@ -285,13 +286,13 @@ export function HomeOfficeManager({
                   <House size={17} />
                 </div>
                 {weekdays.map((weekday, index) => (
-                  <label className="home-office-roster-row" key={weekday}>
+                  <ZuluLabel className="home-office-roster-row" key={weekday}>
                     <span><b>{String.fromCharCode(65 + index)}</b>{weekday}</span>
-                    <select value={memberIds[index] ?? ""} onChange={(event) => chooseMember(index, event.target.value)} disabled={!hub.canManage}>
+                    <ZuluSelect value={memberIds[index] ?? ""} onValueChange={(value) => chooseMember(index, value)} disabled={!hub.canManage}>
                       <option value="">Escolha alguém</option>
                       {people.map((person) => <option value={person.id} key={person.id}>{person.display_name}</option>)}
-                    </select>
-                  </label>
+                    </ZuluSelect>
+                  </ZuluLabel>
                 ))}
                 {people.length < 5 && <p className="home-office-hint">Adicione mais {5 - people.length} {5 - people.length === 1 ? "pessoa" : "pessoas"} ao time para completar a escala.</p>}
               </div>
@@ -305,24 +306,24 @@ export function HomeOfficeManager({
                   {holidays.length ? holidays.map((holiday) => (
                     <div className="home-office-holiday-row" key={holiday.holiday_date}>
                       <span>{formatWeek(holiday.holiday_date)} <small>{holiday.label}</small></span>
-                      {hub.canManage && <button type="button" className="icon-button" aria-label={`Remover feriado ${holiday.label}`} onClick={() => setHolidays((current) => current.filter((item) => item.holiday_date !== holiday.holiday_date))}><X size={15} /></button>}
+                      {hub.canManage && <ZuluButton type="button" className="icon-button" aria-label={`Remover feriado ${holiday.label}`} onClick={() => setHolidays((current) => current.filter((item) => item.holiday_date !== holiday.holiday_date))}><X size={15} /></ZuluButton>}
                     </div>
                   )) : <p className="home-office-hint">Nenhum feriado cadastrado.</p>}
                 </div>
                 {hub.canManage && (
-                  <form className="home-office-add-holiday" onSubmit={addHoliday}>
-                    <input aria-label="Data do feriado" type="date" required value={holidayDate} onChange={(event) => setHolidayDate(event.target.value)} />
-                    <input aria-label="Nome do feriado" placeholder="Nome do feriado" maxLength={120} value={holidayLabel} onChange={(event) => setHolidayLabel(event.target.value)} />
-                    <button className="outline-button" type="submit"><Plus size={15} /> Adicionar</button>
-                  </form>
+                  <ZuluForm className="home-office-add-holiday" onSubmit={addHoliday}>
+                    <ZuluInput aria-label="Data do feriado" type="date" required value={holidayDate} onChange={(event) => setHolidayDate(event.target.value)} />
+                    <ZuluInput aria-label="Nome do feriado" placeholder="Nome do feriado" maxLength={120} value={holidayLabel} onChange={(event) => setHolidayLabel(event.target.value)} />
+                    <ZuluButton className="outline-button" type="submit"><Plus size={15} /> Adicionar</ZuluButton>
+                  </ZuluForm>
                 )}
               </div>
               {hub.canManage && (
                 <div className="home-office-save-row">
                     <p>{scheduleExists ? "Alterar a semana base ou as pessoas cancela trocas futuras." : "Feriados nacionais, de São Paulo e de Santos para 2026 já estão carregados e podem ser ajustados."}</p>
-                  <button className="primary-button" type="button" onClick={() => void saveSchedule()} disabled={!canSaveRoster || hub.busy}>
+                  <ZuluButton className="primary-button" type="button" onClick={() => void saveSchedule()} disabled={!canSaveRoster || hub.busy}>
                     <Check size={16} /> {hub.busy ? "Salvando…" : "Salvar escala"}
-                  </button>
+                  </ZuluButton>
                 </div>
               )}
             </div>
@@ -336,22 +337,22 @@ export function HomeOfficeManager({
               <ArrowsLeftRight size={18} />
             </div>
             {myWeeks.length ? (
-              <form className="home-office-swap-form" onSubmit={requestSwap}>
-                <label>
+              <ZuluForm className="home-office-swap-form" onSubmit={requestSwap}>
+                <ZuluLabel>
                   Seu dia
-                  <select value={swapWeek} onChange={(event) => { setSwapWeek(event.target.value); setTargetUserId(""); }}>
+                  <ZuluSelect value={swapWeek} onValueChange={(value) => { setSwapWeek(value); setTargetUserId(""); }}>
                     {myWeeks.map((week) => <option value={week} key={week}>{formatWeek(week)}</option>)}
-                  </select>
-                </label>
-                <label>
+                  </ZuluSelect>
+                </ZuluLabel>
+                <ZuluLabel>
                   Trocar com
-                  <select value={targetUserId} onChange={(event) => setTargetUserId(event.target.value)} required>
+                  <ZuluSelect value={targetUserId} onValueChange={(value) => setTargetUserId(value)} required>
                     <option value="">Escolha alguém</option>
                     {swapPeople.map((entry) => <option value={entry.user_id!} key={entry.user_id!}>{entry.display_name} · {new Date(`${entry.scheduled_on}T12:00:00`).toLocaleDateString("pt-BR", { weekday: "long" })}</option>)}
-                  </select>
-                </label>
-                <button className="outline-button" type="submit" disabled={!targetUserId || hub.busy}><ArrowsLeftRight size={15} /> Pedir troca</button>
-              </form>
+                  </ZuluSelect>
+                </ZuluLabel>
+                <ZuluButton className="outline-button" type="submit" disabled={!targetUserId || hub.busy}><ArrowsLeftRight size={15} /> Pedir troca</ZuluButton>
+              </ZuluForm>
             ) : scheduleExists ? (
               <p className="home-office-hint">Você não tem um dia futuro na escala das próximas semanas para trocar.</p>
             ) : (
@@ -372,11 +373,11 @@ export function HomeOfficeManager({
                       <div>
                         {received ? (
                           <>
-                            <button className="outline-button" onClick={() => void decideSwap(swap.id, "accept")} disabled={hub.busy}><Check size={14} /> Aceitar</button>
-                            <button className="text-button" onClick={() => void decideSwap(swap.id, "decline")} disabled={hub.busy}>Recusar</button>
+                            <ZuluButton className="outline-button" onClick={() => void decideSwap(swap.id, "accept")} disabled={hub.busy}><Check size={14} /> Aceitar</ZuluButton>
+                            <ZuluButton className="text-button" onClick={() => void decideSwap(swap.id, "decline")} disabled={hub.busy}>Recusar</ZuluButton>
                           </>
                         ) : (
-                          <button className="text-button" onClick={() => void decideSwap(swap.id, "cancel")} disabled={hub.busy}>Cancelar pedido</button>
+                          <ZuluButton className="text-button" onClick={() => void decideSwap(swap.id, "cancel")} disabled={hub.busy}>Cancelar pedido</ZuluButton>
                         )}
                       </div>
                     </div>

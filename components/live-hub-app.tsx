@@ -1,4 +1,5 @@
 "use client";
+import { DashboardLoading, ZuluAlert, DashboardNotice, DashboardWorkspacePicker, DashboardUIProvider, ZuluForm, ZuluLabel, ZuluFieldset, ZuluLegend, ZuluButton, ZuluSelect, ZuluInput, ZuluTextArea, ZuluCheckboxField } from "./dashboard-ui";
 import { BrandMark } from "./brand";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
@@ -598,18 +599,19 @@ export function LiveHubApp({ userId }: { userId: string }) {
       setModal(null);
     }
   }
-  const Notice = hub.notice ? (
+  const Notice = hub.notice ? (page === "overview" ? <DashboardNotice message={hub.notice.message} error={hub.notice.error} onClose={hub.dismissNotice} /> : (
     <div
       role={hub.notice.error ? "alert" : "status"}
       className={`toast ${hub.notice.error ? "toast-error" : ""}`}
     >
       <CheckCircle size={19} />
       {hub.notice.message}
-      <button aria-label="Dispensar aviso" onClick={hub.dismissNotice}>
+      <ZuluButton aria-label="Dispensar aviso" onClick={hub.dismissNotice}>
         <X size={16} />
-      </button>
+      </ZuluButton>
     </div>
-  ) : null;
+  )) : null;
+  if ((hub.bootLoading || !now) && page === "overview") return <DashboardLoading />;
   if (hub.bootLoading || !now)
     return (
       <div className="loading-screen">
@@ -628,9 +630,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
           action="Tentar novamente"
           onAction={() => void hub.refreshAll()}
         />
-        <button className="text-button" onClick={signOut}>
+        <ZuluButton className="text-button" onClick={signOut}>
           Sair da conta <SignOut size={15} />
-        </button>
+        </ZuluButton>
         {Notice}
       </main>
     );
@@ -676,23 +678,24 @@ export function LiveHubApp({ userId }: { userId: string }) {
       : null;
   const profileBody = data.people.find((p) => p.id === userId)?.body ?? "";
   return (
+    <DashboardUIProvider enabled={page === "overview"}>
     <div className={`app-shell live-app ${page === "overview" ? "dashboard-redesign" : ""}`}>
       <a className="skip-link" href="#main-content">
         Pular para o conteúdo
       </a>
       <aside className="rail" aria-label="Navegação principal">
-        <button
+        <ZuluButton
           className="brand"
           aria-label="ZULU — início"
           onClick={() => navigate("overview")}
         >
           <BrandMark size={44} />
 
-        </button>
+        </ZuluButton>
         <div className="rail-divider" />
         <nav>
           {navigation.map((item) => (
-            <button
+            <ZuluButton
               key={item.id}
               className={`rail-button ${page === item.id ? "active" : ""} ${["hours", "people", "collaboration", "management", "integrations", "calls"].includes(item.id) ? "nav-secondary" : ""} ${item.id === "more" ? "mobile-more-button" : ""}`}
               onClick={() => navigate(item.id)}
@@ -710,19 +713,19 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   aria-label={`${totalUnread} mensagens não lidas`}
                 />
               )}
-            </button>
+            </ZuluButton>
           ))}
         </nav>
         <div className="rail-bottom">
-          <button
+          <ZuluButton
             className="rail-button"
             aria-label="Preferências e perfil"
             onClick={() => openModal("profile")}
           >
             <GearSix size={23} />
             <span className="nav-tooltip">Preferências</span>
-          </button>
-          <button
+          </ZuluButton>
+          <ZuluButton
             className="profile-button"
             aria-label="Meu perfil"
             onClick={() => openModal("profile")}
@@ -732,14 +735,22 @@ export function LiveHubApp({ userId }: { userId: string }) {
               id={userId}
               presence={hub.availability}
             />
-          </button>
+          </ZuluButton>
         </div>
       </aside>
       <DesktopBridge hub={hub} />
       <div className="app-content">
         <header className="topbar">
           <div className="workspace-wrap">
-            <button
+            {page === "overview" ? <DashboardWorkspacePicker
+              workspace={hub.workspace?.name ?? "Meu workspace"} teamId={hub.teamId}
+              teams={hub.bootstrap.teams.map((team) => ({ id: team.id, label: `${hub.bootstrap!.workspaces.find((workspace) => workspace.id === team.workspace_id)?.name ?? ""} · ${team.name}` }))}
+              role={hub.isAdmin ? "Administrador" : hub.canManage ? "Líder" : "Membro"} canManage={hub.isAdmin}
+              onTeam={hub.setTeamId} onNewTeam={() => openModal("team")}
+              onSignOut={() => void signOut()}
+            /> : (<>
+
+            <ZuluButton
               className="workspace-button"
               aria-expanded={popover}
               onClick={() => setPopover(!popover)}
@@ -749,17 +760,17 @@ export function LiveHubApp({ userId }: { userId: string }) {
               </span>
               <strong>{hub.workspace?.name ?? "Meu workspace"}</strong>
               <CaretDown size={13} />
-            </button>
+            </ZuluButton>
             {popover && (
               <div className="popover workspace-popover">
                 <span className="popover-label">Seu workspace e time</span>
-                <label className="live-workspace-label" htmlFor="team-picker">
+                <ZuluLabel className="live-workspace-label" htmlFor="team-picker">
                   Time ativo
-                  <select
+                  <ZuluSelect
                     id="team-picker"
                     value={hub.teamId}
-                    onChange={(e) => {
-                      hub.setTeamId(e.target.value);
+                    onValueChange={(value) => {
+                      hub.setTeamId(value);
                       setPopover(false);
                     }}
                   >
@@ -776,8 +787,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           ))}
                       </optgroup>
                     ))}
-                  </select>
-                </label>
+                  </ZuluSelect>
+                </ZuluLabel>
                 <span className="workspace-role">
                   <ShieldCheck size={14} />
                   {hub.isAdmin
@@ -787,21 +798,22 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       : "Membro"}
                 </span>
                 {hub.isAdmin && (
-                  <button
+                  <ZuluButton
                     className="text-button"
                     onClick={() => openModal("team")}
                   >
                     Criar time <Plus size={14} />
-                  </button>
+                  </ZuluButton>
                 )}
-                <button
+                <ZuluButton
                   className="text-button workspace-signout"
                   onClick={signOut}
                 >
                   Sair da conta <SignOut size={14} />
-                </button>
+                </ZuluButton>
               </div>
             )}
+            </>)}
           </div>
           <span className="breadcrumb-divider">/</span>
           <span className="breadcrumb">{currentPage.label}</span>
@@ -823,7 +835,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     ? "Reconectando"
                     : "Conectando"}
             </span>
-            <button
+            <ZuluButton
               className="search-button"
               aria-label="Buscar no ZULU"
               onClick={() => openModal("search")}
@@ -833,15 +845,15 @@ export function LiveHubApp({ userId }: { userId: string }) {
               <kbd>
                 <Command size={11} />K
               </kbd>
-            </button>
-            <button
+            </ZuluButton>
+            <ZuluButton
               className="icon-button"
               aria-label="Atualizar dados"
               disabled={hub.busy || hub.teamLoading}
               onClick={() => void hub.refreshAll()}
             >
               <ArrowClockwise size={20} />
-            </button>
+            </ZuluButton>
             <NotificationBell
               hub={hub}
               onOpen={() => {
@@ -849,13 +861,13 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 navigate("collaboration");
               }}
             />
-            <button
+            <ZuluButton
               className="top-avatar"
               aria-label="Meu perfil"
               onClick={() => openModal("profile")}
             >
               <PersonAvatar name={currentName} id={userId} />
-            </button>
+            </ZuluButton>
           </div>
         </header>
         <main id="main-content" className={`main-content ${page === "overview" ? "today-page" : ""}`}>
@@ -889,7 +901,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
             </div>
             <div className="page-heading-actions">
               {timerSession && page !== "overview" && (
-                <button
+                <ZuluButton
                   className={`running-pill ${pausedTimer ? "is-paused" : ""}`}
                   onClick={() => navigate("hours")}
                   aria-label={`Abrir timer${pausedTimer ? " pausado" : " ativo"}: ${clock(elapsed)}`}
@@ -897,35 +909,35 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   <i className={`live-dot ${activeTimer ? "live" : ""}`} />
                   <span>{clock(elapsed)}</span>
                   {pausedTimer ? <Coffee size={16} /> : <TimerIcon size={16} />}
-                </button>
+                </ZuluButton>
               )}
               {(page === "overview" || page === "calendar") &&
               hub.canParticipate ? (
-                <button
+                <ZuluButton
                   className="primary-button"
                   disabled={hub.busy}
                   onClick={() => newEvent()}
                 >
                   <Plus size={17} />
                   Novo evento
-                </button>
+                </ZuluButton>
               ) : page === "hours" && hub.canParticipate ? (
-                <button
+                <ZuluButton
                   className="primary-button"
                   disabled={hub.busy}
                   onClick={newTime}
                 >
                   <Plus size={17} />
                   Adicionar horas
-                </button>
+                </ZuluButton>
               ) : page === "people" && hub.isAdmin ? (
-                <button
+                <ZuluButton
                   className="primary-button"
                   onClick={() => openModal("member")}
                 >
                   <UserPlus size={17} />
                   Convidar pessoa
-                </button>
+                </ZuluButton>
               ) : (
                 <span className="team-pill">
                   <i className="live-dot live" />
@@ -955,10 +967,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 <p>Informe seus dias e horas para acompanhar saldo diário, semanal e mensal.</p>
               </div>
               <div>
-                <button className="text-button" onClick={() => setWorkScheduleOpen(true)}>
+                <ZuluButton className="text-button" onClick={() => setWorkScheduleOpen(true)}>
                   Configurar agora
-                </button>
-                <button
+                </ZuluButton>
+                <ZuluButton
                   className="text-button muted"
                   disabled={hub.busy}
                   onClick={() => void hub.mutate(
@@ -967,7 +979,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   )}
                 >
                   Agora não
-                </button>
+                </ZuluButton>
               </div>
             </section>
           )}
@@ -1117,7 +1129,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                             .filter((p) => p.id !== userId)
                             .slice(0, 4)
                             .map((person) => (
-                              <button
+                              <ZuluButton
                                 className="person-row"
                                 key={person.id}
                                 onClick={() => {
@@ -1140,7 +1152,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                                       : ""}
                                   </small>
                                 </span>
-                              </button>
+                              </ZuluButton>
                             ))}
                           {data.people.length <= 1 && (
                             <p className="resource-note">
@@ -1149,7 +1161,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                             </p>
                           )}
                         </div>
-                        <button
+                        <ZuluButton
                           className="text-button sidebar-link"
                           onClick={() => {
                             setPeopleQuery("");
@@ -1157,7 +1169,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           }}
                         >
                           Ver todo o time <ArrowUpRight size={14} />
-                        </button>
+                        </ZuluButton>
                       </section>
                       <section className="hours-summary">
                         <div className="section-heading">
@@ -1217,12 +1229,12 @@ export function LiveHubApp({ userId }: { userId: string }) {
                             ? `${totalUnread} ${totalUnread === 1 ? "mensagem espera" : "mensagens esperam"} por você nos seus canais.`
                             : "Troque ideias, compartilhe contexto e encontre seu time."}
                         </p>
-                        <button
+                        <ZuluButton
                           className="outline-button"
                           onClick={() => navigate("chat")}
                         >
                           Abrir conversas <ArrowUpRight size={15} />
-                        </button>
+                        </ZuluButton>
                       </section>
                       <div className="sidebar-footnote">
                         <span className="tiny-brand">ZULU</span>
@@ -1268,7 +1280,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       ].includes(item.id),
                     )
                     .map((item) => (
-                      <button key={item.id} onClick={() => navigate(item.id)}>
+                      <ZuluButton key={item.id} onClick={() => navigate(item.id)}>
                         <item.icon size={24} />
                         <span>
                           <strong>{item.label}</strong>
@@ -1287,7 +1299,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           </small>
                         </span>
                         <ArrowRight size={18} />
-                      </button>
+                      </ZuluButton>
                     ))}
                 </section>
               )}
@@ -1380,16 +1392,16 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       <h2>{pausedTimer ? "Seu timer está pausado" : "No que você está trabalhando?"}</h2>
                       <p>{pausedTimer ? "O tempo parado para o almoço não entra no seu saldo." : "Uma coisa de cada vez. O tempo a gente cuida."}</p>
                     </div>
-                    <form
+                    <ZuluForm
                       className="timer-form"
                       onSubmit={(e) => {
                         e.preventDefault();
                         void (pausedTimer ? resumeTimer() : activeTimer ? pauseTimer() : startTimer());
                       }}
                     >
-                      <label>
+                      <ZuluLabel>
                         Descrição
-                        <input
+                        <ZuluInput
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                           placeholder="Descreva sua próxima atividade"
@@ -1397,12 +1409,12 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           required={!timerSession}
                           disabled={!!timerSession || !hub.canParticipate}
                         />
-                      </label>
-                      <label>
+                      </ZuluLabel>
+                      <ZuluLabel>
                         Projeto
-                        <select
+                        <ZuluSelect
                           value={projectId}
-                          onChange={(e) => setProjectId(e.target.value)}
+                          onValueChange={(value) => setProjectId(value)}
                           disabled={!!timerSession || !hub.canParticipate}
                         >
                           <option value="">Sem projeto</option>
@@ -1411,11 +1423,11 @@ export function LiveHubApp({ userId }: { userId: string }) {
                               {project.name}
                             </option>
                           ))}
-                        </select>
-                      </label>
+                        </ZuluSelect>
+                      </ZuluLabel>
                       <div className="inline-timer">
                         <strong>{clock(elapsed)}</strong>
-                        <button
+                        <ZuluButton
                           className={`primary-button ${activeTimer ? "pause-button" : pausedTimer ? "resume-button" : ""}`}
                           disabled={
                             hub.busy || (!timerSession && !hub.canParticipate)
@@ -1431,9 +1443,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
                             <Play size={16} weight="fill" />
                           )}
                           {pausedTimer ? "Retomar" : activeTimer ? "Pausa para almoço" : "Iniciar"}
-                        </button>
+                        </ZuluButton>
                         {timerSession && (
-                          <button
+                          <ZuluButton
                             className="timer-end-button"
                             type="button"
                             disabled={hub.busy}
@@ -1441,10 +1453,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           >
                             <Stop size={15} weight="fill" />
                             Encerrar
-                          </button>
+                          </ZuluButton>
                         )}
                       </div>
-                    </form>
+                    </ZuluForm>
                     {timerSession && (
                       <p className={`running-description ${pausedTimer ? "is-paused" : ""}`}>
                         <i className={`live-dot ${activeTimer ? "live" : ""}`} />
@@ -1457,13 +1469,13 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       </p>
                     )}
                     {hub.canManage && (
-                      <button
+                      <ZuluButton
                         className="text-button project-create-link"
                         onClick={() => openModal("project")}
                       >
                         <Plus size={14} />
                         Criar projeto
-                      </button>
+                      </ZuluButton>
                     )}
                   </section>
                   <section className="hours-balance" aria-label="Saldo de horas">
@@ -1472,9 +1484,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         <h2>Seu saldo de horas</h2>
                         <p>O tempo registrado é comparado com sua jornada prevista.</p>
                       </div>
-                      <button className="text-button" onClick={() => setWorkScheduleOpen(true)}>
+                      <ZuluButton className="text-button" onClick={() => setWorkScheduleOpen(true)}>
                         {workScheduleConfigured ? "Editar jornada" : "Configurar jornada"}
-                      </button>
+                      </ZuluButton>
                     </div>
                     <div className="hours-balance-grid">
                       {[
@@ -1530,7 +1542,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                               </span>
                               {entry.description || "Sem descrição"}
                               {hub.canParticipate && (
-                                <button
+                                <ZuluButton
                                   className="icon-button edit-time-button"
                                   aria-label={`Editar registro: ${entry.description || "sem descrição"}`}
                                   onClick={() => {
@@ -1539,7 +1551,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                                   }}
                                 >
                                   <PencilSimple size={14} />
-                                </button>
+                                </ZuluButton>
                               )}
                             </strong>
                             <span>{projectName(entry.project_id)}</span>
@@ -1579,27 +1591,27 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   <div className="people-toolbar">
                     <div className="people-search">
                       <MagnifyingGlass size={18} />
-                      <label className="sr-only" htmlFor="people-query">
+                      <ZuluLabel className="sr-only" htmlFor="people-query">
                         Buscar pessoas
-                      </label>
-                      <input
+                      </ZuluLabel>
+                      <ZuluInput
                         id="people-query"
                         value={peopleQuery}
                         onChange={(e) => setPeopleQuery(e.target.value)}
                         placeholder="Encontrar alguém no time…"
                       />
                     </div>
-                    <select
+                    <ZuluSelect
                       aria-label="Filtrar disponibilidade"
                       value={availabilityFilter}
-                      onChange={(e) => setAvailabilityFilter(e.target.value)}
+                      onValueChange={(value) => setAvailabilityFilter(value)}
                     >
                       <option value="all">Todas as pessoas</option>
                       <option value="online">Disponíveis</option>
                       <option value="meeting">Em reunião</option>
                       <option value="away">Ausentes</option>
                       <option value="offline">Offline</option>
-                    </select>
+                    </ZuluSelect>
                     <span className="subtle-text">
                       {data.people.length}{" "}
                       {data.people.length === 1 ? "pessoa" : "pessoas"} no time
@@ -1649,22 +1661,22 @@ export function LiveHubApp({ userId }: { userId: string }) {
                             </strong>
                           </div>
                           {person.id === userId ? (
-                            <button
+                            <ZuluButton
                               className="outline-button"
                               onClick={() => openModal("profile")}
                             >
                               <PencilSimple size={16} />
                               Editar meu perfil
-                            </button>
+                            </ZuluButton>
                           ) : hub.canParticipate ? (
-                            <button
+                            <ZuluButton
                               className="outline-button"
                               disabled={hub.busy}
                               onClick={() => void openDm(person)}
                             >
                               <ChatCircleText size={17} />
                               Conversar
-                            </button>
+                            </ZuluButton>
                           ) : null}
                         </article>
                       ))}
@@ -1711,13 +1723,13 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     <div className="channel-sidebar-heading">
                       <h2>Conversas</h2>
                       {hub.canManage && hub.canParticipate ? (
-                        <button
+                        <ZuluButton
                           className="icon-button"
                           aria-label="Criar canal"
                           onClick={() => openModal("channel")}
                         >
                           <Plus size={19} />
-                        </button>
+                        </ZuluButton>
                       ) : (
                         <ChatCircleText size={21} />
                       )}
@@ -1726,7 +1738,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     {data.channels
                       .filter((c) => c.kind !== "dm")
                       .map((c) => (
-                        <button
+                        <ZuluButton
                           className={`channel-button ${channelId === c.id ? "selected" : ""}`}
                           key={c.id}
                           onClick={() => {
@@ -1747,7 +1759,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                                 : data.unread[c.id]}
                             </span>
                           )}
-                        </button>
+                        </ZuluButton>
                       ))}
                     {!data.channels.some((c) => c.kind !== "dm") && (
                       <p className="channel-empty-note">
@@ -1760,7 +1772,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     {data.channels
                       .filter((c) => c.kind === "dm")
                       .map((c) => (
-                        <button
+                        <ZuluButton
                           key={c.id}
                           className={`channel-button dm-button ${channelId === c.id ? "selected" : ""}`}
                           onClick={() => {
@@ -1783,9 +1795,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
                               {data.unread[c.id]}
                             </span>
                           )}
-                        </button>
+                        </ZuluButton>
                       ))}
-                    <button
+                    <ZuluButton
                       className="text-button start-dm"
                       onClick={() => {
                         setPeopleQuery("");
@@ -1794,7 +1806,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     >
                       <Plus size={13} />
                       Conversar com alguém
-                    </button>
+                    </ZuluButton>
                     <div className="channel-sidebar-note">
                       <i
                         className={`live-dot ${hub.connection === "live" ? "live" : ""}`}
@@ -1831,13 +1843,13 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       <>
                         <div className="chat-head">
                           <div>
-                            <button
+                            <ZuluButton
                               className="icon-button mobile-chat-back"
                               aria-label="Voltar para canais"
                               onClick={() => setShowChannelList(true)}
                             >
                               <CaretLeft size={20} />
-                            </button>
+                            </ZuluButton>
                             {selectedChannel.kind === "dm" ? (
                               <PersonAvatar
                                 name={channelName(selectedChannel)}
@@ -1865,13 +1877,13 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           </div>
                           {channelMembership?.role === "moderator" &&
                             selectedChannel.kind !== "dm" && (
-                              <button
+                              <ZuluButton
                                 className="icon-button"
                                 aria-label="Adicionar participante ao canal"
                                 onClick={() => openModal("channel-members")}
                               >
                                 <UserPlus size={20} />
-                              </button>
+                              </ZuluButton>
                             )}
                         </div>
                         {!channelMembership ? (
@@ -2014,9 +2026,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
             </div>
           </div>
           {hub.canParticipate && (
-            <label className="live-rsvp">
+            <ZuluLabel className="live-rsvp">
               Sua presença
-              <select
+              <ZuluSelect
                 disabled={hub.busy}
                 value={
                   data.attendees.find(
@@ -2024,30 +2036,28 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       a.event_id === selectedEvent.id && a.user_id === userId,
                   )?.response ?? "pending"
                 }
-                onChange={(e) =>
-                  void hub.mutate(
+                onValueChange={(value) => void hub.mutate(
                     () =>
                       hub.rpc("respond_to_event", {
                         p_event_id: selectedEvent.id,
-                        p_response: e.target.value as
+                        p_response: value as
                           | "accepted"
                           | "declined"
                           | "tentative"
                           | "pending",
                       }),
                     "Sua resposta foi registrada.",
-                  )
-                }
+                  )}
               >
                 <option value="pending">Ainda não respondi</option>
                 <option value="accepted">Vou participar</option>
                 <option value="tentative">Talvez</option>
                 <option value="declined">Não vou participar</option>
-              </select>
-            </label>
+              </ZuluSelect>
+            </ZuluLabel>
           )}
           {canEditEvent && (
-            <form
+            <ZuluForm
               className="event-invite-form"
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -2064,9 +2074,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   );
               }}
             >
-              <label>
+              <ZuluLabel>
                 Adicionar participante
-                <select name="user" required defaultValue="">
+                <ZuluSelect name="user" required defaultValue="">
                   <option value="" disabled>
                     Escolha uma pessoa
                   </option>
@@ -2084,17 +2094,17 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         {p.display_name}
                       </option>
                     ))}
-                </select>
-              </label>
-              <button className="outline-button" disabled={hub.busy}>
+                </ZuluSelect>
+              </ZuluLabel>
+              <ZuluButton className="outline-button" disabled={hub.busy}>
                 <UserPlus size={16} />
                 Convidar
-              </button>
-            </form>
+              </ZuluButton>
+            </ZuluForm>
           )}
           {canEditEvent && (
             <div className="dialog-actions event-manage-actions">
-              <button
+              <ZuluButton
                 className="text-button danger-text"
                 disabled={hub.busy}
                 onClick={async () => {
@@ -2108,14 +2118,14 @@ export function LiveHubApp({ userId }: { userId: string }) {
               >
                 <Trash size={15} />
                 Cancelar evento
-              </button>
-              <button
+              </ZuluButton>
+              <ZuluButton
                 className="outline-button"
                 onClick={() => editEvent(selectedEvent)}
               >
                 <PencilSimple size={16} />
                 Editar
-              </button>
+              </ZuluButton>
             </div>
           )}
         </HubDialog>
@@ -2125,15 +2135,15 @@ export function LiveHubApp({ userId }: { userId: string }) {
           title={editingEvent ? "Editar evento" : "Novo encontro"}
           onClose={() => setModal(null)}
         >
-          <form className="dialog-form" onSubmit={saveEvent}>
+          <ZuluForm className="dialog-form" onSubmit={saveEvent}>
             {formError && (
-              <div className="form-alert" role="alert">
+              <ZuluAlert className="form-alert" role="alert">
                 {formError}
-              </div>
+              </ZuluAlert>
             )}
-            <label>
+            <ZuluLabel>
               Título
-              <input
+              <ZuluInput
                 name="title"
                 required
                 maxLength={200}
@@ -2141,29 +2151,29 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 defaultValue={editingEvent?.title}
                 placeholder="O que vamos fazer juntos?"
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Tipo
-              <select
+              <ZuluSelect
                 name="kind"
                 defaultValue={editingEvent?.kind ?? "meeting"}
               >
                 <option value="meeting">Reunião</option>
                 <option value="event">Evento</option>
-              </select>
-            </label>
-            <label>
+              </ZuluSelect>
+            </ZuluLabel>
+            <ZuluLabel>
               Início
-              <input
+              <ZuluInput
                 name="start"
                 type="datetime-local"
                 required
                 defaultValue={eventStart}
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Término
-              <input
+              <ZuluInput
                 name="end"
                 type="datetime-local"
                 required
@@ -2179,20 +2189,20 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       : ""
                 }
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Pauta
-              <textarea
+              <ZuluTextArea
                 name="description"
                 rows={3}
                 maxLength={10000}
                 defaultValue={editingEvent?.description}
                 placeholder="Contexto e assuntos para a conversa…"
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Link da reunião (opcional)
-              <input
+              <ZuluInput
                 name="call_url"
                 type="url"
                 pattern="https://.*"
@@ -2200,29 +2210,29 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 defaultValue={editingEvent?.call_url ?? ""}
                 placeholder="https://…"
               />
-            </label>
+            </ZuluLabel>
             <p className="demo-note">
               Horários em {Intl.DateTimeFormat().resolvedOptions().timeZone}.
               Você poderá convidar participantes depois de salvar.
             </p>
             <div className="dialog-actions">
-              <button
+              <ZuluButton
                 className="outline-button"
                 type="button"
                 onClick={() => setModal(null)}
               >
                 Voltar
-              </button>
-              <button className="primary-button" disabled={hub.busy}>
+              </ZuluButton>
+              <ZuluButton className="primary-button" disabled={hub.busy}>
                 {hub.busy ? (
                   <CircleNotch className="spinning" size={17} />
                 ) : (
                   <Check size={17} />
                 )}
                 Salvar evento
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
         </HubDialog>
       )}
       {modal === "time" && (
@@ -2230,15 +2240,15 @@ export function LiveHubApp({ userId }: { userId: string }) {
           title={editingTime ? "Editar registro" : "Adicionar horas"}
           onClose={() => setModal(null)}
         >
-          <form className="dialog-form" onSubmit={saveTime}>
+          <ZuluForm className="dialog-form" onSubmit={saveTime}>
             {formError && (
-              <div className="form-alert" role="alert">
+              <ZuluAlert className="form-alert" role="alert">
                 {formError}
-              </div>
+              </ZuluAlert>
             )}
-            <label>
+            <ZuluLabel>
               Atividade
-              <input
+              <ZuluInput
                 name="description"
                 required
                 maxLength={2000}
@@ -2246,10 +2256,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 placeholder="O que você fez?"
                 autoFocus
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Projeto
-              <select
+              <ZuluSelect
                 name="project"
                 defaultValue={editingTime?.project_id ?? projectId}
               >
@@ -2267,11 +2277,11 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       Projeto arquivado
                     </option>
                   )}
-              </select>
-            </label>
-            <label>
+              </ZuluSelect>
+            </ZuluLabel>
+            <ZuluLabel>
               Início
-              <input
+              <ZuluInput
                 name="start"
                 type="datetime-local"
                 step="1"
@@ -2283,10 +2293,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     : toLocalInput(new Date(now - 3600000).toISOString())
                 }
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Término
-              <input
+              <ZuluInput
                 name="end"
                 type="datetime-local"
                 step="1"
@@ -2298,29 +2308,29 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     : toLocalInput(new Date(now).toISOString())
                 }
               />
-            </label>
+            </ZuluLabel>
             <p className="demo-note">
               O servidor calcula a duração e impede intervalos sobrepostos,
               inclusive entre times.
             </p>
             <div className="dialog-actions">
-              <button
+              <ZuluButton
                 type="button"
                 className="outline-button"
                 onClick={() => setModal(null)}
               >
                 Voltar
-              </button>
-              <button className="primary-button" disabled={hub.busy}>
+              </ZuluButton>
+              <ZuluButton className="primary-button" disabled={hub.busy}>
                 {hub.busy ? (
                   <CircleNotch className="spinning" size={17} />
                 ) : (
                   <Check size={17} />
                 )}
                 Salvar registro
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
         </HubDialog>
       )}
       {modal === "profile" && (
@@ -2328,7 +2338,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
           title="Seu espaço, do seu jeito"
           onClose={() => setModal(null)}
         >
-          <form className="dialog-form" onSubmit={saveProfile}>
+          <ZuluForm className="dialog-form" onSubmit={saveProfile}>
             <div className="profile-preview">
               <PersonAvatar name={currentName} id={userId} size="large" />
               <span>
@@ -2342,33 +2352,33 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 </small>
               </span>
             </div>
-            <label>
+            <ZuluLabel>
               Como podemos chamar você?
-              <input
+              <ZuluInput
                 name="name"
                 required
                 maxLength={80}
                 defaultValue={currentName}
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Disponibilidade
-              <select name="availability" defaultValue={hub.availability}>
+              <ZuluSelect name="availability" defaultValue={hub.availability}>
                 <option value="online">Disponível</option>
                 <option value="meeting">Em reunião</option>
                 <option value="away">Ausente</option>
-              </select>
-            </label>
+              </ZuluSelect>
+            </ZuluLabel>
             {hub.canParticipate && (
-              <label>
+              <ZuluLabel>
                 No que você está trabalhando?
-                <input
+                <ZuluInput
                   name="body"
                   maxLength={160}
                   defaultValue={profileBody}
                   placeholder="Compartilhe seu foco com o time"
                 />
-              </label>
+              </ZuluLabel>
             )}
             <div className="settings-info">
               <ShieldCheck size={23} />
@@ -2381,27 +2391,27 @@ export function LiveHubApp({ userId }: { userId: string }) {
               </div>
             </div>
             <div className="dialog-actions">
-              <button
+              <ZuluButton
                 type="button"
                 className="outline-button"
                 onClick={() => setModal(null)}
               >
                 Voltar
-              </button>
-              <button className="primary-button" disabled={hub.busy}>
+              </ZuluButton>
+              <ZuluButton className="primary-button" disabled={hub.busy}>
                 <Check size={16} />
                 Salvar perfil
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
           <InstallApp />
           <OfflineSettings userId={userId} />
           <PushSettings hub={hub} />
           <div className="profile-account-actions">
-            <label>
+            <ZuluLabel>
               Seu identificador<code>{userId}</code>
-            </label>
-            <button
+            </ZuluLabel>
+            <ZuluButton
               className="text-button"
               onClick={async () => {
                 try {
@@ -2414,106 +2424,105 @@ export function LiveHubApp({ userId }: { userId: string }) {
             >
               <Copy size={15} />
               Copiar identificador
-            </button>
-            <button className="text-button danger-text" onClick={signOut}>
+            </ZuluButton>
+            <ZuluButton className="text-button danger-text" onClick={signOut}>
               <SignOut size={16} />
               Sair da conta
-            </button>
+            </ZuluButton>
           </div>
         </HubDialog>
       )}
       {modal === "project" && hub.canManage && (
         <HubDialog title="Novo projeto" onClose={() => setModal(null)}>
-          <form className="dialog-form" onSubmit={createProject}>
-            <label>
+          <ZuluForm className="dialog-form" onSubmit={createProject}>
+            <ZuluLabel>
               Nome do projeto
-              <input
+              <ZuluInput
                 name="name"
                 required
                 maxLength={120}
                 autoFocus
                 placeholder="Ex.: Website institucional"
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Descrição
-              <textarea
+              <ZuluTextArea
                 name="description"
                 maxLength={10000}
                 rows={3}
                 placeholder="Um pouco de contexto para o time"
               />
-            </label>
+            </ZuluLabel>
             <div className="dialog-actions">
-              <button
+              <ZuluButton
                 className="outline-button"
                 type="button"
                 onClick={() => setModal(null)}
               >
                 Voltar
-              </button>
-              <button className="primary-button" disabled={hub.busy}>
+              </ZuluButton>
+              <ZuluButton className="primary-button" disabled={hub.busy}>
                 <Plus size={16} />
                 Criar projeto
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
         </HubDialog>
       )}
       {modal === "channel" && hub.canManage && hub.canParticipate && (
         <HubDialog title="Novo canal" onClose={() => setModal(null)}>
-          <form className="dialog-form" onSubmit={createChannel}>
-            <label>
+          <ZuluForm className="dialog-form" onSubmit={createChannel}>
+            <ZuluLabel>
               Nome do canal
-              <input
+              <ZuluInput
                 name="name"
                 required
                 maxLength={80}
                 autoFocus
                 placeholder="Ex.: design"
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Visibilidade
-              <select name="kind" defaultValue="public">
+              <ZuluSelect name="kind" defaultValue="public">
                 <option value="public">
                   Público — pessoas do time podem participar
                 </option>
                 <option value="private">
                   Privado — apenas participantes adicionados
                 </option>
-              </select>
-            </label>
-            <fieldset className="member-checkboxes">
-              <legend>Participantes iniciais (opcional)</legend>
+              </ZuluSelect>
+            </ZuluLabel>
+            <ZuluFieldset className="member-checkboxes">
+              <ZuluLegend>Participantes iniciais (opcional)</ZuluLegend>
               {data.people
                 .filter((p) => p.id !== userId)
                 .map((person) => (
-                  <label key={person.id}>
-                    <input name="members" type="checkbox" value={person.id} />
+                  <ZuluCheckboxField key={person.id} name="members" value={person.id} aria-label={person.display_name}>
                     <PersonAvatar
                       name={person.display_name}
                       id={person.id}
                       size="small"
                     />
                     {person.display_name}
-                  </label>
+                  </ZuluCheckboxField>
                 ))}
-            </fieldset>
+            </ZuluFieldset>
             <div className="dialog-actions">
-              <button
+              <ZuluButton
                 className="outline-button"
                 type="button"
                 onClick={() => setModal(null)}
               >
                 Voltar
-              </button>
-              <button className="primary-button" disabled={hub.busy}>
+              </ZuluButton>
+              <ZuluButton className="primary-button" disabled={hub.busy}>
                 <Plus size={16} />
                 Criar canal
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
         </HubDialog>
       )}
       {modal === "channel-members" &&
@@ -2523,7 +2532,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
             title="Adicionar participante ao canal"
             onClose={() => setModal(null)}
           >
-            <form
+            <ZuluForm
               className="dialog-form"
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -2546,9 +2555,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 Você modera #{selectedChannel?.name}. Só é possível adicionar
                 pessoas ativas neste time.
               </p>
-              <label>
+              <ZuluLabel>
                 Pessoa
-                <select name="user" required defaultValue="">
+                <ZuluSelect name="user" required defaultValue="">
                   <option value="" disabled>
                     Selecione uma pessoa
                   </option>
@@ -2559,29 +2568,29 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         {person.display_name}
                       </option>
                     ))}
-                </select>
-              </label>
-              <label>
+                </ZuluSelect>
+              </ZuluLabel>
+              <ZuluLabel>
                 Papel no canal
-                <select name="role" defaultValue="member">
+                <ZuluSelect name="role" defaultValue="member">
                   <option value="member">Participante</option>
                   <option value="moderator">Moderador</option>
-                </select>
-              </label>
+                </ZuluSelect>
+              </ZuluLabel>
               <div className="dialog-actions">
-                <button
+                <ZuluButton
                   type="button"
                   className="outline-button"
                   onClick={() => setModal(null)}
                 >
                   Voltar
-                </button>
-                <button className="primary-button" disabled={hub.busy}>
+                </ZuluButton>
+                <ZuluButton className="primary-button" disabled={hub.busy}>
                   <UserPlus size={16} />
                   Adicionar
-                </button>
+                </ZuluButton>
               </div>
-            </form>
+            </ZuluForm>
           </HubDialog>
         )}
       {modal === "member" && hub.isAdmin && (
@@ -2595,10 +2604,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
       )}
       {modal === "team" && hub.isAdmin && (
         <HubDialog title="Novo time" onClose={() => setModal(null)}>
-          <form className="dialog-form" onSubmit={createTeam}>
-            <label>
+          <ZuluForm className="dialog-form" onSubmit={createTeam}>
+            <ZuluLabel>
               Workspace
-              <select name="workspace" defaultValue={hub.workspace?.id}>
+              <ZuluSelect name="workspace" defaultValue={hub.workspace?.id}>
                 {hub.bootstrap.workspaces
                   .filter((w) =>
                     hub.bootstrap!.workspaceMemberships.some(
@@ -2613,32 +2622,32 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       {w.name}
                     </option>
                   ))}
-              </select>
-            </label>
-            <label>
+              </ZuluSelect>
+            </ZuluLabel>
+            <ZuluLabel>
               Nome do time
-              <input
+              <ZuluInput
                 name="name"
                 required
                 autoFocus
                 maxLength={120}
                 placeholder="Nome do novo time"
               />
-            </label>
+            </ZuluLabel>
             <div className="dialog-actions">
-              <button
+              <ZuluButton
                 type="button"
                 className="outline-button"
                 onClick={() => setModal(null)}
               >
                 Voltar
-              </button>
-              <button className="primary-button" disabled={hub.busy}>
+              </ZuluButton>
+              <ZuluButton className="primary-button" disabled={hub.busy}>
                 <Plus size={16} />
                 Criar time
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
         </HubDialog>
       )}
       {modal === "message" && editingMessage && (
@@ -2651,7 +2660,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
           onClose={() => setModal(null)}
         >
           {editingMessage.author_id === userId ? (
-            <form
+            <ZuluForm
               className="dialog-form"
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -2672,9 +2681,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 }
               }}
             >
-              <label>
+              <ZuluLabel>
                 Mensagem
-                <textarea
+                <ZuluTextArea
                   name="body"
                   defaultValue={editingMessage.body}
                   required
@@ -2682,25 +2691,25 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   rows={5}
                   autoFocus
                 />
-              </label>
+              </ZuluLabel>
               <div className="dialog-actions">
-                <button
+                <ZuluButton
                   type="button"
                   className="outline-button"
                   onClick={() => setModal(null)}
                 >
                   Voltar
-                </button>
-                <button className="primary-button" disabled={hub.busy}>
+                </ZuluButton>
+                <ZuluButton className="primary-button" disabled={hub.busy}>
                   <Check size={16} />
                   Salvar
-                </button>
+                </ZuluButton>
               </div>
-            </form>
+            </ZuluForm>
           ) : (
             <p className="event-description">{editingMessage.body}</p>
           )}
-          <button
+          <ZuluButton
             className="text-button danger-text message-delete"
             disabled={hub.busy}
             onClick={async () => {
@@ -2719,14 +2728,14 @@ export function LiveHubApp({ userId }: { userId: string }) {
           >
             <Trash size={15} />
             Remover mensagem
-          </button>
+          </ZuluButton>
         </HubDialog>
       )}
       {modal === "search" && (
         <HubDialog title="Buscar no ZULU" wide onClose={() => setModal(null)}>
           <div className="search-input-wrap">
             <MagnifyingGlass size={21} />
-            <input
+            <ZuluInput
               autoFocus
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -2741,7 +2750,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 n.label.toLowerCase().includes(search.toLowerCase()),
               )
               .map((n) => (
-                <button
+                <ZuluButton
                   key={n.id}
                   onClick={() => {
                     navigate(n.id);
@@ -2751,7 +2760,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   <n.icon size={20} />
                   <span>{n.label}</span>
                   <ArrowUpRight size={16} />
-                </button>
+                </ZuluButton>
               ))}
             <p className="list-label">Pessoas do time</p>
             {data.people
@@ -2760,7 +2769,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
               )
               .slice(0, 8)
               .map((person) => (
-                <button
+                <ZuluButton
                   key={person.id}
                   onClick={() => {
                     setPeopleQuery(person.display_name);
@@ -2775,7 +2784,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   />
                   <span>{person.display_name}</span>
                   <ArrowUpRight size={16} />
-                </button>
+                </ZuluButton>
               ))}
             <p className="list-label">Eventos carregados</p>
             {data.events
@@ -2786,7 +2795,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
               )
               .slice(0, 8)
               .map((event) => (
-                <button
+                <ZuluButton
                   key={event.id}
                   onClick={() => {
                     setModal(null);
@@ -2801,7 +2810,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     </small>
                   </span>
                   <ArrowUpRight size={16} />
-                </button>
+                </ZuluButton>
               ))}
             {search &&
               !navigation.some((n) =>
@@ -2823,5 +2832,6 @@ export function LiveHubApp({ userId }: { userId: string }) {
         </HubDialog>
       )}
     </div>
+    </DashboardUIProvider>
   );
 }

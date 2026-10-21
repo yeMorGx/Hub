@@ -3,6 +3,7 @@ import "@fontsource-variable/manrope";
 import "@fontsource-variable/inter";
 import "./globals.css";
 import "./dashboard.css";
+import "./dashboard-bento.css";
 import "./desktop.css";
 import { ServiceWorkerRegistration } from "@/components/pwa";
 import { DesktopUpdate } from "@/components/desktop-update";

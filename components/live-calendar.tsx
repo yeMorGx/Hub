@@ -1,4 +1,7 @@
 "use client";
+import { ZuluButton, ZuluSelect } from "./dashboard-ui";
+import { Card, Dropdown, Label, ToggleButtonGroup, ToggleButton } from "@heroui/react";
+import { DashboardDatePicker } from "./dashboard-ui";
 import { useState } from "react";
 import {
   FunnelSimple,
@@ -141,31 +144,45 @@ export function LiveCalendar({
         : monday.getMonth() === endOfWeek.getMonth()
           ? `${monday.getDate()} – ${endOfWeek.getDate()} de ${endOfWeek.toLocaleDateString("pt-BR", { month: "long" })}, ${endOfWeek.getFullYear()}`
           : `${monday.toLocaleDateString("pt-BR", { day: "numeric", month: "short" })} – ${endOfWeek.toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" })}`;
+  const CalendarContainer = compact ? Card : "section";
   return (
-    <section
+    <CalendarContainer
       className={`calendar-section ${full ? "calendar-full" : ""} ${compact ? "calendar-compact" : ""}`}
+      role="region"
       aria-label="Agenda do time"
       aria-busy={hub.teamLoading}
     >
       <div className="section-heading calendar-heading">
         <div className="heading-with-count">
           <h2>{full ? "Agenda do time" : view === "week" ? "Sua semana" : "Sua agenda"}</h2>
-          <button
+          {compact ? (
+            <Dropdown isOpen={filterOpen} onOpenChange={setFilterOpen}>
+              <ZuluButton className={`filter-button ${filter !== "all" ? "filter-active" : ""}`}><FunnelSimple size={14} />Filtrar</ZuluButton>
+              <Dropdown.Popover className="zulu-overlay zulu-filter" placement="bottom start">
+                  <Dropdown.Menu aria-label="Tipo de evento" selectionMode="single" selectedKeys={[filter]} onAction={(key) => { setFilter(String(key)); setFilterOpen(false); }}>
+                    {[["all", "Todos os eventos"], ["meeting", "Reuniões"], ["event", "Eventos"], ["home_office", "Home office"]].map(([id, label]) => (
+                      <Dropdown.Item key={id} id={id} textValue={label}><Label>{label}</Label><Dropdown.ItemIndicator /></Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown>
+          ) : (<>
+          <ZuluButton
             className={`filter-button ${filter !== "all" ? "filter-active" : ""}`}
             aria-expanded={filterOpen}
             onClick={() => setFilterOpen(!filterOpen)}
           >
             <FunnelSimple size={14} />
             Filtrar
-          </button>
+          </ZuluButton>
           {filterOpen && (
             <div className="filter-popover">
               <label htmlFor="event-filter">Tipo de evento</label>
-              <select
-                id="event-filter"
+              <ZuluSelect
+                id="event-filter" aria-label="Tipo de evento"
                 value={filter}
-                onChange={(e) => {
-                  setFilter(e.target.value);
+                onValueChange={(value) => {
+                  setFilter(value);
                   setFilterOpen(false);
                 }}
               >
@@ -173,13 +190,14 @@ export function LiveCalendar({
                 <option value="meeting">Reuniões</option>
                 <option value="event">Eventos</option>
                 <option value="home_office">Home office</option>
-              </select>
+              </ZuluSelect>
             </div>
           )}
+          </>)}
         </div>
         <div className="calendar-actions">
           {(hub.canParticipate || hub.canManage) && (
-            <button
+            <ZuluButton
               className="home-office-open"
               onClick={() => onHomeOffice({
                 team_id: hub.teamId,
@@ -194,45 +212,51 @@ export function LiveCalendar({
             >
               <House size={14} />
               Escala
-            </button>
+            </ZuluButton>
           )}
+          {compact ? (
+            <ToggleButtonGroup className="zulu-view-switch" aria-label="Visualização da agenda" selectionMode="single" disallowEmptySelection selectedKeys={[view]} onSelectionChange={(keys) => { const key = [...keys][0]; if (key) onView(String(key) as CalendarView); }}>
+              <ToggleButton id="month">Mês</ToggleButton><ToggleButton id="week">Semana</ToggleButton><ToggleButton id="day">Dia</ToggleButton>
+            </ToggleButtonGroup>
+          ) : (
           <div className="segmented" aria-label="Visualização da agenda">
-            <button
+            <ZuluButton
               className={view === "month" ? "selected" : ""}
               aria-pressed={view === "month"}
               onClick={() => onView("month")}
             >
               Mês
-            </button>
-            <button
+            </ZuluButton>
+            <ZuluButton
               className={view === "week" ? "selected" : ""}
               aria-pressed={view === "week"}
               onClick={() => onView("week")}
             >
               Semana
-            </button>
-            <button
+            </ZuluButton>
+            <ZuluButton
               className={view === "day" ? "selected" : ""}
               aria-pressed={view === "day"}
               onClick={() => onView("day")}
             >
               Dia
-            </button>
+            </ZuluButton>
           </div>
+          )}
           {hub.canParticipate && (
-            <button
+            <ZuluButton
               className="icon-button add-calendar"
               aria-label="Criar evento"
               onClick={() => onNew(dateAt(monday, day))}
             >
               <Plus size={18} />
-            </button>
+            </ZuluButton>
           )}
         </div>
       </div>
       <div className="calendar-toolbar">
         <div className="date-controls">
-          <button
+          <ZuluButton
             className="icon-button"
             aria-label={
               view === "month"
@@ -244,9 +268,10 @@ export function LiveCalendar({
             onClick={() => onMove(-1)}
           >
             <CaretLeft size={15} />
-          </button>
+          </ZuluButton>
           <span>{label}</span>
-          <button
+          {compact && <DashboardDatePicker date={date} onDate={onDate} />}
+          <ZuluButton
             className="icon-button"
             aria-label={
               view === "month"
@@ -258,10 +283,10 @@ export function LiveCalendar({
             onClick={() => onMove(1)}
           >
             <CaretRight size={15} />
-          </button>
-          <button className="text-button today-button" onClick={onToday}>
+          </ZuluButton>
+          <ZuluButton className="text-button today-button" onClick={onToday}>
             Hoje
-          </button>
+          </ZuluButton>
         </div>
         <span
           className="timezone"
@@ -316,29 +341,29 @@ export function LiveCalendar({
                   className={`month-cell ${cell.getMonth() !== date.getMonth() ? "outside-month" : ""} ${isToday ? "month-today" : ""}`}
                 >
                   <div className="month-cell-header">
-                    <button
+                    <ZuluButton
                       className="month-date"
                       aria-current={isToday ? "date" : undefined}
                       aria-label={`Abrir dia ${cell.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" })}`}
                       onClick={openDay}
                     >
                       {cell.getDate()}
-                    </button>
+                    </ZuluButton>
                     {hub.canParticipate && (
-                      <button
+                      <ZuluButton
                         className="month-add"
                         aria-label={`Criar evento em ${cell.toLocaleDateString("pt-BR")}`}
                         onClick={() => onNew(cell)}
                       >
                         <Plus size={12} />
-                      </button>
+                      </ZuluButton>
                     )}
                   </div>
                   <div className="month-events">
                     {monthItems.slice(0, 3).map((item) => {
                       if (item.type === "home_office")
                         return (
-                          <button
+                          <ZuluButton
                             key={`home-office-${item.office.user_id}-${item.office.scheduled_on}`}
                             className="month-event month-event-home-office"
                             title={`Home office · ${item.office.display_name}`}
@@ -346,7 +371,7 @@ export function LiveCalendar({
                           >
                             <House size={10} />
                             <strong>{item.office.display_name}</strong>
-                          </button>
+                          </ZuluButton>
                         );
                       if (item.type === "holiday_week")
                         return (
@@ -369,7 +394,7 @@ export function LiveCalendar({
                             { hour: "2-digit", minute: "2-digit" },
                           );
                       return (
-                        <button
+                        <ZuluButton
                           key={event.id}
                           className={`month-event month-event-${event.kind}`}
                           title={`${time} · ${event.title}`}
@@ -377,24 +402,24 @@ export function LiveCalendar({
                         >
                           <span>{time}</span>
                           <strong>{event.title}</strong>
-                        </button>
+                        </ZuluButton>
                       );
                     })}
                   </div>
                   {monthItems.length > 3 && (
-                    <button className="month-more" onClick={openDay}>
+                    <ZuluButton className="month-more" onClick={openDay}>
                       +{monthItems.length - 3} itens
-                    </button>
+                    </ZuluButton>
                   )}
                   {monthItems.length > 0 && (
-                    <button
+                    <ZuluButton
                       className="month-count"
                       aria-label={`${monthItems.length} itens em ${cell.toLocaleDateString("pt-BR")}`}
                       onClick={openDay}
                     >
                       <span aria-hidden="true" className="month-count-dot" />
                       {monthItems.length}
-                    </button>
+                    </ZuluButton>
                   )}
                 </div>
               );
@@ -411,7 +436,7 @@ export function LiveCalendar({
               <Clock size={14} />
             </div>
             {segments.map((s) => (
-              <button
+              <ZuluButton
                 key={s.index}
                 className={`day-header ${dayKey(s.start) === dayKey(today) ? "is-today" : ""}`}
                 onClick={() => {
@@ -424,7 +449,7 @@ export function LiveCalendar({
                 {dayKey(s.start) === dayKey(today) && (
                   <span className="day-today">Hoje</span>
                 )}
-              </button>
+              </ZuluButton>
             ))}
             <div className="home-office-gutter" aria-hidden="true">
               <House size={12} />
@@ -440,10 +465,10 @@ export function LiveCalendar({
                       Sem home office · feriado
                     </span>
                   ) : office ? (
-                    <button className="home-office-assignment" onClick={() => onHomeOffice(office)} title={`Home office · ${office.display_name}`}>
+                    <ZuluButton className="home-office-assignment" onClick={() => onHomeOffice(office)} title={`Home office · ${office.display_name}`}>
                       <House size={11} />
                       {office.display_name}
-                    </button>
+                    </ZuluButton>
                   ) : holiday ? (
                     <span className="home-office-holiday" title={holiday.entry_label ?? undefined}>
                       Feriado · {holiday.entry_label}
@@ -469,7 +494,7 @@ export function LiveCalendar({
                 style={{ height: (endHour - startHour) * hourHeight }}
               >
                 {hours.slice(0, -1).map((hour) => (
-                  <button
+                  <ZuluButton
                     key={hour}
                     className="hour-cell"
                     disabled={!hub.canParticipate}
@@ -486,7 +511,7 @@ export function LiveCalendar({
                       ),
                     );
                     return (
-                      <button
+                      <ZuluButton
                         title={`${event.title} · ${hourLabel(start)} – ${hourLabel(end)}`}
                         className={`calendar-event event-${event.kind === "meeting" ? "blue" : "orange"} ${end - start < 0.75 ? "event-compact" : ""}`}
                         key={event.id}
@@ -511,7 +536,7 @@ export function LiveCalendar({
                         {!compact && end - start >= 1.25 && (
                           <PeopleAvatars people={attendees} />
                         )}
-                      </button>
+                      </ZuluButton>
                     );
                   },
                 )}
@@ -544,6 +569,6 @@ export function LiveCalendar({
           </span>
         )}
       </div>
-    </section>
+    </CalendarContainer>
   );
 }

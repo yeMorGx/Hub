@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useRef, type ReactNode } from "react";
 import { X, ArrowRight } from "@phosphor-icons/react";
+import { Avatar, AvatarGroup } from "@heroui/react";
+import { DashboardDialog, useDashboardUI, ZuluButton } from "./dashboard-ui";
 import type { Person } from "@/lib/hub/types";
 export function PersonAvatar({
   name,
@@ -13,11 +15,18 @@ export function PersonAvatar({
   size?: "small" | "normal" | "large";
   presence?: string;
 }) {
+  const hero = useDashboardUI();
   const colors = ["sand", "rose", "blue", "green", "purple", "orange"];
   const color =
     colors[
       [...id].reduce((sum, c) => sum + c.charCodeAt(0), 0) % colors.length
     ];
+  if (hero) return (
+    <Avatar className={`avatar avatar-${size} avatar-${color}`} aria-label={name} title={name} size={size === "small" ? "sm" : size === "large" ? "lg" : "md"}>
+      <Avatar.Fallback>{name.trim().split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase()}</Avatar.Fallback>
+      {presence && <i className={`presence ${presence}`} />}
+    </Avatar>
+  );
   return (
     <span
       className={`avatar avatar-${size} avatar-${color}`}
@@ -36,8 +45,10 @@ export function PersonAvatar({
   );
 }
 export function PeopleAvatars({ people }: { people: Person[] }) {
+  const hero = useDashboardUI();
+  const Group = hero ? AvatarGroup : "span";
   return (
-    <span className="avatar-group">
+    <Group className="avatar-group">
       {people.slice(0, 3).map((p) => (
         <PersonAvatar key={p.id} name={p.display_name} id={p.id} size="small" />
       ))}
@@ -46,10 +57,14 @@ export function PeopleAvatars({ people }: { people: Person[] }) {
           +{people.length - 3}
         </span>
       )}
-    </span>
+    </Group>
   );
 }
-export function HubDialog({
+export function HubDialog(props: { title: string; children: ReactNode; onClose: () => void; wide?: boolean }) {
+  const hero = useDashboardUI();
+  return hero ? <DashboardDialog {...props} /> : <NativeHubDialog {...props} />;
+}
+function NativeHubDialog({
   title,
   children,
   onClose,
@@ -78,9 +93,9 @@ export function HubDialog({
     >
       <div className="dialog-head">
         <h2>{title}</h2>
-        <button className="icon-button" aria-label="Fechar" onClick={onClose}>
+        <ZuluButton className="icon-button" aria-label="Fechar" onClick={onClose}>
           <X size={20} />
-        </button>
+        </ZuluButton>
       </div>
       {children}
     </dialog>
@@ -105,10 +120,10 @@ export function EmptyState({
       <h3>{title}</h3>
       <p>{description}</p>
       {action && onAction && (
-        <button className="outline-button" onClick={onAction}>
+        <ZuluButton className="outline-button" onClick={onAction}>
           {action}
           <ArrowRight size={15} />
-        </button>
+        </ZuluButton>
       )}
     </div>
   );

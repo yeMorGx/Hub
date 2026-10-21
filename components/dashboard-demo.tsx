@@ -1,4 +1,6 @@
 "use client";
+import { DashboardLoading, DashboardNotice, DashboardUIProvider, ZuluLabel, ZuluButton, ZuluSelect } from "./dashboard-ui";
+import { Link, Spinner } from "@heroui/react";
 import { BrandMark } from "./brand";
 // Public, in-memory preview. Shared dashboard components; no Supabase client or credentials.
 import { useEffect, useMemo, useState } from "react";
@@ -179,13 +181,9 @@ export function DashboardDemo() {
   ];
   const actual = scenario === "empty" ? 0 : 10800 + elapsed;
   const configured = scenario !== "unconfigured";
-  if (!ready)
-    return (
-      <p className="live-team-loading" role="status">
-        Carregando demonstração…
-      </p>
-    );
+  if (!ready) return <DashboardLoading />;
   return (
+    <DashboardUIProvider enabled={true}>
     <div className="app-shell live-app dashboard-redesign">
       <a className="skip-link" href="#main-content">
         Pular para o conteúdo
@@ -198,7 +196,7 @@ export function DashboardDemo() {
         <div className="rail-divider" />
         <nav>
           {demoNav.map((item, i) => (
-            <a
+            <Link
               key={item.label}
               className={`rail-button ${i === 0 ? "active" : ""} ${i === 4 || i === 5 ? "nav-secondary" : ""} ${i === 6 ? "mobile-more-button" : ""}`}
               href={item.href}
@@ -207,17 +205,17 @@ export function DashboardDemo() {
             >
               <item.icon size={23} weight={i === 0 ? "fill" : "regular"} />
               <span className="nav-tooltip">{item.label}</span>
-            </a>
+            </Link>
           ))}
         </nav>
         <div className="rail-bottom">
-          <button
+          <ZuluButton
             className="rail-button"
             aria-label="Preferências"
             onClick={() => setDialog("Preferências da demonstração")}
           >
             <GearSix size={23} />
-          </button>
+          </ZuluButton>
           <PersonAvatar name="Rafa Costa" id="demo-current" />
         </div>
       </aside>
@@ -254,18 +252,16 @@ export function DashboardDemo() {
                 .
               </p>
             </div>
-            <button
+            <ZuluButton
               className="primary-button"
               onClick={() => setDialog("Novo evento")}
             >
               <Plus size={17} />
               Novo evento
-            </button>
+            </ZuluButton>
           </div>
           {notice && (
-            <p className="today-demo-notice" role="status">
-              {notice}
-            </p>
+            <DashboardNotice message={notice} onClose={() => setNotice("")} />
           )}
           <div className="dashboard-layout today-layout">
             <div className="dashboard-main">
@@ -390,11 +386,12 @@ export function DashboardDemo() {
             <span>
               Demonstração em memória. Seus dados não são usados aqui.
             </span>
-            <label>
+            <ZuluLabel>
               Cenário da demonstração
-              <select
+              <ZuluSelect
+                aria-label="Cenário da demonstração"
                 value={scenario}
-                onChange={(event) => showScenario(event.target.value)}
+                onValueChange={(value) => showScenario(value)}
               >
                 <option value="running">Timer ativo</option>
                 <option value="lunch">Pausa para almoço</option>
@@ -403,8 +400,8 @@ export function DashboardDemo() {
                 <option value="holiday">Semana com feriado</option>
                 <option value="empty">Sem dados</option>
                 <option value="error">Falha ao carregar escala</option>
-              </select>
-            </label>
+              </ZuluSelect>
+            </ZuluLabel>
           </footer>
         </main>
       </div>
@@ -415,11 +412,12 @@ export function DashboardDemo() {
             {dialog.toLocaleLowerCase("pt-BR")} com os dados autorizados do seu
             time.
           </p>
-          <button className="outline-button" onClick={() => setDialog("")}>
+          <ZuluButton className="outline-button" onClick={() => setDialog("")}>
             Voltar ao dashboard
-          </button>
+          </ZuluButton>
         </HubDialog>
       )}
     </div>
+    </DashboardUIProvider>
   );
 }

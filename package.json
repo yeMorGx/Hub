@@ -9,11 +9,14 @@
     "test:public": "node --test scripts/public.test.mjs",
     "desktop:dev": "tauri dev",
     "desktop:build": "tauri build",
-    "test:unit": "node --import tsx --test scripts/unit.test.ts scripts/dashboard.test.ts"
+    "test:unit": "node --import tsx --test scripts/unit.test.ts scripts/dashboard.test.ts scripts/dashboard-ui.test.ts"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/manrope": "^5.2.0",
+    "@heroui/react": "^3.2.6",
+    "@heroui/styles": "^3.2.6",
+    "@internationalized/date": "^3.12.4",
     "@livekit/components-react": "^2.9.24",
     "@livekit/components-styles": "^1.2.0",
     "@phosphor-icons/react": "^2.1.10",
@@ -26,8 +29,10 @@
     "livekit-server-sdk": "^2.19.1",
     "next": "^16.0.0",
     "react": "^19.2.0",
+    "react-aria-components": "^1.22.1",
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
+    "tailwind-variants": "^3.3.1",
     "web-push": "^3.6.7"
   },
   "devDependencies": {

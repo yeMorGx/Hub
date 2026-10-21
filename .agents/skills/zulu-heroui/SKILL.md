@@ -44,3 +44,7 @@ Usar principalmente o símbolo oficial `public/brand/zulu-mark.svg` por meio de 
 ## Fechamento
 
 Registrar qual componente/exemplo oficial foi usado. Conferir a versão instalada, os estados relevantes e o layout responsivo; executar testes quando autorizado pelo usuário e pelas instruções da sessão. Preservar avisos de licença ao incorporar source oficial.
+
+## Dashboard implementado
+
+Hoje e `/demo/dashboard` já usam HeroUI React/Styles 3.2.6 em Bento Grid. Ler `docs/dashboard-bento.md` antes de alterar a tela. `components/dashboard-ui.tsx` compõe as primitivas oficiais e mantém fallback nativo fora do dashboard. Preservar a foto local da escala, os contratos de FormData, os portais claros e a semântica de radiogroup para mês/semana/dia. A grade horária é específica do produto; HeroUI Calendar escolhe a data. O timer mantém os presets originais Prism e Lava da Spell UI.

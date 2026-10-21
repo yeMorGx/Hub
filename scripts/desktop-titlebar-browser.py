@@ -44,11 +44,11 @@ with sync_playwright() as p:
         assert not borders,borders
         if mode == 'web':
             for view in ['Mês', 'Dia', 'Semana']:
-                page.get_by_role('button', name=view, exact=True).click()
+                page.get_by_role('radio', name=view, exact=True).click()
                 assert page.locator('.calendar-section').evaluate("r=>[r,...r.querySelectorAll('*')].filter(e=>e.getBoundingClientRect().width&&e.getBoundingClientRect().height).every(e=>{let s=getComputedStyle(e);return ['Top','Right','Bottom','Left'].every(k=>parseFloat(s['border'+k+'Width'])===0||s['border'+k+'Style']==='none')})")
             page.get_by_role('button', name='Filtrar', exact=True).click()
-            assert page.locator('.filter-popover').evaluate("e=>getComputedStyle(e).borderTopWidth==='0px'")
-            page.get_by_label('Tipo de evento', exact=True).select_option('all')
+            assert page.locator('.zulu-filter').evaluate("e=>getComputedStyle(e).borderTopWidth==='0px'")
+            page.get_by_role('menuitemradio', name='Todos os eventos', exact=True).click()
             page.get_by_role('button', name='Novo evento', exact=True).click()
             assert page.get_by_role('dialog').evaluate("e=>getComputedStyle(e).borderTopWidth==='0px'")
             page.get_by_role('button', name='Voltar ao dashboard', exact=True).click()

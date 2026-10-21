@@ -1,0 +1,786 @@
+/* HeroUI v3 + the ZULU Bento composition. Only Today opts into this surface. */
+.dashboard-redesign,
+.zulu-overlay {
+  color-scheme: light;
+  --background: #f6f5f1;
+  --foreground: #202b40;
+  --surface: #fff;
+  --surface-foreground: #202b40;
+  --surface-secondary: #eef1f7;
+  --surface-secondary-foreground: #202b40;
+  --surface-tertiary: #e5eaf3;
+  --surface-tertiary-foreground: #202b40;
+  --overlay: #fff;
+  --overlay-foreground: #202b40;
+  --field-background: #eef1f7;
+  --field-foreground: #202b40;
+  --field-placeholder: #59667c;
+  --field-border: transparent;
+  --field-radius: 9px;
+  --accent: #294d94;
+  --accent-foreground: #fff;
+  --default: #e9edf5;
+  --default-foreground: #202b40;
+  --muted: #59667c;
+  --focus: #294d94;
+  --border-width: 0px;
+  --field-border-width: 0px;
+  --radius: 14px;
+  --shadow: none;
+  --surface-shadow: none;
+  --overlay-shadow: none;
+  font-family: "Inter Variable", sans-serif;
+  color: #202b40;
+}
+.dashboard-redesign .today-layout {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+.dashboard-redesign .today-layout > .dashboard-main,
+.dashboard-redesign .today-workspace,
+.dashboard-redesign .today-context {
+  display: contents;
+}
+.dashboard-redesign .today-layout .card,
+.dashboard-redesign .today-layout .calendar-section {
+  border: 0;
+  box-shadow: none;
+  border-radius: 14px;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+}
+.dashboard-redesign .today-focus {
+  grid-column: 1 / 9;
+  grid-row: 1;
+  min-height: 272px;
+  padding: 26px 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 22px;
+  border-radius: 14px;
+  color: #fff;
+}
+.dashboard-redesign .today-focus .card__header {
+  padding: 0;
+  margin: 0;
+}
+.dashboard-redesign .today-section-heading {
+  gap: 12px;
+  padding: 0;
+}
+.dashboard-redesign .today-section-heading :is(h2, h3) {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.dashboard-redesign .today-focus .today-section-heading :is(h2, h3) {
+  color: #e0e9fa;
+  font-weight: 450;
+}
+.dashboard-redesign .today-clock {
+  font-size: clamp(38px, 4vw, 64px);
+  white-space: nowrap;
+}
+.dashboard-redesign .today-activity strong {
+  font-size: 21px;
+}
+.dashboard-redesign .today-timer-status {
+  width: fit-content;
+  min-height: 24px;
+  gap: 7px;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: #e0e9fa;
+  border-radius: 20px;
+}
+.dashboard-redesign .today-timer-status .chip__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.dashboard-redesign .today-journey {
+  grid-column: 1 / 9;
+  grid-row: 2;
+  background: #fff;
+  padding: 24px 28px;
+  display: block;
+}
+.dashboard-redesign .today-progress {
+  height: auto;
+  overflow: visible;
+  background: none;
+}
+.dashboard-redesign .today-progress .progress-bar__track {
+  height: 5px;
+  border-radius: 4px;
+  background: #e7ebf1;
+}
+.dashboard-redesign .today-progress .progress-bar__fill {
+  background: #6284c1;
+  border-radius: 4px;
+  transition: width 220ms ease-out;
+}
+.dashboard-redesign .today-home-office {
+  grid-column: 9 / 13;
+  grid-row: 1;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px 16px;
+  align-items: start;
+  padding: 24px;
+  background: #22362e;
+  color: white;
+  min-height: 272px;
+}
+.dashboard-redesign .today-home-office::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: url("/dashboard/home-office.webp") center 47% / cover;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dashboard-redesign .today-home-office::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    #14241d80 0%,
+    #14241d8c 25%,
+    #14241df2 100%
+  );
+}
+@media (hover: hover) {
+  .dashboard-redesign .today-home-office:hover::before {
+    transform: scale(1.035);
+  }
+}
+.dashboard-redesign .today-office-title {
+  grid-column: 1 / -1;
+  padding: 0;
+}
+.dashboard-redesign .today-office-title :is(h2, h3) {
+  font-size: 15px;
+  color: #fff;
+}
+.dashboard-redesign .today-office-title > svg {
+  color: #fff;
+}
+.dashboard-redesign .today-office-person {
+  align-self: end;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 9px;
+}
+.dashboard-redesign .today-office-next {
+  align-self: end;
+  padding-top: 34px;
+}
+.dashboard-redesign .today-office-person span:not(.avatar),
+.dashboard-redesign .today-office-next > span,
+.dashboard-redesign .today-office-next small {
+  color: #e1ebe5;
+  font-size: 11px;
+}
+.dashboard-redesign .today-office-person strong,
+.dashboard-redesign .today-office-next strong {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.5;
+}
+.dashboard-redesign .today-office-person .avatar {
+  width: 28px;
+  height: 28px;
+  color: #17362a;
+  background: #dbe8de;
+}
+.dashboard-redesign .today-office-person .avatar span {
+  color: inherit;
+}
+.dashboard-redesign .today-office-link {
+  grid-column: 1 / -1;
+  justify-self: end;
+  color: #fff;
+  font-size: 11px;
+}
+.dashboard-redesign .today-office-link:hover {
+  color: #fff;
+}
+.dashboard-redesign .today-office-error {
+  grid-column: 1 / -1;
+  color: #fff;
+}
+.dashboard-redesign .today-office-error .today-link {
+  color: #fff;
+}
+.dashboard-redesign .today-context > .card {
+  background: #fff;
+  padding: 24px;
+  display: block;
+}
+.dashboard-redesign .today-meetings-card {
+  grid-column: 9 / 13;
+  grid-row: 2;
+}
+.dashboard-redesign .today-people-card {
+  grid-column: 9 / 13;
+  grid-row: 3;
+}
+.dashboard-redesign .today-recent-card {
+  grid-column: 9 / 13;
+  grid-row: 4;
+}
+.dashboard-redesign .today-chat {
+  grid-column: 9 / 13;
+  grid-row: 5;
+  align-self: start;
+  padding: 20px 24px;
+  border-radius: 14px;
+  min-height: 86px;
+}
+.dashboard-redesign .today-layout > .dashboard-main > .calendar-section {
+  grid-column: 1 / 9;
+  grid-row: 3 / 6;
+  padding: 24px;
+  background: white;
+  align-self: start;
+}
+.dashboard-redesign .today-team-list {
+  gap: 16px;
+  margin-top: 20px;
+}
+.dashboard-redesign .today-person {
+  width: 100%;
+  justify-content: flex-start;
+  white-space: normal;
+}
+.dashboard-redesign .today-recent {
+  width: 100%;
+  justify-content: flex-start;
+  white-space: normal;
+}
+.dashboard-redesign .today-meeting {
+  white-space: normal;
+  justify-content: flex-start;
+}
+.dashboard-redesign .today-context-link {
+  margin-top: 16px;
+}
+.dashboard-redesign .today-layout .calendar-scroll {
+  max-height: 460px;
+  border-radius: 10px;
+}
+.dashboard-redesign .button,
+.zulu-overlay .button {
+  min-width: 0;
+  box-shadow: none;
+  height: auto;
+}
+.dashboard-redesign .button {
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dashboard-redesign .button[data-pressed="true"] {
+  transform: scale(0.98);
+}
+.dashboard-redesign .button:is([data-disabled="true"], :disabled) {
+  cursor: not-allowed;
+}
+.dashboard-redesign .today-link:hover > svg {
+  transform: translate(2px, -1px);
+}
+.dashboard-redesign .today-link > svg {
+  transition: transform 180ms ease-out;
+}
+.dashboard-redesign .button[data-focus-visible="true"],
+.zulu-overlay
+  :is(.button, .select__trigger, .calendar__cell)[data-focus-visible="true"] {
+  outline: 2px solid #294d94;
+  outline-offset: 4px;
+}
+.dashboard-redesign .today-focus .button[data-focus-visible="true"],
+.dashboard-redesign .today-home-office .button[data-focus-visible="true"] {
+  outline-color: #fff;
+}
+.dashboard-redesign .today-home-office :is(button, a):focus-visible {
+  outline-color: #fff;
+}
+.dashboard-redesign .avatar {
+  overflow: visible;
+  flex-shrink: 0;
+}
+.dashboard-redesign .avatar__fallback {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border-radius: inherit;
+}
+.dashboard-redesign .zulu-view-switch {
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  border-radius: 8px;
+  gap: 2px;
+  background: #eef1f7;
+  border: 0;
+  box-shadow: none;
+}
+.dashboard-redesign .zulu-view-switch .toggle-button {
+  font: inherit;
+  padding: 6px 10px;
+  min-width: 0;
+  height: 30px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #59667c;
+  font-size: 11px;
+  box-shadow: none;
+  transition:
+    background 180ms ease,
+    color 180ms ease;
+}
+.dashboard-redesign .zulu-view-switch .toggle-button[data-selected="true"] {
+  background: white;
+  color: #294d94;
+}
+.dashboard-redesign .zulu-select .select__trigger,
+.zulu-overlay .select__trigger {
+  min-height: 40px;
+  border: 0;
+  box-shadow: none;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12px;
+}
+.dashboard-redesign .today-demo-footer > label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.dashboard-redesign .today-demo-footer .zulu-select {
+  min-width: 220px;
+}
+.zulu-overlay {
+  border: 0;
+  box-shadow: none;
+  border-radius: 14px;
+  font-size: 13px;
+}
+.zulu-overlay .list-box {
+  border: 0;
+  box-shadow: none;
+}
+.zulu-select-popover {
+  min-width: var(--trigger-width);
+}
+.zulu-overlay .list-box-item {
+  font-size: 13px;
+  border-radius: 7px;
+}
+.zulu-overlay .list-box-item[data-selected="true"] {
+  background: #e9eef8;
+  color: #294d94;
+}
+.zulu-filter {
+  padding: 12px;
+  min-width: 230px;
+}
+.zulu-filter .list-box {
+  padding: 0;
+}
+.zulu-calendar-picker {
+  padding: 12px;
+}
+.zulu-modal-backdrop {
+  background: #14203566;
+}
+.zulu-modal {
+  padding: 28px;
+  max-width: 100%;
+}
+.zulu-modal .modal__header {
+  padding: 0 32px 20px 0;
+}
+.zulu-modal .modal__heading {
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: -0.03em;
+}
+.zulu-modal .modal__body {
+  padding: 0;
+}
+.zulu-modal :is(input, textarea, .select__trigger) {
+  box-shadow: none;
+  border: 0;
+  background: #eef1f7;
+  color: #202b40;
+}
+.zulu-modal .dialog-actions {
+  border: 0;
+}
+.zulu-modal .modal__close-trigger {
+  color: #59667c;
+}
+.zulu-checkbox {
+  display: inline-flex;
+  gap: 8px;
+}
+.zulu-tooltip {
+  background: #202b40;
+  color: #fff;
+  border: 0;
+  border-radius: 7px;
+  padding: 7px 10px;
+  font-family: "Inter Variable", sans-serif;
+  font-size: 11px;
+}
+@media (max-width: 1200px) {
+  .dashboard-redesign .today-layout {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+  .dashboard-redesign .today-focus {
+    grid-column: 1 / 6;
+    grid-row: 1;
+    grid-template-columns: 1fr;
+    min-height: 310px;
+  }
+  .dashboard-redesign .today-focus .today-clock {
+    grid-column: 1;
+    grid-row: 3;
+    margin: 18px 0;
+    text-align: left;
+  }
+  .dashboard-redesign .today-focus .today-activity {
+    grid-row: 2;
+    margin-top: 18px;
+  }
+  .dashboard-redesign .today-focus .today-timer-actions {
+    grid-column: 1;
+    grid-row: 4;
+  }
+  .dashboard-redesign .today-home-office {
+    grid-column: 6 / 9;
+    grid-row: 1;
+  }
+  .dashboard-redesign .today-journey {
+    grid-column: 1 / 9;
+    grid-row: 2;
+  }
+  .dashboard-redesign .today-meetings-card {
+    grid-column: 1 / 5;
+    grid-row: 3;
+  }
+  .dashboard-redesign .today-people-card {
+    grid-column: 5 / 9;
+    grid-row: 3;
+  }
+  .dashboard-redesign .today-layout > .dashboard-main > .calendar-section {
+    grid-column: 1 / 9;
+    grid-row: 4;
+  }
+  .dashboard-redesign .today-recent-card {
+    grid-column: 1 / 5;
+    grid-row: 5;
+  }
+  .dashboard-redesign .today-chat {
+    grid-column: 5 / 9;
+    grid-row: 5;
+    align-self: stretch;
+  }
+}
+@media (max-width: 760px) {
+  .dashboard-redesign .today-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .dashboard-redesign .today-focus,
+  .dashboard-redesign .today-home-office,
+  .dashboard-redesign .today-journey,
+  .dashboard-redesign .today-context > .card,
+  .dashboard-redesign .today-chat,
+  .dashboard-redesign .today-layout > .dashboard-main > .calendar-section {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .dashboard-redesign .today-focus {
+    min-height: 300px;
+    padding: 22px;
+  }
+  .dashboard-redesign .today-clock {
+    font-size: 48px;
+  }
+  .dashboard-redesign .today-activity strong {
+    font-size: 20px;
+  }
+  .dashboard-redesign .today-home-office {
+    min-height: 250px;
+    padding: 22px;
+  }
+  .dashboard-redesign .today-journey {
+    padding: 22px;
+  }
+  .dashboard-redesign .today-context > .card {
+    padding: 22px;
+  }
+  .dashboard-redesign .today-layout > .dashboard-main > .calendar-section {
+    padding: 18px;
+  }
+  .dashboard-redesign .today-journey-metrics {
+    gap: 18px;
+  }
+  .dashboard-redesign .today-balances > div {
+    padding-left: 0;
+  }
+  .dashboard-redesign .today-schedule-empty {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .dashboard-redesign .today-schedule-link {
+    float: none;
+    display: flex;
+    margin-top: 8px;
+  }
+  .dashboard-redesign .today-layout .date-controls {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+  .dashboard-redesign .today-layout .date-controls > span {
+    min-width: 0;
+    font-size: 11px;
+  }
+  .dashboard-redesign .today-layout .calendar-toolbar {
+    gap: 4px;
+  }
+  .dashboard-redesign .today-layout .timezone {
+    display: none;
+  }
+  .dashboard-redesign .today-demo-footer > label {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .zulu-modal {
+    padding: 22px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-redesign *,
+  .zulu-overlay *,
+  .zulu-tooltip {
+    animation-duration: 0s !important;
+    transition: none !important;
+  }
+  .dashboard-redesign .today-home-office:hover::before {
+    transform: none;
+  }
+  .dashboard-redesign .button[data-pressed="true"] {
+    transform: none;
+  }
+}
+.zulu-workspace {
+  width: min(320px, calc(100vw - 28px));
+  padding: 18px;
+}
+.zulu-workspace .popover__dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.zulu-workspace .button {
+  justify-content: flex-start;
+  font-size: 12px;
+}
+.zulu-overlay.popover {
+  background: #fff;
+  box-shadow: none;
+  border: 0;
+}
+.zulu-toast-region {
+  background: transparent;
+  width: min(420px, calc(100vw - 28px));
+}
+.zulu-toast-region .toast {
+  position: relative;
+  inset: auto;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: 100%;
+  max-width: 100%;
+  background: #eef4ef;
+  color: #244c32;
+  border: 0;
+  box-shadow: none;
+  padding: 18px;
+  border-radius: 12px;
+  animation: none;
+}
+.zulu-toast-region .toast[data-variant="danger"] {
+  background: #fbece7;
+  color: #8c3423;
+}
+.zulu-toast-region .toast__close-button {
+  color: inherit;
+}
+/* Preserve the horizontal product headers when composing Card.Header. */
+.dashboard-redesign .today-section-heading,
+.dashboard-redesign .today-office-title {
+  flex-direction: row;
+}
+.dashboard-redesign .today-focus > .today-section-heading {
+  justify-content: space-between;
+}
+.dashboard-redesign .today-home-office::after {
+  background: linear-gradient(
+    180deg,
+    #14241dc4 0%,
+    #14241d8c 30%,
+    #14241df2 100%
+  );
+}
+.dashboard-redesign .today-layout .day-header {
+  width: 100%;
+  border-radius: 0;
+  justify-content: center;
+}
+.dashboard-redesign .today-layout .calendar-event {
+  justify-content: flex-start;
+  align-items: flex-start;
+  white-space: normal;
+  border-radius: 6px;
+}
+.dashboard-redesign .today-layout .calendar-event > strong {
+  width: 100%;
+  text-align: left;
+}
+.dashboard-redesign .today-layout .month-event {
+  white-space: normal;
+  text-align: left;
+  justify-content: flex-start;
+}
+.dashboard-redesign .today-layout .home-office-assignment {
+  white-space: normal;
+  justify-content: flex-start;
+}
+.zulu-overlay {
+  --text: #202b40;
+  --bg: #fff;
+  --quiet: #59667c;
+  --border: transparent;
+}
+.zulu-modal-container {
+  flex: none;
+  width: min(600px, 100%);
+}
+.zulu-modal {
+  width: 520px;
+  max-width: 100%;
+  max-height: calc(100dvh - 48px);
+}
+.zulu-modal-wide {
+  width: 760px;
+}
+.zulu-modal-container:has(.zulu-modal-wide) {
+  width: min(840px, 100%);
+}
+.zulu-modal .resource-note {
+  color: #59667c;
+}
+.zulu-modal :is(.outline-button, .primary-button) {
+  border: 0;
+  box-shadow: none;
+}
+.zulu-modal .outline-button {
+  background: #eef1f7;
+  color: #294d94;
+}
+.zulu-filter .popover__dialog,
+.zulu-calendar-picker .popover__dialog {
+  padding: 0;
+}
+@media (max-width: 760px) {
+  .dashboard-redesign .today-focus .today-section-heading {
+    align-items: flex-start;
+  }
+  .dashboard-redesign .today-focus .today-section-heading :is(h2, h3) {
+    font-size: 13px;
+  }
+}
+.zulu-overlay .alert {
+  border: 0;
+  box-shadow: none;
+}
+.zulu-dashboard-loading {
+  padding: 10vh 8vw;
+  background: #f6f5f1;
+  min-height: 100dvh;
+  color: #294d94;
+  font-family: "Inter Variable", sans-serif;
+}
+.zulu-loading-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.zulu-loading-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 18px;
+}
+.zulu-loading-grid > .skeleton {
+  height: 220px;
+  border-radius: 14px;
+  background: #e5e9f0;
+}
+@media (max-width: 760px) {
+  .zulu-loading-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zulu-dashboard-loading .skeleton {
+    animation: none;
+  }
+}
+/* Keep legacy presence dots visible after importing HeroUI's base avatar CSS. */
+.avatar:not([class*="avatar--"]) {
+  overflow: visible;
+}
+.zulu-filter [role="menu"] {
+  padding: 0;
+}
+.zulu-filter [role="menuitemradio"] {
+  font-size: 13px;
+  border-radius: 7px;
+}
+.zulu-filter [role="menuitemradio"][aria-checked="true"] {
+  color: #294d94;
+  background: #e9eef8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zulu-overlay,
+  .zulu-modal-backdrop,
+  .zulu-modal-container {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+/* Leave room for a functional focus outline inside the scrollable modal body. */
+.zulu-modal .modal__body {
+  padding: 6px;
+  margin: -6px;
+}

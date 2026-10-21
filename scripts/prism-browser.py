@@ -2,6 +2,7 @@
 import os,json
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from dashboard_browser_helpers import select_scenario
 BASE=os.environ.get('HUB_APP_URL','http://127.0.0.1:3011')
 OUT=Path(os.environ.get('HUB_REVIEW_DIR','.impeccable/review/zulu-lava'));OUT.mkdir(parents=True,exist_ok=True)
 with sync_playwright() as p:
@@ -52,7 +53,7 @@ with sync_playwright() as p:
    page.wait_for_timeout(750)
    assert page.locator('.today-lava').evaluate('(e)=>getComputedStyle(e).opacity')=='0'
    assert page.evaluate('window.contexts')==2
-   page.get_by_label('Cenário da demonstração').select_option('empty')
+   select_scenario(page, 'empty')
    if mode=='reduced':page.screenshot(path=str(OUT/f'empty-{width}.png'),full_page=True)
    if mode=='reduced':
     old=page.evaluate('window.draws');page.set_viewport_size({'width':width-20,'height':height});page.wait_for_timeout(250)

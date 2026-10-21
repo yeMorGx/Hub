@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { ZuluButton } from "./dashboard-ui";
 import { Bell } from "@phosphor-icons/react";
 import type { HubController } from "@/lib/hub/use-hub";
 export function NotificationBell({
@@ -36,7 +37,7 @@ export function NotificationBell({
     };
   }, [hub.client, hub.teamId, hub.canParticipate]);
   return (
-    <button
+    <ZuluButton
       className="icon-button notification-bell"
       aria-label={`Notificações${count ? `, ${count} não lidas` : ""}`}
       onClick={() => {
@@ -46,6 +47,6 @@ export function NotificationBell({
     >
       <Bell size={20} />
       {count > 0 && <span>{count > 99 ? "99+" : count}</span>}
-    </button>
+    </ZuluButton>
   );
 }

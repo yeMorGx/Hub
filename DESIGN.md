@@ -16,13 +16,19 @@ Identificadores técnicos de compatibilidade como `app.hub.team`, `Hub` no produ
 
 ### Referência obrigatória de componentes
 
-Por decisão do usuário, novos componentes e componentes retrabalhados devem partir dos componentes e exemplos oficiais **HeroUI v3**, conforme [a skill local obrigatória](.agents/skills/zulu-heroui/SKILL.md) e `AGENTS.md`. Adaptar os tokens à autoridade de cada superfície, preservando teclado, foco e acessibilidade. O catálogo e o guia React v3 oficiais foram consultados; esta orientação não significa migração das telas existentes nem instalação de dependências HeroUI. O efeito Prism escolhido pelo usuário continua sendo a referência especializada do fundo do timer.
+Por decisão do usuário, novos componentes e componentes retrabalhados devem partir dos componentes e exemplos oficiais **HeroUI v3**, conforme [a skill local obrigatória](.agents/skills/zulu-heroui/SKILL.md) e `AGENTS.md`. Adaptar os tokens à autoridade de cada superfície, preservando teclado, foco e acessibilidade. O catálogo e o guia React v3 oficiais foram consultados. HeroUI React e Styles 3.2.6 estão instalados; Hoje e seus diálogos usam os componentes oficiais, com adaptadores de escopo para preservar os demais módulos. O efeito Prism escolhido pelo usuário continua sendo a referência especializada do fundo do timer.
 
 ### Microinterações e movimento
 
 Por decisão explícita do usuário, microinterações fazem parte de toda interface nova ou retrabalhada: feedback ao pressionar, passar o cursor, selecionar, abrir/fechar e concluir ações, conforme o contexto. Usar interações oficiais HeroUI e movimento breve e consistente, preservando a identidade de cada superfície. Quando faltar uma solução, pesquisar referências reais em HeroUI, Refero, Unlume e outros sites de UI e registrar a origem.
 
 Priorizar transform e opacity, sem deslocar layout ou atrasar ações. Garantir equivalência por teclado e toque e preservar o foco. `prefers-reduced-motion` troca movimento não essencial por feedback estático; animações contínuas não essenciais pausam fora da tela ou com a página oculta. A política detalhada está na skill local `zulu-heroui`. Aplicação progressiva no escopo de cada tarefa.
+
+### Hoje — Bento Grid com HeroUI
+
+A decisão posterior do usuário adota **Bento Grid** em Hoje e `/demo/dashboard`, com HeroUI v3 real e fotografia doméstica no fundo do card de home office. Esta seção e [o contrato Bento](docs/dashboard-bento.md) substituem a composição anterior de timer/jornada unidos e escala em faixa. Marfim, azul profundo, Inter e ausência de bordas/sombras permanecem. Em desktop, timer e jornada ocupam oito colunas e os blocos de escala/encontros/time ocupam quatro; agenda grande à esquerda e contexto segmentado à direita. Até 1200px são oito colunas reorganizadas; até 760px, uma coluna. Gap de 18px/14px, cards de 14px e agenda com até 460px de rolagem. A imagem local `public/dashboard/home-office.webp` tem overlay para legibilidade e hover discreto, sem movimento com redução habilitada.
+
+`app/dashboard-bento.css` complementa `app/dashboard.css` e define os tokens claros dos portais HeroUI. `components/dashboard-ui.tsx` mantém os contratos de formulário e limita a migração à tela Hoje e seus diálogos. O seletor de visualização é um radiogroup oficial, o filtro usa Dropdown e o seletor de data usa Calendar. A grade de eventos continua específica do produto. Os vereditos e medidas da composição anterior abaixo são históricos; a evidência desta entrega está em `.impeccable/review/zulu-bento/`.
 
 ## Tokens implementados
 
