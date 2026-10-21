@@ -48,3 +48,7 @@ Registrar qual componente/exemplo oficial foi usado. Conferir a versão instalad
 ## Dashboard implementado
 
 Hoje e `/demo/dashboard` já usam HeroUI React/Styles 3.2.6 em Bento Grid. Ler `docs/dashboard-bento.md` antes de alterar a tela. `components/dashboard-ui.tsx` compõe as primitivas oficiais e mantém fallback nativo fora do dashboard. Preservar a foto local da escala, os contratos de FormData, os portais claros e a semântica de radiogroup para mês/semana/dia. A grade horária é específica do produto; HeroUI Calendar escolhe a data. O timer mantém os presets originais Prism e Lava da Spell UI.
+
+## Sidebar: exceção de ícones escolhida pelo usuário
+
+Usar os **Hugeicons oficiais animados da Animate UI** na sidebar do app e na prévia de Hoje. Os arquivos do registry são preservados em `components/animate-ui/icons/hugeicons/`, com licença; `DashboardNavIcon` liga hover e foco do controle inteiro e respeita movimento reduzido. Dependências: `@animate-ui/react` e `motion`. Isso não substitui HeroUI nos controles nem exige trocar os ícones do conteúdo das outras telas. Hoje usa navegação flutuante, com 12px de respiro e raio de 22px; celular usa dock inferior arredondado. Não restaurar o rodapé promocional/linha de MFA removido por pedido do usuário.

@@ -5,7 +5,7 @@ Decisão explícita do usuário: migrar o dashboard para HeroUI, usar Bento Grid
 ## Referências consultadas
 
 - [Bento Grids](https://bentogrids.com): galeria consultada e capturada. Proporções diferentes, alinhamentos comuns e alternância entre blocos visuais e blocos operacionais. Referência de composição, sem copiar dados, textos ou assets dos projetos da galeria.
-- [HeroUI React v3](https://heroui.com/en/docs/react/components): documentação e source oficiais de Button, Card, Avatar/AvatarGroup, Chip, ProgressBar, Input, TextArea, Form, Label, Fieldset, Checkbox, Select/ListBox, ToggleButtonGroup, Dropdown, Popover, Calendar, Modal, Tooltip, Toast, Spinner e Skeleton. APIs v3; não usa HeroUIProvider nem Framer Motion.
+- [HeroUI React v3](https://heroui.com/en/docs/react/components): documentação e source oficiais de Button, Card, Avatar/AvatarGroup, Chip, ProgressBar, Input, TextArea, Form, Label, Fieldset, Checkbox, Select/ListBox, ToggleButtonGroup, Dropdown, Popover, Calendar, Modal, Tooltip, Toast, Spinner e Skeleton. APIs v3; não usa HeroUIProvider. Motion é utilizado apenas pelos ícones Animate UI escolhidos posteriormente pelo usuário.
 - Foto: [Unsplash, asset photo-1518455027359-f3f8164ba6bd](https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd). Espaço doméstico com mesa, luz natural, planta e poltrona. Servida localmente como `public/dashboard/home-office.webp`, sem requisições de imagem a terceiros em execução. Uso decorativo; não representa o escritório nem a casa de um membro.
 
 ## Composição
@@ -41,3 +41,7 @@ A prévia comprova componentes, responsividade e interações locais; não compr
 ## Publicação
 
 Publicado na Vercel, deployment `dpl_HNoaPp92QB5ZZedXMTxJzfEx3LJN`, origem `8e726ca`, status READY. No endereço público passaram 32 checks HTTP, cinco larguras Bento e a fixture isolada de formulário. Detalhes e limites em `.impeccable/review/zulu-bento/deployment.json` e `review.md`.
+
+## Revisão do fluxo diário
+
+A sidebar, rodapé, jornada, seleção de atividade e card de pessoas foram atualizados depois desta entrega. Ver [contrato e evidências atuais](dashboard-workflow.md). Os identificadores de publicação acima se referem à primeira entrega Bento, não à revisão posterior.

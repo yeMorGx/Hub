@@ -18,6 +18,7 @@ export type Bootstrap = {
   workspaceMemberships: Row<"workspace_members">[];
   teamMemberships: Row<"team_members">[];
 };
+export type InboxPreview = { channelId: string; personId: string; body: string; unread: number; createdAt: string };
 export type TeamSnapshot = {
   teamId: string;
   people: Person[];
@@ -36,6 +37,8 @@ export type TeamSnapshot = {
   workBalanceLoadedAt: number;
   pausedTimer: Row<"paused_timers"> | null;
   unread: Record<string, number>;
+  inbox: InboxPreview[];
+  inboxError: boolean;
 };
 export const EMPTY_TEAM: TeamSnapshot = {
   teamId: "",
@@ -55,6 +58,8 @@ export const EMPTY_TEAM: TeamSnapshot = {
   workBalanceLoadedAt: 0,
   pausedTimer: null,
   unread: {},
+  inbox: [],
+  inboxError: false,
 };
 export type LivePage =
   | "overview"

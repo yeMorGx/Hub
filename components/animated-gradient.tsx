@@ -272,6 +272,7 @@ export default function AnimatedGradient({
     if (!gl) return;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let inView = true;
+    let needsResizeDraw = true;
     let lastFrame = -Infinity;
 
     const vertexShaderSource = `#version 300 es
@@ -340,6 +341,7 @@ export default function AnimatedGradient({
       const nextWidth = Math.max(1, Math.round(width * pixelRatio));
       const nextHeight = Math.max(1, Math.round(height * pixelRatio));
       if (canvas.width === nextWidth && canvas.height === nextHeight) return;
+      needsResizeDraw = true;
       canvas.width = nextWidth;
       canvas.height = nextHeight;
       canvas.style.width = `${width}px`;
@@ -356,7 +358,7 @@ export default function AnimatedGradient({
 
     const animate = (time: number) => {
       frameIdRef.current = undefined;
-      if (document.hidden || !inView || gl.isContextLost()) return;
+      if (document.hidden || (!inView && !needsResizeDraw) || gl.isContextLost()) return;
       if (!motion.matches && time - lastFrame < 1000 / 30) {
         frameIdRef.current = requestAnimationFrame(animate);
         return;
@@ -390,6 +392,7 @@ export default function AnimatedGradient({
       );
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
+      needsResizeDraw = false;
       if (!motion.matches && activeRef.current) frameIdRef.current = requestAnimationFrame(animate);
     };
 

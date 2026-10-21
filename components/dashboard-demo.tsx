@@ -1,6 +1,14 @@
 "use client";
-import { DashboardLoading, DashboardNotice, DashboardUIProvider, ZuluLabel, ZuluButton, ZuluSelect } from "./dashboard-ui";
+import {
+  DashboardLoading,
+  DashboardNotice,
+  DashboardUIProvider,
+  ZuluLabel,
+  ZuluButton,
+  ZuluSelect,
+} from "./dashboard-ui";
 import { Link, Spinner } from "@heroui/react";
+import { DashboardNavIcon } from "./dashboard-nav-icon";
 import { BrandMark } from "./brand";
 // Public, in-memory preview. Shared dashboard components; no Supabase client or credentials.
 import { useEffect, useMemo, useState } from "react";
@@ -31,6 +39,10 @@ export function DashboardDemo() {
   const [scenario, setScenario] = useState("running");
   const [timer, setTimer] = useState<"idle" | "running" | "lunch">("running");
   const [elapsed, setElapsed] = useState(5082);
+  const [activity, setActivity] = useState("Interface do aplicativo");
+  const [activityProject, setActivityProject] = useState(
+    "ZULU · Design de produto",
+  );
   const [notice, setNotice] = useState("");
   const [dialog, setDialog] = useState("");
   useEffect(() => {
@@ -101,12 +113,13 @@ export function DashboardDemo() {
     ];
     hub.snapshot.people = hub.snapshot.people.map((person, i) => ({
       ...person,
+      display_name: i === 0 ? "Rafa Costa" : person.display_name,
       body: [
-        "Trabalhando no lançamento",
+        "Disponível para conversar",
         "Em reunião",
         "Disponível para conversar",
       ][i],
-      timer_running: i === 0,
+      timer_running: false,
     }));
     const weekStart = dateAt(today, -today.getDay());
     const nextDay = dateAt(today, 1);
@@ -168,6 +181,10 @@ export function DashboardDemo() {
           : "running",
     );
     setElapsed(value === "idle" || value === "empty" ? 0 : 5082);
+    setActivity(
+      value === "idle" || value === "empty" ? "" : "Interface do aplicativo",
+    );
+    setActivityProject(value === "empty" ? "" : "ZULU · Design de produto");
     setNotice("");
   }
   const demoNav = [
@@ -184,240 +201,315 @@ export function DashboardDemo() {
   if (!ready) return <DashboardLoading />;
   return (
     <DashboardUIProvider enabled={true}>
-    <div className="app-shell live-app dashboard-redesign">
-      <a className="skip-link" href="#main-content">
-        Pular para o conteúdo
-      </a>
-      <aside className="rail" aria-label="Navegação da demonstração">
-        <a className="brand" href="/demo/dashboard" aria-label="ZULU — início">
-          <BrandMark size={44} />
-
+      <div className="app-shell live-app dashboard-redesign">
+        <a className="skip-link" href="#main-content">
+          Pular para o conteúdo
         </a>
-        <div className="rail-divider" />
-        <nav>
-          {demoNav.map((item, i) => (
-            <Link
-              key={item.label}
-              className={`rail-button ${i === 0 ? "active" : ""} ${i === 4 || i === 5 ? "nav-secondary" : ""} ${i === 6 ? "mobile-more-button" : ""}`}
-              href={item.href}
-              aria-label={item.label}
-              aria-current={i === 0 ? "page" : undefined}
-            >
-              <item.icon size={23} weight={i === 0 ? "fill" : "regular"} />
-              <span className="nav-tooltip">{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-        <div className="rail-bottom">
-          <ZuluButton
-            className="rail-button"
-            aria-label="Preferências"
-            onClick={() => setDialog("Preferências da demonstração")}
+        <aside className="rail" aria-label="Navegação da demonstração">
+          <a
+            className="brand"
+            href="/demo/dashboard"
+            aria-label="ZULU — início"
           >
-            <GearSix size={23} />
-          </ZuluButton>
-          <PersonAvatar name="Rafa Costa" id="demo-current" />
-        </div>
-      </aside>
-      <div className="app-content">
-        <header className="topbar">
-          <div className="workspace-button">
-            <span className="workspace-icon">
-              <SquaresFour size={18} weight="fill" />
-            </span>
-            <strong>Estúdio</strong>
-          </div>
-          <span className="breadcrumb-divider">/</span>
-          <span className="breadcrumb">Hoje</span>
-          <div className="topbar-right">
-            <span className="today-preview-badge">
-              Demonstração · dados fictícios
-            </span>
+            <BrandMark size={44} />
+          </a>
+          <div className="rail-divider" />
+          <nav>
+            {demoNav.map((item, i) => (
+              <Link
+                key={item.label}
+                className={`rail-button ${i === 0 ? "active" : ""} ${i === 4 || i === 5 ? "nav-secondary" : ""} ${i === 6 ? "mobile-more-button" : ""}`}
+                href={item.href}
+                aria-label={item.label}
+                aria-current={i === 0 ? "page" : undefined}
+              >
+                <DashboardNavIcon
+                  name={
+                    [
+                      "overview",
+                      "calendar",
+                      "board",
+                      "chat",
+                      "hours",
+                      "people",
+                      "more",
+                    ][i]
+                  }
+                />
+                <span className="nav-tooltip">{item.label}</span>
+              </Link>
+            ))}
+          </nav>
+          <div className="rail-bottom">
+            <ZuluButton
+              className="rail-button"
+              aria-label="Preferências"
+              onClick={() => setDialog("Preferências da demonstração")}
+            >
+              <DashboardNavIcon name="settings" />
+            </ZuluButton>
             <PersonAvatar name="Rafa Costa" id="demo-current" />
           </div>
-        </header>
-        <main className="main-content today-page" id="main-content">
-          <div className="page-heading">
-            <div>
-              <h1>
-                Olá, Rafa<span className="heading-period">.</span>
-              </h1>
-              <p>
-                Seu dia, em um só lugar.{" "}
-                {today.toLocaleDateString("pt-BR", {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                })}
-                .
-              </p>
+        </aside>
+        <div className="app-content">
+          <header className="topbar">
+            <div className="workspace-button">
+              <span className="workspace-icon">
+                <SquaresFour size={18} weight="fill" />
+              </span>
+              <strong>Estúdio</strong>
             </div>
-            <ZuluButton
-              className="primary-button"
-              onClick={() => setDialog("Novo evento")}
-            >
-              <Plus size={17} />
-              Novo evento
-            </ZuluButton>
-          </div>
-          {notice && (
-            <DashboardNotice message={notice} onClose={() => setNotice("")} />
-          )}
-          <div className="dashboard-layout today-layout">
-            <div className="dashboard-main">
-              <TodayOverview
-                timer={{
-                  state: timer,
-                  elapsed,
-                  description:
-                    scenario === "idle" || scenario === "empty"
-                      ? ""
-                      : "Interface do aplicativo",
-                  project:
-                    scenario === "empty" ? "" : "ZULU · Design de produto",
-                }}
-                busy={false}
-                canParticipate
-                configured={configured}
-                today={{
-                  actualSeconds: actual,
-                  expectedMinutes: 480,
-                  balanceMinutes: Math.round(actual / 60) - 480,
-                }}
-                week={{
-                  actualSeconds: 72000 + actual,
-                  expectedMinutes: 1440,
-                  balanceMinutes: 120,
-                }}
-                month={{
-                  actualSeconds: 360000 + actual,
-                  expectedMinutes: 6000,
-                  balanceMinutes: -45,
-                }}
-                monthTargetMinutes={10560}
-                todayKey={dayKey(today)}
-                homeOffice={hub.snapshot.homeOffice}
-                homeOfficeError={scenario === "error"}
-                onToggleTimer={() => {
-                  setTimer(timer === "running" ? "lunch" : "running");
-                  setNotice(
-                    "Timer demonstrativo. Nenhuma hora é enviada ao servidor.",
-                  );
-                }}
-                onStopTimer={() => {
-                  setTimer("idle");
-                  setElapsed(0);
-                  setNotice("Atividade encerrada apenas nesta demonstração.");
-                }}
-                onHours={() => setDialog("Minhas horas")}
-                onSchedule={() => setDialog("Configurar jornada")}
-                onHomeOffice={() => setDialog("Escala de home office")}
-                onRetry={() => {
-                  showScenario("running");
-                  setNotice("Escala fictícia recarregada.");
-                }}
-              />
-              <LiveCalendar
-                hub={hub}
-                monday={mondayOf(date)}
-                date={date}
-                onDate={setDate}
-                today={today}
-                day={(date.getDay() + 6) % 7}
-                view={view}
-                onView={setView}
-                onDay={(day) => setDate(dateAt(mondayOf(date), day))}
-                onMove={(direction) =>
-                  setDate(moveCalendarDate(date, view, direction))
-                }
-                onToday={() => setDate(today)}
-                onNew={(date) =>
-                  setDialog(`Novo evento · ${date.toLocaleDateString("pt-BR")}`)
-                }
-                onSelect={(event) => setDialog(event.title)}
-                onHomeOffice={() => setDialog("Escala de home office")}
-                compact
-              />
+            <span className="breadcrumb-divider">/</span>
+            <span className="breadcrumb">Hoje</span>
+            <div className="topbar-right">
+              <div className="today-demo-controls">
+                {" "}
+                <ZuluLabel>
+                  Cenário da demonstração
+                  <ZuluSelect
+                    aria-label="Cenário da demonstração"
+                    value={scenario}
+                    onValueChange={(value) => showScenario(value)}
+                  >
+                    <option value="running">Timer ativo</option>
+                    <option value="lunch">Pausa para almoço</option>
+                    <option value="idle">Timer parado</option>
+                    <option value="unconfigured">
+                      Jornada não configurada
+                    </option>
+                    <option value="holiday">Semana com feriado</option>
+                    <option value="empty">Sem dados</option>
+                    <option value="error">Falha ao carregar escala</option>
+                  </ZuluSelect>
+                </ZuluLabel>
+              </div>
+              <PersonAvatar name="Rafa Costa" id="demo-current" />
             </div>
-            <TodayContext
-              events={hub.snapshot.events.filter(
-                (event) => dayKey(new Date(event.starts_at)) === dayKey(today),
-              )}
-              people={hub.snapshot.people}
-              presence="live"
-              online={Object.fromEntries(
-                hub.snapshot.people.map((person, i) => [
-                  person.id,
-                  i === 1 ? "meeting" : "online",
-                ]),
-              )}
-              unread={scenario === "empty" ? 0 : 3}
-              recent={
-                scenario === "empty"
-                  ? []
-                  : [
-                      {
-                        id: "1",
-                        description: "Biblioteca de componentes",
-                        project: "ZULU · Design system",
-                      },
-                      {
-                        id: "2",
-                        description: "Fluxo de entrada",
-                        project: "ZULU · Produto",
-                      },
-                    ]
-              }
-              busy={false}
-              canRestart={timer === "idle"}
-              onEvent={(event: Row<"events">) => setDialog(event.title)}
-              onCalendar={() => setDialog("Calendário completo")}
-              onPerson={(person) => setDialog(person.display_name)}
-              onPeople={() => setDialog("Pessoas do time")}
-              onRestart={() => {
-                setTimer("running");
-                setElapsed(0);
-                setNotice("Atividade retomada apenas na demonstração.");
-              }}
-              onChat={() => setDialog("Conversas do time")}
-            />
-          </div>
-          <footer className="today-demo-footer">
-            <span>
-              Demonstração em memória. Seus dados não são usados aqui.
-            </span>
-            <ZuluLabel>
-              Cenário da demonstração
-              <ZuluSelect
-                aria-label="Cenário da demonstração"
-                value={scenario}
-                onValueChange={(value) => showScenario(value)}
+          </header>
+          <main className="main-content today-page" id="main-content">
+            <div className="page-heading">
+              <div>
+                <h1>
+                  Olá, Rafa<span className="heading-period">.</span>
+                </h1>
+                <p>
+                  <span className="today-demo-disclosure">
+                    Prévia com dados fictícios.{" "}
+                  </span>
+                  Seu dia, em um só lugar.{" "}
+                  {today.toLocaleDateString("pt-BR", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                  })}
+                  .
+                </p>
+              </div>
+              <ZuluButton
+                className="primary-button"
+                onClick={() => setDialog("Novo evento")}
               >
-                <option value="running">Timer ativo</option>
-                <option value="lunch">Pausa para almoço</option>
-                <option value="idle">Timer parado</option>
-                <option value="unconfigured">Jornada não configurada</option>
-                <option value="holiday">Semana com feriado</option>
-                <option value="empty">Sem dados</option>
-                <option value="error">Falha ao carregar escala</option>
-              </ZuluSelect>
-            </ZuluLabel>
-          </footer>
-        </main>
+                <Plus size={17} />
+                Novo evento
+              </ZuluButton>
+            </div>
+            {notice && (
+              <DashboardNotice message={notice} onClose={() => setNotice("")} />
+            )}
+            <div className="dashboard-layout today-layout">
+              <div className="dashboard-main">
+                <TodayOverview
+                  timer={{
+                    state: timer,
+                    elapsed,
+                    description: activity,
+                    project: activityProject,
+                  }}
+                  busy={false}
+                  canParticipate
+                  configured={configured}
+                  today={{
+                    actualSeconds: actual,
+                    expectedMinutes: 480,
+                    balanceMinutes: Math.round(actual / 60) - 480,
+                  }}
+                  week={{
+                    actualSeconds: 72000 + actual,
+                    expectedMinutes: 1440,
+                    balanceMinutes: Math.round((72000 + actual) / 60) - 1440,
+                  }}
+                  month={{
+                    actualSeconds: 360000 + actual,
+                    expectedMinutes: 6000,
+                    balanceMinutes: Math.round((360000 + actual) / 60) - 6000,
+                  }}
+                  monthTargetMinutes={10560}
+                  todayKey={dayKey(today)}
+                  homeOffice={hub.snapshot.homeOffice}
+                  homeOfficeError={scenario === "error"}
+                  projects={hub.snapshot.projects}
+                  activities={
+                    scenario === "empty"
+                      ? []
+                      : [
+                          {
+                            id: "task-demo",
+                            description: "Revisar o calendário",
+                            projectId: hub.snapshot.projects[0]?.id ?? "",
+                            kind: "task",
+                          },
+                          {
+                            id: "recent-demo",
+                            description: "Biblioteca de componentes",
+                            projectId: "",
+                            kind: "recent",
+                          },
+                        ]
+                  }
+                  onStartActivity={async (input) => {
+                    setActivity(input.description);
+                    setActivityProject(
+                      hub.snapshot.projects.find(
+                        (project) => project.id === input.projectId,
+                      )?.name ?? "Sem projeto",
+                    );
+                    setTimer("running");
+                    setElapsed(0);
+                    setNotice(
+                      "Timer demonstrativo. Nenhuma hora é enviada ao servidor.",
+                    );
+                    return true;
+                  }}
+                  onToggleTimer={() => {
+                    setTimer(timer === "running" ? "lunch" : "running");
+                    setNotice(
+                      "Timer demonstrativo. Nenhuma hora é enviada ao servidor.",
+                    );
+                  }}
+                  onStopTimer={() => {
+                    setTimer("idle");
+                    setElapsed(0);
+                    setNotice("Atividade encerrada apenas nesta demonstração.");
+                  }}
+                  onHours={() => setDialog("Minhas horas")}
+                  onSchedule={() => setDialog("Configurar jornada")}
+                  onHomeOffice={() => setDialog("Escala de home office")}
+                  onRetry={() => {
+                    showScenario("running");
+                    setNotice("Escala fictícia recarregada.");
+                  }}
+                />
+                <LiveCalendar
+                  hub={hub}
+                  monday={mondayOf(date)}
+                  date={date}
+                  onDate={setDate}
+                  today={today}
+                  day={(date.getDay() + 6) % 7}
+                  view={view}
+                  onView={setView}
+                  onDay={(day) => setDate(dateAt(mondayOf(date), day))}
+                  onMove={(direction) =>
+                    setDate(moveCalendarDate(date, view, direction))
+                  }
+                  onToday={() => setDate(today)}
+                  onNew={(date) =>
+                    setDialog(
+                      `Novo evento · ${date.toLocaleDateString("pt-BR")}`,
+                    )
+                  }
+                  onSelect={(event) => setDialog(event.title)}
+                  onHomeOffice={() => setDialog("Escala de home office")}
+                  compact
+                />
+              </div>
+              <TodayContext
+                events={hub.snapshot.events.filter(
+                  (event) =>
+                    dayKey(new Date(event.starts_at)) === dayKey(today),
+                )}
+                people={hub.snapshot.people}
+                presence="live"
+                online={Object.fromEntries(
+                  hub.snapshot.people.map((person, i) => [
+                    person.id,
+                    i === 1 ? "meeting" : "online",
+                  ]),
+                )}
+                unread={scenario === "empty" ? 0 : 3}
+                currentUserId={hub.snapshot.people[0]?.id ?? ""}
+                currentActivity={
+                  timer === "idle"
+                    ? ""
+                    : timer === "lunch"
+                      ? `Almoço · ${activity}`
+                      : activity
+                }
+                activities={{}}
+                inbox={
+                  scenario === "empty"
+                    ? []
+                    : [
+                        {
+                          channelId: "demo-dm",
+                          personId: hub.snapshot.people[1]?.id ?? "",
+                          body: "Pode dar uma olhada na proposta quando tiver um tempo?",
+                          unread: 2,
+                          createdAt: today.toISOString(),
+                        },
+                      ]
+                }
+                inboxError={false}
+                onMessage={() => setDialog("Conversa direta")}
+                recent={
+                  scenario === "empty"
+                    ? []
+                    : [
+                        {
+                          id: "1",
+                          description: "Biblioteca de componentes",
+                          project: "ZULU · Design system",
+                        },
+                        {
+                          id: "2",
+                          description: "Fluxo de entrada",
+                          project: "ZULU · Produto",
+                        },
+                      ]
+                }
+                busy={false}
+                canRestart={timer === "idle"}
+                onEvent={(event: Row<"events">) => setDialog(event.title)}
+                onCalendar={() => setDialog("Calendário completo")}
+                onPerson={(person) => setDialog(person.display_name)}
+                onPeople={() => setDialog("Pessoas do time")}
+                onRestart={() => {
+                  setTimer("running");
+                  setElapsed(0);
+                  setActivity("Biblioteca de componentes");
+                  setNotice("Atividade retomada apenas na demonstração.");
+                }}
+                onChat={() => setDialog("Conversas do time")}
+              />
+            </div>
+          </main>
+        </div>
+        {dialog && (
+          <HubDialog title={dialog} onClose={() => setDialog("")}>
+            <p className="resource-note">
+              Esta é uma prévia com dados fictícios. No app, esta ação abre{" "}
+              {dialog.toLocaleLowerCase("pt-BR")} com os dados autorizados do
+              seu time.
+            </p>
+            <ZuluButton
+              className="outline-button"
+              onClick={() => setDialog("")}
+            >
+              Voltar ao dashboard
+            </ZuluButton>
+          </HubDialog>
+        )}
       </div>
-      {dialog && (
-        <HubDialog title={dialog} onClose={() => setDialog("")}>
-          <p className="resource-note">
-            Esta é uma prévia com dados fictícios. No app, esta ação abre{" "}
-            {dialog.toLocaleLowerCase("pt-BR")} com os dados autorizados do seu
-            time.
-          </p>
-          <ZuluButton className="outline-button" onClick={() => setDialog("")}>
-            Voltar ao dashboard
-          </ZuluButton>
-        </HubDialog>
-      )}
-    </div>
     </DashboardUIProvider>
   );
 }

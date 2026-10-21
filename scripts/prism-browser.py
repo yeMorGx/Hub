@@ -56,7 +56,8 @@ with sync_playwright() as p:
    select_scenario(page, 'empty')
    if mode=='reduced':page.screenshot(path=str(OUT/f'empty-{width}.png'),full_page=True)
    if mode=='reduced':
-    old=page.evaluate('window.draws');page.set_viewport_size({'width':width-20,'height':height});page.wait_for_timeout(250)
+    old=page.evaluate('window.draws');page.set_viewport_size({'width':width-20,'height':height})
+    page.wait_for_function('(old)=>window.draws>old', arg=old, timeout=5000)
     assert page.evaluate('window.draws')>old
    assert not errors,errors
    print(json.dumps({'mode':mode,'width':width,'drawsBefore':before,'drawsAfter':after,'contexts':2,'crossfade':True,'inactiveLayerPaused':True,'timerControls':True,'overflow':False,'pageErrors':errors}),flush=True)

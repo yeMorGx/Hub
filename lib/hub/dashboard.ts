@@ -45,3 +45,32 @@ export type JourneyBalance = {
   actualSeconds: number;
   balanceMinutes: number;
 };
+
+/** Only unread DMs in which this user is a participant and has a membership. */
+export function unreadDmChannels(
+  channels: import("./types").Row<"channels">[],
+  memberships: import("./types").Row<"channel_members">[],
+  unread: Record<string, number>,
+  userId: string,
+) {
+  return channels
+    .filter(
+      (channel) =>
+        channel.kind === "dm" &&
+        !channel.archived_at &&
+        (channel.dm_user_low === userId || channel.dm_user_high === userId) &&
+        memberships.some(
+          (member) =>
+            member.channel_id === channel.id && member.user_id === userId,
+        ) &&
+        unread[channel.id] > 0,
+    )
+    .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
+    .slice(0, 8);
+}
+export function inboxText(body: string) {
+  return body.replace(/\s+/g, " ").trim().slice(0, 160) || "Enviou um anexo";
+}
+export function balanceCaption(minutes: number) {
+  return minutes > 0 ? "a mais" : minutes < 0 ? "a compensar" : "em dia";
+}

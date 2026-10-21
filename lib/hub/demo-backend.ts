@@ -320,6 +320,7 @@ export function createDemoBackend() {
     teamId: demoTeam,
     currentTeam: { id: demoTeam, name: "Estúdio", workspace_id: id(11) },
     workspace: { id: id(11), name: "Forma" },
+    onlineActivities: {},
     snapshot: {
       teamId: demoTeam,
       people,
@@ -362,6 +363,8 @@ export function createDemoBackend() {
       workBalanceLoadedAt: 0,
       pausedTimer: null,
       tasks: [],
+      inbox: [],
+      inboxError: false,
       unread: {},
       channelMemberships: [],
       attendees: [],

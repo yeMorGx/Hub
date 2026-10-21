@@ -91,3 +91,66 @@ test("feriado no dia e ausência de escala têm estados distintos", () => {
     holidayWeek: undefined,
   });
 });
+
+test("saldo descreve crédito, débito e equilíbrio sem depender de sinais", async () => {
+  const { balanceCaption, inboxText } = await import("../lib/hub/dashboard");
+  assert.equal(balanceCaption(120), "a mais");
+  assert.equal(balanceCaption(-120), "a compensar");
+  assert.equal(balanceCaption(0), "em dia");
+  assert.equal(inboxText("\n  Vamos   revisar?  \n"), "Vamos revisar?");
+  assert.equal(inboxText(" "), "Enviou um anexo");
+  assert.equal(inboxText("a".repeat(1000)).length, 160);
+});
+
+test("prévia só considera DMs próprias, não lidas, ativas e com associação", async () => {
+  const { unreadDmChannels } = await import("../lib/hub/dashboard");
+  const { EMPTY_TEAM } = await import("../lib/hub/types");
+  type Channel = (typeof EMPTY_TEAM.channels)[number];
+  type Membership = (typeof EMPTY_TEAM.channelMemberships)[number];
+  const dm = {
+    id: "own",
+    kind: "dm",
+    dm_user_low: "me",
+    dm_user_high: "friend",
+    archived_at: null,
+    updated_at: "2026-10-21",
+  } as Channel;
+  const channel = (id: string, patch: Partial<Channel>) => ({
+    ...dm,
+    id,
+    ...patch,
+  });
+  const list = [
+    dm,
+    channel("other", { dm_user_low: "stranger" }),
+    channel("public", { kind: "public" }),
+    channel("archived", { archived_at: "2026-10-21" }),
+    channel("read", {}),
+    channel("no-membership", {}),
+  ];
+  const memberships = list
+    .filter((c) => c.id !== "no-membership")
+    .map((c) => ({ channel_id: c.id, user_id: "me" }) as Membership);
+  const unread = Object.fromEntries(
+    list.map((c) => [c.id, c.id === "read" ? 0 : 2]),
+  );
+  assert.deepEqual(
+    unreadDmChannels(list, memberships, unread, "me").map((c) => c.id),
+    ["own"],
+  );
+  assert.deepEqual(unreadDmChannels(list, memberships, unread, "stranger"), []);
+  const many = Array.from({ length: 20 }, (_, i) =>
+    channel(String(i), {
+      updated_at: `2026-10-${String(i + 1).padStart(2, "0")}`,
+    }),
+  );
+  assert.equal(
+    unreadDmChannels(
+      many,
+      many.map((c) => ({ channel_id: c.id, user_id: "me" }) as Membership),
+      Object.fromEntries(many.map((c) => [c.id, 1])),
+      "me",
+    ).length,
+    8,
+  );
+});

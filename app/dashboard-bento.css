@@ -784,3 +784,333 @@
   padding: 6px;
   margin: -6px;
 }
+
+/* Floating navigation and in-place daily workflow. */
+.dashboard-redesign .rail {
+  top: 12px;
+  left: 12px;
+  bottom: 12px;
+  height: calc(100dvh - 24px);
+  border-radius: 22px;
+  width: 212px;
+  padding: 24px 14px 18px;
+}
+.dashboard-redesign .app-content {
+  margin-left: 236px;
+}
+.dashboard-redesign .rail-divider {
+  margin-block: 22px 16px;
+}
+.dashboard-redesign .rail-button {
+  border-radius: 12px;
+  min-height: 44px;
+}
+.today-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  flex-shrink: 0;
+}
+.today-nav-icon > span {
+  display: inline-flex;
+}
+.today-nav-icon svg {
+  width: 21px;
+  height: 21px;
+}
+.dashboard-redesign .rail-bottom {
+  gap: 14px;
+  padding-top: 14px;
+}
+.dashboard-redesign .today-balance-caption {
+  display: block;
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.dashboard-redesign .today-balances small {
+  line-height: 1.6;
+}
+.dashboard-redesign .today-person em {
+  font-style: normal;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 400;
+}
+.dashboard-redesign .today-person small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.dashboard-redesign .today-person small svg {
+  flex-shrink: 0;
+}
+.dashboard-redesign .today-inbox {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+}
+.dashboard-redesign .today-inbox-message {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #eef2fa;
+  color: #294d94;
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  min-height: 44px;
+}
+.dashboard-redesign .today-inbox-message:hover {
+  background: #e4ebf8;
+}
+.dashboard-redesign .today-inbox-message > svg {
+  flex-shrink: 0;
+}
+.dashboard-redesign .today-inbox-message > span {
+  min-width: 0;
+  flex: 1;
+}
+.dashboard-redesign .today-inbox-message strong {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: baseline;
+  font-size: 11px;
+  font-weight: 600;
+}
+.dashboard-redesign .today-inbox-message strong small {
+  font-size: 10px;
+  font-weight: 450;
+}
+.dashboard-redesign .today-inbox-message span > span {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  line-height: 1.6;
+  margin-top: 4px;
+  color: #465979;
+}
+.dashboard-redesign .today-focus:has(.today-activity-picker) {
+  align-self: start;
+}
+.dashboard-redesign .today-activity-picker {
+  grid-column: 1 / -1;
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 12px;
+  background: #fff;
+  color: #202b40;
+  animation: today-picker-reveal 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 0;
+}
+.today-picker-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+.dashboard-redesign .today-picker-heading .button {
+  min-width: 32px;
+  min-height: 32px;
+  padding: 6px;
+}
+.today-activity-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr);
+  gap: 14px;
+}
+.dashboard-redesign .today-activity-form > label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 11px;
+  min-width: 0;
+  color: #59667c;
+}
+.dashboard-redesign .today-activity-form .input {
+  width: 100%;
+  min-height: 42px;
+  font-size: 12px;
+}
+.dashboard-redesign .today-activity-form .select {
+  width: 100%;
+  min-width: 0;
+}
+.dashboard-redesign .today-activity-form .select__trigger {
+  min-height: 42px;
+  font-size: 12px;
+}
+.today-activity-form > .button,
+.today-activity-form > p {
+  grid-column: 1 / -1;
+}
+.dashboard-redesign .today-activity-form .primary-button {
+  justify-self: start;
+  gap: 8px;
+  min-height: 42px;
+  padding: 11px 16px;
+}
+.today-activity-suggestions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.dashboard-redesign .today-activity-suggestions .button {
+  display: flex;
+  gap: 7px;
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+  font-size: 11px;
+  padding: 8px 10px;
+  min-height: 36px;
+  background: #eef1f7;
+  color: #33466b;
+}
+.today-activity-suggestions .button > span {
+  overflow-wrap: anywhere;
+}
+.today-activity-suggestions small {
+  font-size: 9px;
+  color: #59667c;
+}
+.dashboard-redesign .today-activity-suggestions .button[aria-pressed="true"] {
+  background: #dce6f8;
+  color: #203e75;
+}
+.dashboard-redesign .today-activity-picker :is(button, input):focus-visible,
+.dashboard-redesign .today-activity-picker .button[data-focus-visible="true"] {
+  outline-color: #294d94;
+}
+.today-demo-controls {
+  width: 148px;
+}
+.today-demo-controls > label {
+  font-size: 10px;
+  color: #59667c;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.today-demo-controls .select__trigger {
+  min-height: 28px;
+  font-size: 10px;
+  padding: 4px 7px;
+}
+@keyframes today-picker-reveal {
+  from {
+    opacity: 0.6;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (min-width: 761px) {
+  html[data-desktop-titlebar] .dashboard-redesign .rail {
+    top: 48px;
+    height: calc(100dvh - 60px);
+  }
+}
+@media (max-width: 1200px) and (min-width: 761px) {
+  .dashboard-redesign .rail {
+    width: 184px;
+    padding-inline: 10px;
+  }
+  .dashboard-redesign .app-content {
+    margin-left: 208px;
+  }
+  .today-activity-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .dashboard-redesign .rail {
+    top: auto;
+    left: 10px;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    width: auto;
+    height: 62px;
+    padding: 0 4px;
+    border-radius: 20px;
+  }
+  .dashboard-redesign .rail-button {
+    border-radius: 14px;
+    min-height: 44px;
+  }
+  .dashboard-redesign .rail-button.active {
+    background: #e8edf8;
+  }
+  .dashboard-redesign .rail nav {
+    padding: 5px 0;
+  }
+  .dashboard-redesign .app-content {
+    margin-left: 0;
+    padding-bottom: 18px;
+  }
+  .today-activity-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dashboard-redesign .today-activity-picker {
+    padding: 14px;
+  }
+  .today-demo-controls {
+    width: 110px;
+  }
+  .today-demo-controls > label {
+    font-size: 0;
+    gap: 0;
+  }
+  .today-demo-controls .select__trigger {
+    font-size: 10px;
+  }
+  .dashboard-redesign .topbar-right {
+    gap: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-redesign .today-activity-picker {
+    animation: none;
+  }
+}
+
+.today-demo-controls .label {
+  display: none;
+}
+.today-demo-controls .select {
+  gap: 0;
+}
+.today-demo-controls .select__trigger {
+  min-height: 32px;
+  padding: 6px 9px;
+}
+.today-demo-disclosure {
+  color: #59667c;
+}
+.dashboard-redesign .today-balance-basis {
+  margin: 10px 0 0;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #59667c;
+}
+.dashboard-redesign
+  .today-activity-form
+  .select__trigger[data-focus-visible="true"] {
+  outline: 2px solid #294d94;
+  outline-offset: 3px;
+}

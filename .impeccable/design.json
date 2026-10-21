@@ -25,7 +25,8 @@
     "mandatorySkill": ".agents/skills/zulu-heroui/SKILL.md",
     "scope": "All new and reworked UI components; preserve surface tokens, keyboard, focus and accessibility",
     "state": "HeroUI React/Styles 3.2.6 installed; Today, compact calendar controls and dialogs migrated through scoped official-component adapters; other modules retain native fallbacks",
-    "specializedEffect": "Original Spell UI Prism/Lava for timer; 650ms state-driven crossfade"
+    "specializedEffect": "Original Spell UI Prism/Lava for timer; 650ms state-driven crossfade",
+    "specializedIcons": "Sidebar: official Animate UI Hugeicons; hover/focus with reduced-motion support. HeroUI controls retained."
   },
   "mode": "operate",
   "reference": "https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard",
@@ -329,5 +330,13 @@
       "evidence": ".impeccable/review/marketing/",
       "limits": "Visual review only; not proof of complete accessibility, authentication, desktop installation or real integrations."
     }
+  },
+  "dashboardWorkflow": {
+    "brief": "docs/dashboard-workflow.md",
+    "navigation": "Today floating rounded sidebar/dock; no decorative borders/shadows",
+    "timer": "Inline HeroUI activity/project selection, recent work and linked task RPC",
+    "balance": "Explicit credit/debit words, actual vs expected and today-inclusive basis",
+    "people": "Own activity first, team-private presence activity and own unread DM previews",
+    "footer": "Promotional/MFA footer removed"
   }
 }

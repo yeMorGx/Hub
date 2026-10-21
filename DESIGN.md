@@ -30,6 +30,12 @@ A decisão posterior do usuário adota **Bento Grid** em Hoje e `/demo/dashboard
 
 `app/dashboard-bento.css` complementa `app/dashboard.css` e define os tokens claros dos portais HeroUI. `components/dashboard-ui.tsx` mantém os contratos de formulário e limita a migração à tela Hoje e seus diálogos. O seletor de visualização é um radiogroup oficial, o filtro usa Dropdown e o seletor de data usa Calendar. A grade de eventos continua específica do produto. Os vereditos e medidas da composição anterior abaixo são históricos; a evidência desta entrega está em `.impeccable/review/zulu-bento/`.
 
+### Hoje — navegação e ações do dia
+
+A revisão posterior do usuário adota sidebar flutuante em Hoje: 12px das bordas, 212px de largura, raio de 22px, sem borda ou sombra. Até 1200px, 184px; até 760px, dock inferior flutuante de 62px com raio de 20px. Barra de título nativa preserva os 36px superiores. Os ícones da sidebar do app e da prévia usam source oficial **Animate UI Hugeicons** com hover/foco e redução de movimento; os controles continuam HeroUI, e Phosphor permanece no conteúdo. Esta exceção substitui a regra anterior de Phosphor na sidebar. O rodapé promocional/MFA foi removido.
+
+Escolher atividade abre formulário HeroUI no próprio card do timer, com descrição, projeto e sugestões reais de tarefas/atividades recentes. A jornada apresenta duração e legenda explícita (a mais/a compensar), horas feitas e previstas, e informa que a meta inclui hoje. Em Por aqui agora, o próprio usuário aparece primeiro, com atividade/pausa atual; colegas compartilham atividade pela Presence privada do time. Prévias de DMs próprias não lidas abrem a conversa e não marcam leitura por exibição. Contrato: [fluxo diário](docs/dashboard-workflow.md).
+
 ## Tokens implementados
 
 | Token CSS | Valor | Uso |

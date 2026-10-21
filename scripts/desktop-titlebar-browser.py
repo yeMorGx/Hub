@@ -31,7 +31,7 @@ with sync_playwright() as p:
             page.locator('.desktop-titlebar-drag').dispatch_event('mousedown',{'button':0,'detail':1})
             page.evaluate("document.title='(3) ZULU'")
             page.get_by_label('3 mensagens não lidas').wait_for()
-            assert page.locator('.rail').bounding_box()['y'] == 36
+            assert page.locator('.rail').bounding_box()['y'] == 48
             assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
             page.screenshot(path=str(OUT/'desktop-titlebar.png'),full_page=True)
             page.get_by_role('button',name='Fechar ZULU',exact=True).click()

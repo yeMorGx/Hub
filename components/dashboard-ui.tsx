@@ -90,7 +90,7 @@ export function ZuluButton({
     button
   );
 }
-export function ZuluInput(props: InputHTMLAttributes<HTMLInputElement>) {
+export function ZuluInput(props: ComponentProps<"input">) {
   const enabled = useDashboardUI();
   return enabled ? <Input {...props} /> : <input {...props} />;
 }

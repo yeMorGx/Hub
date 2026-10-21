@@ -1,5 +1,12 @@
 "use client";
-import { ZuluButton } from "./dashboard-ui";
+import { useEffect, useRef, useState } from "react";
+import {
+  ZuluForm,
+  ZuluLabel,
+  ZuluInput,
+  ZuluSelect,
+  ZuluButton,
+} from "./dashboard-ui";
 import { Card, Chip, ProgressBar, Spinner } from "@heroui/react";
 import AnimatedGradient from "./animated-gradient";
 import {
@@ -13,19 +20,40 @@ import {
   House,
   Play,
   Stop,
-  CircleNotch,
+  X,
 } from "@phosphor-icons/react";
-import type { HomeOfficeEntry, Person, Row } from "@/lib/hub/types";
+import type {
+  HomeOfficeEntry,
+  InboxPreview,
+  Person,
+  Row,
+} from "@/lib/hub/types";
 import { clock, shortDuration } from "@/lib/hub/dates";
-import { homeOfficeSummary, type JourneyBalance } from "@/lib/hub/dashboard";
+import {
+  homeOfficeSummary,
+  balanceCaption,
+  type JourneyBalance,
+} from "@/lib/hub/dashboard";
 import { PersonAvatar } from "./hub-ui";
 
+export type ActivityChoice = {
+  id: string;
+  description: string;
+  projectId: string;
+  kind: "task" | "recent";
+};
+export type ActivityInput = {
+  description: string;
+  projectId: string;
+  taskId?: string;
+};
 export type TodayOverviewProps = {
   timer: {
     state: "idle" | "running" | "lunch";
     elapsed: number;
     description: string;
     project: string;
+    projectId?: string;
   };
   busy: boolean;
   canParticipate: boolean;
@@ -37,6 +65,9 @@ export type TodayOverviewProps = {
   todayKey: string;
   homeOffice: HomeOfficeEntry[];
   homeOfficeError: boolean;
+  projects: { id: string; name: string }[];
+  activities: ActivityChoice[];
+  onStartActivity: (input: ActivityInput) => Promise<boolean>;
   onToggleTimer: () => void;
   onStopTimer: () => void;
   onHours: () => void;
@@ -45,17 +76,24 @@ export type TodayOverviewProps = {
   onRetry: () => void;
 };
 
-function signedBalance(minutes: number) {
-  return minutes === 0
-    ? "Em dia"
-    : `${minutes > 0 ? "+" : "−"}${shortDuration(Math.abs(minutes) * 60)}`;
-}
-
 const TIMER_GRADIENT = { preset: "Prism" } as const;
 const WORKING_GRADIENT = { preset: "Lava" } as const;
 
 export function TodayOverview(props: TodayOverviewProps) {
   const { timer, today, week, month, configured, busy } = props;
+  const [choosing, setChoosing] = useState(false);
+  const [activity, setActivity] = useState("");
+  const [project, setProject] = useState("");
+  const [taskId, setTaskId] = useState<string>();
+  const [starting, setStarting] = useState(false);
+  const [startError, setStartError] = useState("");
+  const activityRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (choosing) activityRef.current?.focus();
+  }, [choosing]);
+  useEffect(() => {
+    if (timer.state !== "idle") setChoosing(false);
+  }, [timer.state]);
   const office = homeOfficeSummary(props.homeOffice, props.todayKey);
   const progress =
     today.expectedMinutes > 0
@@ -119,7 +157,21 @@ export function TodayOverview(props: TodayOverviewProps) {
               disabled={
                 busy || (timer.state === "idle" && !props.canParticipate)
               }
-              onClick={props.onToggleTimer}
+              aria-expanded={timer.state === "idle" ? choosing : undefined}
+              aria-controls={
+                timer.state === "idle" ? "today-activity-picker" : undefined
+              }
+              onClick={() => {
+                if (timer.state !== "idle") {
+                  props.onToggleTimer();
+                  return;
+                }
+                setActivity(timer.description);
+                setProject(timer.projectId ?? "");
+                setTaskId(undefined);
+                setStartError("");
+                setChoosing(!choosing);
+              }}
             >
               {busy ? (
                 <Spinner size="sm" aria-label="Atualizando timer" />
@@ -147,6 +199,148 @@ export function TodayOverview(props: TodayOverviewProps) {
               </ZuluButton>
             )}
           </div>
+          {choosing && timer.state === "idle" && (
+            <section
+              className="today-activity-picker"
+              id="today-activity-picker"
+              aria-label="Escolher atividade"
+              onKeyDown={(event) => {
+                if (event.key === "Escape" && !starting) {
+                  setChoosing(false);
+                  event.currentTarget
+                    .closest(".today-focus")
+                    ?.querySelector<HTMLButtonElement>(".today-timer-primary")
+                    ?.focus();
+                }
+              }}
+            >
+              <div className="today-picker-heading">
+                <strong>No que você vai trabalhar?</strong>
+                <ZuluButton
+                  type="button"
+                  className="today-link"
+                  aria-label="Fechar escolha de atividade"
+                  disabled={starting}
+                  onClick={() => {
+                    setChoosing(false);
+                    document
+                      .querySelector<HTMLButtonElement>(".today-timer-primary")
+                      ?.focus();
+                  }}
+                >
+                  <X size={17} />
+                </ZuluButton>
+              </div>
+              <ZuluForm
+                className="today-activity-form"
+                onSubmit={async (event) => {
+                  event.preventDefault();
+                  if (starting || busy || !activity.trim()) return;
+                  setStarting(true);
+                  setStartError("");
+                  try {
+                    if (
+                      await props.onStartActivity({
+                        description: activity.trim(),
+                        projectId: project,
+                        taskId,
+                      })
+                    )
+                      setChoosing(false);
+                    else
+                      setStartError(
+                        "Não foi possível iniciar. Tente novamente.",
+                      );
+                  } catch {
+                    setStartError("Não foi possível iniciar. Tente novamente.");
+                  } finally {
+                    setStarting(false);
+                  }
+                }}
+              >
+                <ZuluLabel>
+                  Atividade
+                  <ZuluInput
+                    ref={activityRef}
+                    name="activity"
+                    aria-label="Atividade"
+                    value={activity}
+                    maxLength={500}
+                    required
+                    disabled={starting || busy}
+                    placeholder="O que você vai fazer?"
+                    onChange={(event) => {
+                      setActivity(event.target.value);
+                      setTaskId(undefined);
+                    }}
+                  />
+                </ZuluLabel>
+                <ZuluLabel>
+                  Projeto
+                  <ZuluSelect
+                    name="project"
+                    aria-label="Projeto da atividade"
+                    value={project}
+                    onValueChange={(value) => {
+                      setProject(value);
+                      setTaskId(undefined);
+                    }}
+                    disabled={starting || busy}
+                  >
+                    <option value="">Sem projeto</option>
+                    {props.projects.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </ZuluSelect>
+                </ZuluLabel>
+                {props.activities.length > 0 && (
+                  <div
+                    className="today-activity-suggestions"
+                    aria-label="Tarefas e atividades recentes"
+                  >
+                    {props.activities.slice(0, 5).map((item) => (
+                      <ZuluButton
+                        key={item.kind + item.id}
+                        type="button"
+                        disabled={starting || busy}
+                        aria-pressed={
+                          taskId
+                            ? taskId === item.id
+                            : activity === item.description &&
+                              project === item.projectId
+                        }
+                        onClick={() => {
+                          setActivity(item.description);
+                          setProject(item.projectId);
+                          setTaskId(item.kind === "task" ? item.id : undefined);
+                        }}
+                      >
+                        <span>{item.description}</span>
+                        <small>
+                          {item.kind === "task" ? "Tarefa" : "Recente"}
+                        </small>
+                      </ZuluButton>
+                    ))}
+                  </div>
+                )}
+                {startError && <p role="alert">{startError}</p>}
+                <ZuluButton
+                  type="submit"
+                  className="primary-button"
+                  disabled={starting || busy || !props.canParticipate}
+                >
+                  {starting ? (
+                    <Spinner size="sm" aria-label="Iniciando atividade" />
+                  ) : (
+                    <Play size={15} weight="fill" />
+                  )}
+                  Iniciar atividade
+                </ZuluButton>
+              </ZuluForm>
+            </section>
+          )}
           {timer.state === "lunch" && (
             <p className="today-lunch-note">
               O almoço não entra nas horas. Retome quando voltar.
@@ -191,9 +385,20 @@ export function TodayOverview(props: TodayOverviewProps) {
                             : ""
                       }
                     >
-                      {signedBalance(value.balanceMinutes)}
+                      {value.balanceMinutes === 0
+                        ? "Em dia"
+                        : shortDuration(Math.abs(value.balanceMinutes) * 60)}
+                      {value.balanceMinutes !== 0 && (
+                        <span className="today-balance-caption">
+                          {balanceCaption(value.balanceMinutes)}
+                        </span>
+                      )}
                     </dd>
-                    <small>previsto até hoje</small>
+                    <small>
+                      {shortDuration(value.actualSeconds)} feitas ·{" "}
+                      {shortDuration(value.expectedMinutes * 60)} previstas até
+                      hoje
+                    </small>
                   </div>
                 ))}
               </dl>
@@ -213,6 +418,9 @@ export function TodayOverview(props: TodayOverviewProps) {
                   </ProgressBar.Track>
                 </ProgressBar>
               )}
+              <p className="today-balance-basis">
+                Os saldos incluem a meta de hoje, mesmo com o dia em andamento.
+              </p>
               <p className="today-hours-note">
                 {today.expectedMinutes === 0
                   ? "Sem jornada prevista para hoje."
@@ -332,6 +540,12 @@ export type TodayContextProps = {
   presence: "connecting" | "live" | "unavailable";
   online: Record<string, string>;
   unread: number;
+  currentUserId: string;
+  currentActivity: string;
+  activities: Record<string, string>;
+  inbox: InboxPreview[];
+  inboxError: boolean;
+  onMessage: (channelId: string) => void;
   recent: { id: string; description: string; project: string }[];
   busy: boolean;
   canRestart: boolean;
@@ -354,6 +568,11 @@ export function TodayContext(props: TodayContextProps) {
   const onlineCount = props.people.filter(
     (person) => props.online[person.id],
   ).length;
+  const people = [...props.people].sort(
+    (a, b) =>
+      Number(b.id === props.currentUserId) -
+      Number(a.id === props.currentUserId),
+  );
   return (
     <aside
       className="today-context"
@@ -420,11 +639,15 @@ export function TodayContext(props: TodayContextProps) {
           </span>
         </Card.Header>
         <div className="today-team-list">
-          {props.people.slice(0, 4).map((person) => {
+          {people.slice(0, 4).map((person) => {
             const status =
               props.presence === "live"
                 ? (props.online[person.id] ?? "offline")
                 : "unknown";
+            const working =
+              person.id === props.currentUserId
+                ? props.currentActivity
+                : props.activities[person.id];
             return (
               <ZuluButton
                 key={person.id}
@@ -437,15 +660,62 @@ export function TodayContext(props: TodayContextProps) {
                   presence={status}
                 />
                 <span>
-                  <strong>{person.display_name}</strong>
+                  <strong>
+                    {person.display_name}
+                    {person.id === props.currentUserId && <em> · Você</em>}
+                  </strong>
                   <small>
-                    {person.body || statuses[status] || statuses.unknown}
+                    {working ? (
+                      <>
+                        <Play size={11} weight="fill" /> {working}
+                      </>
+                    ) : person.id !== props.currentUserId &&
+                      person.timer_running ? (
+                      "Trabalhando agora"
+                    ) : (
+                      person.body || statuses[status] || statuses.unknown
+                    )}
                   </small>
                 </span>
               </ZuluButton>
             );
           })}
         </div>
+        {props.inbox.length > 0 && (
+          <div className="today-inbox" aria-label="Mensagens diretas não lidas">
+            {props.inbox.slice(0, 3).map((message) => {
+              const sender = props.people.find(
+                (person) => person.id === message.personId,
+              );
+              return (
+                <ZuluButton
+                  key={message.channelId}
+                  className="today-inbox-message"
+                  onClick={() => props.onMessage(message.channelId)}
+                >
+                  <ChatCircleText size={18} />
+                  <span>
+                    <strong>
+                      {sender?.display_name ?? "Pessoa do time"}
+                      <small>
+                        {message.unread}{" "}
+                        {message.unread === 1 ? "nova" : "novas"}
+                      </small>
+                    </strong>
+                    <span>{message.body}</span>
+                  </span>
+                  <ArrowUpRight size={14} />
+                </ZuluButton>
+              );
+            })}
+          </div>
+        )}
+        {props.inboxError && (
+          <p className="today-context-empty">
+            Não foi possível atualizar as prévias de mensagens. Abra Conversas
+            para conferir.
+          </p>
+        )}
         {!props.people.length && (
           <p className="today-context-empty">
             As pessoas do time aparecerão aqui.

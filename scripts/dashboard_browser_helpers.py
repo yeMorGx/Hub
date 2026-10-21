@@ -5,7 +5,7 @@ SCENARIOS = {
     'empty': 'Sem dados', 'error': 'Falha ao carregar escala',
 }
 def select_scenario(page, value):
-    page.locator('.today-demo-footer .zulu-select').get_by_role('button').click()
+    page.locator('.today-demo-controls .zulu-select').get_by_role('button').click()
     page.get_by_role('option', name=SCENARIOS[value], exact=True).click()
 
     page.get_by_role('listbox').wait_for(state='hidden')

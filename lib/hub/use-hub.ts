@@ -14,7 +14,11 @@ import {
 } from "./types";
 
 import { loadCalendarEvents } from "./calendar-events";
-import { homeOfficeSummaryRange } from "./dashboard";
+import {
+  homeOfficeSummaryRange,
+  unreadDmChannels,
+  inboxText,
+} from "./dashboard";
 
 type Functions = Database["public"]["Functions"];
 function rows<T>(response: { data: T[] | null; error: unknown }): T[] {
@@ -45,6 +49,10 @@ export function useHub(
   const [presenceReady, setPresenceReady] = useState<
     "connecting" | "live" | "unavailable"
   >("connecting");
+  const [onlineActivities, setOnlineActivities] = useState<
+    Record<string, string>
+  >({});
+  const activityRef = useRef("");
   const [onlinePeople, setOnlinePeople] = useState<Record<string, string>>({}),
     [availability, setAvailability] = useState("online");
   const generation = useRef(0),
@@ -159,6 +167,7 @@ export function useHub(
       setTeamIdState(id);
       setSnapshot(null);
       setOnlinePeople({});
+      setOnlineActivities({});
       try {
         localStorage.setItem(`hub.team.${userId}`, id);
       } catch {}
@@ -178,8 +187,16 @@ export function useHub(
       weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
       const weekEnd = new Date(weekStart);
       weekEnd.setDate(weekEnd.getDate() + 6);
-      const monthStart = new Date(todayStart.getFullYear(), todayStart.getMonth(), 1);
-      const monthEnd = new Date(todayStart.getFullYear(), todayStart.getMonth() + 1, 0);
+      const monthStart = new Date(
+        todayStart.getFullYear(),
+        todayStart.getMonth(),
+        1,
+      );
+      const monthEnd = new Date(
+        todayStart.getFullYear(),
+        todayStart.getMonth() + 1,
+        0,
+      );
       const balanceStart = weekStart < monthStart ? weekStart : monthStart;
       const balanceEnd = weekEnd > monthEnd ? weekEnd : monthEnd;
       const todayInsideRange =
@@ -294,11 +311,7 @@ export function useHub(
           p_from: dayKey(balanceStart),
           p_to: dayKey(balanceEnd),
         }),
-        client
-          .from("paused_timers")
-          .select("*")
-          .eq("user_id", userId)
-          .limit(1),
+        client.from("paused_timers").select("*").eq("user_id", userId).limit(1),
         client
           .from("channel_unread_counts")
           .select("*")
@@ -354,6 +367,53 @@ export function useHub(
       const profileRows = profiles.flatMap((response) => rows(response)),
         statusRows = rows(statuses),
         attendeeRows = attendees.flatMap((response) => rows(response));
+      const unreadCounts = Object.fromEntries(
+        unreadRows
+          .filter((r) => r.channel_id)
+          .map((r) => [r.channel_id!, Number(r.unread_count ?? 0)]),
+      );
+      // RLS still authorizes every query. Never load other users' DMs or mark read here.
+      const inboxResults = await Promise.all(
+        unreadDmChannels(channelRows, membershipRows, unreadCounts, userId).map(
+          async (channel) => {
+            const membership = membershipRows.find(
+              (member) =>
+                member.channel_id === channel.id && member.user_id === userId,
+            )!;
+            try {
+              const response = await client
+                .from("messages")
+                .select("*")
+                .eq("team_id", teamId)
+                .eq("channel_id", channel.id)
+                .neq("author_id", userId)
+                .is("deleted_at", null)
+                .gt("ordinal", membership.last_read_ordinal)
+                .order("ordinal", { ascending: false })
+                .limit(1);
+              return { response, channel };
+            } catch (error) {
+              return { response: { data: null, error }, channel };
+            }
+          },
+        ),
+      );
+      const inbox = inboxResults
+        .flatMap(({ response, channel }) => {
+          const message = response.data?.[0];
+          return message
+            ? [
+                {
+                  channelId: channel.id,
+                  personId: message.author_id,
+                  body: inboxText(message.body),
+                  unread: unreadCounts[channel.id],
+                  createdAt: message.created_at,
+                },
+              ]
+            : [];
+        })
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
       const people: Person[] = memberRows.flatMap((member) => {
         const profile = profileRows.find((p) => p.id === member.user_id);
         if (!profile) return [];
@@ -392,6 +452,10 @@ export function useHub(
         workBalance: workBalanceRows,
         workBalanceLoadedAt: Date.now(),
         pausedTimer: pausedTimerRows[0] ?? null,
+        inbox,
+        inboxError: inboxResults.some(({ response }) =>
+          Boolean(response.error),
+        ),
         unread: Object.fromEntries(
           unreadRows
             .filter((r) => r.channel_id)
@@ -429,6 +493,7 @@ export function useHub(
     let active = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     setOnlinePeople({});
+    setOnlineActivities({});
     setPresenceReady(ownMembership ? "connecting" : "unavailable");
     setConnection(
       navigator.onLine
@@ -456,6 +521,7 @@ export function useHub(
           user_id: userId,
           availability: document.hidden ? "away" : availabilityRef.current,
           online_at: new Date().toISOString(),
+          activity: activityRef.current,
         });
     };
     if (channel) {
@@ -521,8 +587,10 @@ export function useHub(
           const state = channel.presenceState<{
             user_id: string;
             availability: string;
+            activity?: string;
           }>();
           const online: Record<string, string> = {};
+          const activities: Record<string, string> = {};
           for (const [id, metas] of Object.entries(state)) {
             const entry = metas[metas.length - 1];
             if (
@@ -530,8 +598,11 @@ export function useHub(
               ["online", "away", "meeting"].includes(entry.availability)
             )
               online[id] = entry.availability;
+            if (entry && typeof entry.activity === "string")
+              activities[id] = entry.activity.slice(0, 200);
           }
           setOnlinePeople(online);
+          setOnlineActivities(activities);
         })
         .subscribe((status) => {
           if (!active) return;
@@ -548,6 +619,7 @@ export function useHub(
             setConnection(navigator.onLine ? "degraded" : "offline");
             setPresenceReady("unavailable");
             setOnlinePeople({});
+            setOnlineActivities({});
           }
         });
       teamChannel.current = channel;
@@ -564,6 +636,7 @@ export function useHub(
       if (!navigator.onLine) {
         setConnection("offline");
         setOnlinePeople({});
+        setOnlineActivities({});
       } else {
         setConnection(channel ? "connecting" : "degraded");
         void refreshAll();
@@ -591,6 +664,19 @@ export function useHub(
       document.removeEventListener("visibilitychange", focus);
     };
   }, [client, teamId, userId, Boolean(ownMembership), refreshAll]);
+  const ownActiveTimer =
+    snapshot?.teamId === teamId
+      ? snapshot.entries.find(
+          (entry) =>
+            entry.user_id === userId &&
+            entry.team_id === teamId &&
+            !entry.ended_at,
+        )
+      : undefined;
+  const ownActivity = ownActiveTimer
+    ? (ownActiveTimer.description.trim() || "Trabalhando agora").slice(0, 200)
+    : "";
+  activityRef.current = ownActivity;
   useEffect(() => {
     const channel = teamChannel.current;
     if (channel?.state === "joined")
@@ -598,8 +684,9 @@ export function useHub(
         user_id: userId,
         availability: document.hidden ? "away" : availability,
         online_at: new Date().toISOString(),
+        activity: ownActivity,
       });
-  }, [availability, userId]);
+  }, [availability, userId, ownActivity, teamId]);
   useEffect(() => {
     const { data } = client.auth.onAuthStateChange((event, session) => {
       if (session?.user.id && session.user.id !== userId) {
@@ -688,6 +775,7 @@ export function useHub(
     dismissNotice: () => setNotice(null),
     connection,
     onlinePeople,
+    onlineActivities,
     presenceReady,
     availability,
     setAvailability,

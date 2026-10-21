@@ -43,7 +43,7 @@ with sync_playwright() as p:
    assert picker.get_by_role('grid').count()==1
    page.screenshot(path=str(OUT/f'date-{w}.png'));page.keyboard.press('Escape')
    select_scenario(page,'empty');assert page.get_by_role('button',name='Escolher atividade',exact=True).count()==1
-   page.get_by_role('button',name='Escolher atividade',exact=True).click();page.locator('.zulu-toast-region .toast').wait_for();assert page.locator('.zulu-toast-region .toast').count()==1
+   page.get_by_role('button',name='Escolher atividade',exact=True).click();page.get_by_label('Atividade',exact=True).fill('Planejar a semana');page.get_by_role('button',name='Iniciar atividade',exact=True).click();page.locator('.zulu-toast-region .toast').wait_for();assert page.locator('.zulu-toast-region .toast').count()==1
    if w==1440:page.screenshot(path=str(OUT/'toast-1440.png'))
   assert not errors,errors
   print(json.dumps({'width':w,'bento':True,'heroUI':True,'image':True,'overflow':False,'pageErrors':errors}),flush=True)

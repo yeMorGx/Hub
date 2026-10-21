@@ -1,5 +1,6 @@
 "use client";
 import { DashboardLoading, ZuluAlert, DashboardNotice, DashboardWorkspacePicker, DashboardUIProvider, ZuluForm, ZuluLabel, ZuluFieldset, ZuluLegend, ZuluButton, ZuluSelect, ZuluInput, ZuluTextArea, ZuluCheckboxField } from "./dashboard-ui";
+import { DashboardNavIcon } from "./dashboard-nav-icon";
 import { BrandMark } from "./brand";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
@@ -374,7 +375,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
       setPage("hours");
       return;
     }
-    await hub.mutate(
+    return await hub.mutate(
       () =>
         hub.rpc("start_timer", {
           p_team_id: hub.teamId,
@@ -702,10 +703,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
               aria-label={item.label}
               aria-current={page === item.id ? "page" : undefined}
             >
-              <item.icon
-                size={23}
-                weight={page === item.id ? "fill" : "regular"}
-              />
+              <DashboardNavIcon name={item.id} />
               <span className="nav-tooltip">{item.label}</span>
               {item.id === "chat" && totalUnread > 0 && (
                 <span
@@ -722,7 +720,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
             aria-label="Preferências e perfil"
             onClick={() => openModal("profile")}
           >
-            <GearSix size={23} />
+            <DashboardNavIcon name="settings" />
             <span className="nav-tooltip">Preferências</span>
           </ZuluButton>
           <ZuluButton
@@ -1005,6 +1003,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   <div className="dashboard-main">
                     {page === "overview" && (
                       <TodayOverview
+                        key={hub.teamId}
                         timer={{
                           state: activeTimer
                             ? "running"
@@ -1012,6 +1011,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                               ? "lunch"
                               : "idle",
                           elapsed,
+                          projectId: timerSession?.project_id ?? projectId,
                           description: timerSession?.description || description,
                           project: timerSession
                             ? timerSession.team_id === hub.teamId
@@ -1031,6 +1031,19 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         todayKey={todayKey}
                         homeOffice={data.upcomingHomeOffice}
                         homeOfficeError={data.homeOfficeSummaryError}
+                        projects={data.projects}
+                        activities={[
+                          ...data.tasks.filter(task => !task.archived_at && task.status !== "done" && (!task.project_id || data.projects.some(project => project.id === task.project_id))).slice(0, 3).map(task => ({id: task.id, description: task.title, projectId: task.project_id ?? "", kind: "task" as const})),
+                          ...recentWork.map(entry => ({id: entry.id, description: entry.description, projectId: entry.project_id ?? "", kind: "recent" as const})),
+                        ]}
+                        onStartActivity={async input => {
+                          if (activeTimer || pausedTimer) {hub.notify("Encerre o timer atual antes de iniciar outro.", true); return false;}
+                          const result = input.taskId
+                            ? await hub.mutate(() => hub.rpc("start_task_timer", {p_task_id: input.taskId!}), "Timer iniciado na tarefa.")
+                            : await startTimer(input.description, input.projectId);
+                          if (result?.ok) {setDescription(input.description);setProjectId(input.projectId);}
+                          return Boolean(result?.ok);
+                        }}
                         onToggleTimer={() => void toggleFocusTimer()}
                         onStopTimer={() => void stopTimer()}
                         onHours={() => navigate("hours")}
@@ -1077,6 +1090,12 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       presence={hub.presenceReady}
                       online={hub.onlinePeople}
                       unread={totalUnread}
+                      currentUserId={userId}
+                      currentActivity={timerSession?.team_id === hub.teamId ? (pausedTimer ? `Almoço · ${timerSession.description}` : timerSession.description || "Trabalhando agora") : ""}
+                      activities={hub.onlineActivities}
+                      inbox={data.inbox}
+                      inboxError={data.inboxError}
+                      onMessage={id => {setChannelId(id);navigate("chat");setShowChannelList(false);}}
                       recent={recentWork.map((entry) => ({
                         id: entry.id,
                         description: entry.description,
@@ -1923,13 +1942,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
               )}
             </>
           )}
-          <footer className="app-footer">
-            <span>Feito para o trabalho acontecer.</span>
-            <span>
-              <ShieldCheck size={11} />
-              Acesso com MFA · {hub.currentTeam?.name}
-            </span>
-          </footer>
+
         </main>
       </div>
       {Notice}
