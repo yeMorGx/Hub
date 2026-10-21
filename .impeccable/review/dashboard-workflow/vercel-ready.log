@@ -32,7 +32,7 @@ Fetching deployment "hub-izoibt32i-yemorgxs-projects.vercel.app" in yemorgxs-pro
   Aliases
 
     ╶ https://hub-yemorgxs-projects.vercel.app
-    
+
 
   Builds
 
@@ -43,5 +43,3 @@ Fetching deployment "hub-izoibt32i-yemorgxs-projects.vercel.app" in yemorgxs-pro
     ├── λ index.rsc (2.19MB) [iad1]
     ├── λ invite (2.19MB) [iad1]
     └── 97 output items hidden
-    
-
