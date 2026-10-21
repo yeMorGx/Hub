@@ -2,7 +2,7 @@
 
 ## Autoridade
 
-Referência escolhida pelo usuário: [Team Management Calendar UI Dashboard — Shakuro](https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard). Captura: `docs/design-references/calendar-shakuro.png`. O Hub adapta a composição; não reproduz o dispositivo, fotografia de fundo, dados, logo ou funcionalidades futuras da referência.
+Referência escolhida pelo usuário: [Team Management Calendar UI Dashboard — Shakuro](https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard). Captura: `docs/design-references/calendar-shakuro.png`. O Hub adapta a composição; não reproduz o dispositivo, fotografia de fundo, dados, logo ou funcionalidades futuras da referência. Esta autoridade permanece nos demais módulos, acesso e demonstração original. Em Hoje e `/demo/dashboard`, a decisão posterior do usuário substitui essa identidade pela superfície clara documentada abaixo.
 
 Modo da superfície: **Operate**. Clareza das tarefas diárias, densidade útil, legibilidade e estados reconhecíveis orientam a interface.
 
@@ -25,16 +25,68 @@ Fonte: Manrope Variable, instalada por npm e servida localmente. Ícones: Phosph
 
 ## Composição
 
-Desktop: trilho fixo de 76px, barra superior de 72px, conteúdo com margem de 36px. Hoje reúne foco, retomada de trabalho e reuniões; abaixo vem a semana. O painel lateral de 246px mostra pessoas, horas próprias e conversa. Grades de horário usam 84px por hora e eventos por início/duração.
+Os demais módulos mantêm trilho fixo de 76px, barra superior de 72px, conteúdo com margem de 36px e calendário completo com 84px por hora. Acentos de eventos e comportamento móvel da identidade anterior permanecem nessas superfícies.
 
-Acentos de eventos: laranja para criação; violeta para pesquisa/revisão; azul para alinhamentos; verde para colaboração. Cor tem rótulos acompanhantes. Superfícies levemente quentes distinguem o foco e a data atual.
+### Hoje — identidade clara aprovada
 
-Celular até 520px: navegação inferior com rótulos, foco horizontal, próximos encontros e calendário aberto no dia atual. A visão semanal continua disponível com rolagem apenas dentro da grade. O painel de contexto segue em sequência no documento. Rótulos da navegação inferior usam 10px; com timer ativo fora de Hoje, um indicador flutuante acima da navegação leva a Minhas horas. Telas intermediárias reduzem o número de painéis em paralelo.
+A identidade clara substitui Shakuro, Manrope, grafite e laranja exclusivamente em Hoje e `/demo/dashboard`. A autoridade é a escolha explícita do usuário por marfim, texto escuro e azul profundo. A implementação está escopada a `.dashboard-redesign`; os tokens globais acima continuam normativos para as outras superfícies.
+
+#### Overview
+
+Modo **Operate**. Campos claros organizam a leitura; o bloco azul do timer concentra a atenção no trabalho atual. Navegação com rótulos, jornada branca e agenda compacta oferecem uma composição própria para Hoje. Contrato: [Dashboard Hoje](docs/dashboard-redesign.md).
+
+#### Colors
+
+Valores normativos desta superfície, extraídos de `app/dashboard.css`:
+
+| Token local / papel | Valor | Uso |
+| --- | --- | --- |
+| `--bg` | `#f6f5f1` | Marfim do fundo |
+| `--rail` | `#fdfcf9` | Navegação clara |
+| `--surface` | `#ffffff` | Jornada, calendário e diálogos |
+| `--surface-raised` | `#eef1f7` | Camadas secundárias |
+| `--border` | `#e0e3ea` | Divisões |
+| `--text` | `#202b40` | Tinta do texto |
+| `--muted`, `--quiet` | `#59667c` | Texto auxiliar |
+| `--accent` | `#294d94` | Ações e seleção |
+| `--accent-hover` | `#1f3e7b` | Ação em hover |
+| Fundo do timer | `#233f7b` | Foco no trabalho atual |
+| Fundo de home office | `#edf0f6` | Faixa de escala |
+| `--green` | `#39714f` | Estado positivo |
+
+#### Typography
+
+Inter Variable, instalada por npm e servida localmente, rege a superfície clara. Título de página usa peso 650 e 32px (28px no celular); atividade usa peso 550 e 21px; timer usa peso 400, números tabulares e escala de 40–57px no desktop. Horas e saldos também usam números tabulares. Ícones continuam Phosphor React.
+
+#### Layout
+
+Sidebar expandida com rótulos (224px; 196px até 1200px), topo de 72px e conteúdo com 30px de margem interna, limitado a 1660px. O timer azul é horizontal, com atividade à esquerda e dígitos à direita; a jornada branca vem abaixo com horas do dia e saldos da semana e do mês em três colunas. Uma faixa azul clara mostra home office de hoje e próximo. A agenda branca usa 60px por hora, com rolagem interna de até 376px. Contexto lateral de 248px reúne encontros, presença, retomada e conversas.
+
+Até 1200px o contexto segue abaixo em duas colunas. Até 760px a sidebar dá lugar à barra inferior de 68px, o contexto passa a uma coluna, atividade e timer se empilham e a jornada coloca horas do dia acima de dois saldos paralelos. A agenda inicial abre no dia em telas até 520px; a semana continua disponível com rolagem interna.
+
+#### Elevation & Depth
+
+Campos brancos, bordas suaves e fundos azulados estruturam as camadas. A opção selecionada do controle de visão da agenda recebe sombra discreta; o timer mantém um campo azul sólido.
+
+#### Shapes
+
+Contêiner principal com cantos de 14px; agenda com 10px; faixa de home office e conversa com 9px; ações com 6–7px. Divisões finas separam os saldos.
+
+#### Components
+
+Timer com ação branca sobre azul e encerramento secundário; jornada com progresso e configuração opcional; resumo de home office com erro, ausência e nova tentativa; calendário compacto com cabeçalho fixo; navegação com rótulos permanentes e estado ativo azul claro. O foco visível recebe contorno azul de 2px, afastado 4px; dentro do timer azul, o contorno é branco, com as mesmas dimensões. A legenda Eventos usa verde, acompanhando os blocos de evento desta superfície.
+
+#### Do's and Don'ts
+
+- **Do** aplicar esta identidade somente ao escopo de Hoje e sua prévia compartilhada.
+- **Do** manter rótulos separados para tempo da atividade, total do dia e saldos sobre o previsto até hoje.
+- **Don't** herdar o veredito visual da versão escura para esta composição clara.
 
 ## Interações e limites
 
 - Timer mostra números tabulares e permanece ativo ao trocar de módulo. Em **Minhas horas**, a pausa de almoço encerra o trecho atual, mantém a atividade para retomada e não inclui a pausa no saldo.
-- A jornada aparece como saldo de horas de hoje, da semana e do mês. A configuração de dias/horas é opcional durante a entrada no time e pode ser editada em **Minhas horas**.
+- Em Hoje, tempo da atividade e total registrado no dia têm rótulos próprios; pausa para almoço e retomada exigem ação manual. A jornada compara os saldos da semana e do mês com o previsto até hoje, mantendo a meta completa do mês em uma ação secundária. Sem configuração, mostra horas registradas e acesso a **Configurar minha jornada**. A configuração de dias/horas é opcional durante a entrada no time e pode ser editada em **Minhas horas**.
+- O resumo de home office em Hoje mostra hoje e a próxima data com atribuições. A consulta permanece ancorada na semana atual até 42 dias após hoje, independente da seleção da agenda; semanas pausadas por feriado não apresentam atribuições. Erro e ausência de atribuições têm mensagens próprias e opção de tentar novamente quando a consulta falha.
 - Diálogos nativos oferecem foco modal e Escape; foco de teclado recebe contorno pêssego.
 - Busca acessível por botão e Ctrl/Cmd+K.
 - Campos, filtros, estados selecionados, mensagens, confirmações e avisos seguem a mesma linguagem.
@@ -44,7 +96,7 @@ Celular até 520px: navegação inferior com rótulos, foco horizontal, próximo
 
 ## Evidência
 
-Capturas desktop e celular em `.impeccable/review/`. Compilação de produção registrada em `docs/frontend-delivery.md`. A inspeção visual não constitui auditoria completa de acessibilidade nem validação de integração com Supabase.
+Capturas desktop e celular em `.impeccable/review/`. Compilação da entrega anterior registrada em `docs/frontend-delivery.md`. A identidade clara de Hoje recebeu veredito próprio `ship`, restrito à revisão visual da prévia pública e ao fechamento do achado de foco. O contorno branco foi confirmado na captura final `focus-1440.png` e no CSS, com contraste de 10,15:1. Oito capturas finais em `.impeccable/review/dashboard/`, sem indicador de desenvolvimento, preservam a composição e a legenda corrigida. A compilação e os cenários de navegador passaram na versão de produção em `http://127.0.0.1:3002`. Estado dos testes e capturas da versão atual: [Dashboard Hoje](docs/dashboard-redesign.md). A inspeção visual não constitui auditoria completa de acessibilidade nem validação de autenticação ou integração real com Supabase.
 
 ## Acesso e integração
 

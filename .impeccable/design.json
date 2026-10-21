@@ -6,7 +6,105 @@
   "font": "Manrope Variable",
   "icons": "@phosphor-icons/react",
   "tokens": {"background":"#101112","rail":"#0c0d0e","surface":"#191b1d","border":"#2b2d30","text":"#f0f0f1","muted":"#a0a2a6","accent":"#e26540","radius":14},
-  "surface": {"name":"Hoje","desktop":"focus, work, meetings, weekly calendar, team context","mobile":"focus, meetings, daily calendar, team context"},
+  "surface": {
+    "name": "Hoje",
+    "scope": ".dashboard-redesign; authenticated Hoje and /demo/dashboard only",
+    "desktop": "expanded labeled sidebar, blue horizontal timer above white journey, compact home-office strip and white calendar, lateral context",
+    "mobile": "bottom navigation, stacked activity and timer, journey hours above two balances, sequential context",
+    "sidebarWidth": "224px",
+    "sidebarWidthAt1200": "196px",
+    "contextBelowAt": "1200px",
+    "mobileNavigationAt": "760px",
+    "initialDayViewAt": "520px",
+    "calendarHourHeight": "60px",
+    "calendarMaxHeight": "376px"
+  },
+  "dashboard": {
+    "mode": "operate",
+    "designDocument": "docs/dashboard-redesign.md",
+    "authority": "Explicit user choice of a new light identity replaces Shakuro for Hoje and its public preview only; other modules and marketing retain their existing authorities.",
+    "sources": [
+      "components/today-dashboard.tsx",
+      "components/live-hub-app.tsx",
+      "app/dashboard.css"
+    ],
+    "preview": {
+      "route": "/demo/dashboard",
+      "sharedComponents": [
+        "TodayOverview",
+        "TodayContext"
+      ],
+      "data": "fictional, local interactions, no business-record writes",
+      "existingDemo": "/demo preserved"
+    },
+    "behavior": {
+      "journey": "Weekly and monthly balances compare actual work with expected work through today; full-month target remains secondary.",
+      "homeOffice": "Current week Sunday through today + 42 days, independent of calendar selection; holiday weeks suppress assignments; empty and retry states."
+    },
+    "verification": {
+      "unit": "25 passed; business rules unchanged",
+      "build": "final light-identity build passed; production served at http://127.0.0.1:3002",
+      "fullCalendarRegression": "Prior calendar-browser.py run passed at 1440px/390px; does not establish light-identity visual approval.",
+      "browser": {
+        "script": "scripts/dashboard-browser.py",
+        "widths": [
+          1440,
+          1280,
+          390
+        ],
+        "result": "final light-identity production round at http://127.0.0.1:3002 passed at all three widths; no page overflow, JavaScript errors or business-record writes",
+        "scenarios": [
+          "pause and resume",
+          "stop and restart",
+          "unconfigured journey",
+          "holiday week",
+          "summary independent of calendar selection",
+          "empty data",
+          "retry"
+        ]
+      },
+      "typescript": "passed before latest CSS adjustment"
+    },
+    "review": {
+      "visual_verdict": "ship",
+      "scope": "Light-identity public-preview visual review and closure of the focus finding only; local production interactions verified separately as listed.",
+      "finding": "Resolved: white 2px focus outline with 4px offset inside blue timer, confirmed in focus-1440.png and app/dashboard.css:352; contrast 10.15:1. Final 1440px/390px composition preserved, green Eventos legend corrected, no development indicator.",
+      "evidence": ".impeccable/review/dashboard/",
+      "captures": [
+        "1440.png",
+        "1280.png",
+        "390.png",
+        "lunch-1440.png",
+        "unconfigured-390.png",
+        "holiday-1440.png",
+        "empty-390.png",
+        "focus-1440.png"
+      ],
+      "limits": "No full product approval, complete accessibility audit, real-account authentication, MFA, RLS, Presence or real RPC persistence validation.",
+      "previousVerdict": "Current ship is a new review of the light identity; the earlier dark-preview verdict does not supply its approval."
+    },
+    "font": "Inter Variable, npm-installed and locally served",
+    "tokens": {
+      "background": "#f6f5f1",
+      "rail": "#fdfcf9",
+      "surface": "#ffffff",
+      "surfaceRaised": "#eef1f7",
+      "border": "#e0e3ea",
+      "text": "#202b40",
+      "muted": "#59667c",
+      "accent": "#294d94",
+      "accentHover": "#1f3e7b",
+      "timerBackground": "#233f7b",
+      "homeOfficeBackground": "#edf0f6",
+      "positive": "#39714f"
+    },
+    "tokenAuthority": "DESIGN.md#hoje--identidade-clara-aprovada; extracted from scoped app/dashboard.css",
+    "focus": {
+      "default": "2px solid #3764b6; outline-offset:4px",
+      "insideTimer": "2px solid #ffffff; outline-offset:4px",
+      "verifiedContrast": "10.15:1"
+    }
+  },
   "status": "implemented adaptation; Supabase Auth/MFA, workspace onboarding, RPC adapter and PWA implemented; browser-local demonstration at /demo; authenticated flows await real-account validation",
   "review": {
     "auth_ui_verdict": "ship",

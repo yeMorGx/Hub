@@ -68,6 +68,7 @@ import { LiveManagement } from "./live-management";
 import { LiveCollaboration } from "./live-collaboration";
 import { LiveBoard, type TaskInput } from "./live-board";
 import { LiveCalendar } from "./live-calendar";
+import { TodayOverview, TodayContext } from "./today-dashboard";
 import { HomeOfficeManager } from "./home-office-manager";
 import { WorkScheduleSetup } from "./work-schedule-setup";
 import {
@@ -674,7 +675,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
       : null;
   const profileBody = data.people.find((p) => p.id === userId)?.body ?? "";
   return (
-    <div className="app-shell live-app">
+    <div className={`app-shell live-app ${page === "overview" ? "dashboard-redesign" : ""}`}>
       <a className="skip-link" href="#main-content">
         Pular para o conteúdo
       </a>
@@ -685,6 +686,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
           onClick={() => navigate("overview")}
         >
           <SquaresFour size={29} weight="fill" />
+          <span className="dashboard-wordmark">Hub<span>Seu espaço de trabalho</span></span>
         </button>
         <div className="rail-divider" />
         <nav>
@@ -855,16 +857,16 @@ export function LiveHubApp({ userId }: { userId: string }) {
             </button>
           </div>
         </header>
-        <main id="main-content" className="main-content">
+        <main id="main-content" className={`main-content ${page === "overview" ? "today-page" : ""}`}>
           <div className="page-heading">
             <div>
               <h1>
-                {page === "overview" ? "Visão geral" : currentPage.label}
+                {page === "overview" ? `Olá, ${currentName.split(" ")[0]}` : currentPage.label}
                 <span className="heading-period">.</span>
               </h1>
               <p>
                 {page === "overview"
-                  ? `Um bom dia para criar juntos. ${today.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}.`
+                  ? `Seu dia, em um só lugar. ${today.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}.`
                   : page === "calendar"
                     ? "Espaço na agenda para o que importa."
                     : page === "board"
@@ -985,212 +987,47 @@ export function LiveHubApp({ userId }: { userId: string }) {
             <>
               {(page === "overview" || page === "calendar") && (
                 <div
-                  className={`dashboard-layout ${page === "calendar" ? "calendar-page-layout" : ""}`}
+                  className={`dashboard-layout ${page === "calendar" ? "calendar-page-layout" : "today-layout"}`}
                 >
                   <div className="dashboard-main">
                     {page === "overview" && (
-                      <div className="summary-grid">
-                        <section
-                          className={`focus-card ${timerSession ? "is-running" : ""}`}
-                          aria-label="Registro de tempo"
-                        >
-                          <div className="card-topline">
-                            <span>
-                              <i
-                                className={`live-dot ${activeTimer ? "live" : ""}`}
-                              />
-                              {activeTimer
-                                ? "Foco em andamento"
-                                : pausedTimer
-                                  ? "Pausa para almoço"
-                                : "Seu próximo foco"}
-                            </span>
-                            <TimerIcon size={17} />
-                          </div>
-                          <div className="focus-title">
-                            <h2>
-                              {timerSession?.description ||
-                                description ||
-                                "Escolha seu próximo foco"}
-                            </h2>
-                            <span>
-                              {timerSession
-                                ? projectName(timerSession.project_id)
-                                : projectId
-                                  ? projectName(projectId)
-                                  : "Uma coisa de cada vez."}
-                            </span>
-                          </div>
-                          <button
-                            className="timer-control"
-                            disabled={
-                              hub.busy || (!timerSession && !hub.canParticipate)
-                            }
-                            aria-label={
-                              timerSession
-                                ? pausedTimer
-                                  ? "Retomar timer"
-                                  : "Pausar para almoço"
-                                : description
-                                  ? "Iniciar timer"
-                                  : "Escolher atividade"
-                            }
-                            onClick={() =>
-                              void toggleFocusTimer()
-                            }
-                          >
-                            {hub.busy ? (
-                              <CircleNotch className="spinning" size={24} />
-                            ) : pausedTimer ? (
-                              <Play size={25} weight="fill" />
-                            ) : activeTimer ? (
-                              <Coffee size={25} />
-                            ) : (
-                              <Play size={25} weight="fill" />
-                            )}
-                          </button>
-                          <div className="timer-bottom">
-                            <span className="timer-digits">
-                              {clock(elapsed)}
-                            </span>
-                            <span>
-                              {pausedTimer
-                                ? "Retomar quando voltar"
-                                : activeTimer
-                                  ? "Pausar para almoço"
-                                : "Pronto para começar"}
-                            </span>
-                          </div>
-                          {timerSession && (
-                            <button className="focus-end-link" onClick={() => void stopTimer()}>
-                              Encerrar e salvar
-                            </button>
-                          )}
-                        </section>
-                        <section className="work-card panel">
-                          <div className="section-heading">
-                            <h2>Continue de onde parou</h2>
-                            <span className="muted-count">
-                              {recentWork.length}
-                            </span>
-                          </div>
-                          <div className="work-list">
-                            {recentWork.length ? (
-                              recentWork.map((entry, index) => (
-                                <button
-                                  className="work-item"
-                                  key={entry.id}
-                                  disabled={
-                                    hub.busy ||
-                                    !!timerSession ||
-                                    !hub.canParticipate
-                                  }
-                                  onClick={() =>
-                                    void startTimer(
-                                      entry.description,
-                                      entry.project_id ?? "",
-                                    )
-                                  }
-                                >
-                                  <span
-                                    className={`small-play tone-${["orange", "purple", "green"][index]}`}
-                                  >
-                                    <Play size={12} weight="fill" />
-                                  </span>
-                                  <span>
-                                    <strong>
-                                      {entry.description ||
-                                        "Trabalho sem descrição"}
-                                    </strong>
-                                    <small>
-                                      {projectName(entry.project_id)}
-                                    </small>
-                                  </span>
-                                  <ArrowUpRight
-                                    size={16}
-                                    className="work-arrow"
-                                  />
-                                </button>
-                              ))
-                            ) : (
-                              <div className="compact-empty">
-                                <TimerIcon size={27} />
-                                <span>O próximo passo é seu.</span>
-                                <small>
-                                  Seus registros recentes aparecerão aqui.
-                                </small>
-                              </div>
-                            )}
-                          </div>
-                          <button
-                            className="card-bottom-link"
-                            onClick={() => navigate("hours")}
-                          >
-                            Ver minhas horas <ArrowRight size={14} />
-                          </button>
-                        </section>
-                        <section className="meetings-card panel">
-                          <div className="section-heading">
-                            <h2>Encontros de hoje</h2>
-                            <span className="muted-count">
-                              {todayEvents.length}
-                            </span>
-                          </div>
-                          <div className="meeting-list">
-                            {todayEvents.length ? (
-                              todayEvents.slice(0, 2).map((event, index) => (
-                                <button
-                                  className={`meeting-preview ${index === 0 ? "meeting-featured" : ""}`}
-                                  key={event.id}
-                                  onClick={() => setEventId(event.id)}
-                                >
-                                  <span className="meeting-hour">
-                                    {new Date(
-                                      event.starts_at,
-                                    ).toLocaleTimeString("pt-BR", {
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                    })}
-                                    {event.kind === "meeting" ? (
-                                      <VideoCamera size={15} />
-                                    ) : (
-                                      <CalendarDots size={15} />
-                                    )}
-                                  </span>
-                                  <strong>{event.title}</strong>
-                                  <span className="meeting-bottom">
-                                    <PeopleAvatars
-                                      people={eventPeople(event.id)}
-                                    />
-                                    <span>
-                                      {Math.round(
-                                        (new Date(event.ends_at).getTime() -
-                                          new Date(event.starts_at).getTime()) /
-                                          60000,
-                                      )}{" "}
-                                      min
-                                    </span>
-                                  </span>
-                                </button>
-                              ))
-                            ) : (
-                              <div className="compact-empty">
-                                <CalendarDots size={27} />
-                                <span>Um respiro na agenda.</span>
-                                <small>
-                                  Não há encontros marcados para hoje.
-                                </small>
-                              </div>
-                            )}
-                          </div>
-                          <button
-                            className="card-bottom-link"
-                            onClick={() => navigate("calendar")}
-                          >
-                            Abrir calendário <ArrowRight size={14} />
-                          </button>
-                        </section>
-                      </div>
+                      <TodayOverview
+                        timer={{
+                          state: activeTimer
+                            ? "running"
+                            : pausedTimer
+                              ? "lunch"
+                              : "idle",
+                          elapsed,
+                          description: timerSession?.description || description,
+                          project: timerSession
+                            ? timerSession.team_id === hub.teamId
+                              ? projectName(timerSession.project_id)
+                              : "Timer de outro time"
+                            : projectId
+                              ? projectName(projectId)
+                              : "",
+                        }}
+                        busy={hub.busy}
+                        canParticipate={hub.canParticipate}
+                        configured={workScheduleConfigured}
+                        today={todayBalance}
+                        week={weekBalance}
+                        month={monthBalance}
+                        monthTargetMinutes={fullMonthTargetMinutes}
+                        todayKey={todayKey}
+                        homeOffice={data.upcomingHomeOffice}
+                        homeOfficeError={data.homeOfficeSummaryError}
+                        onToggleTimer={() => void toggleFocusTimer()}
+                        onStopTimer={() => void stopTimer()}
+                        onHours={() => navigate("hours")}
+                        onSchedule={() => setWorkScheduleOpen(true)}
+                        onHomeOffice={() => {
+                          setHomeOfficeFocusWeek("");
+                          setHomeOfficeOpen(true);
+                        }}
+                        onRetry={() => void hub.refreshTeam()}
+                      />
                     )}
                     <LiveCalendar
                       hub={hub}
@@ -1215,133 +1052,183 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         setHomeOfficeOpen(true);
                       }}
                       full={page === "calendar"}
+                      compact={page === "overview"}
                     />
                   </div>
-                  <aside className="context-sidebar">
-                    <section className="team-section">
-                      <div className="section-heading">
-                        <h2>Por aqui agora</h2>
-                        <span
-                          className={`online-count ${hub.presenceReady !== "live" ? "presence-unavailable" : ""}`}
-                        >
-                          {hub.presenceReady === "live"
-                            ? `${Object.keys(hub.onlinePeople).filter((id) => data.people.some((p) => p.id === id)).length} online`
-                            : hub.presenceReady === "connecting"
-                              ? "Conectando presença"
-                              : "Presença indisponível"}
-                        </span>
-                      </div>
-                      <p className="section-description">
-                        Cada um no seu foco. Todos juntos.
-                      </p>
-                      <div className="team-list">
-                        {data.people
-                          .filter((p) => p.id !== userId)
-                          .slice(0, 4)
-                          .map((person) => (
-                            <button
-                              className="person-row"
-                              key={person.id}
-                              onClick={() => {
-                                setPeopleQuery(person.display_name);
-                                navigate("people");
-                              }}
-                            >
-                              <PersonAvatar
-                                id={person.id}
-                                name={person.display_name}
-                                presence={personStatus(person)}
-                              />
-                              <span>
-                                <strong>{person.display_name}</strong>
-                                <small>
-                                  {person.body ||
-                                    availabilityLabels[personStatus(person)]}
-                                  {person.timer_running ? " · Timer ativo" : ""}
-                                </small>
-                              </span>
-                            </button>
-                          ))}
-                        {data.people.length <= 1 && (
-                          <p className="resource-note">
-                            Seu time começa com você. Convide as próximas
-                            pessoas para esse espaço.
-                          </p>
-                        )}
-                      </div>
-                      <button
-                        className="text-button sidebar-link"
-                        onClick={() => {
-                          setPeopleQuery("");
-                          navigate("people");
-                        }}
-                      >
-                        Ver todo o time <ArrowUpRight size={14} />
-                      </button>
-                    </section>
-                    <section className="hours-summary">
-                      <div className="section-heading">
-                        <h2>Seu tempo esta semana</h2>
-                        <TimerIcon size={16} />
-                      </div>
-                      <div className="weekly-total">
-                        {shortDuration(weekBalance.actualSeconds)}
-                        <span>registradas</span>
-                      </div>
-                      <div
-                        className="week-bars"
-                        aria-label="Suas horas por dia nesta semana"
-                      >
-                        {[0, 1, 2, 3, 4].map((day) => {
-                          const key = dayKey(dateAt(currentMonday, day)),
-                            seconds = Number(data.workBalance.find((item) => item.work_date === key)?.actual_seconds ?? 0) +
-                              (key === todayKey ? runningBalanceSeconds : 0);
-                          return (
-                            <div
-                              className={`week-bar-item ${key === todayKey ? "current" : ""}`}
-                              key={day}
-                              title={`${["Seg", "Ter", "Qua", "Qui", "Sex"][day]}: ${shortDuration(seconds)}`}
-                            >
-                              <div className="week-bar-track">
-                                <div
-                                  className="week-bar-fill"
-                                  style={{
-                                    height: `${Math.min(100, (seconds / 28800) * 100)}%`,
-                                  }}
-                                />
-                              </div>
-                              <span>{["S", "T", "Q", "Q", "S"][day]}</span>
-                            </div>
+                  {page === "overview" ? (
+                    <TodayContext
+                      events={todayEvents.filter(
+                        (event) => new Date(event.ends_at).getTime() > now,
+                      )}
+                      people={data.people}
+                      presence={hub.presenceReady}
+                      online={hub.onlinePeople}
+                      unread={totalUnread}
+                      recent={recentWork.map((entry) => ({
+                        id: entry.id,
+                        description: entry.description,
+                        project: projectName(entry.project_id),
+                      }))}
+                      busy={hub.busy}
+                      canRestart={!timerSession && hub.canParticipate}
+                      onEvent={(event) => setEventId(event.id)}
+                      onCalendar={() => navigate("calendar")}
+                      onPerson={(person) => {
+                        setPeopleQuery(person.display_name);
+                        navigate("people");
+                      }}
+                      onPeople={() => {
+                        setPeopleQuery("");
+                        navigate("people");
+                      }}
+                      onRestart={(id) => {
+                        const entry = recentWork.find(
+                          (entry) => entry.id === id,
+                        );
+                        if (entry)
+                          void startTimer(
+                            entry.description,
+                            entry.project_id ?? "",
                           );
-                        })}
+                      }}
+                      onChat={() => navigate("chat")}
+                    />
+                  ) : (
+                    <aside className="context-sidebar">
+                      <section className="team-section">
+                        <div className="section-heading">
+                          <h2>Por aqui agora</h2>
+                          <span
+                            className={`online-count ${hub.presenceReady !== "live" ? "presence-unavailable" : ""}`}
+                          >
+                            {hub.presenceReady === "live"
+                              ? `${Object.keys(hub.onlinePeople).filter((id) => data.people.some((p) => p.id === id)).length} online`
+                              : hub.presenceReady === "connecting"
+                                ? "Conectando presença"
+                                : "Presença indisponível"}
+                          </span>
+                        </div>
+                        <p className="section-description">
+                          Cada um no seu foco. Todos juntos.
+                        </p>
+                        <div className="team-list">
+                          {data.people
+                            .filter((p) => p.id !== userId)
+                            .slice(0, 4)
+                            .map((person) => (
+                              <button
+                                className="person-row"
+                                key={person.id}
+                                onClick={() => {
+                                  setPeopleQuery(person.display_name);
+                                  navigate("people");
+                                }}
+                              >
+                                <PersonAvatar
+                                  id={person.id}
+                                  name={person.display_name}
+                                  presence={personStatus(person)}
+                                />
+                                <span>
+                                  <strong>{person.display_name}</strong>
+                                  <small>
+                                    {person.body ||
+                                      availabilityLabels[personStatus(person)]}
+                                    {person.timer_running
+                                      ? " · Timer ativo"
+                                      : ""}
+                                  </small>
+                                </span>
+                              </button>
+                            ))}
+                          {data.people.length <= 1 && (
+                            <p className="resource-note">
+                              Seu time começa com você. Convide as próximas
+                              pessoas para esse espaço.
+                            </p>
+                          )}
+                        </div>
+                        <button
+                          className="text-button sidebar-link"
+                          onClick={() => {
+                            setPeopleQuery("");
+                            navigate("people");
+                          }}
+                        >
+                          Ver todo o time <ArrowUpRight size={14} />
+                        </button>
+                      </section>
+                      <section className="hours-summary">
+                        <div className="section-heading">
+                          <h2>Seu tempo esta semana</h2>
+                          <TimerIcon size={16} />
+                        </div>
+                        <div className="weekly-total">
+                          {shortDuration(weekBalance.actualSeconds)}
+                          <span>registradas</span>
+                        </div>
+                        <div
+                          className="week-bars"
+                          aria-label="Suas horas por dia nesta semana"
+                        >
+                          {[0, 1, 2, 3, 4].map((day) => {
+                            const key = dayKey(dateAt(currentMonday, day)),
+                              seconds =
+                                Number(
+                                  data.workBalance.find(
+                                    (item) => item.work_date === key,
+                                  )?.actual_seconds ?? 0,
+                                ) +
+                                (key === todayKey ? runningBalanceSeconds : 0);
+                            return (
+                              <div
+                                className={`week-bar-item ${key === todayKey ? "current" : ""}`}
+                                key={day}
+                                title={`${["Seg", "Ter", "Qua", "Qui", "Sex"][day]}: ${shortDuration(seconds)}`}
+                              >
+                                <div className="week-bar-track">
+                                  <div
+                                    className="week-bar-fill"
+                                    style={{
+                                      height: `${Math.min(100, (seconds / 28800) * 100)}%`,
+                                    }}
+                                  />
+                                </div>
+                                <span>{["S", "T", "Q", "Q", "S"][day]}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="hours-summary-bottom">
+                          <span>Hoje</span>
+                          <strong>
+                            {shortDuration(todayBalance.actualSeconds)}
+                          </strong>
+                        </div>
+                      </section>
+                      <section className="quick-chat">
+                        <div className="section-heading">
+                          <h2>A conversa continua</h2>
+                          <ChatCircleText size={17} />
+                        </div>
+                        <p className="live-chat-summary">
+                          {totalUnread
+                            ? `${totalUnread} ${totalUnread === 1 ? "mensagem espera" : "mensagens esperam"} por você nos seus canais.`
+                            : "Troque ideias, compartilhe contexto e encontre seu time."}
+                        </p>
+                        <button
+                          className="outline-button"
+                          onClick={() => navigate("chat")}
+                        >
+                          Abrir conversas <ArrowUpRight size={15} />
+                        </button>
+                      </section>
+                      <div className="sidebar-footnote">
+                        <span className="tiny-brand">hub</span>
+                        <span>Um espaço. Seu time.</span>
                       </div>
-                      <div className="hours-summary-bottom">
-                        <span>Hoje</span>
-                        <strong>{shortDuration(todayBalance.actualSeconds)}</strong>
-                      </div>
-                    </section>
-                    <section className="quick-chat">
-                      <div className="section-heading">
-                        <h2>A conversa continua</h2>
-                        <ChatCircleText size={17} />
-                      </div>
-                      <p className="live-chat-summary">
-                        {totalUnread
-                          ? `${totalUnread} ${totalUnread === 1 ? "mensagem espera" : "mensagens esperam"} por você nos seus canais.`
-                          : "Troque ideias, compartilhe contexto e encontre seu time."}
-                      </p>
-                      <button
-                        className="outline-button"
-                        onClick={() => navigate("chat")}
-                      >
-                        Abrir conversas <ArrowUpRight size={15} />
-                      </button>
-                    </section>
-                    <div className="sidebar-footnote">
-                      <span className="tiny-brand">hub</span>
-                      <span>Um espaço. Seu time.</span>
-                    </div>
-                  </aside>
+                    </aside>
+                  )}
                 </div>
               )}
               {page === "calls" && <LiveCalls key={hub.teamId} hub={hub} />}

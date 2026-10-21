@@ -14,6 +14,7 @@ import {
 } from "./types";
 
 import { loadCalendarEvents } from "./calendar-events";
+import { homeOfficeSummaryRange } from "./dashboard";
 
 type Functions = Database["public"]["Functions"];
 function rows<T>(response: { data: T[] | null; error: unknown }): T[] {
@@ -169,6 +170,7 @@ export function useHub(
     const serial = ++teamGeneration.current;
     setTeamLoading(true);
     try {
+      const summaryRange = homeOfficeSummaryRange(todayKey);
       const todayStart = new Date(`${todayKey}T00:00:00`);
       const todayEnd = new Date(todayStart);
       todayEnd.setDate(todayEnd.getDate() + 1);
@@ -213,6 +215,7 @@ export function useHub(
         eventPage,
         todayEventPage,
         homeOfficePage,
+        upcomingHomeOfficePage,
         workSchedulePage,
         workBalancePage,
         pausedTimerPage,
@@ -273,6 +276,11 @@ export function useHub(
           p_team_id: teamId,
           p_starts_on: dayKey(new Date(rangeStart)),
           p_ends_on: dayKey(new Date(new Date(rangeEnd).getTime() - 1)),
+        }),
+        client.rpc("get_home_office_calendar", {
+          p_team_id: teamId,
+          p_starts_on: summaryRange.startsOn,
+          p_ends_on: summaryRange.endsOn,
         }),
         client
           .from("work_schedules")
@@ -376,6 +384,10 @@ export function useHub(
         events: eventRows,
         attendees: attendeeRows,
         homeOffice: homeOfficeRows,
+        upcomingHomeOffice: upcomingHomeOfficePage.error
+          ? []
+          : (upcomingHomeOfficePage.data ?? []),
+        homeOfficeSummaryError: Boolean(upcomingHomeOfficePage.error),
         workSchedule: workScheduleRows[0] ?? null,
         workBalance: workBalanceRows,
         workBalanceLoadedAt: Date.now(),

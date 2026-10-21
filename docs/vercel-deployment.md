@@ -90,3 +90,10 @@ Após o cadastro/correção das credenciais pelo usuário, o novo deploy executo
 ## Ponte desktop Windows · 2026-10-20
 
 Frontend `1727770`, deployment `dpl_75Pdia5EWHUvh2dwpsKaqcmY7xHP` READY e 29 HTTP de produção passando. Ajusta overlay de não lidas no Windows e libera recursos de imagem, preservando o comportamento web. A ponte requer as permissões do novo instalador 0.1.1; clientes anteriores mantêm o título de não lidas como alternativa. [Teste nativo e instalador](windows-desktop.md).
+
+
+## Dashboard Hoje — identidade clara · 2026-10-21
+
+Publicação autorizada pelo usuário, por upload da CLI, com alterações locais do dashboard. Deployment `dpl_312iGvPKKh1eoCBAQrxQEBtc1oi6`, alvo `production`, estado **READY**. URL imutável: https://hub-71r1reuda-yemorgxs-projects.vercel.app. Alias atualizado: https://hub-one-azure.vercel.app.
+
+Build remoto e TypeScript passaram. Após a publicação, `/login` e `/demo/dashboard` responderam HTTP 200 no alias público; os estilos publicados contêm a identidade clara (`dashboard-redesign` e fundo `#f6f5f1`). As verificações autenticadas e persistência real continuam com os limites descritos em [Dashboard Hoje](dashboard-redesign.md). Não houve merge ou publicação de novo instalador desktop nesta etapa.

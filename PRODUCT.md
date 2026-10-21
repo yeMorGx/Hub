@@ -14,13 +14,15 @@ Telas do app: Hoje, Calendário, Tarefas, Conversas, Minhas horas e Pessoas. Tim
 
 Tarefas inclui Kanban com criação, edição, filtros, mudança de etapa, arquivamento e timer ligado ao card. Colunas: A fazer, Em andamento e Concluído. Detalhes em [Kanban da Fase 2](docs/phase-2-kanban.md).
 
+Hoje recebeu uma identidade clara aprovada explicitamente: marfim, superfícies brancas, texto escuro, azul profundo e Inter Variable, com navegação expandida e timer horizontal. Essa decisão substitui a referência Shakuro somente em Hoje e `/demo/dashboard`; demais módulos e site público mantêm suas autoridades. Timer, jornada com saldos sobre o previsto até hoje, home office e agenda compacta continuam sendo as prioridades. A prévia compartilha componentes com o app, usa dados fictícios e interações locais e não grava registros de negócio. A identidade clara recebeu veredito próprio `ship`, restrito à revisão visual da prévia e ao fechamento do achado de foco. Build e interações locais passaram na versão de produção; isso não valida autenticação ou backend. [Contrato e evidências do redesenho](docs/dashboard-redesign.md).
+
 A demonstração fictícia continua em `/demo`, com armazenamento local separado. `/demo/kanban` demonstra o quadro somente em memória, sem backend. `/demo/operations` reúne exemplos de colaboração, gestão, conversas, integrações e preparação de chamadas, também em memória; recarregar restaura os exemplos. Seus dados nunca são usados como dados reais do time.
 
 As migrações das fases 0/1, do Kanban da Fase 2 e do home office estão no repositório. A migração de jornada e pausa de almoço também está pronta, mas ainda precisa ser aplicada no Supabase antes de publicar essa atualização. Os fluxos autenticados aguardam validação com uma conta real e seu autenticador. Não tratar implementação como comprovação de MFA, RLS ou Realtime ponta a ponta. Detalhes em docs/supabase-app-integration.md.
 
 ## Direção confirmada
 
-O usuário escolheu o dashboard escuro da Shakuro: timer em destaque, navegação compacta, semana ampla e contexto lateral. Referência e pesquisa: docs/frontend-research.md. A identidade deve permanecer cuidada e consistente ao expandir as telas.
+A referência anterior do app é o dashboard escuro da Shakuro: timer em destaque, navegação compacta, semana ampla e contexto lateral. A escolha posterior da identidade clara substitui essa direção exclusivamente em Hoje e sua prévia, conforme a nota acima. Referência e pesquisa: docs/frontend-research.md. A identidade deve permanecer cuidada e consistente ao expandir as telas.
 
 ## Limites
 

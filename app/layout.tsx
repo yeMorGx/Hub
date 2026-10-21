@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/manrope";
+import "@fontsource-variable/inter";
 import "./globals.css";
+import "./dashboard.css";
 import { ServiceWorkerRegistration } from "@/components/pwa";
 import { DesktopUpdate } from "@/components/desktop-update";
 export const metadata: Metadata = {

@@ -69,6 +69,7 @@ export function LiveCalendar({
   onSelect,
   onHomeOffice,
   full = false,
+  compact = false,
 }: {
   hub: HubController;
   monday: Date;
@@ -85,7 +86,9 @@ export function LiveCalendar({
   onSelect: (event: Row<"events">) => void;
   onHomeOffice: (entry: HomeOfficeEntry) => void;
   full?: boolean;
+  compact?: boolean;
 }) {
+  const hourHeight = compact ? 60 : 84;
   const [filter, setFilter] = useState("all"),
     [filterOpen, setFilterOpen] = useState(false);
   const range = calendarRange(date, view);
@@ -140,13 +143,13 @@ export function LiveCalendar({
           : `${monday.toLocaleDateString("pt-BR", { day: "numeric", month: "short" })} – ${endOfWeek.toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" })}`;
   return (
     <section
-      className={`calendar-section ${full ? "calendar-full" : ""}`}
+      className={`calendar-section ${full ? "calendar-full" : ""} ${compact ? "calendar-compact" : ""}`}
       aria-label="Agenda do time"
       aria-busy={hub.teamLoading}
     >
       <div className="section-heading calendar-heading">
         <div className="heading-with-count">
-          <h2>{full ? "Agenda do time" : "Sua agenda"}</h2>
+          <h2>{full ? "Agenda do time" : view === "week" ? "Sua semana" : "Sua agenda"}</h2>
           <button
             className={`filter-button ${filter !== "all" ? "filter-active" : ""}`}
             aria-expanded={filterOpen}
@@ -451,10 +454,10 @@ export function LiveCalendar({
             })}
             <div
               className="time-gutter"
-              style={{ height: (endHour - startHour) * 84 }}
+              style={{ height: (endHour - startHour) * hourHeight }}
             >
               {hours.map((hour) => (
-                <span key={hour} style={{ top: (hour - startHour) * 84 }}>
+                <span key={hour} style={{ top: (hour - startHour) * hourHeight }}>
                   {hourLabel(hour)}
                 </span>
               ))}
@@ -463,7 +466,7 @@ export function LiveCalendar({
               <div
                 key={segment.index}
                 className={`day-column ${dayKey(segment.start) === dayKey(today) ? "today-column" : ""}`}
-                style={{ height: (endHour - startHour) * 84 }}
+                style={{ height: (endHour - startHour) * hourHeight }}
               >
                 {hours.slice(0, -1).map((hour) => (
                   <button
@@ -471,7 +474,7 @@ export function LiveCalendar({
                     className="hour-cell"
                     disabled={!hub.canParticipate}
                     aria-label={`Criar evento ${days[segment.index]} às ${hourLabel(hour)}`}
-                    style={{ height: 84 }}
+                    style={{ height: hourHeight }}
                     onClick={() => onNew(segment.start, hour)}
                   />
                 ))}
@@ -491,8 +494,8 @@ export function LiveCalendar({
                           left: `calc(${(lane / lanes) * 100}% + 4px)`,
                           width: `calc(${100 / lanes}% - 8px)`,
                           right: "auto",
-                          top: (start - startHour) * 84 + 3,
-                          height: Math.max((end - start) * 84 - 6, 30),
+                          top: (start - startHour) * hourHeight + 3,
+                          height: Math.max((end - start) * hourHeight - 6, 30),
                         }}
                         onClick={() => onSelect(event)}
                       >
@@ -500,12 +503,12 @@ export function LiveCalendar({
                           {hourLabel(start)} – {hourLabel(end)}
                         </span>
                         <strong>{event.title}</strong>
-                        {end - start >= 1 && (
+                        {!compact && end - start >= 1 && (
                           <span className="event-project">
                             {event.kind === "meeting" ? "Reunião" : "Evento"}
                           </span>
                         )}
-                        {end - start >= 1.25 && (
+                        {!compact && end - start >= 1.25 && (
                           <PeopleAvatars people={attendees} />
                         )}
                       </button>

@@ -23,10 +23,10 @@ with sync_playwright() as p:
   page.get_by_role('button',name='Hoje',exact=True).click()
   assert 'outubro de 2026' in page.locator('.date-controls').inner_text()
   if width<760:
-   page.get_by_role('button',name='5 eventos em 20/10/2026',exact=True).click()
+   page.get_by_role('button',name='5 itens em 20/10/2026',exact=True).click()
    assert page.get_by_role('button',name='Dia',exact=True).get_attribute('aria-pressed')=='true'
   else:
-   page.get_by_role('button',name='+2 eventos',exact=True).click()
+   page.get_by_role('button',name='+2 itens',exact=True).click()
    assert page.locator('.calendar-event').count()==5
   page.get_by_role('button',name='Mês',exact=True).click()
   page.get_by_role('button',name='Abrir dia 24 de outubro de 2026',exact=True).click()

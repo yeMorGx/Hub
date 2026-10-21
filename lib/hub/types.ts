@@ -1,8 +1,10 @@
 import type { Database } from "@/lib/supabase/database.types";
 export type TableName = keyof Database["public"]["Tables"];
 export type Row<N extends TableName> = Database["public"]["Tables"][N]["Row"];
-export type HomeOfficeEntry = Database["public"]["Functions"]["get_home_office_calendar"]["Returns"][number];
-export type WorkBalanceDay = Database["public"]["Functions"]["get_work_hour_balance"]["Returns"][number];
+export type HomeOfficeEntry =
+  Database["public"]["Functions"]["get_home_office_calendar"]["Returns"][number];
+export type WorkBalanceDay =
+  Database["public"]["Functions"]["get_work_hour_balance"]["Returns"][number];
 export type Profile = Row<"profiles">;
 export type Person = Profile & {
   role: "leader" | "member";
@@ -27,6 +29,8 @@ export type TeamSnapshot = {
   events: Row<"events">[];
   attendees: Row<"event_attendees">[];
   homeOffice: HomeOfficeEntry[];
+  upcomingHomeOffice: HomeOfficeEntry[];
+  homeOfficeSummaryError: boolean;
   workSchedule: Row<"work_schedules"> | null;
   workBalance: WorkBalanceDay[];
   workBalanceLoadedAt: number;
@@ -44,6 +48,8 @@ export const EMPTY_TEAM: TeamSnapshot = {
   events: [],
   attendees: [],
   homeOffice: [],
+  upcomingHomeOffice: [],
+  homeOfficeSummaryError: false,
   workSchedule: null,
   workBalance: [],
   workBalanceLoadedAt: 0,
