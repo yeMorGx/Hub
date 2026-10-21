@@ -16,6 +16,7 @@ public static class HubNativeWindow {
   [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hwnd);
+  [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hwnd);
   [DllImport("user32.dll", EntryPoint="GetWindowLongW")] public static extern int GetWindowLong(IntPtr hwnd, int index);
   private delegate bool EnumProc(IntPtr hwnd, IntPtr data);
   [DllImport("user32.dll")] private static extern bool EnumWindows(EnumProc callback, IntPtr data);
@@ -61,12 +62,23 @@ try {
   $loginHeading = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, $headingText)
   Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $loginHeading) } 60
   $report.loginPageLoaded = $true
+  Add-Type -AssemblyName System.Windows.Forms
+  function Invoke-HubElement($Control, [IntPtr]$WindowHandle) {
+    $pattern = $null
+    if ($Control.TryGetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern, [ref]$pattern)) {
+      $pattern.Invoke()
+    } else {
+      [HubNativeWindow]::SetForegroundWindow($WindowHandle) | Out-Null
+      $Control.SetFocus()
+      [System.Windows.Forms.SendKeys]::SendWait(' ')
+    }
+  }
   function Invoke-HubControl([string]$Name) {
     $controlCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, $Name)
     Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $controlCondition) } 15
     $control = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $controlCondition)
     if (-not $control) { throw "Missing window control: $Name" }
-    $control.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+    Invoke-HubElement $control $handle
   }
   $titlebarButton = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Maximizar janela')
   Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $titlebarButton) } 30
@@ -99,14 +111,15 @@ try {
     [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::ControlTypeProperty, [System.Windows.Automation.ControlType]::CheckBox))
   Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $checkCondition) } 15
   $check = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $checkCondition)
-  $toggle = $check.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern)
-  if ($toggle.Current.ToggleState -ne [System.Windows.Automation.ToggleState]::Off) { throw 'Startup must be opt-in on a fresh installation.' }
-  $toggle.Toggle()
+  if ((Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU) { throw 'Startup must be opt-in on a fresh installation.' }
+  [HubNativeWindow]::SetForegroundWindow($handle) | Out-Null
+  $check.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ')
   Wait-Until { (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU -like '*--background*' } 15
   $startup = (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU).ZULU
   if ($startup -notlike "*$installDirectory*") { throw 'Startup entry must point to this installation.' }
-  Wait-Until { $toggle.Current.ToggleState -eq [System.Windows.Automation.ToggleState]::On } 15
-  $toggle.Toggle()
+  Wait-Until { $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants,$checkCondition).Current.IsEnabled } 15
+  $check=$root.FindFirst([System.Windows.Automation.TreeScope]::Descendants,$checkCondition)
+  $check.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ')
   Wait-Until { -not (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU } 15
   $report.autostartToggle = $true
   [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
@@ -137,7 +150,7 @@ try {
   $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
   $bitmap.Save((Join-Path $OutputDirectory 'desktop.png'))
   $graphics.Dispose(); $bitmap.Dispose()
-  $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition).GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+  Invoke-HubElement ($miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition)) $miniHandle
   Wait-Until { -not [HubNativeWindow]::IsWindowVisible($miniHandle) } 15
   Invoke-HubControl 'Opções do aplicativo'
   Invoke-HubControl 'Sair do ZULU'
