@@ -1248,8 +1248,17 @@ html:has(.dashboard-redesign) {
   border: 0;
 }
 
-/* Spell UI Prism, scoped to the timer; content stays above its decorative canvas. */
+/* Original Spell UI presets: Prism at rest, Lava while working. */
 .today-focus { position: relative; isolation: isolate; background: #050505; }
+.today-prism { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.today-prism .today-lava {
+  opacity: 0;
+  transition: opacity 650ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.timer-running .today-prism .today-lava { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .today-prism .today-lava { transition: none; }
+}
 .today-focus::after {
   content: "";
   position: absolute;

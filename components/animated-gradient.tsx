@@ -1,7 +1,7 @@
 "use client";
 
 // Adapted from Spell UI animated-gradient (MIT, Copyright 2025 Spell UI).
-// Original shader and Prism preset retained; lifecycle/performance adapted for ZULU.
+// Original shader and presets retained; lifecycle/performance adapted for ZULU.
 // Full license: docs/licenses/spell-ui-MIT.txt
 
 import { useRef, useEffect, useMemo, useState, type CSSProperties } from "react";
@@ -198,6 +198,7 @@ interface NoiseConfig {
 
 interface AnimatedGradientProps {
   config?: GradientConfig;
+  active?: boolean;
   noise?: NoiseConfig;
   radius?: string;
   style?: CSSProperties;
@@ -206,6 +207,7 @@ interface AnimatedGradientProps {
 
 export default function AnimatedGradient({
   config = { preset: "Prism" },
+  active = true,
   noise,
   radius = "0px",
   style,
@@ -215,6 +217,8 @@ export default function AnimatedGradient({
   const containerRef = useRef<HTMLDivElement>(null);
   const frameIdRef = useRef<number | undefined>(undefined);
   const startTimeRef = useRef<number>(0);
+  const activeRef = useRef(active);
+  const requestDrawRef = useRef<(() => void) | null>(null);
 
   const [isMounted, setIsMounted] = useState(false);
   // This component decorates a dark timer surface, independently of page theme.
@@ -223,6 +227,11 @@ export default function AnimatedGradient({
     setIsMounted(true);
     return () => setIsMounted(false);
   }, []);
+
+  useEffect(() => {
+    activeRef.current = active;
+    requestDrawRef.current?.();
+  }, [active]);
 
   const params = useMemo((): PresetParams => {
     if (config.preset === "custom") {
@@ -381,7 +390,7 @@ export default function AnimatedGradient({
       );
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
-      if (!motion.matches) frameIdRef.current = requestAnimationFrame(animate);
+      if (!motion.matches && activeRef.current) frameIdRef.current = requestAnimationFrame(animate);
     };
 
     const resume = () => {
@@ -389,6 +398,7 @@ export default function AnimatedGradient({
       frameIdRef.current = requestAnimationFrame(animate);
     };
     requestDraw = resume;
+    requestDrawRef.current = resume;
     const intersection = new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;
       resume();
@@ -399,6 +409,7 @@ export default function AnimatedGradient({
     frameIdRef.current = requestAnimationFrame(animate);
 
     return () => {
+      requestDrawRef.current = null;
       intersection.disconnect();
       motion.removeEventListener("change", resume);
       document.removeEventListener("visibilitychange", resume);
@@ -424,7 +435,7 @@ export default function AnimatedGradient({
         inset: 0,
         zIndex: 0,
         pointerEvents: "none",
-        background: "linear-gradient(135deg, #050505, #66b3ff, #ffffff)",
+        background: `linear-gradient(135deg, ${params.color1}, ${params.color2}, ${params.color3})`,
         borderRadius: radius,
         overflow: "hidden",
         ...style,

@@ -50,6 +50,7 @@ function signedBalance(minutes: number) {
 }
 
 const TIMER_GRADIENT = { preset: "Prism" } as const;
+const WORKING_GRADIENT = { preset: "Lava" } as const;
 
 export function TodayOverview(props: TodayOverviewProps) {
   const { timer, today, week, month, configured, busy } = props;
@@ -78,7 +79,10 @@ export function TodayOverview(props: TodayOverviewProps) {
         aria-label="Timer e jornada"
       >
         <div className="today-focus">
-          <AnimatedGradient config={TIMER_GRADIENT} className="today-prism" />
+          <div className="today-prism" aria-hidden="true">
+            <AnimatedGradient config={TIMER_GRADIENT} active={timer.state !== "running"} />
+            <AnimatedGradient config={WORKING_GRADIENT} active={timer.state === "running"} className="today-lava" />
+          </div>
           <div className="today-section-heading">
             <h2>Seu tempo, hoje</h2>
             <span className={`today-timer-status ${timer.state}`}>

@@ -1,0 +1,6 @@
+{"mode": "animated", "width": 1440, "drawsBefore": 22, "drawsAfter": 31, "contexts": 2, "crossfade": true, "inactiveLayerPaused": true, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "animated", "width": 390, "drawsBefore": 21, "drawsAfter": 30, "contexts": 2, "crossfade": true, "inactiveLayerPaused": true, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "reduced", "width": 1440, "drawsBefore": 4, "drawsAfter": 4, "contexts": 2, "crossfade": true, "inactiveLayerPaused": true, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "reduced", "width": 390, "drawsBefore": 4, "drawsAfter": 4, "contexts": 2, "crossfade": true, "inactiveLayerPaused": true, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "fallback", "width": 1440, "drawsBefore": 0, "drawsAfter": 0, "contexts": 2, "crossfade": true, "inactiveLayerPaused": true, "timerControls": true, "overflow": false, "pageErrors": []}
+{"mode": "fallback", "width": 390, "drawsBefore": 0, "drawsAfter": 0, "contexts": 2, "crossfade": true, "inactiveLayerPaused": true, "timerControls": true, "overflow": false, "pageErrors": []}
