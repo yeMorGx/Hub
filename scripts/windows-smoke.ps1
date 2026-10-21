@@ -44,9 +44,9 @@ try {
   Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $loginHeading) } 60
   $report.loginPageLoaded = $true
   function Invoke-HubControl([string]$Name) {
-    $condition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, $Name)
-    Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition) } 15
-    $control = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition)
+    $controlCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, $Name)
+    Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $controlCondition) } 15
+    $control = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $controlCondition)
     if (-not $control) { throw "Missing window control: $Name" }
     $control.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
   }
