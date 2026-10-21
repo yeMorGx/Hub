@@ -65,17 +65,6 @@ mod windows {
     }
 
     impl Target {
-        fn capture_item(self) -> Result<GraphicsCaptureItemType, String> {
-            match self {
-                Self::Window(window) => window
-                    .try_into()
-                    .map_err(|_| "A janela selecionada não está mais disponível.".to_string()),
-                Self::Monitor(monitor) => monitor
-                    .try_into()
-                    .map_err(|_| "A tela selecionada não está mais disponível.".to_string()),
-            }
-        }
-
         fn dimensions(self) -> Result<(u32, u32), String> {
             match self {
                 Self::Window(window) => Ok((
@@ -99,6 +88,21 @@ mod windows {
                 Self::Monitor(monitor) => {
                     format!("monitor:{:x}", monitor.as_raw_hmonitor() as usize)
                 }
+            }
+        }
+    }
+
+    impl TryInto<GraphicsCaptureItemType> for Target {
+        type Error = String;
+
+        fn try_into(self) -> Result<GraphicsCaptureItemType, Self::Error> {
+            match self {
+                Self::Window(window) => window
+                    .try_into()
+                    .map_err(|_| "A janela selecionada não está mais disponível.".to_string()),
+                Self::Monitor(monitor) => monitor
+                    .try_into()
+                    .map_err(|_| "A tela selecionada não está mais disponível.".to_string()),
             }
         }
     }
@@ -130,8 +134,7 @@ mod windows {
         }
     }
 
-    #[tauri::command]
-    pub fn list_native_screen_sources() -> Result<Vec<NativeScreenSource>, String> {
+    pub(super) fn list_native_screen_sources_impl() -> Result<Vec<NativeScreenSource>, String> {
         let mut sources = Vec::new();
         let primary = Monitor::primary().ok();
         for monitor in Monitor::enumerate().map_err(|e| e.to_string())? {
@@ -298,14 +301,14 @@ mod windows {
         )
     }
 
-    #[tauri::command]
-    pub async fn preview_native_screen_source(source_id: String) -> Result<String, String> {
+    pub(super) async fn preview_native_screen_source_impl(
+        source_id: String,
+    ) -> Result<String, String> {
         tauri::async_runtime::spawn_blocking(move || {
             let target = resolve_target(&source_id)?;
-            let item = target.capture_item()?;
             let (sender, receiver) = mpsc::sync_channel(1);
             let settings = capture_settings(
-                item,
+                target,
                 FrameHandlerFlags {
                     sender,
                     stop_after_first: true,
@@ -339,8 +342,7 @@ mod windows {
         .map_err(|_| "Não foi possível gerar a prévia.".to_string())?
     }
 
-    #[tauri::command]
-    pub async fn start_native_screen_share(
+    pub(super) async fn start_native_screen_share_impl(
         app: AppHandle,
         state: State<'_, NativeShareState>,
         source_id: String,
@@ -459,7 +461,6 @@ mod windows {
         ready: SyncSender<Result<(), String>>,
     ) -> Result<(), String> {
         let target = resolve_target(&source_id)?;
-        let item = target.capture_item()?;
         let (source_width, source_height) = target.dimensions()?;
         let (max_width, max_height, fps, max_bitrate) = match quality.as_str() {
             "smooth" => (1920u32, 1080u32, 60u32, 8_000_000u64),
@@ -472,16 +473,11 @@ mod windows {
         let output_width = (((source_width as f64 * scale).round() as u32).max(2)) & !1;
         let output_height = (((source_height as f64 * scale).round() as u32).max(2)) & !1;
 
-        let (room, mut room_events) = Room::connect(
-            &url,
-            &token,
-            RoomOptions {
-                auto_subscribe: false,
-                ..Default::default()
-            },
-        )
-        .await
-        .map_err(|_| "Não foi possível conectar o compartilhamento à chamada.".to_string())?;
+        let mut options = RoomOptions::default();
+        options.auto_subscribe = false;
+        let (room, mut room_events) = Room::connect(&url, &token, options)
+            .await
+            .map_err(|_| "Não foi possível conectar o compartilhamento à chamada.".to_string())?;
         let video_source = NativeVideoSource::new(
             VideoResolution {
                 width: output_width,
@@ -515,7 +511,7 @@ mod windows {
         let started = Arc::new(AtomicBool::new(false));
         let (sender, _receiver) = mpsc::sync_channel(1);
         let settings = capture_settings(
-            item,
+            target,
             FrameHandlerFlags {
                 sender,
                 stop_after_first: false,
@@ -540,6 +536,11 @@ mod windows {
                 let _ = capture.stop();
                 let _ = room.close().await;
                 return Ok(());
+            }
+            if capture.is_finished() {
+                let _ = capture.stop();
+                let _ = room.close().await;
+                return Err("O Windows não conseguiu iniciar a captura desta fonte.".into());
             }
             tokio::time::sleep(Duration::from_millis(50)).await;
         }
@@ -575,18 +576,17 @@ mod windows {
     use super::{NativeScreenSource, NativeShareState};
     use tauri::{AppHandle, State};
 
-    #[tauri::command]
-    pub fn list_native_screen_sources() -> Result<Vec<NativeScreenSource>, String> {
+    pub(super) fn list_native_screen_sources_impl() -> Result<Vec<NativeScreenSource>, String> {
         Err("A captura nativa está disponível no Hub para Windows.".into())
     }
 
-    #[tauri::command]
-    pub async fn preview_native_screen_source(_source_id: String) -> Result<String, String> {
+    pub(super) async fn preview_native_screen_source_impl(
+        _source_id: String,
+    ) -> Result<String, String> {
         Err("A captura nativa está disponível no Hub para Windows.".into())
     }
 
-    #[tauri::command]
-    pub async fn start_native_screen_share(
+    pub(super) async fn start_native_screen_share_impl(
         _app: AppHandle,
         _state: State<'_, NativeShareState>,
         _source_id: String,
@@ -598,9 +598,27 @@ mod windows {
     }
 }
 
-pub use windows::{
-    list_native_screen_sources, preview_native_screen_source, start_native_screen_share,
-};
+#[tauri::command]
+pub fn list_native_screen_sources() -> Result<Vec<NativeScreenSource>, String> {
+    windows::list_native_screen_sources_impl()
+}
+
+#[tauri::command]
+pub async fn preview_native_screen_source(source_id: String) -> Result<String, String> {
+    windows::preview_native_screen_source_impl(source_id).await
+}
+
+#[tauri::command]
+pub async fn start_native_screen_share(
+    app: tauri::AppHandle,
+    state: State<'_, NativeShareState>,
+    source_id: String,
+    quality: String,
+    url: String,
+    token: String,
+) -> Result<(), String> {
+    windows::start_native_screen_share_impl(app, state, source_id, quality, url, token).await
+}
 
 #[tauri::command]
 pub fn stop_native_screen_share(state: State<'_, NativeShareState>) -> Result<(), String> {
