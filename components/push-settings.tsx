@@ -18,28 +18,28 @@ function pushError(error: unknown, step: PushStep, brave: boolean) {
         ? String(error.message)
         : "";
   if (step === "permission" || name === "NotAllowedError")
-    return "Permita as notificações do Hub nas configurações do navegador e tente novamente.";
+    return "Permita as notificações do ZULU nas configurações do navegador e tente novamente.";
   if (step === "worker")
-    return "O serviço de notificações da página não iniciou. Recarregue o Hub e tente novamente.";
+    return "O serviço de notificações da página não iniciou. Recarregue o ZULU e tente novamente.";
   if (step === "subscription" && name === "AbortError")
     return brave
-      ? "O Brave não conseguiu acessar o serviço push. Em brave://settings/privacy, ative “Usar serviços do Google para mensagens push”, recarregue o Hub e tente novamente."
+      ? "O Brave não conseguiu acessar o serviço push. Em brave://settings/privacy, ative “Usar serviços do Google para mensagens push”, recarregue o ZULU e tente novamente."
       : "O serviço push do navegador não respondeu. Confira as configurações de notificações e sua conexão e tente novamente.";
   if (name === "NotSupportedError" || name === "SecurityError")
-    return "Este navegador não permite notificações push neste contexto. Abra o Hub diretamente em um navegador atualizado.";
+    return "Este navegador não permite notificações push neste contexto. Abra o ZULU diretamente em um navegador atualizado.";
   if (step === "subscription" && name === "InvalidStateError")
-    return "A inscrição de notificações deste navegador está desatualizada. Remova a permissão de notificações do Hub nas configurações do navegador e tente ativar novamente.";
+    return "A inscrição de notificações deste navegador está desatualizada. Remova a permissão de notificações do ZULU nas configurações do navegador e tente ativar novamente.";
   if (message === "Limite de dispositivos atingido")
     return "Sua conta atingiu o limite de dez dispositivos. Desative as notificações em um deles e tente novamente.";
   if (message === "Endpoint push inválido")
-    return "O serviço push deste navegador ainda não é aceito pelo Hub. Tente em outro navegador atualizado.";
+    return "O serviço push deste navegador ainda não é aceito pelo ZULU. Tente em outro navegador atualizado.";
   const reviewed = errorMessage(error);
   if (
     reviewed !== "Não foi possível concluir. Confira os dados e tente novamente."
   )
     return reviewed;
   return step === "registration"
-    ? "O navegador criou a inscrição, mas o Hub não conseguiu salvar este dispositivo. Recarregue a página e tente novamente."
+    ? "O navegador criou a inscrição, mas o ZULU não conseguiu salvar este dispositivo. Recarregue a página e tente novamente."
     : step === "removal"
       ? "Não foi possível desativar as notificações. Tente novamente."
       : "O navegador não conseguiu criar a inscrição de notificações. Confira as configurações de notificações e tente novamente.";

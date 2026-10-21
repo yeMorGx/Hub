@@ -78,10 +78,10 @@ export function DesktopBridge({ hub }: { hub: HubController }) {
   );
   useEffect(() => {
     document.title = unread
-      ? `(${unread > 99 ? "99+" : unread}) Hub — Seu time, conectado`
-      : "Hub — Seu time, conectado";
+      ? `(${unread > 99 ? "99+" : unread}) ZULU — Seu time, conectado`
+      : "ZULU — Seu time, conectado";
     return () => {
-      document.title = "Hub — Seu time, conectado";
+      document.title = "ZULU — Seu time, conectado";
     };
   }, [unread]);
   return null;

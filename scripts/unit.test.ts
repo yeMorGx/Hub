@@ -532,7 +532,7 @@ test("manifesto nativo produz plataforma Windows x64 com assinatura e pacote ofi
   globalThis.fetch = async (url) => String(url).endsWith(".sig") ? new Response(signature) : Response.json(fixture);
   const response = await desktopManifest();
   assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), { version: "0.1.3", notes: "Hub 0.1.3", pub_date: "2026-10-21T18:00:00.000Z", platforms: { "windows-x86_64": { signature, url: fixture.assets[0].browser_download_url } } });
+  assert.deepEqual(await response.json(), { version: "0.1.3", notes: "ZULU 0.1.3", pub_date: "2026-10-21T18:00:00.000Z", platforms: { "windows-x86_64": { signature, url: fixture.assets[0].browser_download_url } } });
 });
 test("manifesto rejeita assinatura ausente, HTML ou corpo excessivo sem expor erros", async () => {
   for (const body of ["<html>error</html>", "a".repeat(9000), ""]) {

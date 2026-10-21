@@ -230,7 +230,7 @@ export function LiveCalls({
           {enabled === false && (
             <p className="inline-notice">
               {demo
-                ? "Esta é uma prévia. Entre no Hub para usar as chamadas do seu time."
+                ? "Esta é uma prévia. Entre no ZULU para usar as chamadas do seu time."
                 : "As chamadas aguardam a configuração do LiveKit pelo administrador."}
             </p>
           )}

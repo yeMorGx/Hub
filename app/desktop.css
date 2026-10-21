@@ -63,3 +63,11 @@ html[data-desktop-titlebar] .notifications-popover { top: 97px; }
 @media (max-width: 520px) {
   html[data-desktop-titlebar] .rail { top: auto; }
 }
+/* Official identity assets retain their supplied paths and texture. */
+.brand-mark { display: block; flex-shrink: 0; object-fit: contain; }
+.brand-wordmark { display: block; flex-shrink: 0; object-fit: contain; filter: invert(1); }
+.dashboard-redesign .brand-wordmark,
+.m-page .brand-wordmark { filter: none; }
+.dashboard-redesign .dashboard-wordmark > .brand-wordmark { width: 90px; height: 27px; margin: 0; }
+.desktop-titlebar .brand-wordmark { width: 49px; height: 15px; }
+html:has(.dashboard-redesign) .desktop-titlebar .brand-wordmark { filter: none; }

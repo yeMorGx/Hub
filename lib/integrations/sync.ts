@@ -85,7 +85,7 @@ export async function syncCalendar(
       links = linksResult.data,
       byExternal = new Map(links.map((l) => [l.external_id, l]));
     // Include mapped events moved outside the selected period. Absence from a range is never deletion.
-    // Only fetch mapped Hub events moved outside the interval when their provider
+    // Only fetch mapped ZULU events moved outside the interval when their provider
     // event is actually in this interval. Historical links must not trigger thousands
     // of out-of-range provider requests or be mistaken for deletions.
     const externalIds = new Set(external.map((item) => item.id));

@@ -1,4 +1,5 @@
 "use client";
+import { BrandMark, BrandWordmark } from "./brand";
 // Public, in-memory preview. Shared dashboard components; no Supabase client or credentials.
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -190,10 +191,10 @@ export function DashboardDemo() {
         Pular para o conteúdo
       </a>
       <aside className="rail" aria-label="Navegação da demonstração">
-        <a className="brand" href="/demo/dashboard" aria-label="Hub — início">
-          <SquaresFour size={29} weight="fill" />
+        <a className="brand" href="/demo/dashboard" aria-label="ZULU — início">
+          <BrandMark size={32} />
           <span className="dashboard-wordmark">
-            Hub<span>Seu espaço de trabalho</span>
+            <BrandWordmark /><span>Seu espaço de trabalho</span>
           </span>
         </a>
         <div className="rail-divider" />
@@ -279,7 +280,7 @@ export function DashboardDemo() {
                       ? ""
                       : "Interface do aplicativo",
                   project:
-                    scenario === "empty" ? "" : "Hub · Design de produto",
+                    scenario === "empty" ? "" : "ZULU · Design de produto",
                 }}
                 busy={false}
                 canParticipate
@@ -364,12 +365,12 @@ export function DashboardDemo() {
                       {
                         id: "1",
                         description: "Biblioteca de componentes",
-                        project: "Hub · Design system",
+                        project: "ZULU · Design system",
                       },
                       {
                         id: "2",
                         description: "Fluxo de entrada",
-                        project: "Hub · Produto",
+                        project: "ZULU · Produto",
                       },
                     ]
               }

@@ -1,3 +1,4 @@
+import { BrandMark, BrandWordmark } from "@/components/brand";
 import type { Metadata } from "next";
 import Link from "next/link";
 import "../marketing.css";
@@ -6,9 +7,9 @@ const policyUrl = "https://hub-one-azure.vercel.app/privacy";
 const contactEmail = "auth@mindapp.icu";
 
 export const metadata: Metadata = {
-  title: "Política de privacidade — Hub",
+  title: "Política de privacidade — ZULU",
   description:
-    "Saiba quais dados o Hub trata, por que os utiliza e como solicitar acesso, correção ou exclusão.",
+    "Saiba quais dados o ZULU trata, por que os utiliza e como solicitar acesso, correção ou exclusão.",
   alternates: { canonical: policyUrl },
   robots: { index: true, follow: true },
 };
@@ -21,8 +22,8 @@ export default function PrivacyPage() {
       </a>
       <header className="m-policy-header">
         <div className="m-policy-shell m-policy-nav">
-          <Link className="m-policy-brand" href="/site" aria-label="Hub, início">
-            <span aria-hidden="true">h</span> hub
+          <Link className="m-policy-brand" href="/site" aria-label="ZULU, início">
+            <BrandMark size={30} /><BrandWordmark />
           </Link>
           <nav aria-label="Navegação principal">
             <Link href="/site">Início</Link>
@@ -33,10 +34,10 @@ export default function PrivacyPage() {
       </header>
 
       <article className="m-policy-shell m-policy-content" id="conteudo">
-        <div className="m-policy-kicker">HUB · PRIVACIDADE</div>
+        <div className="m-policy-kicker">ZULU · PRIVACIDADE</div>
         <h1>Política de privacidade</h1>
         <p className="m-policy-intro">
-          Esta política explica como o Hub trata informações pessoais quando
+          Esta política explica como o ZULU trata informações pessoais quando
           você usa o aplicativo, o site e os recursos opcionais de colaboração.
         </p>
         <p className="m-policy-updated">Atualizada em 20 de outubro de 2026</p>
@@ -44,7 +45,7 @@ export default function PrivacyPage() {
         <section>
           <h2>1. Quem é responsável e como falar conosco</h2>
           <p>
-            O Hub é um aplicativo de trabalho em equipe. O publicador do Hub é
+            O ZULU é um aplicativo de trabalho em equipe. O publicador do ZULU é
             responsável pelo tratamento descrito nesta política. Para pedidos
             de privacidade, dúvidas ou reclamações, escreva para{" "}
             <a href={`mailto:${contactEmail}`}>{contactEmail}</a>. Informe o
@@ -54,7 +55,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2>2. Dados que o Hub trata</h2>
+          <h2>2. Dados que o ZULU trata</h2>
           <ul>
             <li>
               <strong>Conta e perfil:</strong> nome, endereço de e-mail,
@@ -67,7 +68,7 @@ export default function PrivacyPage() {
               participação, papel, canais, presença e estado de disponibilidade.
             </li>
             <li>
-              <strong>Conteúdo criado no Hub:</strong> mensagens e respostas,
+              <strong>Conteúdo criado no ZULU:</strong> mensagens e respostas,
               reações, arquivos e anexos, notas, check-ins, tarefas, eventos,
               pautas, atas, confirmações de presença, projetos, clientes,
               metas, escalas, solicitações de ausência e registros de horas.
@@ -77,14 +78,14 @@ export default function PrivacyPage() {
             <li>
               <strong>Preferências e notificações:</strong> configurações do
               aplicativo, inscrição de notificações push por dispositivo e
-              notificações internas. As notificações push enviadas pelo Hub
+              notificações internas. As notificações push enviadas pelo ZULU
               usam texto genérico e não incluem o conteúdo da mensagem.
             </li>
             <li>
               <strong>Integrações opcionais:</strong> identificadores de
               conexão e dados de eventos necessários para sincronizar um
-              calendário do Hub que você conectou. Tokens de acesso e renovação
-              da conexão são guardados em formato cifrado. O Hub cria e usa um
+              calendário do ZULU que você conectou. Tokens de acesso e renovação
+              da conexão são guardados em formato cifrado. O ZULU cria e usa um
               calendário separado para a equipe; a agenda pessoal não é
               sincronizada por padrão.
             </li>
@@ -113,7 +114,7 @@ export default function PrivacyPage() {
             No Brasil, o tratamento pode se apoiar na execução do serviço
             solicitado, no cumprimento de obrigações legais, no exercício
             regular de direitos, no legítimo interesse relacionado à segurança
-            e ao funcionamento do Hub ou no consentimento, quando aplicável.
+            e ao funcionamento do ZULU ou no consentimento, quando aplicável.
             Você pode desativar notificações e desconectar integrações opcionais
             nas configurações do aplicativo.
           </p>
@@ -129,7 +130,7 @@ export default function PrivacyPage() {
             ou confidenciais em espaços compartilhados.
           </p>
           <p>
-            O Hub não vende dados pessoais nem os utiliza para publicidade
+            O ZULU não vende dados pessoais nem os utiliza para publicidade
             comportamental. Também não compartilhe dados de terceiros sem ter
             autorização ou outra base legal adequada.
           </p>
@@ -138,7 +139,7 @@ export default function PrivacyPage() {
         <section>
           <h2>5. Prestadores e integrações</h2>
           <p>
-            Para operar o serviço, o Hub utiliza prestadores que tratam dados
+            Para operar o serviço, o ZULU utiliza prestadores que tratam dados
             conforme necessário para suas funções:
           </p>
           <ul>
@@ -174,7 +175,7 @@ export default function PrivacyPage() {
             Esses prestadores podem processar dados em outros países, conforme
             sua infraestrutura e os serviços habilitados. Cada integração
             também está sujeita às políticas do respectivo provedor. Você pode
-            desconectar o calendário ou desativar push no Hub; isso interrompe
+            desconectar o calendário ou desativar push no ZULU; isso interrompe
             o uso futuro da integração pelo aplicativo.
           </p>
         </section>
@@ -182,7 +183,7 @@ export default function PrivacyPage() {
         <section>
           <h2>6. Armazenamento, segurança e cópias locais</h2>
           <p>
-            O Hub usa controles de acesso por time e canal, autenticação com
+            O ZULU usa controles de acesso por time e canal, autenticação com
             MFA, políticas de acesso ao banco e medidas técnicas destinadas a
             proteger contas e conteúdo. Credenciais de integrações de calendário
             são cifradas antes de serem armazenadas. Nenhuma transmissão ou
@@ -200,7 +201,7 @@ export default function PrivacyPage() {
         <section>
           <h2>7. Retenção e solicitações sobre seus dados</h2>
           <p>
-            Mantemos os dados enquanto forem necessários para fornecer o Hub,
+            Mantemos os dados enquanto forem necessários para fornecer o ZULU,
             administrar os times, proteger o serviço e cumprir obrigações
             aplicáveis. Períodos técnicos de cópia de segurança e retenção dos
             prestadores podem fazer com que algumas cópias levem tempo para
@@ -222,7 +223,7 @@ export default function PrivacyPage() {
         <section>
           <h2>8. Alterações nesta política</h2>
           <p>
-            Podemos atualizar esta política quando o Hub ou as regras aplicáveis
+            Podemos atualizar esta política quando o ZULU ou as regras aplicáveis
             mudarem. A versão vigente ficará disponível neste endereço e exibirá
             a data da última atualização.
           </p>
@@ -236,7 +237,7 @@ export default function PrivacyPage() {
 
       <footer className="m-policy-footer">
         <div className="m-policy-shell">
-          <Link href="/site">Hub</Link>
+          <Link href="/site">ZULU</Link>
           <span>Uma política clara para um espaço de trabalho compartilhado.</span>
           <Link href="/download">Downloads</Link>
         </div>

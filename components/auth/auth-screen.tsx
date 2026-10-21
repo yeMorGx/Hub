@@ -277,7 +277,7 @@ export function AuthScreen({ configured }: { configured: boolean }) {
                 ? "Criar minha conta"
                 : mode === "reset"
                   ? "Enviar link"
-                  : "Entrar no Hub"}
+                  : "Entrar no ZULU"}
               <ArrowRight size={18} />
             </>
           )}

@@ -245,7 +245,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
       {tab === "calendars" && (
         <>
           <p className="muted">
-            Cada conexão usa um calendário separado “Hub — seu time”. Eventos
+            Cada conexão usa um calendário separado “ZULU — seu time”. Eventos
             pessoais e convites a participantes não são copiados. Sincronização
             manual: últimos 30 dias e próximos 6 meses.
           </p>
@@ -355,7 +355,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                         run(() => sync(activeSync, { [c.eventId]: "hub" }))
                       }
                     >
-                      Usar Hub
+                      Usar ZULU
                     </button>
                     <button
                       disabled={busy}
@@ -373,7 +373,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
           )}
           <p className="muted">
             {status.backgroundSync
-              ? "Atualizações externas são recebidas por webhooks. Sincronize manualmente para enviar alterações do Hub."
+              ? "Atualizações externas são recebidas por webhooks. Sincronize manualmente para enviar alterações do ZULU."
               : "Atualização automática por webhooks do provedor ainda requer ativação pelo administrador."}
           </p>
         </>

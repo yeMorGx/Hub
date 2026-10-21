@@ -86,7 +86,7 @@ export async function GET(
         : await createDedicatedCalendar(
             provider,
             token,
-            `Hub — ${team.name}`,
+            `ZULU — ${team.name}`,
             "UTC",
           );
     const secret: CalendarSecret = {

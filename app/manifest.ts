@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "Hub — Seu time, conectado",
-    short_name: "Hub",
+    name: "ZULU — Seu time, conectado",
+    short_name: "ZULU",
     description:
       "Conversas, agenda e horas. Um espaço para o trabalho acontecer.",
     lang: "pt-BR",
@@ -15,19 +15,19 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "any",
     icons: [
       {
-        src: "/pwa/icon/192",
+        src: "/pwa/icon/192?v=zulu-1",
         sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/pwa/icon/512",
+        src: "/pwa/icon/512?v=zulu-1",
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/pwa/icon/512",
+        src: "/pwa/icon/512?v=zulu-1",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",

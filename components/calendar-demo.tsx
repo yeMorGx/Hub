@@ -68,7 +68,7 @@ export function CalendarDemo() {
       <header className="operations-demo-header">
         <a href="/demo">Voltar ao dashboard</a>
         <span className="demo-badge">Demonstração · dados fictícios</span>
-        <a href="/login">Entrar no Hub</a>
+        <a href="/login">Entrar no ZULU</a>
       </header>
       <div className="page-heading">
         <div>

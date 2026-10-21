@@ -11,7 +11,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Hub",
+        "title": "ZULU",
         "width": 1360,
         "height": 900,
         "minWidth": 390,
@@ -32,7 +32,7 @@
       "dmg",
       "deb"
     ],
-    "shortDescription": "Um espaço para seu time trabalhar.",
+    "shortDescription": "ZULU — um espaço para seu time trabalhar.",
     "category": "Productivity",
     "icon": [
       "icons/icon.png",

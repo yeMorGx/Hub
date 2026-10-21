@@ -1,4 +1,5 @@
 "use client";
+import { BrandMark, BrandWordmark } from "./brand";
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -34,10 +35,10 @@ export function MarketingNav({ download = false }: { download?: boolean }) {
         <Link
           href="/site"
           className="m-brand"
-          aria-label="Hub — página inicial"
+          aria-label="ZULU — página inicial"
         >
-          <SquaresFour weight="fill" aria-hidden="true" />
-          <span>hub</span>
+          <BrandMark size={34} />
+          <BrandWordmark />
         </Link>
         <div className="m-nav-links">
           <Link href="/site#produto">O produto</Link>
@@ -46,7 +47,7 @@ export function MarketingNav({ download = false }: { download?: boolean }) {
         </div>
         <div className="m-nav-actions">
           <Link href="/login" className="m-login">
-            Entrar no Hub <ArrowUpRight aria-hidden="true" />
+            Entrar no ZULU <ArrowUpRight aria-hidden="true" />
           </Link>
           <Link
             href={download ? "#sistemas" : "/download"}
@@ -76,7 +77,7 @@ export function MarketingNav({ download = false }: { download?: boolean }) {
           <Link onClick={() => setOpen(false)} href="/site#duvidas">
             Dúvidas
           </Link>
-          <Link href="/login">Entrar no Hub</Link>
+          <Link href="/login">Entrar no ZULU</Link>
           <Link href="/download">
             Ir para downloads <ArrowRight />
           </Link>
@@ -92,8 +93,8 @@ export function MarketingFooter() {
       <div className="m-shell">
         <div className="m-footer-top">
           <Link href="/site" className="m-brand">
-            <SquaresFour weight="fill" aria-hidden="true" />
-            <span>hub</span>
+            <BrandMark size={34} />
+            <BrandWordmark />
           </Link>
           <p>
             Um lugar para o trabalho.
@@ -108,7 +109,7 @@ export function MarketingFooter() {
               Privacidade <ArrowUpRight aria-hidden="true" />
             </Link>
             <Link href="/login">
-              Entrar no Hub <ArrowUpRight aria-hidden="true" />
+              Entrar no ZULU <ArrowUpRight aria-hidden="true" />
             </Link>
             <a
               href="https://github.com/yeMorGx/Hub"
@@ -120,7 +121,7 @@ export function MarketingFooter() {
           </div>
         </div>
         <div className="m-footer-bottom">
-          <span>Hub · Feito para trabalhar juntos.</span>
+          <span>ZULU · Feito para trabalhar juntos.</span>
           <span>Menos distância. Mais conexão.</span>
           <a href="#topo">
             Voltar ao topo <ArrowUpRight aria-hidden="true" />
@@ -136,29 +137,29 @@ const views = [
     id: "today",
     title: "Tudo começa com clareza.",
     label: "Visão do dia",
-    text: "O próximo foco, as reuniões e quem está por perto. Abra o Hub e encontre o seu ponto de partida.",
-    alt: "Visão geral do Hub com timer, agenda semanal e pessoas do time",
+    text: "O próximo foco, as reuniões e quem está por perto. Abra o ZULU e encontre o seu ponto de partida.",
+    alt: "Visão geral do ZULU com timer, agenda semanal e pessoas do time",
   },
   {
     id: "chat",
     title: "A conversa continua aqui.",
     label: "Conversas",
     text: "Canais para os assuntos do time. Mensagens diretas para resolver o que precisa de uma conversa. Sem perder o contexto.",
-    alt: "Canais e mensagens na tela de conversas do Hub",
+    alt: "Canais e mensagens na tela de conversas do ZULU",
   },
   {
     id: "tasks",
     title: "Da ideia ao que está feito.",
     label: "Tarefas",
     text: "Organize as entregas no Kanban, acompanhe as etapas e comece a registrar o tempo direto de uma tarefa.",
-    alt: "Quadro Kanban do Hub com tarefas organizadas por etapa",
+    alt: "Quadro Kanban do ZULU com tarefas organizadas por etapa",
   },
   {
     id: "calendar",
     title: "Encontre espaço na semana.",
     label: "Calendário",
     text: "Veja a agenda compartilhada por mês, semana ou dia. Planeje encontros e confirme sua presença.",
-    alt: "Calendário compartilhado do Hub com eventos de demonstração",
+    alt: "Calendário compartilhado do ZULU com eventos de demonstração",
   },
 ];
 export function ProductExplorer() {
@@ -187,7 +188,7 @@ export function ProductExplorer() {
           <div
             className="m-tabs"
             role="tablist"
-            aria-label="Conheça as telas do Hub"
+            aria-label="Conheça as telas do ZULU"
             aria-orientation="vertical"
           >
             {views.map((item, index) => (
@@ -309,20 +310,20 @@ export function FocusDemo() {
 
 export const questions = [
   [
-    "Preciso instalar para usar o Hub?",
-    "Não. Você pode acessar o Hub pelo navegador com a mesma conta. O aplicativo Windows adiciona uma janela dedicada, o atalho do timer e o indicador de mensagens não lidas na barra de tarefas.",
+    "Preciso instalar para usar o ZULU?",
+    "Não. Você pode acessar o ZULU pelo navegador com a mesma conta. O aplicativo Windows adiciona uma janela dedicada, o atalho do timer e o indicador de mensagens não lidas na barra de tarefas.",
   ],
   [
-    "O Hub funciona no Mac, Linux e celular?",
-    "A versão Windows x64 está disponível nesta página. No macOS, Linux e celular, use a versão web. Em navegadores compatíveis, o Hub também pode ser instalado como PWA. Os instaladores de Mac e Linux ainda não fazem parte desta distribuição.",
+    "O ZULU funciona no Mac, Linux e celular?",
+    "A versão Windows x64 está disponível nesta página. No macOS, Linux e celular, use a versão web. Em navegadores compatíveis, o ZULU também pode ser instalado como PWA. Os instaladores de Mac e Linux ainda não fazem parte desta distribuição.",
   ],
   [
     "O que acontece com meus dados ao atualizar?",
-    "O aplicativo Windows abre o mesmo Hub da web. Atualizar o instalador não exclui sua conta nem os dados do time. A partir da versão 0.1.3, você pode instalar as próximas versões pelo botão Instalar e reiniciar dentro do Hub. Melhorias apenas da interface são aplicadas por recarga.",
+    "O aplicativo Windows abre o mesmo ZULU da web. Atualizar o instalador não exclui sua conta nem os dados do time. A partir da versão 0.1.3, você pode instalar as próximas versões pelo botão Instalar e reiniciar dentro do ZULU. Melhorias apenas da interface são aplicadas por recarga.",
   ],
   [
     "Por que o Windows pode mostrar um aviso ao instalar?",
-    "Esta distribuição ainda não tem assinatura de código. Por isso, o Windows pode mostrar um aviso de editor desconhecido. O arquivo é distribuído pelo repositório oficial do Hub e seu SHA-256 está disponível na página de downloads.",
+    "Esta distribuição ainda não tem assinatura de código. Por isso, o Windows pode mostrar um aviso de editor desconhecido. O arquivo é distribuído pelo repositório oficial do ZULU e seu SHA-256 está disponível na página de downloads.",
   ],
   [
     "Preciso de uma conta para começar?",
@@ -330,7 +331,7 @@ export const questions = [
   ],
   [
     "Posso usar tudo sem internet?",
-    "O Hub precisa de conexão para sincronizar conversas, tarefas e agenda. Há um leitor offline opcional para conversas selecionadas, protegido por uma senha local. Ele não inclui anexos e não substitui a sincronização online.",
+    "O ZULU precisa de conexão para sincronizar conversas, tarefas e agenda. Há um leitor offline opcional para conversas selecionadas, protegido por uma senha local. Ele não inclui anexos e não substitui a sincronização online.",
   ],
 ];
 export function MarketingFAQ({ compact = false }: { compact?: boolean }) {
@@ -395,14 +396,14 @@ export function LandingPage() {
               </h1>
               <p>
                 Conversas, tarefas, agenda e horas.
-                <br />O trabalho se encontra no Hub.
+                <br />O trabalho se encontra no ZULU.
               </p>
               <div className="m-hero-actions">
                 <Link href="/download" className="m-button m-button-lime">
                   Conheça os downloads <ArrowDown aria-hidden="true" />
                 </Link>
                 <Link href="/demo" className="m-hero-demo">
-                  Ver o Hub por dentro <ArrowUpRight aria-hidden="true" />
+                  Ver o ZULU por dentro <ArrowUpRight aria-hidden="true" />
                 </Link>
               </div>
               <span className="m-hero-note">
@@ -412,11 +413,11 @@ export function LandingPage() {
             <Link
               href="/demo"
               className="m-hero-stage"
-              aria-label="Abrir demonstração do Hub"
+              aria-label="Abrir demonstração do ZULU"
             >
               <div className="m-window-label">
                 <span>
-                  <SquaresFour weight="fill" aria-hidden="true" /> Um dia no Hub
+                  <BrandMark size={18} /> Um dia no ZULU
                 </span>
                 <span>
                   Trabalho em sintonia <span className="m-status-dot" />
@@ -425,7 +426,7 @@ export function LandingPage() {
               <div className="m-hero-screen">
                 <Image
                   src="/marketing/today.webp"
-                  alt="Aplicativo Hub: foco do dia, timer, reuniões e agenda do time. Dados de demonstração."
+                  alt="Aplicativo ZULU: foco do dia, timer, reuniões e agenda do time. Dados de demonstração."
                   width={1440}
                   height={1000}
                   sizes="(max-width: 760px) 900px, 1000px"
@@ -475,7 +476,7 @@ export function LandingPage() {
               <div className="m-connection-image">
                 <Image
                   src="/marketing/chat.webp"
-                  alt="Conversas do Hub, com canais e mensagens de exemplo"
+                  alt="Conversas do ZULU, com canais e mensagens de exemplo"
                   width={1440}
                   height={1000}
                   sizes="(max-width: 760px) 100vw, 65vw"
@@ -518,7 +519,7 @@ export function LandingPage() {
               <br />
               Liberdade para fluir.
             </h2>
-            <p>O Hub cuida do contexto para você cuidar do que está fazendo.</p>
+            <p>O ZULU cuida do contexto para você cuidar do que está fazendo.</p>
             <ul>
               <li>
                 <Check aria-hidden="true" />
@@ -546,7 +547,7 @@ export function LandingPage() {
               </li>
             </ul>
             <Link href="/download" className="m-text-link">
-              Levar o Hub para o desktop <ArrowRight aria-hidden="true" />
+              Levar o ZULU para o desktop <ArrowRight aria-hidden="true" />
             </Link>
           </div>
           <FocusDemo />
@@ -570,7 +571,7 @@ export function LandingPage() {
         <section className="m-final">
           <div className="m-shell">
             <span className="m-final-symbol" aria-hidden="true">
-              <SquaresFour weight="fill" />
+              <BrandMark size={54} />
             </span>
             <h2>
               Bom trabalho
@@ -586,7 +587,7 @@ export function LandingPage() {
                 Agora tem onde se encontrar.
               </p>
               <Link href="/download" className="m-button m-button-lime">
-                Encontre sua versão do Hub <ArrowDown aria-hidden="true" />
+                Encontre sua versão do ZULU <ArrowDown aria-hidden="true" />
               </Link>
               <Link href="/demo" className="m-final-demo">
                 Ou explore a demonstração <ArrowUpRight aria-hidden="true" />
@@ -612,10 +613,10 @@ export function DownloadPage() {
       <main id="conteudo">
         <section className="m-download-intro m-shell">
           <Link href="/site" className="m-back-link">
-            Conheça o Hub <ArrowUpRight aria-hidden="true" />
+            Conheça o ZULU <ArrowUpRight aria-hidden="true" />
           </Link>
           <h1>
-            O Hub.
+            O ZULU.
             <br />
             <span>Do seu jeito.</span>
           </h1>
@@ -643,7 +644,7 @@ export function DownloadPage() {
             <p>
               Uma janela para o time. Um atalho para o foco.
               <br />
-              Seu Hub, sempre por perto.
+              Seu ZULU, sempre por perto.
             </p>
             <a
               className="m-button m-button-lime"
@@ -676,7 +677,7 @@ export function DownloadPage() {
               <div>
                 <h2>macOS</h2>
                 <p>
-                  Use o Hub pelo navegador.
+                  Use o ZULU pelo navegador.
                   <br />
                   Instalador ainda não disponível nesta distribuição.
                 </p>
@@ -702,7 +703,7 @@ export function DownloadPage() {
             <div className="m-mobile-note">
               <span>NO CELULAR TAMBÉM.</span>
               <p>
-                Abra o Hub no navegador e instale como PWA quando seu
+                Abra o ZULU no navegador e instale como PWA quando seu
                 dispositivo oferecer essa opção.
               </p>
               <Link href="/login" className="m-text-link">
@@ -732,7 +733,7 @@ export function DownloadPage() {
               <span>Instale e entre na sua conta.</span>
               <p>
                 Abra o arquivo .exe. Depois, confirme seu e-mail e a
-                autenticação em duas etapas no Hub.
+                autenticação em duas etapas no ZULU.
               </p>
             </li>
             <li>
@@ -817,10 +818,10 @@ export function DownloadPage() {
                 <br />
                 Sem ficar de fora.
               </h2>
-              <p>Prefere o navegador? O Hub está lá também.</p>
+              <p>Prefere o navegador? O ZULU está lá também.</p>
             </div>
             <Link href="/login" className="m-button m-button-lime">
-              Entrar no Hub web <ArrowUpRight aria-hidden="true" />
+              Entrar no ZULU web <ArrowUpRight aria-hidden="true" />
             </Link>
           </div>
         </section>

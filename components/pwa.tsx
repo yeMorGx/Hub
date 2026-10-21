@@ -64,7 +64,7 @@ export function InstallApp() {
     return (
       <p className="pwa-status">
         <CheckCircle size={16} />
-        Hub instalado neste dispositivo.
+        ZULU instalado neste dispositivo.
       </p>
     );
   if (ios)
@@ -86,7 +86,7 @@ export function InstallApp() {
       }}
     >
       <DownloadSimple size={17} />
-      Instalar Hub neste dispositivo
+      Instalar ZULU neste dispositivo
     </button>
   );
 }

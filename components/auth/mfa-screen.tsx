@@ -64,8 +64,8 @@ export function MfaScreen() {
       }
       const { data, error } = await client.auth.mfa.enroll({
         factorType: "totp",
-        friendlyName: "Hub",
-        issuer: "Hub",
+        friendlyName: "ZULU",
+        issuer: "ZULU",
       });
       if (error) throw error;
       setFactorId(data.id);

@@ -1,4 +1,5 @@
 "use client";
+import { BrandMark, BrandWordmark } from "./brand";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
   SquaresFour,
@@ -612,7 +613,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
   if (hub.bootLoading || !now)
     return (
       <div className="loading-screen">
-        <SquaresFour size={34} weight="fill" />
+        <BrandMark size={34} />
         <span>Abrindo seu espaço…</span>
         <CircleNotch className="spinning" size={20} />
       </div>
@@ -682,11 +683,11 @@ export function LiveHubApp({ userId }: { userId: string }) {
       <aside className="rail" aria-label="Navegação principal">
         <button
           className="brand"
-          aria-label="Hub — início"
+          aria-label="ZULU — início"
           onClick={() => navigate("overview")}
         >
-          <SquaresFour size={29} weight="fill" />
-          <span className="dashboard-wordmark">Hub<span>Seu espaço de trabalho</span></span>
+          <BrandMark size={32} />
+          <span className="dashboard-wordmark"><BrandWordmark /><span>Seu espaço de trabalho</span></span>
         </button>
         <div className="rail-divider" />
         <nav>
@@ -824,7 +825,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
             </span>
             <button
               className="search-button"
-              aria-label="Buscar no Hub"
+              aria-label="Buscar no ZULU"
               onClick={() => openModal("search")}
             >
               <MagnifyingGlass size={17} />
@@ -1224,7 +1225,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         </button>
                       </section>
                       <div className="sidebar-footnote">
-                        <span className="tiny-brand">hub</span>
+                        <span className="tiny-brand">ZULU</span>
                         <span>Um espaço. Seu time.</span>
                       </div>
                     </aside>
@@ -2722,7 +2723,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
         </HubDialog>
       )}
       {modal === "search" && (
-        <HubDialog title="Buscar no Hub" wide onClose={() => setModal(null)}>
+        <HubDialog title="Buscar no ZULU" wide onClose={() => setModal(null)}>
           <div className="search-input-wrap">
             <MagnifyingGlass size={21} />
             <input

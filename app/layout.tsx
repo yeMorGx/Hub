@@ -8,15 +8,15 @@ import { ServiceWorkerRegistration } from "@/components/pwa";
 import { DesktopUpdate } from "@/components/desktop-update";
 import { DesktopTitlebar } from "@/components/desktop-titlebar";
 export const metadata: Metadata = {
-  title: "Hub — Seu time, conectado",
+  title: "ZULU — Seu time, conectado",
   description:
     "Conversas, agenda e horas. Um espaço para o trabalho acontecer.",
-  applicationName: "Hub",
+  applicationName: "ZULU",
   manifest: "/manifest.webmanifest",
-  icons: { icon: "/pwa/icon/192", apple: "/pwa/icon/180" },
+  icons: { icon: "/pwa/icon/192?v=zulu-1", apple: "/pwa/icon/180?v=zulu-1" },
   appleWebApp: {
     capable: true,
-    title: "Hub",
+    title: "ZULU",
     statusBarStyle: "black-translucent",
   },
 };

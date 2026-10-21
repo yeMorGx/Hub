@@ -74,7 +74,7 @@ export function WorkScheduleSetup({
     <HubDialog title="Sua jornada de trabalho" onClose={onClose}>
       <form className="work-schedule-form" onSubmit={(event) => void save(event)}>
         <p>
-          Escolha seus dias e a carga diária. O Hub compara as horas registradas
+          Escolha seus dias e a carga diária. O ZULU compara as horas registradas
           com essa jornada e calcula o saldo ao longo do mês.
         </p>
         <fieldset className="work-schedule-days">

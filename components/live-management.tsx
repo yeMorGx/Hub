@@ -348,7 +348,7 @@ export function LiveManagement({ hub }: { hub: HubController }) {
                     onClick={() =>
                       void downloadPdf(
                         `hub-horas-${from}-${to}.pdf`,
-                        "Hub · Relatório de horas",
+                        "ZULU · Relatório de horas",
                         `${hub.currentTeam?.name || "Time"} · ${from} a ${to}`,
                         columns,
                         reportRows,

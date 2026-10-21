@@ -1,7 +1,8 @@
 "use client";
+import { BrandMark, BrandWordmark } from "./brand";
 
 import { useEffect, useState } from "react";
-import { CopySimple, Minus, Square, SquaresFour, X } from "@phosphor-icons/react";
+import { CopySimple, Minus, Square, X } from "@phosphor-icons/react";
 
 type WindowState = { supported: boolean; maximized: boolean };
 type Action = "state" | "enable" | "restore" | "minimize" | "toggle_maximize" | "close" | "drag";
@@ -78,15 +79,15 @@ export function DesktopTitlebar() {
     }
   };
   return (
-    <header className="desktop-titlebar" aria-label="Barra de título do Hub">
+    <header className="desktop-titlebar" aria-label="Barra de título do ZULU">
       <div className="desktop-titlebar-drag"
         onMouseDown={(event) => {
           if (event.button !== 0) return;
           event.preventDefault();
           void act(event.detail === 2 ? "toggle_maximize" : "drag");
         }}>
-        <SquaresFour size={17} weight="fill" aria-hidden="true" />
-        <span className="desktop-titlebar-brand">Hub</span>
+        <BrandMark size={20} />
+        <BrandWordmark className="desktop-titlebar-brand" />
         <span className="desktop-titlebar-caption">Seu espaço de trabalho</span>
         {unread && <span className="desktop-titlebar-unread" aria-label={`${unread} mensagens não lidas`}>{unread}</span>}
       </div>
@@ -95,7 +96,7 @@ export function DesktopTitlebar() {
         <button type="button" aria-label={maximized ? "Restaurar janela" : "Maximizar janela"} title={maximized ? "Restaurar" : "Maximizar"} onClick={() => void act("toggle_maximize")}>
           {maximized ? <CopySimple size={13} aria-hidden="true" /> : <Square size={12} aria-hidden="true" />}
         </button>
-        <button type="button" className="desktop-window-close" aria-label="Fechar Hub" title="Fechar" onClick={() => void act("close")}><X size={15} aria-hidden="true" /></button>
+        <button type="button" className="desktop-window-close" aria-label="Fechar ZULU" title="Fechar" onClick={() => void act("close")}><X size={15} aria-hidden="true" /></button>
       </div>
     </header>
   );

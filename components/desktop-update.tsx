@@ -135,19 +135,19 @@ export function DesktopUpdate() {
   if (!version && !webBuild) return null;
 
   return (
-    <aside className="desktop-update" aria-label="Atualização do Hub">
+    <aside className="desktop-update" aria-label="Atualização do ZULU">
       {version ? (
         <>
           <div role="status">
-            <strong>Hub {version} disponível</strong>
+            <strong>ZULU {version} disponível</strong>
             <p>
               {automatic
-                ? "Salve o que estiver editando. O Hub vai baixar a atualização, instalar e abrir novamente. Sua conta e os dados do time são mantidos."
-                : "Instale esta versão uma vez para habilitar as próximas atualizações pelo próprio Hub. Sua conta e os dados do time são mantidos."}
+                ? "Salve o que estiver editando. O ZULU vai baixar a atualização, instalar e abrir novamente. Sua conta e os dados do time são mantidos."
+                : "Instale esta versão uma vez para habilitar as próximas atualizações pelo próprio ZULU. Sua conta e os dados do time são mantidos."}
             </p>
           </div>
           {phase !== "idle" && <div role="status" aria-live="polite">
-            <p>{phase === "preparing" ? "Preparando atualização…" : phase === "installing" ? "Instalando… O Hub será reiniciado." : `Baixando atualização${percent === null ? "…" : `: ${percent}%`}`}</p>
+            <p>{phase === "preparing" ? "Preparando atualização…" : phase === "installing" ? "Instalando… O ZULU será reiniciado." : `Baixando atualização${percent === null ? "…" : `: ${percent}%`}`}</p>
             {phase === "downloading" && <progress aria-label="Download da atualização" max={100} value={percent ?? undefined} />}
           </div>}
           {error && (

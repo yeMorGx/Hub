@@ -48,7 +48,7 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
       }
       hub.setTeamId(team);
       return team;
-    }, "Seu espaço está pronto. Bem-vindo ao Hub!");
+    }, "Seu espaço está pronto. Bem-vindo ao ZULU!");
     if (!result.ok)
       setError(
         "Não foi possível concluir. O workspace já criado será reaproveitado ao tentar novamente.",
@@ -135,7 +135,7 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
         </button>
       </form>
       <div className="onboarding-invite">
-        <strong>Seu time já usa o Hub?</strong>
+        <strong>Seu time já usa o ZULU?</strong>
         <p>
           Peça um link de convite ao administrador e aceite com o e-mail
           convidado. Depois de entrar no time, seu acesso aparece aqui.

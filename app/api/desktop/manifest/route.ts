@@ -38,7 +38,7 @@ export async function GET() {
     if (!/^[A-Za-z0-9+/=]+$/.test(signature)) throw new Error("Invalid signature");
     return Response.json({
       version: release.version,
-      notes: `Hub ${release.version}`,
+      notes: `ZULU ${release.version}`,
       pub_date: release.publishedAt,
       platforms: { "windows-x86_64": { signature, url: release.url } },
     }, { headers: { "Cache-Control": "no-store" } });

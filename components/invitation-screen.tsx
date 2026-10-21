@@ -20,7 +20,7 @@ export function InvitationScreen({
     let live = true;
     async function load() {
       try {
-        if (!configured) throw new Error("O Hub ainda não está configurado.");
+        if (!configured) throw new Error("O ZULU ainda não está configurado.");
         const token = new URLSearchParams(window.location.hash.slice(1)).get(
           "token",
         );
@@ -155,7 +155,7 @@ export function InvitationScreen({
         <div className="auth-switch">
           {error && <a href="/login">Entrar com outro e-mail</a>}
           <button disabled={busy} onClick={() => void dismiss()}>
-            Voltar ao Hub
+            Voltar ao ZULU
           </button>
         </div>
       )}

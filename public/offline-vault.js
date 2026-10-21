@@ -94,7 +94,7 @@ export async function unlockVault(passphrase, userId) {
       throw new Error("Esta cópia pertence a outra conta.");
     if (Date.now() - payload.updatedAt > MAX_AGE) {
       await clearVault();
-      throw new Error("A cópia expirou. Entre no Hub para atualizar.");
+      throw new Error("A cópia expirou. Entre no ZULU para atualizar.");
     }
     active = { userId: payload.userId, key, salt: record.salt, payload };
     return payload;

@@ -79,7 +79,7 @@ export function PasswordScreen() {
         <p>
           {done
             ? "Você já pode continuar para seu espaço."
-            : "Escolha uma senha forte e exclusiva para o Hub."}
+            : "Escolha uma senha forte e exclusiva para o ZULU."}
         </p>
       </div>
       {error && (

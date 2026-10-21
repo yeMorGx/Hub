@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseConfig } from "@/lib/supabase/config";
 import { InvitationScreen } from "@/components/invitation-screen";
 export const metadata: Metadata = {
-  title: "Convite para o time · Hub",
+  title: "Convite para o time · ZULU",
   robots: { index: false, follow: false },
   referrer: "no-referrer",
 };

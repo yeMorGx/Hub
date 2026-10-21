@@ -214,7 +214,7 @@ export function createDemoBackend() {
     user_id: p.id,
     display_name: p.display_name,
     project_id: id(40),
-    project_name: "Lançamento Hub",
+    project_name: "Lançamento ZULU",
     client_id: id(80),
     client_name: "Estúdio Forma",
     description: [
@@ -309,7 +309,7 @@ export function createDemoBackend() {
         data: null,
         error: {
           message:
-            "Demonstração em memória. Entre no Hub para salvar alterações.",
+            "Demonstração em memória. Entre no ZULU para salvar alterações.",
         },
       };
     },
@@ -327,7 +327,7 @@ export function createDemoBackend() {
         {
           id: id(40),
           team_id: demoTeam,
-          name: "Lançamento Hub",
+          name: "Lançamento ZULU",
           color: "#e26540",
           client_id: id(80),
           archived_at: null,
@@ -379,7 +379,7 @@ export function createDemoBackend() {
     },
     mutate: async () => ({
       ok: false,
-      error: "Demonstração em memória. Entre no Hub para salvar alterações.",
+      error: "Demonstração em memória. Entre no ZULU para salvar alterações.",
     }),
   } as unknown as HubController;
   return { hub, messages };

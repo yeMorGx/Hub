@@ -46,7 +46,7 @@ export async function downloadPdf(
     didDrawPage: () => {
       doc.setFontSize(9);
       doc.text(
-        `Hub · ${doc.getNumberOfPages()}`,
+        `ZULU · ${doc.getNumberOfPages()}`,
         14,
         doc.internal.pageSize.height - 8,
       );

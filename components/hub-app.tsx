@@ -1,4 +1,5 @@
 "use client";
+import { BrandMark, BrandWordmark } from "./brand";
 
 import {
   useEffect,
@@ -743,7 +744,7 @@ export function HubApp() {
   if (!ready)
     return (
       <div className="loading-screen">
-        <SquaresFour size={34} weight="fill" />
+        <BrandMark size={34} />
         <span>Preparando seu espaço…</span>
         <CircleNotch className="spinning" size={20} />
       </div>
@@ -756,10 +757,10 @@ export function HubApp() {
       <aside className="rail" aria-label="Navegação principal">
         <button
           className="brand"
-          aria-label="Hub — início"
+          aria-label="ZULU — início"
           onClick={() => navigate("overview")}
         >
-          <SquaresFour size={29} weight="fill" />
+          <BrandMark size={32} />
         </button>
         <div className="rail-divider" />
         <nav>
@@ -845,7 +846,7 @@ export function HubApp() {
             </span>
             <button
               className="search-button"
-              aria-label="Buscar no Hub"
+              aria-label="Buscar no ZULU"
               onClick={() => setDialog("search")}
             >
               <MagnifyingGlass size={17} />
@@ -1182,7 +1183,7 @@ export function HubApp() {
                   </button>
                 </section>
                 <div className="sidebar-footnote">
-                  <span className="tiny-brand">hub</span>
+                  <span className="tiny-brand">ZULU</span>
                   <span>Um espaço. Seu time.</span>
                 </div>
               </aside>
@@ -1908,7 +1909,7 @@ export function HubApp() {
             <div className="settings-info">
               <SquaresFour size={23} />
               <div>
-                <strong>Hub · Estúdio</strong>
+                <strong>ZULU · Estúdio</strong>
                 <p>
                   Esta versão apresenta a experiência visual. Login, MFA e
                   sincronização com o time são a próxima etapa.
@@ -1932,7 +1933,7 @@ export function HubApp() {
       )}
       {dialog === "search" && (
         <Dialog
-          title="Buscar no Hub"
+          title="Buscar no ZULU"
           onClose={() => {
             setDialog(null);
             setQuery("");

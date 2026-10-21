@@ -40,12 +40,12 @@ export function OperationsDemo() {
           Voltar ao dashboard
         </a>
         <span className="demo-badge">Demonstração · dados fictícios</span>
-        <a href="/login">Entrar no Hub</a>
+        <a href="/login">Entrar no ZULU</a>
       </header>
       <div className="operations-demo-layout">
         <aside>
           <span className="wordmark">
-            hub<span>.</span>
+            ZULU<span>.</span>
           </span>
           <p>ESTÚDIO FORMA</p>
           <nav aria-label="Módulos de demonstração">

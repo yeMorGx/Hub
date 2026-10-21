@@ -209,7 +209,7 @@ export function TeamAccess({
                 Copiar link
               </button>
               <small>
-                Compartilhe este link com a pessoa convidada. O Hub não envia
+                Compartilhe este link com a pessoa convidada. O ZULU não envia
                 e-mails automaticamente nesta etapa.
               </small>
             </div>

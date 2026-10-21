@@ -6,18 +6,23 @@ BASE = os.environ.get('HUB_APP_URL', 'http://127.0.0.1:3004')
 OUT = Path('.impeccable/review/dashboard-flat'); OUT.mkdir(parents=True, exist_ok=True)
 with sync_playwright() as p:
     browser = p.chromium.launch(executable_path='/usr/bin/chromium', args=['--no-sandbox'])
-    for mode in ['web', 'legacy', 'desktop']:
+    for mode in ['web', 'legacy', 'enable-failure', 'action-failure', 'desktop']:
         page = browser.new_page(viewport={'width':1440,'height':1100}, user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130 Safari/537.36')
         if mode != 'web':
             page.add_init_script('''window.actions=[];window.maximized=false;window.__TAURI_INTERNALS__={invoke:async(cmd,args)=>{
               if(cmd!=='desktop_titlebar'||MODE==='legacy')throw Error('Unavailable');
               window.actions.push(args.action);
+              if((MODE==='enable-failure'&&args.action==='enable')||(MODE==='action-failure'&&args.action==='minimize'))throw Error('Unavailable');
               if(args.action==='toggle_maximize')window.maximized=!window.maximized;
               return {supported:true,maximized:window.maximized};
             }};'''.replace('MODE',repr(mode)))
         page.goto(BASE+'/demo/dashboard')
         page.get_by_role('heading',name='Seu tempo, hoje',exact=True).wait_for()
         page.evaluate('document.fonts.ready')
+        if mode == 'action-failure':
+            page.wait_for_function("window.actions.includes('enable')")
+            page.get_by_role('button',name='Minimizar janela',exact=True).click()
+            page.wait_for_function("window.actions.includes('restore') && !document.documentElement.dataset.desktopTitlebar")
         if mode == 'desktop':
             page.wait_for_function("window.actions.includes('enable')")
             page.get_by_role('button',name='Maximizar janela',exact=True).click()
@@ -29,7 +34,7 @@ with sync_playwright() as p:
             assert page.locator('.rail').bounding_box()['y'] == 36
             assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
             page.screenshot(path=str(OUT/'desktop-titlebar.png'),full_page=True)
-            page.get_by_role('button',name='Fechar Hub',exact=True).click()
+            page.get_by_role('button',name='Fechar ZULU',exact=True).click()
             actions=page.evaluate('window.actions')
             assert all(x in actions for x in ['enable','minimize','toggle_maximize','drag','close']),actions
         else:

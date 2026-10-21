@@ -1,6 +1,6 @@
+import { BrandMark, BrandWordmark } from "../brand";
 import Link from "next/link";
 import {
-  SquaresFour,
   ArrowUpRight,
   ShieldCheck,
 } from "@phosphor-icons/react/dist/ssr";
@@ -10,12 +10,12 @@ export function AuthShell({ children }: { children: ReactNode }) {
     <main className="auth-shell">
       <section className="auth-story">
         <Link href="/login" className="auth-brand">
-          <SquaresFour weight="fill" size={29} />
-          <span>hub</span>
+          <BrandMark size={34} />
+          <BrandWordmark />
         </Link>
         <div className="auth-story-main">
           <span className="auth-orbit-icon">
-            <SquaresFour weight="fill" size={58} />
+            <BrandMark size={72} />
           </span>
           <h1>
             O mesmo time.

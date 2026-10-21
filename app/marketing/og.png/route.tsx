@@ -16,7 +16,7 @@ export function GET() {
         }}
       >
         <div style={{ display: "flex", fontSize: 45, fontWeight: 700 }}>
-          hub
+          ZULU
         </div>
         <div
           style={{
@@ -49,7 +49,7 @@ export function GET() {
               borderRadius: 7,
             }}
           >
-            Conheça o Hub
+            Conheça o ZULU
           </span>
         </div>
       </div>

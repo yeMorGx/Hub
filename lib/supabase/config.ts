@@ -9,9 +9,9 @@ export function supabaseConfig() {
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key)
     throw new Error(
-      "Configure a URL e a chave pública do Supabase para entrar no Hub.",
+      "Configure a URL e a chave pública do Supabase para entrar no ZULU.",
     );
   if (!key.startsWith("sb_publishable_"))
-    throw new Error("O Hub requer uma chave pública publishable do Supabase.");
+    throw new Error("O ZULU requer uma chave pública publishable do Supabase.");
   return { url, key };
 }

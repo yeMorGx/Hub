@@ -1,37 +1,19 @@
-import { createElement } from "react";
-import { ImageResponse } from "next/og";
-import { SquaresFour } from "@phosphor-icons/react/dist/ssr";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+// Literal paths let the deployment trace all three owner-approved icon assets.
+const icons: Record<string, () => Promise<Buffer>> = {
+  "180": () => readFile(path.join(process.cwd(), "public/brand/zulu-180.png")),
+  "192": () => readFile(path.join(process.cwd(), "public/brand/zulu-192.png")),
+  "512": () => readFile(path.join(process.cwd(), "public/brand/zulu-512.png")),
+};
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ size: string }> },
 ) {
-  const { size: requested } = await params;
-  const size = Number(requested);
-  if (![180, 192, 512].includes(size))
-    return new Response("Icon not found", { status: 404 });
-  return new ImageResponse(
-    createElement(
-      "div",
-      {
-        style: {
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#101112",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        },
-      },
-      createElement(SquaresFour, {
-        size: Math.round(size * 0.55),
-        weight: "fill",
-        color: "#e26540",
-      }),
-    ),
-    {
-      width: size,
-      height: size,
-      headers: { "Cache-Control": "public, max-age=86400" },
-    },
-  );
+  const { size } = await params;
+  if (!Object.hasOwn(icons, size)) return new Response("Icon not found", { status: 404 });
+  return new Response(new Uint8Array(await icons[size]()), {
+    headers: { "Content-Type": "image/png", "Cache-Control": "public, max-age=86400" },
+  });
 }
