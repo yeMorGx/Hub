@@ -7,6 +7,10 @@ on:
         type: choice
         options: [windows, all]
         default: windows
+      verifyRun:
+        description: Completed Windows build to retest when native source/configuration is unchanged
+        type: string
+        default: ''
       publishRun:
         description: Successful Windows run to attach to an existing draft (empty builds installers)
         type: string
@@ -18,7 +22,7 @@ permissions:
   contents: read
 jobs:
   package:
-    if: ${{ inputs.publishRun == '' }}
+    if: ${{ inputs.publishRun == '' && inputs.verifyRun == '' }}
     strategy:
       fail-fast: false
       matrix:
@@ -108,3 +112,59 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           SOURCE_RUN: ${{ inputs.publishRun }}
         run: node scripts/publish-desktop-draft.mjs
+
+  verify-existing:
+    if: github.event_name == 'workflow_dispatch' && inputs.verifyRun != ''
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec
+        with:
+          toolchain: stable
+      - name: Validate provenance and download exact built artifact
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.verifyRun }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:SOURCE_RUN -notmatch '^\d+$') { throw 'Numeric source run required.' }
+          $run = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:SOURCE_RUN" | ConvertFrom-Json
+          if ($run.path -ne '.github/workflows/desktop.yml' -or $run.status -ne 'completed' -or $run.head_repository.full_name -ne $env:GITHUB_REPOSITORY -or $run.head_branch -ne 'codex/hub-foundation-kanban') { throw 'Unrecognized build provenance.' }
+          $jobs = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:SOURCE_RUN/jobs" | ConvertFrom-Json
+          $build = @($jobs.jobs.steps | Where-Object { $_.name -eq 'Build installer and signed updater package' -and $_.conclusion -eq 'success' })
+          if ($build.Count -ne 1) { throw 'The source must have built and signed its installer successfully.' }
+          git diff --exit-code $run.head_sha HEAD -- src-tauri
+          if ($LASTEXITCODE -ne 0) { throw 'Native sources/configuration/icons differ. Rebuild instead.' }
+          gh run download $env:SOURCE_RUN --repo $env:GITHUB_REPOSITORY --name Hub-Windows-unsigned --dir source-artifact
+          if ($LASTEXITCODE -ne 0) { throw 'Artifact download failed.' }
+          $version = (Get-Content src-tauri/tauri.conf.json -Raw | ConvertFrom-Json).version
+          $installer = @(Get-ChildItem source-artifact -Recurse -Filter "Hub_${version}_x64-setup.exe")
+          $report = @(Get-ChildItem source-artifact -Recurse -Filter smoke.json)
+          if ($installer.Count -ne 1 -or $report.Count -ne 1) { throw 'Expected one installer and original report.' }
+          $original = Get-Content $report[0].FullName -Raw | ConvertFrom-Json
+          $hash = (Get-FileHash $installer[0].FullName -Algorithm SHA256).Hash.ToLower()
+          if ($original.sha256 -ne $hash -or -not (Test-Path "$($installer[0].FullName).sig")) { throw 'Source artifact identity mismatch.' }
+          New-Item -ItemType Directory -Path verified-desktop | Out-Null
+          Copy-Item $installer[0].FullName verified-desktop
+          Copy-Item "$($installer[0].FullName).sig" verified-desktop
+          @{ sourceRun = [long]$env:SOURCE_RUN; sourceCommit = $run.head_sha; verificationCommit = $env:GITHUB_SHA; nativeTreeMatches = $true; sha256 = $hash } | ConvertTo-Json | Set-Content verified-desktop/provenance.json -Encoding utf8
+      - name: Test actual Windows controls and installer lifecycle
+        shell: powershell
+        run: |
+          $installer = Get-ChildItem verified-desktop -Filter '*-setup.exe' | Select-Object -First 1
+          ./scripts/windows-smoke.ps1 -Installer $installer.FullName -OutputDirectory "$pwd/verified-desktop"
+      - name: Verify existing updater signature and reject tampering
+        shell: powershell
+        run: |
+          $installer = Get-ChildItem verified-desktop -Filter '*-setup.exe' | Select-Object -First 1
+          cargo run --locked --manifest-path scripts/updater-verifier/Cargo.toml -- src-tauri/tauri.conf.json $installer.FullName
+          if ($LASTEXITCODE -ne 0) { throw 'Updater verification failed.' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: Hub-Windows-unsigned
+          path: verified-desktop/**
+          retention-days: 14

@@ -1,6 +1,6 @@
-# Hub
+# ZULU
 
-Aplicativo do time para reunir comunicação, presença, calendário e registro de horas em um espaço de trabalho compartilhado.
+ZULU é o aplicativo do time para reunir comunicação, presença, calendário e registro de horas em um espaço de trabalho compartilhado.
 
 ## Pessoas e tarefas
 

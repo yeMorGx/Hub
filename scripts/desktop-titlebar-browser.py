@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 BASE = os.environ.get('HUB_APP_URL', 'http://127.0.0.1:3004')
-OUT = Path('.impeccable/review/dashboard-flat'); OUT.mkdir(parents=True, exist_ok=True)
+OUT = Path(os.environ.get('HUB_REVIEW_DIR', '.impeccable/review/dashboard-flat')); OUT.mkdir(parents=True, exist_ok=True)
 with sync_playwright() as p:
     browser = p.chromium.launch(executable_path='/usr/bin/chromium', args=['--no-sandbox'])
     for mode in ['web', 'legacy', 'enable-failure', 'action-failure', 'desktop']:
@@ -29,7 +29,7 @@ with sync_playwright() as p:
             page.get_by_role('button',name='Restaurar janela',exact=True).click()
             page.get_by_role('button',name='Minimizar janela',exact=True).click()
             page.locator('.desktop-titlebar-drag').dispatch_event('mousedown',{'button':0,'detail':1})
-            page.evaluate("document.title='(3) Hub'")
+            page.evaluate("document.title='(3) ZULU'")
             page.get_by_label('3 mensagens não lidas').wait_for()
             assert page.locator('.rail').bounding_box()['y'] == 36
             assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')

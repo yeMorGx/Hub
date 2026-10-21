@@ -1,4 +1,5 @@
 "use client";
+import AnimatedGradient from "./animated-gradient";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -48,6 +49,8 @@ function signedBalance(minutes: number) {
     : `${minutes > 0 ? "+" : "−"}${shortDuration(Math.abs(minutes) * 60)}`;
 }
 
+const TIMER_GRADIENT = { preset: "Prism" } as const;
+
 export function TodayOverview(props: TodayOverviewProps) {
   const { timer, today, week, month, configured, busy } = props;
   const office = homeOfficeSummary(props.homeOffice, props.todayKey);
@@ -75,6 +78,7 @@ export function TodayOverview(props: TodayOverviewProps) {
         aria-label="Timer e jornada"
       >
         <div className="today-focus">
+          <AnimatedGradient config={TIMER_GRADIENT} className="today-prism" />
           <div className="today-section-heading">
             <h2>Seu tempo, hoje</h2>
             <span className={`today-timer-status ${timer.state}`}>

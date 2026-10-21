@@ -1,5 +1,5 @@
 "use client";
-import { BrandMark, BrandWordmark } from "./brand";
+import { BrandMark } from "./brand";
 
 import {
   useEffect,

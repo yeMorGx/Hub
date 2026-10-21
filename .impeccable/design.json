@@ -1,6 +1,25 @@
 {
   "version": 1,
-  "product": "Hub",
+  "product": "ZULU",
+  "branding": {
+    "name": "ZULU",
+    "authority": "Official owner-supplied SVG; explicit user preference for icon-first branding with minimal logo text",
+    "source": "public/brand/zulu-source.svg",
+    "mark": "public/brand/zulu-mark.svg",
+    "wordmark": "public/brand/zulu-wordmark.svg; retained asset, not rendered in primary brand slots",
+    "markGeometry": "Original black rounded rectangle and white ULU/smile paths, extracted without redrawing",
+    "primarySlots": {
+      "sidebar": "44px",
+      "desktopTitlebar": "24px",
+      "marketing": "40px",
+      "auth": "40px",
+      "privacy": "30px"
+    },
+    "primarySlotRule": "Use the official symbol without adjacent product name or tagline; retain accessible ZULU names",
+    "platformIcons": "PWA PNG and desktop PNG/ICO/ICNS derive from the exact official symbol",
+    "scope": "Brand identity update; existing surface palettes and functional icon library remain",
+    "technicalCompatibility": "app.hub.team, native Hub productName/setup filenames, repository, registry/cache/vault keys retained; no technical identity migration claimed"
+  },
   "mode": "operate",
   "reference": "https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard",
   "font": "Manrope Variable",
@@ -81,7 +100,7 @@
         "desktop-titlebar.png",
         "focus-1440.png"
       ],
-      "limits": "No full product approval, complete accessibility audit, real-account authentication, MFA, RLS, Presence or real RPC persistence validation. Real native Windows controls remain a release gate; 0.1.4 not published.",
+      "limits": "No full product approval, complete accessibility audit, real-account authentication, MFA, RLS, Presence or real RPC persistence validation. Prior native smoke passed with old artwork; branded Windows build pending; 0.1.4 not published.",
       "previousVerdict": "Current ship reviews the flat dashboard; previous light/dark verdicts are historical evidence."
     },
     "font": "Inter Variable, npm-installed and locally served",
@@ -115,7 +134,7 @@
     },
     "desktopTitlebar": {
       "height": "36px",
-      "appearance": "Hub brand, caption, unread count; ivory and navy on dashboard",
+      "appearance": "Official ZULU symbol at 24px without adjacent name/tagline, unread count; ivory and navy on dashboard",
       "controls": [
         "minimize",
         "maximize/restore",
@@ -125,7 +144,7 @@
       ],
       "integration": "Rust desktop_titlebar command; fixed actions on own main window only",
       "compatibility": "native decorations retained on web, non-Windows and older installers; restore attempted after control errors/unmount; navigation starts with native decorations",
-      "release": "native version 0.1.4 prepared; CI and native Windows control verification pending; not published",
+      "release": "native version 0.1.4 not published; prior native smoke 39642679298 passed with old artwork; branded build 39645508848 at 34c3b0f2331ac07c9a8b6cdc48d3e02f4b97cbc3 pending",
       "contract": "docs/desktop-updates.md#barra-de-título-windows--implementação-014-pendente-de-publicação"
     }
   },

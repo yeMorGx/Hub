@@ -1247,3 +1247,16 @@ html:has(.dashboard-redesign) {
 .dashboard-redesign .today-meeting + .today-meeting {
   border: 0;
 }
+
+/* Spell UI Prism, scoped to the timer; content stays above its decorative canvas. */
+.today-focus { position: relative; isolation: isolate; background: #050505; }
+.today-focus::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #0000009e;
+  pointer-events: none;
+}
+.today-focus > :not(.today-prism) { position: relative; z-index: 2; }
+.today-focus .today-timer-status { background: #0005; }

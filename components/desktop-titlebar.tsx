@@ -1,5 +1,5 @@
 "use client";
-import { BrandMark, BrandWordmark } from "./brand";
+import { BrandMark } from "./brand";
 
 import { useEffect, useState } from "react";
 import { CopySimple, Minus, Square, X } from "@phosphor-icons/react";
@@ -86,9 +86,8 @@ export function DesktopTitlebar() {
           event.preventDefault();
           void act(event.detail === 2 ? "toggle_maximize" : "drag");
         }}>
-        <BrandMark size={20} />
-        <BrandWordmark className="desktop-titlebar-brand" />
-        <span className="desktop-titlebar-caption">Seu espaço de trabalho</span>
+        <BrandMark size={24} />
+
         {unread && <span className="desktop-titlebar-unread" aria-label={`${unread} mensagens não lidas`}>{unread}</span>}
       </div>
       <div className="desktop-window-controls" role="group" aria-label="Controles da janela">

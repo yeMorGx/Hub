@@ -1,5 +1,5 @@
 "use client";
-import { BrandMark, BrandWordmark } from "./brand";
+import { BrandMark } from "./brand";
 // Public, in-memory preview. Shared dashboard components; no Supabase client or credentials.
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -192,10 +192,8 @@ export function DashboardDemo() {
       </a>
       <aside className="rail" aria-label="Navegação da demonstração">
         <a className="brand" href="/demo/dashboard" aria-label="ZULU — início">
-          <BrandMark size={32} />
-          <span className="dashboard-wordmark">
-            <BrandWordmark /><span>Seu espaço de trabalho</span>
-          </span>
+          <BrandMark size={44} />
+
         </a>
         <div className="rail-divider" />
         <nav>

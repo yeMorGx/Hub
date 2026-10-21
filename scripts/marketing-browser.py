@@ -1,8 +1,11 @@
 """Public marketing UI tests. No authentication, business writes or installer execution."""
-import json,os
+import json,os,re
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 base=os.environ.get('HUB_APP_URL','http://127.0.0.1:3100')
+release=Path('lib/desktop/public-release.ts').read_text()
+version=re.search(r'version: "([^"]+)"',release).group(1)
+sha256=re.search(r'sha256: "([^"]+)"',release).group(1)
 out=Path(os.environ.get('HUB_MARKETING_EVIDENCE','/tmp/hub-marketing-final'));out.mkdir(exist_ok=True)
 with sync_playwright() as p:
  b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
@@ -28,12 +31,12 @@ with sync_playwright() as p:
    page.get_by_role('button',name='Abrir menu').click();page.locator('#marketing-menu').get_by_role('link',name='Ir para downloads').click()
   else:page.get_by_role('link',name='Conheça os downloads').click()
   page.wait_for_url('**/download');page.wait_for_load_state('networkidle')
-  assert page.get_by_role('link',name='Baixar para Windows',exact=True).get_attribute('href')=='https://github.com/yeMorGx/Hub/releases/download/desktop-v0.1.2/Hub_0.1.2_x64-setup.exe'
+  assert page.get_by_role('link',name='Baixar para Windows',exact=True).get_attribute('href')==f'https://github.com/yeMorGx/Hub/releases/download/desktop-v{version}/Hub_{version}_x64-setup.exe'
   assert page.locator('h1').count()==1
   assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
   page.screenshot(path=str(out/f'download-{width}.png'),full_page=True,animations='disabled')
   checksum=page.locator('.m-checksum');checksum.locator('summary').click();checksum.get_by_role('button',name='Copiar SHA-256').click()
-  assert page.evaluate('navigator.clipboard.readText()')=='454cd533dc657f2d61fa3d9c6454d783ef35bb955288d4c0430fc27647fbed93'
+  assert page.evaluate('navigator.clipboard.readText()')==sha256
   assert not errors,errors
   print(json.dumps({'width':width,'pages':2,'tabs':4,'keyboard':True,'timer':True,'faq':True,'navigation':True,'clipboard':True,'overflow':False,'pageErrors':errors}),flush=True)
   ctx.close()

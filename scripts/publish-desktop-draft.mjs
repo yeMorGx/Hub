@@ -17,6 +17,17 @@ const root = "desktop-verified-artifact";
 gh("run", "download", runId, "--repo", repository, "--name", "Hub-Windows-unsigned", "--dir", root);
 function files(path) { return readdirSync(path, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? files(join(path, entry.name)) : [join(path, entry.name)]); }
 const entries = files(root), reports = entries.filter(path => path.endsWith("smoke.json"));
+const provenanceFiles = entries.filter(path => path.endsWith("provenance.json"));
+if (provenanceFiles.length) {
+  if (provenanceFiles.length !== 1) throw new Error("Missing verification provenance.");
+  const provenance = JSON.parse(readFileSync(provenanceFiles[0], "utf8").replace(/^\uFEFF/, ""));
+  if (!Number.isSafeInteger(provenance.sourceRun) || provenance.verificationCommit !== run.head_sha || provenance.nativeTreeMatches !== true) throw new Error("Invalid verification provenance.");
+  const source = JSON.parse(gh("api", `repos/${repository}/actions/runs/${provenance.sourceRun}`));
+  if (source.path !== ".github/workflows/desktop.yml" || source.status !== "completed" || source.head_repository.full_name !== repository || source.head_branch !== run.head_branch || source.head_sha !== provenance.sourceCommit) throw new Error("Unrecognized original build.");
+  const nativeTree = sha => JSON.parse(gh("api", `repos/${repository}/git/trees/${sha}`)).tree.find(entry => entry.path === "src-tauri" && entry.type === "tree")?.sha;
+  const originalTree = nativeTree(source.head_sha);
+  if (!originalTree || originalTree !== nativeTree(run.head_sha)) throw new Error("Verified installer native sources differ from release sources.");
+}
 const expectedName = `Hub_${config.version}_x64-setup.exe`;
 const installers = entries.filter(path => path.endsWith(expectedName));
 const signatures = entries.filter(path => path.endsWith(`${expectedName}.sig`));

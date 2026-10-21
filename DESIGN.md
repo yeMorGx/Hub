@@ -1,10 +1,18 @@
-# Hub — Sistema visual
+# ZULU — Sistema visual
 
 ## Autoridade
 
-Referência escolhida pelo usuário: [Team Management Calendar UI Dashboard — Shakuro](https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard). Captura: `docs/design-references/calendar-shakuro.png`. O Hub adapta a composição; não reproduz o dispositivo, fotografia de fundo, dados, logo ou funcionalidades futuras da referência. Esta autoridade permanece nos demais módulos, acesso e demonstração original. Em Hoje e `/demo/dashboard`, a decisão posterior do usuário substitui essa identidade pela superfície clara documentada abaixo.
+Referência escolhida pelo usuário: [Team Management Calendar UI Dashboard — Shakuro](https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard). Captura: `docs/design-references/calendar-shakuro.png`. O ZULU adapta a composição; não reproduz o dispositivo, fotografia de fundo, dados, logo ou funcionalidades futuras da referência. Esta autoridade permanece nos demais módulos, acesso e demonstração original. Em Hoje e `/demo/dashboard`, a decisão posterior do usuário substitui essa identidade pela superfície clara documentada abaixo.
 
 Modo da superfície: **Operate**. Clareza das tarefas diárias, densidade útil, legibilidade e estados reconhecíveis orientam a interface.
+
+### Marca oficial ZULU
+
+O nome atual do produto é **ZULU**. O SVG oficial fornecido pelo usuário foi preservado integralmente em `public/brand/zulu-source.svg`. O símbolo em `public/brand/zulu-mark.svg` foi extraído desse arquivo, sem redesenhar os caminhos: retângulo preto arredondado com o desenho branco de ULU/sorriso. `public/brand/zulu-wordmark.svg` preserva o lettering como asset disponível.
+
+A preferência explícita do usuário é priorizar o símbolo e reduzir texto nas marcas. Os espaços principais de marca não mostram nome nem tagline adjacentes: sidebar (44px), barra de título (24px), marketing e acesso (40px) e privacidade (30px). O nome acessível continua ZULU. Ícones de PWA e desktop usam o mesmo símbolo oficial; Phosphor continua sendo a biblioteca de ícones funcionais. Essa mudança de marca preserva as paletas e autoridades de cada superfície, incluindo marfim, azul profundo e Inter em Hoje.
+
+Identificadores técnicos de compatibilidade como `app.hub.team`, `Hub` no produto/arquivo de instalação nativo, repositório e chaves de registro/cache/cofre permanecem existentes. A marca visível ZULU não representa uma migração desses identificadores.
 
 ## Tokens implementados
 
@@ -74,7 +82,7 @@ Contêiner principal com cantos de 14px; agenda com 10px; faixa de home office e
 
 #### Components
 
-Timer com ação branca sobre azul e encerramento secundário; jornada com progresso e configuração opcional; resumo de home office com erro, ausência e nova tentativa; calendário compacto com cabeçalho fixo; navegação com rótulos permanentes e estado ativo azul claro. O foco visível recebe contorno azul de 2px, afastado 4px; dentro do timer azul, o contorno é branco, com as mesmas dimensões. A legenda Eventos usa verde, acompanhando os blocos de evento desta superfície. No Windows compatível, uma barra de título de 36px acompanha o marfim e o azul de Hoje, com marca Hub, legenda, indicador de mensagens não lidas e controles nativos de minimizar, maximizar/restaurar e fechar. A área da marca permite arrastar e o duplo clique alterna maximização; foco permanece visível. Contrato de compatibilidade e entrega: [barra desktop](docs/desktop-updates.md#barra-de-título-windows--implementação-014-pendente-de-publicação).
+Timer com ação branca sobre azul e encerramento secundário; jornada com progresso e configuração opcional; resumo de home office com erro, ausência e nova tentativa; calendário compacto com cabeçalho fixo; navegação com rótulos permanentes e estado ativo azul claro. O foco visível recebe contorno azul de 2px, afastado 4px; dentro do timer azul, o contorno é branco, com as mesmas dimensões. A legenda Eventos usa verde, acompanhando os blocos de evento desta superfície. No Windows compatível, uma barra de título de 36px acompanha o marfim e o azul de Hoje, com símbolo oficial ZULU de 24px, sem nome ou tagline adjacentes, indicador de mensagens não lidas e controles nativos de minimizar, maximizar/restaurar e fechar. A área da marca permite arrastar e o duplo clique alterna maximização; foco permanece visível. Contrato de compatibilidade e entrega: [barra desktop](docs/desktop-updates.md#barra-de-título-windows--implementação-014-pendente-de-publicação).
 
 #### Do's and Don'ts
 
@@ -83,7 +91,7 @@ Timer com ação branca sobre azul e encerramento secundário; jornada com progr
 - **Do** manter rótulos separados para tempo da atividade, total do dia e saldos sobre o previsto até hoje.
 - **Don't** herdar o veredito visual da versão escura para esta composição clara.
 
-Revisão atual da superfície plana: **`ship`**, sem achados materiais na revisão independente das capturas em `.impeccable/review/dashboard-flat/`: `1440.png`, `390.png`, `desktop-titlebar.png` e `focus-1440.png`. Build, TypeScript, 29 testes unitários e os cenários de produção em 1440px/1280px/390px passaram; a barra Windows foi exercitada com IPC simulado. Controles reais em Windows permanecem um gate da versão 0.1.4, ainda não publicada; esta evidência não comprova acessibilidade completa nem integração autenticada.
+Revisão atual da superfície plana: **`ship`**, sem achados materiais na revisão independente das capturas em `.impeccable/review/dashboard-flat/`: `1440.png`, `390.png`, `desktop-titlebar.png` e `focus-1440.png`. Build, TypeScript, 29 testes unitários e os cenários de produção em 1440px/1280px/390px passaram; a barra Windows foi exercitada com IPC simulado. O smoke Windows da barra passou antes da atualização dos assets; o novo build com marca ZULU permanece pendente e a versão 0.1.4 ainda não foi publicada; esta evidência não comprova acessibilidade completa nem integração autenticada.
 
 ## Interações e limites
 
@@ -105,7 +113,7 @@ Capturas desktop e celular em `.impeccable/review/`. Compilação da entrega ant
 
 Login, cadastro e recuperação herdam o grafite e o acento quente. Desktop divide contexto do produto e formulário; celular prioriza marca e tarefa. Formulários usam nomes acessíveis, campos confortáveis e estados de erro/sucesso. MFA usa QR/chave vindos do Auth, sem ilustração ou segredo fictício.
 
-O app integrado mantém a composição da demonstração e substitui dados de exemplo por estados vazios e conteúdo autorizado pelo RLS. Eventos reais usam azul para reunião e laranja para evento; colisões de horário usam faixas separadas. PWA mantém o símbolo SquaresFour da biblioteca Phosphor em ícones PNG, sem novos assets de marca externos.
+O app integrado mantém a composição da demonstração e substitui dados de exemplo por estados vazios e conteúdo autorizado pelo RLS. Eventos reais usam azul para reunião e laranja para evento; colisões de horário usam faixas separadas. PWA usa ícones PNG derivados do símbolo oficial ZULU fornecido pelo usuário.
 
 Capturas anônimas de acesso estão em `.impeccable/review/auth/`. Telas autenticadas/MFA dependem de uma conta real para inspeção; não foram simuladas para produzir evidência de integração.
 
@@ -146,7 +154,7 @@ Botões têm cantos discretos (7px); molduras e painéis principais usam cantos 
 ### Components
 
 - **Ações:** botão de tinta sobre claro, verde vivo sobre azul e variante com contorno para acesso web. Base de 52px de altura mínima, preenchimento de 14px por 23px e peso 750; o CTA da navegação fica mais compacto no celular. Foco visível usa contorno de 3px, afastado 5px; nos grandes campos escuros ou azuis, recebe verde vivo.
-- **Navegação:** marca com símbolo SquaresFour, links de seção, entrada no Hub e download. O menu móvel revela os mesmos destinos; o link de pular conteúdo aparece ao receber foco.
+- **Navegação:** símbolo oficial ZULU sem nome ou tagline adjacentes, links de seção, entrada no ZULU e download. O menu móvel revela os mesmos destinos; o link de pular conteúdo aparece ao receber foco.
 - **Vitrine por abas:** quatro telas da demonstração, com título, descrição e link de exploração. Seleção azul com seta; teclado usa setas para cima/baixo, Home e End. Capturas WebP locais mantêm legenda de dados fictícios.
 - **Timer demonstrativo:** painel claro, números tabulares e controle circular azul para iniciar/encerrar. Funciona somente na página e avisa que nenhuma hora é registrada.
 - **FAQ e integridade:** elementos nativos `details`/`summary`, linhas divisórias e ícone de expansão. O bloco de integridade permite copiar SHA-256 e apresenta retorno de sucesso ou falha.

@@ -1,5 +1,5 @@
 "use client";
-import { BrandMark, BrandWordmark } from "./brand";
+import { BrandMark } from "./brand";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
   SquaresFour,
@@ -686,8 +686,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
           aria-label="ZULU — início"
           onClick={() => navigate("overview")}
         >
-          <BrandMark size={32} />
-          <span className="dashboard-wordmark"><BrandWordmark /><span>Seu espaço de trabalho</span></span>
+          <BrandMark size={44} />
+
         </button>
         <div className="rail-divider" />
         <nav>

@@ -1,4 +1,4 @@
-import { BrandMark, BrandWordmark } from "../brand";
+import { BrandMark } from "../brand";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -9,9 +9,8 @@ export function AuthShell({ children }: { children: ReactNode }) {
   return (
     <main className="auth-shell">
       <section className="auth-story">
-        <Link href="/login" className="auth-brand">
-          <BrandMark size={34} />
-          <BrandWordmark />
+        <Link href="/login" className="auth-brand" aria-label="ZULU — início">
+          <BrandMark size={40} />
         </Link>
         <div className="auth-story-main">
           <span className="auth-orbit-icon">

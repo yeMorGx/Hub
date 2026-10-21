@@ -71,3 +71,10 @@ html[data-desktop-titlebar] .notifications-popover { top: 97px; }
 .dashboard-redesign .dashboard-wordmark > .brand-wordmark { width: 90px; height: 27px; margin: 0; }
 .desktop-titlebar .brand-wordmark { width: 49px; height: 15px; }
 html:has(.dashboard-redesign) .desktop-titlebar .brand-wordmark { filter: none; }
+.m-policy-brand { display: inline-flex; align-items: center; gap: 9px; flex-shrink: 0; }
+.m-policy-brand .brand-wordmark { width: 82px; height: 25px; }
+@media (max-width: 520px) {
+  .m-policy-brand { gap: 6px; }
+  .m-policy-brand .brand-mark { width: 26px; height: 26px; }
+  .m-policy-brand .brand-wordmark { width: 70px; height: 22px; }
+}

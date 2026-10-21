@@ -1,5 +1,5 @@
 "use client";
-import { BrandMark, BrandWordmark } from "./brand";
+import { BrandMark } from "./brand";
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -37,8 +37,7 @@ export function MarketingNav({ download = false }: { download?: boolean }) {
           className="m-brand"
           aria-label="ZULU — página inicial"
         >
-          <BrandMark size={34} />
-          <BrandWordmark />
+          <BrandMark size={40} />
         </Link>
         <div className="m-nav-links">
           <Link href="/site#produto">O produto</Link>
@@ -92,9 +91,8 @@ export function MarketingFooter() {
     <footer className="m-footer">
       <div className="m-shell">
         <div className="m-footer-top">
-          <Link href="/site" className="m-brand">
-            <BrandMark size={34} />
-            <BrandWordmark />
+          <Link href="/site" className="m-brand" aria-label="ZULU — início">
+            <BrandMark size={40} />
           </Link>
           <p>
             Um lugar para o trabalho.
@@ -237,7 +235,7 @@ export function ProductExplorer() {
         >
           <Image
             key={view.id}
-            src={`/marketing/${view.id}.webp`}
+            src={`/marketing/${view.id}-zulu.webp`}
             alt={view.alt}
             width={1440}
             height={1000}
@@ -425,7 +423,7 @@ export function LandingPage() {
               </div>
               <div className="m-hero-screen">
                 <Image
-                  src="/marketing/today.webp"
+                  src="/marketing/today-zulu.webp"
                   alt="Aplicativo ZULU: foco do dia, timer, reuniões e agenda do time. Dados de demonstração."
                   width={1440}
                   height={1000}
@@ -475,7 +473,7 @@ export function LandingPage() {
             <div className="m-connection-grid">
               <div className="m-connection-image">
                 <Image
-                  src="/marketing/chat.webp"
+                  src="/marketing/chat-zulu.webp"
                   alt="Conversas do ZULU, com canais e mensagens de exemplo"
                   width={1440}
                   height={1000}
@@ -654,7 +652,7 @@ export function DownloadPage() {
               Baixar para Windows
             </a>
             <span className="m-download-file">
-              Windows 10 / 11 · x64 · .exe · 2,31 MB
+              Windows 10 / 11 · x64 · .exe · {(WINDOWS_RELEASE.bytes / 1024 / 1024).toLocaleString("pt-BR", { maximumFractionDigits: 2 })} MiB
             </span>
             <div className="m-windows-features">
               <span>

@@ -1,6 +1,6 @@
 # Dashboard Hoje
 
-Modo: **Operate**. O usuário aprovou explicitamente uma nova identidade clara para Hoje: marfim, superfícies brancas, tinta escura, azul profundo e Inter Variable. A escolha substitui a identidade Shakuro/Manrope/grafite/laranja somente em Hoje e `/demo/dashboard`, no escopo `.dashboard-redesign`. Os demais módulos, `/demo` original e o site público mantêm suas autoridades. A decisão posterior remove todas as bordas decorativas do dashboard, preservando marfim, azul profundo e Inter. Os valores normativos desta superfície estão em [DESIGN.md](../DESIGN.md#hoje--identidade-clara-aprovada).
+Produto atual: **ZULU**. Modo: **Operate**. O usuário aprovou explicitamente uma nova identidade clara para Hoje: marfim, superfícies brancas, tinta escura, azul profundo e Inter Variable. A escolha substitui a identidade Shakuro/Manrope/grafite/laranja somente em Hoje e `/demo/dashboard`, no escopo `.dashboard-redesign`. Os demais módulos, `/demo` original e o site público mantêm suas autoridades. A decisão posterior remove todas as bordas decorativas do dashboard, preservando marfim, azul profundo e Inter. Os valores normativos desta superfície estão em [DESIGN.md](../DESIGN.md#hoje--identidade-clara-aprovada).
 
 ## Composição aprovada
 
@@ -14,7 +14,9 @@ A separação visual usa campos brancos e azulados, espaço e hierarquia tipogr�
 
 Contornos de foco são funcionais: azul de 2px com afastamento de 4px; dentro do timer, branco nas mesmas dimensões. A captura `focus-1440.png` registra o foco após a remoção das bordas.
 
-No Windows compatível, a barra de título de 36px mostra Hub, a legenda “Seu espaço de trabalho” e o contador de mensagens não lidas derivado do título. Usa marfim e azul em Hoje. Botões acessíveis invocam minimizar, maximizar/restaurar e fechar; a área da marca arrasta a janela e o duplo clique alterna a maximização. A barra usa o comando Rust restrito `desktop_titlebar`, com ações fixas somente na própria janela principal. Web, plataformas não Windows e instaladores antigos mantêm a moldura nativa; erros tentam restaurá-la e a navegação começa com as decorações nativas. [Contrato e estado da entrega](desktop-updates.md#barra-de-título-windows--implementação-014-pendente-de-publicação).
+A marca principal da sidebar usa o símbolo oficial ZULU de 44px, sem nome ou tagline adjacentes, conforme a preferência do usuário por ícones. O SVG original está preservado em `public/brand/zulu-source.svg`; `public/brand/zulu-mark.svg` reutiliza o símbolo extraído sem redesenho. O lettering permanece disponível como asset, sem aparecer nesses espaços principais.
+
+No Windows compatível, a barra de título de 36px mostra o símbolo ZULU de 24px, sem nome ou tagline adjacentes, e o contador de mensagens não lidas derivado do título. Usa marfim e azul em Hoje. Botões acessíveis invocam minimizar, maximizar/restaurar e fechar; a área da marca arrasta a janela e o duplo clique alterna a maximização. A barra usa o comando Rust restrito `desktop_titlebar`, com ações fixas somente na própria janela principal. Web, plataformas não Windows e instaladores antigos mantêm a moldura nativa; erros tentam restaurá-la e a navegação começa com as decorações nativas. [Contrato e estado da entrega](desktop-updates.md#barra-de-título-windows--implementação-014-pendente-de-publicação).
 
 ## Referências pesquisadas
 
@@ -51,6 +53,6 @@ A revisão final independente da superfície plana recebeu veredito **`ship`**, 
 
 A correção funcional anterior da fixture de feriado permanece: semanas pausadas não mostram atribuições, e o resumo mantém a próxima data válida.
 
-A versão nativa foi incrementada para **0.1.4**, mas ainda não foi publicada. CI Windows e comprovação dos controles reais, arraste e restauração da moldura no executável permanecem gates de release. O navegador com IPC simulado não comprova esses comportamentos nativos.
+A versão nativa foi incrementada para **0.1.4**, mas ainda não foi publicada. O build Windows anterior `39642679298` passou nos checks nativos, incluindo `customTitlebar`, `maximizeRestored` e `minimizeControl`, com artwork anterior. O novo build com a marca ZULU, `39645508848`, no commit `34c3b0f2331ac07c9a8b6cdc48d3e02f4b97cbc3`, permanece pendente; sua aprovação continua sendo gate de release. As capturas e verificações da superfície plana acima antecedem a troca da marca e não constituem revisão final dos novos assets. O navegador com IPC simulado não comprova comportamentos nativos.
 
 A evidência não constitui aprovação integral do produto, auditoria completa de acessibilidade ou validação de autenticação, autorização e integração real. Os fluxos autenticados continuam dependendo de uma conta real.

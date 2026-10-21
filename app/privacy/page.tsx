@@ -1,4 +1,4 @@
-import { BrandMark, BrandWordmark } from "@/components/brand";
+import { BrandMark } from "@/components/brand";
 import type { Metadata } from "next";
 import Link from "next/link";
 import "../marketing.css";
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <header className="m-policy-header">
         <div className="m-policy-shell m-policy-nav">
           <Link className="m-policy-brand" href="/site" aria-label="ZULU, início">
-            <BrandMark size={30} /><BrandWordmark />
+            <BrandMark size={30} />
           </Link>
           <nav aria-label="Navegação principal">
             <Link href="/site">Início</Link>
