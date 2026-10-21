@@ -1,0 +1,47 @@
+Vercel CLI 64.7.0 (Node.js 24.19.0)
+Fetching deployment "hub-izoibt32i-yemorgxs-projects.vercel.app" in yemorgxs-projects
+> Fetched deployment "hub-izoibt32i-yemorgxs-projects.vercel.app" in yemorgxs-projects [2m]
+
+  General
+
+    id		dpl_Hhmmh6gUhrAMSAKm3uksNozmEEZW
+    name	hub
+    target	production
+    status	● Ready
+    url		https://hub-izoibt32i-yemorgxs-projects.vercel.app
+    created	Wed Oct 21 2026 22:56:57 GMT+0000 (Coordinated Universal Time) [3m ago]
+
+
+  Build Machine
+
+    requested build machine basic
+    actual assigned cores   2 vCPU (actual assignment)
+    memory                  8192 MiB
+    selection type          fixed
+    selection source        plan-default
+
+
+  Duration
+
+    build duration	1m 20s
+    post-build duration	unavailable
+    billable duration	unavailable
+    CPU Minutes Usage	unavailable
+
+
+  Aliases
+
+    ╶ https://hub-yemorgxs-projects.vercel.app
+    
+
+  Builds
+
+    ┌ .        [0ms]
+    ├── λ index (2.19MB) [iad1]
+    ├── λ _not-found (2.19MB) [iad1]
+    ├── λ _not-found.rsc (2.19MB) [iad1]
+    ├── λ index.rsc (2.19MB) [iad1]
+    ├── λ invite (2.19MB) [iad1]
+    └── 97 output items hidden
+    
+

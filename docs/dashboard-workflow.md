@@ -20,3 +20,7 @@ Modo **Operate**. Refinamento pedido pelo usuário sobre a composição Bento ex
 `npm run build`, `npm run test:unit`, scripts `dashboard-workflow-browser.py`, `dashboard-browser.py`, `bento-browser.py`, `prism-browser.py` e `test:public`.
 
 Os testes de navegador usam a prévia pública em memória e a fixture isolada HeroUI: não criam conta, enviam e-mail, iniciam timer real nem escrevem dados de negócio. Confirmam layout/controle em larguras de 320 a 1440px, teclado, movimento reduzido e a ligação local entre timer e pessoas. Os testes unitários conferem seleção de DMs próprias e texto dos saldos. Não substituem uma validação com duas sessões autenticadas de pessoas reais nem validam RLS ponta a ponta. Evidências e identificação da publicação em `.impeccable/review/dashboard-workflow/`.
+
+## Publicação
+
+Publicado em https://hub-one-azure.vercel.app, deployment `dpl_Hhmmh6gUhrAMSAKm3uksNozmEEZW` READY, fonte `e348d09`. Verificação pública: 32 checks HTTP e fluxo de atividade, pessoas, mensagem fictícia e navegação nas larguras 1440/390/320px. Ícones também conferidos com hover, teclado e redução de movimento. Identificação e evidências em `.impeccable/review/dashboard-workflow/`.

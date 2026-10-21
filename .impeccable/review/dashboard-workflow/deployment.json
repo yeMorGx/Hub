@@ -1,0 +1,17 @@
+{
+  "id": "dpl_Hhmmh6gUhrAMSAKm3uksNozmEEZW",
+  "url": "hub-izoibt32i-yemorgxs-projects.vercel.app",
+  "readyState": "READY",
+  "target": "production",
+  "alias": [
+    "hub-one-azure.vercel.app",
+    "hub-yemorgxs-projects.vercel.app"
+  ],
+  "aliasAssigned": true,
+  "createdAt": 1792623417364,
+  "ready": 1792623584411,
+  "errorCode": null,
+  "errorMessage": null,
+  "sourceCommit": "e348d09f2c424c5df6619df9857acdf2ada88f37",
+  "checkedAt": "2026-10-21T23:00:42.391094+00:00"
+}
