@@ -11,6 +11,7 @@ O usuário escolheu Windows e informou não possuir certificado de assinatura. E
 - Janela única: abrir novamente o executável traz a janela existente.
 - **Ctrl+Shift+H** restaura a janela e alterna o timer quando há sessão autenticada, MFA e participação ativa no time. Na tela de login, apenas restaura a janela. Um conflito do atalho no sistema não impede a abertura do app.
 - Indicador de não lidas na barra de tarefas Windows usa **overlay icon**; a API `setBadgeCount` não é suportada no Windows. O indicador é limpo ao zerar as não lidas/sair e os recursos de imagem são liberados. Em outras plataformas, o caminho de badge anterior foi preservado, sem nova validação nativa delas nesta etapa.
+- Compartilhamento de tela no Windows usa a API **Windows Graphics Capture** com seletor de janelas/monitores e prévia no Hub. A imagem é convertida para vídeo e publicada por um participante LiveKit nativo, separado do participante de áudio/vídeo. O token nativo só pode publicar a faixa de tela; a checagem de roster trata essa identidade como a pessoa autenticada, então a revogação de acesso remove os dois participantes. Câmera e microfone continuam na chamada principal.
 - As permissões Tauri se limitam ao domínio oficial e a eventos, badge/overlay, criação e descarte de imagens. Não foi adicionada permissão de leitura de arquivos ou execução de comandos pelo frontend.
 
 ## Instalar e usar
@@ -45,6 +46,12 @@ Ainda exigem validação manual no computador do usuário: login/MFA real, timer
 - Build web, 18 unitários e mocks IPC Windows/macOS passaram. O frontend atualizado foi publicado em `dpl_75Pdia5EWHUvh2dwpsKaqcmY7xHP` READY e os 29 HTTP de produção passaram.
 
 Assinatura reconhecida e teste autenticado no computador do usuário permanecem pendentes. O certificado foi explicitamente informado como indisponível; esta entrega não afirma assinatura ou eliminação de avisos do Windows.
+
+## Compartilhamento nativo de tela
+
+O app lista monitores e janelas visíveis, exclui janelas do próprio Hub, captura uma imagem de prévia ao selecionar uma fonte e publica vídeo com os perfis equilibrado (1080p/30), fluido (1080p/60) ou nítido (até 1440p/60). O Windows Graphics Capture fornece os quadros; LiveKit Rust publica apenas `SCREEN_SHARE`, sem assinatura de outras faixas nem dados. O contorno de captura do Windows permanece no padrão do sistema como indicador visível.
+
+O token de curta duração é emitido após a validação de sessão MFA, associação ativa e participação no canal. A rotina de remoção de participantes autorizados também reconhece `hub-share:<user-id>` e encerra a transmissão quando a pessoa perde acesso. Em navegadores, permanece o seletor de captura web. A validação de uma chamada Windows real e a qualidade medida em hardware do usuário ainda estão pendentes.
 
 ## Avisos de novas versões
 

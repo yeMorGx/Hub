@@ -13,7 +13,12 @@ export async function removeDisallowedParticipants(
     if ((e as { code?: string }).code === "not_found") return 0;
     throw e;
   }
-  const disallowed = participants.filter((p) => !allowed.has(p.identity));
+  const disallowed = participants.filter((p) => {
+    const memberId = p.identity.startsWith("hub-share:")
+      ? p.identity.slice("hub-share:".length)
+      : p.identity;
+    return !allowed.has(memberId);
+  });
   await Promise.all(
     disallowed.map((p) => service.removeParticipant(room, p.identity)),
   );

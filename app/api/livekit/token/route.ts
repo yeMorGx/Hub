@@ -1,5 +1,5 @@
 import { enforceRoomAccess } from "@/lib/livekit/access";
-import { AccessToken } from "livekit-server-sdk";
+import { AccessToken, TrackSource } from "livekit-server-sdk";
 import { sameOrigin } from "@/lib/integrations/config";
 import {
   integrationJson,
@@ -24,6 +24,9 @@ export async function POST(request: Request) {
     const body = await request.json();
     if (typeof body.channelId !== "string")
       return integrationJson({ error: "Canal inválido." }, 400);
+    const nativeScreenShare = body.client === "windows-native-screen";
+    if (body.client !== undefined && body.client !== "windows-native-screen")
+      return integrationJson({ error: "Cliente de chamada inválido." }, 400);
     const { data: channel, error } = await session.client
       .from("channels")
       .select("id,team_id,archived_at")
@@ -58,16 +61,23 @@ export async function POST(request: Request) {
       );
     await enforceRoomAccess(session.client, channel.id, channel.team_id);
     const token = new AccessToken(key, secret, {
-      identity: session.userId,
-      name: profile?.display_name || "Pessoa do time",
-      ttl: "30s",
+      identity: nativeScreenShare
+        ? `hub-share:${session.userId}`
+        : session.userId,
+      name: nativeScreenShare
+        ? `${profile?.display_name || "Pessoa do time"} · tela`
+        : profile?.display_name || "Pessoa do time",
+      ttl: nativeScreenShare ? "2m" : "30s",
     });
     token.addGrant({
       roomJoin: true,
       room: `hub:${channel.team_id}:${channel.id}`,
       canPublish: true,
-      canSubscribe: true,
-      canPublishData: true,
+      ...(nativeScreenShare
+        ? { canPublishSources: [TrackSource.SCREEN_SHARE] }
+        : {}),
+      canSubscribe: !nativeScreenShare,
+      canPublishData: !nativeScreenShare,
     });
     return integrationJson({
       token: await token.toJwt(),

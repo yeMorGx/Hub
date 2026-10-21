@@ -150,6 +150,7 @@ export function LiveCalls({
       <CallRoom
         token={call.token}
         url={call.url}
+        channelId={channel}
         video={video}
         audio={audio}
         onLeave={() => setCall(null)}

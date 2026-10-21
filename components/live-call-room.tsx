@@ -6,6 +6,8 @@ import {
   VideoConference,
 } from "@livekit/components-react";
 import { Room, RoomEvent } from "livekit-client";
+import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import {
   AppWindow,
   Monitor,
@@ -17,6 +19,16 @@ import "@livekit/components-styles";
 
 type ShareSource = "window" | "monitor";
 type ShareProfile = "balanced" | "smooth" | "sharp";
+
+type NativeScreenSource = {
+  sourceId: string;
+  title: string;
+  detail: string;
+  kind: ShareSource;
+  width: number;
+  height: number;
+  primary: boolean;
+};
 
 const shareProfiles = {
   balanced: {
@@ -62,10 +74,12 @@ const shareProfiles = {
 
 function ScreenShareControl({
   room,
+  channelId,
   isDesktopApp,
   onError,
 }: {
   room: Room;
+  channelId: string;
   isDesktopApp: boolean;
   onError: (message: string) => void;
 }) {
@@ -76,13 +90,99 @@ function ScreenShareControl({
   const [source, setSource] = useState<ShareSource>("window");
   const [profile, setProfile] = useState<ShareProfile>("balanced");
   const [starting, setStarting] = useState(false);
+  const [loadingSources, setLoadingSources] = useState(false);
+  const [nativeSharing, setNativeSharing] = useState(false);
+  const [nativeSources, setNativeSources] = useState<NativeScreenSource[]>([]);
+  const [nativeSelectedId, setNativeSelectedId] = useState("");
+  const [nativePreview, setNativePreview] = useState("");
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const isWindowsDesktop =
+    isDesktopApp &&
+    typeof navigator !== "undefined" &&
+    /Windows/i.test(navigator.userAgent);
+  const isSharing = isWindowsDesktop ? nativeSharing : isScreenShareEnabled;
+
+  useEffect(() => {
+    if (!isWindowsDesktop) return;
+    let mounted = true;
+    let unlisten: (() => void) | undefined;
+    void listen<string>("hub-native-share-ended", ({ payload }) => {
+      if (!mounted) return;
+      setNativeSharing(false);
+      if (payload) onError(payload);
+    }).then((dispose) => {
+      if (mounted) unlisten = dispose;
+      else dispose();
+    });
+    return () => {
+      mounted = false;
+      unlisten?.();
+      void invoke("stop_native_screen_share").catch(() => undefined);
+    };
+  }, [isWindowsDesktop, onError]);
+
+  useEffect(() => {
+    if (!dialogOpen || !isWindowsDesktop || !nativeSelectedId) {
+      setNativePreview("");
+      return;
+    }
+    let active = true;
+    setPreviewLoading(true);
+    void invoke<string>("preview_native_screen_source", {
+      sourceId: nativeSelectedId,
+    })
+      .then((preview) => {
+        if (active) setNativePreview(preview);
+      })
+      .catch(() => {
+        if (active) setNativePreview("");
+      })
+      .finally(() => {
+        if (active) setPreviewLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [dialogOpen, isWindowsDesktop, nativeSelectedId]);
 
   const toggleShare = async () => {
-    if (isScreenShareEnabled) {
+    if (isSharing) {
       try {
-        await localParticipant.setScreenShareEnabled(false);
+        if (isWindowsDesktop) {
+          await invoke("stop_native_screen_share");
+          setNativeSharing(false);
+        } else {
+          await localParticipant.setScreenShareEnabled(false);
+        }
       } catch {
         onError("Não foi possível parar o compartilhamento. Tente novamente.");
+      }
+      return;
+    }
+    if (isWindowsDesktop) {
+      setLoadingSources(true);
+      onError("");
+      try {
+        const sources = await invoke<NativeScreenSource[]>(
+          "list_native_screen_sources",
+        );
+        setNativeSources(sources);
+        setNativeSelectedId((current) =>
+          sources.some((source) => source.sourceId === current)
+            ? current
+            : sources.find((source) => source.kind === "window")?.sourceId ??
+                sources[0]?.sourceId ??
+                "",
+        );
+        setDialogOpen(true);
+      } catch (cause) {
+        onError(
+          typeof cause === "string"
+            ? cause
+            : "Não foi possível listar as janelas e telas disponíveis.",
+        );
+      } finally {
+        setLoadingSources(false);
       }
       return;
     }
@@ -95,32 +195,64 @@ function ScreenShareControl({
     setStarting(true);
     onError("");
     try {
-      await localParticipant.setScreenShareEnabled(
-        true,
-        {
-          video: { displaySurface: source },
-          resolution: {
-            width: selected.width,
-            height: selected.height,
-            frameRate: selected.frameRate,
+      if (isWindowsDesktop) {
+        if (!nativeSelectedId) {
+          onError("Escolha uma janela ou uma tela para compartilhar.");
+          return;
+        }
+        const response = await fetch("/api/livekit/token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            channelId,
+            client: "windows-native-screen",
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok || typeof data.token !== "string") {
+          throw new Error(
+            typeof data.error === "string"
+              ? data.error
+              : "Não foi possível autorizar o compartilhamento.",
+          );
+        }
+        await invoke("start_native_screen_share", {
+          sourceId: nativeSelectedId,
+          quality: profile,
+          url: data.url,
+          token: data.token,
+        });
+        setNativeSharing(true);
+      } else {
+        await localParticipant.setScreenShareEnabled(
+          true,
+          {
+            video: { displaySurface: source },
+            resolution: {
+              width: selected.width,
+              height: selected.height,
+              frameRate: selected.frameRate,
+            },
+            contentHint: selected.contentHint,
+            ...(isDesktopApp ? { selfBrowserSurface: "exclude" as const } : {}),
           },
-          contentHint: selected.contentHint,
-          ...(isDesktopApp ? { selfBrowserSurface: "exclude" as const } : {}),
-        },
-        {
-          screenShareEncoding: {
-            maxBitrate: selected.maxBitrate,
-            maxFramerate: selected.frameRate,
+          {
+            screenShareEncoding: {
+              maxBitrate: selected.maxBitrate,
+              maxFramerate: selected.frameRate,
+            },
+            degradationPreference: selected.degradationPreference,
           },
-          degradationPreference: selected.degradationPreference,
-        },
-      );
-    } catch (cause) {
-      if (!(cause instanceof DOMException && cause.name === "NotAllowedError")) {
-        onError(
-          "Não foi possível iniciar. Confira a permissão de captura e tente outra fonte ou qualidade.",
         );
       }
+    } catch (cause) {
+      onError(
+        cause instanceof Error
+          ? cause.message
+          : typeof cause === "string"
+            ? cause
+            : "Não foi possível iniciar. Confira a permissão de captura e tente outra fonte ou qualidade.",
+      );
     } finally {
       setStarting(false);
     }
@@ -133,15 +265,15 @@ function ScreenShareControl({
       <button
         className="call-screen-share-toggle"
         onClick={() => void toggleShare()}
-        disabled={starting}
-        aria-pressed={isScreenShareEnabled}
+        disabled={starting || loadingSources}
+        aria-pressed={isSharing}
         title={
-          isScreenShareEnabled
+          isSharing
             ? "Parar compartilhamento"
             : "Escolher janela, tela e qualidade"
         }
       >
-        {isScreenShareEnabled ? (
+        {isSharing ? (
           <>
             <Stop size={16} aria-hidden="true" />
             Parar compartilhamento
@@ -149,7 +281,11 @@ function ScreenShareControl({
         ) : (
           <>
             <MonitorArrowUp size={17} aria-hidden="true" />
-            {starting ? "Abrindo seletor…" : "Compartilhar tela"}
+            {loadingSources
+              ? "Carregando fontes…"
+              : starting
+                ? "Iniciando captura…"
+                : "Compartilhar tela"}
           </>
         )}
       </button>
@@ -158,43 +294,85 @@ function ScreenShareControl({
         <HubDialog
           title="Compartilhar tela"
           onClose={() => setDialogOpen(false)}
+          wide={isWindowsDesktop}
         >
           <p className="share-dialog-description">
-            Escolha o tipo de fonte e a qualidade. Depois, selecione a janela ou
-            o monitor na janela de captura do sistema.
+            {isWindowsDesktop
+              ? "Escolha uma janela ou monitor e confira a prévia antes de transmitir."
+              : "Escolha o tipo de fonte e a qualidade. Depois, selecione a janela ou o monitor na janela de captura do sistema."}
           </p>
 
-          <fieldset className="share-source-options">
-            <legend>Tipo de fonte</legend>
-            <label className={source === "window" ? "is-selected" : ""}>
-              <input
-                type="radio"
-                name="screen-share-source"
-                value="window"
-                checked={source === "window"}
-                onChange={() => setSource("window")}
-              />
-              <AppWindow size={20} aria-hidden="true" />
-              <span>
-                <strong>Janela</strong>
-                <small>Um aplicativo por vez</small>
-              </span>
-            </label>
-            <label className={source === "monitor" ? "is-selected" : ""}>
-              <input
-                type="radio"
-                name="screen-share-source"
-                value="monitor"
-                checked={source === "monitor"}
-                onChange={() => setSource("monitor")}
-              />
-              <Monitor size={20} aria-hidden="true" />
-              <span>
-                <strong>Tela inteira</strong>
-                <small>O monitor completo</small>
-              </span>
-            </label>
-          </fieldset>
+          {isWindowsDesktop ? (
+            <div className="native-share-source-picker">
+              <div className="native-share-preview">
+                {nativePreview ? (
+                  <img src={nativePreview} alt={`Prévia de ${nativeSources.find((item) => item.sourceId === nativeSelectedId)?.title ?? "fonte selecionada"}`} />
+                ) : (
+                  <div>
+                    {previewLoading ? <span className="native-share-spinner" /> : <Monitor size={24} aria-hidden="true" />}
+                    <span>{previewLoading ? "Carregando prévia…" : "Selecione uma fonte para ver a prévia"}</span>
+                  </div>
+                )}
+              </div>
+              <div className="native-share-source-list" role="group" aria-label="Janelas e telas disponíveis">
+                {nativeSources.map((item) => {
+                  const selected = nativeSelectedId === item.sourceId;
+                  const Icon = item.kind === "window" ? AppWindow : Monitor;
+                  return (
+                    <button
+                      type="button"
+                      key={item.sourceId}
+                      aria-pressed={selected}
+                      className={`native-share-source${selected ? " is-selected" : ""}`}
+                      onClick={() => setNativeSelectedId(item.sourceId)}
+                    >
+                      <span className="native-share-source-icon"><Icon size={18} aria-hidden="true" /></span>
+                      <span className="native-share-source-copy">
+                        <strong>{item.title}</strong>
+                        <small>{item.detail}{item.primary ? " · Principal" : ""}</small>
+                      </span>
+                      <i aria-hidden="true" />
+                    </button>
+                  );
+                })}
+                {nativeSources.length === 0 && (
+                  <p className="native-share-no-sources">Nenhuma janela ou tela disponível para captura.</p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <fieldset className="share-source-options">
+              <legend>Tipo de fonte</legend>
+              <label className={source === "window" ? "is-selected" : ""}>
+                <input
+                  type="radio"
+                  name="screen-share-source"
+                  value="window"
+                  checked={source === "window"}
+                  onChange={() => setSource("window")}
+                />
+                <AppWindow size={20} aria-hidden="true" />
+                <span>
+                  <strong>Janela</strong>
+                  <small>Um aplicativo por vez</small>
+                </span>
+              </label>
+              <label className={source === "monitor" ? "is-selected" : ""}>
+                <input
+                  type="radio"
+                  name="screen-share-source"
+                  value="monitor"
+                  checked={source === "monitor"}
+                  onChange={() => setSource("monitor")}
+                />
+                <Monitor size={20} aria-hidden="true" />
+                <span>
+                  <strong>Tela inteira</strong>
+                  <small>O monitor completo</small>
+                </span>
+              </label>
+            </fieldset>
+          )}
 
           <fieldset className="share-quality-options">
             <legend>Qualidade</legend>
@@ -223,7 +401,9 @@ function ScreenShareControl({
           </fieldset>
 
           <p className="share-quality-note">
-            {isDesktopApp
+            {isWindowsDesktop
+              ? "A captura usa a API nativa do Windows. A qualidade pode variar com a tela e a rede."
+              : isDesktopApp
               ? "A qualidade real depende da tela, do Windows e da conexão de quem transmite."
               : "A qualidade real depende do navegador, da tela e da conexão de quem transmite."}
           </p>
@@ -238,10 +418,12 @@ function ScreenShareControl({
             <button
               className="primary-button"
               onClick={() => void startShare()}
-              disabled={starting}
+              disabled={starting || (isWindowsDesktop && !nativeSelectedId)}
             >
               <MonitorArrowUp size={17} aria-hidden="true" />
-              Compartilhar {selectedProfile.details}
+              {starting
+                ? "Iniciando…"
+                : `Compartilhar ${selectedProfile.details}`}
             </button>
           </div>
         </HubDialog>
@@ -253,12 +435,14 @@ function ScreenShareControl({
 export default function LiveCallRoom({
   token,
   url,
+  channelId,
   video,
   audio,
   onLeave,
 }: {
   token: string;
   url: string;
+  channelId: string;
   video: boolean;
   audio: boolean;
   onLeave: () => void;
@@ -303,6 +487,7 @@ export default function LiveCallRoom({
           <div className="call-header-actions">
             <ScreenShareControl
               room={room}
+              channelId={channelId}
               isDesktopApp={isDesktopApp}
               onError={setError}
             />

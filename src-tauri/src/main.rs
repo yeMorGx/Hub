@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use tauri::{Emitter, Manager};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
+mod native_screen_share;
 
 fn show_main_window(app: &tauri::AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
@@ -30,7 +31,14 @@ fn open_desktop_update(version: String) -> Result<(), String> {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![open_desktop_update])
+        .manage(native_screen_share::NativeShareState::default())
+        .invoke_handler(tauri::generate_handler![
+            open_desktop_update,
+            native_screen_share::list_native_screen_sources,
+            native_screen_share::preview_native_screen_source,
+            native_screen_share::start_native_screen_share,
+            native_screen_share::stop_native_screen_share
+        ])
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             show_main_window(app);
         }))
