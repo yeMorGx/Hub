@@ -1,0 +1,25 @@
+{
+  "deployment": "dpl_5P3EwqNKWd6GHHaPJrqe7RP6ZAbo",
+  "status": "READY",
+  "productionUrl": "https://hub-one-azure.vercel.app",
+  "immutableUrl": "https://hub-qsjub7eto-yemorgxs-projects.vercel.app",
+  "sourceCommit": "c9bef7d52e6c614c74f4f74d12362950c83f3a38",
+  "date": "2026-10-21",
+  "httpChecks": {
+    "passed": 32,
+    "failed": 0
+  },
+  "browserChecks": {
+    "passed": 6,
+    "failed": 0,
+    "viewports": [
+      1440,
+      390
+    ],
+    "modes": [
+      "animated",
+      "reduced",
+      "fallback"
+    ]
+  }
+}
