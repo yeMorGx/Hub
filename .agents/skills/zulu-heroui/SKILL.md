@@ -52,3 +52,7 @@ Hoje e `/demo/dashboard` já usam HeroUI React/Styles 3.2.6 em Bento Grid. Ler `
 ## Sidebar: exceção de ícones escolhida pelo usuário
 
 Usar os **Hugeicons oficiais animados da Animate UI** na sidebar do app e na prévia de Hoje. Os arquivos do registry são preservados em `components/animate-ui/icons/hugeicons/`, com licença; `DashboardNavIcon` liga hover e foco do controle inteiro e respeita movimento reduzido. Dependências: `@animate-ui/react` e `motion`. Isso não substitui HeroUI nos controles nem exige trocar os ícones do conteúdo das outras telas. Hoje usa navegação flutuante, com 12px de respiro e raio de 22px; celular usa dock inferior arredondado. Não restaurar o rodapé promocional/linha de MFA removido por pedido do usuário.
+
+## Desktop e seletor de atividade
+
+A title bar de 48px recebe o cabeçalho autenticado por `DesktopChrome`; manter o cabeçalho de fallback no navegador e no frame antigo. O avatar não deve voltar à sidebar. O seletor de atividade usa liquid glass por escolha explícita do usuário, com campos escuros legíveis em foco. O mini timer é uma janela nativa transparente, em cápsula totalmente arredondada com Prism/Lava e controles HeroUI; ler `docs/desktop-runtime.md` antes de alterar seus contratos. A atividade das pessoas é apenas texto e presença desconhecida não recebe rótulo indisponível.

@@ -159,8 +159,8 @@
       "retainedBorderToken": "#e0e3ea is retained in CSS; it does not authorize decorative dashboard borders"
     },
     "desktopTitlebar": {
-      "height": "36px",
-      "appearance": "Official ZULU symbol at 24px without adjacent name/tagline, unread count; ivory and navy on dashboard",
+      "height": "48px",
+      "appearance": "Official symbol, app workspace/team/actions/profile through portal; runtime menu and window controls; no duplicated sidebar avatar or connection label",
       "controls": [
         "minimize",
         "maximize/restore",
@@ -168,10 +168,10 @@
         "drag",
         "double-click maximize/restore"
       ],
-      "integration": "Rust desktop_titlebar command; fixed actions on own main window only",
+      "integration": "Native main-window titlebar and runtime commands; DesktopChrome portal preserves browser header fallback",
       "compatibility": "native decorations retained on web, non-Windows and older installers; restore attempted after control errors/unmount; navigation starts with native decorations",
       "release": "0.1.4 published: build 39645508848 compiled/signed; retest 39648289490 passed native checks and crypto on same native tree 54aa364ba68e354496fdfe5d056adcc100486154; promotion 39648700277 succeeded",
-      "contract": "docs/desktop-updates.md#barra-de-título-windows--014-publicada"
+      "contract": "docs/desktop-runtime.md"
     },
     "prism": {
       "scope": ".today-focus only",
@@ -338,5 +338,13 @@
     "balance": "Explicit credit/debit words, actual vs expected and today-inclusive basis",
     "people": "Own activity first, team-private presence activity and own unread DM previews",
     "footer": "Promotional/MFA footer removed"
+  },
+  "desktopRuntime": {
+    "platform": "Windows",
+    "nativeVersion": "0.1.5",
+    "background": "Close hides to tray; explicit quit exits; autostart opt-in and hidden --background launch",
+    "mini": "328x80 transparent always-on-top window; 72px capsule with radius 999px; original Prism/Lava; no credentials or description transferred",
+    "glass": "Explicit user choice: liquid glass for inline activity picker, dark focused fields and light text",
+    "contract": "docs/desktop-runtime.md"
   }
 }

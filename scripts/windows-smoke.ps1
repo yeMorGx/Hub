@@ -112,6 +112,7 @@ try {
   Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $checkCondition) } 15
   $check = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $checkCondition)
   if ((Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU) { throw 'Startup must be opt-in on a fresh installation.' }
+  Wait-Until { $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants,$checkCondition).Current.IsEnabled } 15
   [HubNativeWindow]::SetForegroundWindow($handle) | Out-Null
   $check.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ')
   Wait-Until { (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU -like '*--background*' } 15
