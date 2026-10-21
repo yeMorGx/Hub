@@ -17,6 +17,22 @@ public static class HubNativeWindow {
   [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hwnd);
   [DllImport("user32.dll", EntryPoint="GetWindowLongW")] public static extern int GetWindowLong(IntPtr hwnd, int index);
+  private delegate bool EnumProc(IntPtr hwnd, IntPtr data);
+  [DllImport("user32.dll")] private static extern bool EnumWindows(EnumProc callback, IntPtr data);
+  [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint pid);
+  [DllImport("user32.dll", CharSet=CharSet.Unicode)] private static extern int GetWindowText(IntPtr hwnd, System.Text.StringBuilder text, int max);
+  public static IntPtr Find(int pid, bool mini) {
+    IntPtr found=IntPtr.Zero;
+    EnumWindows((hwnd,data)=>{
+      uint owner; GetWindowThreadProcessId(hwnd,out owner);
+      if(owner!=(uint)pid || !IsWindowVisible(hwnd))return true;
+      var text=new System.Text.StringBuilder(512);GetWindowText(hwnd,text,512);
+      string title=text.ToString();
+      if(title.StartsWith("ZULU") && title.Contains("Mini timer")==mini){found=hwnd;return false;}
+      return true;
+    },IntPtr.Zero);
+    return found;
+  }
 }
 '@
 function Wait-Until([scriptblock]$Condition, [int]$Seconds = 45) {
@@ -34,8 +50,8 @@ try {
   $report.installed = $true
   $appPath = $executables[0].FullName
   $appProcess = Start-Process -FilePath $appPath -PassThru
-  Wait-Until { $appProcess.Refresh(); -not $appProcess.HasExited -and $appProcess.MainWindowHandle -ne [IntPtr]::Zero }
-  $handle = $appProcess.MainWindowHandle
+  Wait-Until { $appProcess.Refresh(); -not $appProcess.HasExited -and [HubNativeWindow]::Find($appProcess.Id, $false) -ne [IntPtr]::Zero }
+  $handle = [HubNativeWindow]::Find($appProcess.Id, $false)
   if (-not [HubNativeWindow]::IsWindow($handle)) { throw 'Application window was not created.' }
   $report.windowOpened = $true
   Add-Type -AssemblyName UIAutomationClient
@@ -106,12 +122,9 @@ try {
   Wait-Until { $second.Refresh(); $second.HasExited } 20
   Wait-Until { [HubNativeWindow]::IsWindowVisible($handle) } 15
   Invoke-HubControl 'Abrir mini timer'
-  $miniCondition = [System.Windows.Automation.AndCondition]::new(
-    [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::ProcessIdProperty, $appProcess.Id),
-    [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, ('ZULU ' + [char]0x2014 + ' Mini timer')))
-  Wait-Until { $null -ne [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $miniCondition) } 30
-  $miniRoot = [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $miniCondition)
-  $miniHandle = [IntPtr]$miniRoot.Current.NativeWindowHandle
+  Wait-Until { [HubNativeWindow]::Find($appProcess.Id, $true) -ne [IntPtr]::Zero } 30
+  $miniHandle = [HubNativeWindow]::Find($appProcess.Id, $true)
+  $miniRoot = [System.Windows.Automation.AutomationElement]::FromHandle($miniHandle)
   if (([HubNativeWindow]::GetWindowLong($miniHandle, -20) -band 8) -eq 0) { throw 'Mini timer must be topmost.' }
   $report.miniTopmost = $true
   $miniCloseCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Ocultar mini timer')
@@ -132,17 +145,34 @@ try {
   $appProcess = Start-Process -FilePath $appPath -ArgumentList '--background' -PassThru
   Start-Sleep -Seconds 5
   $appProcess.Refresh()
-  if ($appProcess.HasExited -or $appProcess.MainWindowHandle -ne [IntPtr]::Zero) { throw 'Background startup must stay alive without a visible window.' }
+  if ($appProcess.HasExited -or [HubNativeWindow]::Find($appProcess.Id, $false) -ne [IntPtr]::Zero) { throw 'Background startup must stay alive without a visible window.' }
   $report.hiddenStartup = $true
   $second = Start-Process -FilePath $appPath -PassThru
   Wait-Until { $second.Refresh(); $second.HasExited } 20
-  Wait-Until { $appProcess.Refresh(); $appProcess.MainWindowHandle -ne [IntPtr]::Zero } 20
-  $handle = $appProcess.MainWindowHandle
+  Wait-Until { $appProcess.Refresh(); [HubNativeWindow]::Find($appProcess.Id, $false) -ne [IntPtr]::Zero } 20
+  $handle = [HubNativeWindow]::Find($appProcess.Id, $false)
   $root = [System.Windows.Automation.AutomationElement]::FromHandle($handle)
   Invoke-HubControl 'Opções do aplicativo'
   Invoke-HubControl 'Sair do ZULU'
   if (-not $appProcess.WaitForExit(10000)) { throw 'Background instance failed to quit.' }
 } finally {
+  try {
+    if ($appProcess) {
+      $appProcess.Refresh()
+      @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
+    }
+    if ($root) {
+      $names=@($root.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.Condition]::TrueCondition) | Select-Object -First 120 | ForEach-Object { @{name=$_.Current.Name;class=$_.Current.ClassName;type=$_.Current.ControlType.ProgrammaticName} })
+      $names | ConvertTo-Json -Depth 3 | Set-Content (Join-Path $OutputDirectory 'accessibility.json') -Encoding utf8
+    }
+    Add-Type -AssemblyName System.Windows.Forms
+    Add-Type -AssemblyName System.Drawing
+    $bounds=[System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+    $capture=New-Object System.Drawing.Bitmap $bounds.Width,$bounds.Height
+    $paint=[System.Drawing.Graphics]::FromImage($capture)
+    $paint.CopyFromScreen($bounds.Location,[System.Drawing.Point]::Empty,$bounds.Size)
+    $capture.Save((Join-Path $OutputDirectory 'final-desktop.png'));$paint.Dispose();$capture.Dispose()
+  } catch { Write-Warning 'Could not capture all diagnostic details.' }
   if ($appProcess -and -not $appProcess.HasExited) {
     $appProcess.CloseMainWindow() | Out-Null
     if (-not $appProcess.WaitForExit(10000)) { $appProcess.Kill() }
