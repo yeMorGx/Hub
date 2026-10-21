@@ -14,10 +14,21 @@ O plugin é usado somente pelo Rust. A página recebe três comandos específico
 
 - Chave pública de atualização incluída em `src-tauri/tauri.conf.json`; a chave privada não é versionada nem enviada à Vercel.
 - GitHub Actions precisa do secret **TAURI_SIGNING_PRIVATE_KEY**, contendo a chave privada correspondente. A chave gerada nesta implementação não tem senha; o secret opcional `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` deve permanecer ausente/vazio.
-- O GitHub recusou a configuração desse secret pela sessão atual com HTTP 403. Foi solicitada configuração manual ao proprietário, com arquivo privado separado para backup. Sem esse passo, não se pode concluir a geração dos pacotes assinados.
+- O GitHub recusou a configuração desse secret pela sessão atual com HTTP 403. O proprietário concluiu a configuração manual com o arquivo privado separado para backup. O build seguinte reconheceu o segredo; o valor privado não foi exibido nem incluído no repositório.
 - A assinatura de atualização não é Authenticode: o certificado comercial do Windows continua sendo uma etapa distinta.
+- Preserve a mesma chave privada nas próximas versões; não gere outra chave a cada publicação. Clientes existentes verificam os pacotes com a chave pública já instalada.
+- O workflow valida a chave antes de compilar, assinando um arquivo de teste e verificando-o contra a chave pública do aplicativo. Isso detecta chave incorreta/formato inválido antes do build nativo. O valor corrigido passou nessa etapa no run `39636490719`.
 - Builds novos geram `.exe` e `.exe.sig`; o fluxo de promoção só aceita artefatos com ambos, smoke aprovado e SHA-256 correspondente. O segredo fica restrito ao passo de build.
 - `/api/desktop/manifest` fornece apenas a release estável mais recente com instalador e assinatura oficiais. Sem um par válido responde 204; falhas do provedor/assinatura respondem 503. O cliente verifica a assinatura independentemente da resposta HTTPS.
+
+### Publicar as próximas versões com instalação pelo app
+
+1. Incrementar a versão em `tauri.conf.json`, `Cargo.toml` e na entrada `hub-desktop` do `Cargo.lock`.
+2. Executar o workflow desktop com a mesma chave de atualização. A validação da chave, o build, o smoke Windows e a verificação da assinatura do instalador precisam passar.
+3. Criar o rascunho `desktop-vX.Y.Z` apontando para o SHA completo do run aprovado.
+4. Executar o workflow com `publishRun` igual ao ID desse run. O promotor anexa o `.exe`, `.exe.sig` e `SHA256SUMS.txt`; ele não publica a release.
+5. Conferir os artefatos e publicar a release estável mais recente. Atualizar `lib/desktop/public-release.ts` com versão, tamanho e hash reais, e publicar o frontend.
+6. Conferir `/api/desktop/update` e `/api/desktop/manifest` em produção. Metadados do GitHub podem levar até cinco minutos para renovar no cache.
 
 ### Verificações e estado de entrega
 
@@ -26,8 +37,11 @@ O plugin é usado somente pelo Rust. A página recebe três comandos específico
 - `scripts/desktop-update-browser.py` passou em 1360px e 390px: modo automático, progresso, falha/nova tentativa, instalação, bloqueio de dispensa e compatibilidade com o instalador anterior. API/IPC simulados; não instala software.
 - Verificação criptográfica local passou com um arquivo de teste assinado pela chave gerada: chave pública correspondente, rejeição de conteúdo adulterado e rejeição de versão divergente. O workflow repete a verificação com o instalador real antes de aprovar sua publicação.
 - Servidor publicado no deployment `dpl_AeKU6PTGXj94NVZgXG9mPNQ6B5UW`, READY, no alias estável. 32 testes HTTP de produção passaram. `/api/desktop/manifest` respondeu 204, corretamente, enquanto a última release estável continua sendo a 0.1.2 sem assinatura de atualização.
-- O ambiente Linux não contém `lib.exe`/MSVC para validar o executável Windows localmente. Compilação e smoke nativos devem ocorrer no runner Windows do workflow.
-- Nesta etapa a versão 0.1.3 ainda precisa de build nativo e publicação; a atualização real entre dois instaladores assinados continua pendente. Os registros abaixo descrevem a entrega anterior 0.1.2.
+- O ambiente Linux não contém `lib.exe`/MSVC para validar o executável Windows localmente. A verificação nativa no runner Windows passou no run `39632866622`, após adicionar a dependência direta `serde_json` necessária à configuração do plugin. Esse run foi interrompido pela ausência do segredo no momento em que foi iniciado; o build assinado foi iniciado separadamente após sua configuração.
+- Build e smoke Windows **aprovados** no [run 39636490719](https://github.com/yeMorGx/Hub/actions/runs/39636490719), commit `424d90c0dddb33cb6aaa2bccdafc4fa2e1cba965`. Instalação, login renderizado, instância única, restauração por atalho, remoção e assinatura do pacote passaram, sem criar contas ou gravar dados de negócio.
+- Promoção ao rascunho aprovada no [run 39638814285](https://github.com/yeMorGx/Hub/actions/runs/39638814285). Arquivos baixados após o upload conferidos novamente contra SHA-256 e chave pública; a release `desktop-v0.1.3` foi publicada como estável.
+- [Baixar Hub 0.1.3 para Windows x64](https://github.com/yeMorGx/Hub/releases/download/desktop-v0.1.3/Hub_0.1.3_x64-setup.exe): 11.016.404 bytes, SHA-256 `a48fb048b5fff83f9c403ba5b15dcd1bcc2260a811fc899cd132b7cda46370f6`. A assinatura de atualização foi validada; Authenticode continua `NotSigned`. [Metadados e smoke](validation/desktop-updater/release.json).
+- A atualização real entre dois instaladores assinados continua pendente de uma versão seguinte. A 0.1.3 é a primeira versão com o atualizador e exige instalação manual única a partir da 0.1.2. Os registros abaixo descrevem a entrega anterior 0.1.2.
 
 ## Comportamento anterior — 0.1.2
 
@@ -39,7 +53,7 @@ O plugin é usado somente pelo Rust. A página recebe três comandos específico
 - O site hospedado recebe alterações diretamente. O aviso de recarga compara builds web; o aviso de download compara versões nativas do instalador.
 - Falhas de rede, indisponibilidade do GitHub e instaladores antigos não interrompem a aplicação. Nenhum aviso é mostrado no navegador web comum.
 
-## Publicar uma versão que apareça no app
+## Publicar uma versão — fluxo anterior 0.1.2
 
 1. Incrementar conjuntamente `src-tauri/tauri.conf.json`, `Cargo.toml` e a entrada `hub-desktop` no `Cargo.lock`.
 2. Compilar e passar a verificação Windows via `.github/workflows/desktop.yml`.

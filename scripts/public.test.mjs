@@ -222,11 +222,11 @@ test("downloads expõe o instalador oficial e informa versão e assinatura pende
   const response = await request("/download");
   assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /Hub_0\.1\.2_x64-setup\.exe/);
+  assert.match(html, /Hub_0\.1\.3_x64-setup\.exe/);
   assert.match(html, /não tem assinatura de código/);
   assert.match(html, /macOS/);
   assert.match(html, /Linux/);
-  assert.match(html, /454cd533dc657f2d61fa3d9c6454d783ef35bb955288d4c0430fc27647fbed93/);
+  assert.match(html, /a48fb048b5fff83f9c403ba5b15dcd1bcc2260a811fc899cd132b7cda46370f6/);
 });
 test("marketing publica apenas as páginas públicas no sitemap e serve imagem social", async () => {
   const response = await request("/sitemap.xml");

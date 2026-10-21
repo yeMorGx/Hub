@@ -318,7 +318,7 @@ export const questions = [
   ],
   [
     "O que acontece com meus dados ao atualizar?",
-    "O aplicativo Windows abre o mesmo Hub da web. Atualizar o instalador não exclui sua conta nem os dados do time. A partir da versão 0.1.2, o app pode avisar sobre novas versões estáveis; você decide quando baixar e executar o instalador.",
+    "O aplicativo Windows abre o mesmo Hub da web. Atualizar o instalador não exclui sua conta nem os dados do time. A partir da versão 0.1.3, você pode instalar as próximas versões pelo botão Instalar e reiniciar dentro do Hub. Melhorias apenas da interface são aplicadas por recarga.",
   ],
   [
     "Por que o Windows pode mostrar um aviso ao instalar?",
