@@ -97,3 +97,8 @@ Frontend `1727770`, deployment `dpl_75Pdia5EWHUvh2dwpsKaqcmY7xHP` READY e 29 HTT
 Publicação autorizada pelo usuário, por upload da CLI, com alterações locais do dashboard. Deployment `dpl_312iGvPKKh1eoCBAQrxQEBtc1oi6`, alvo `production`, estado **READY**. URL imutável: https://hub-71r1reuda-yemorgxs-projects.vercel.app. Alias atualizado: https://hub-one-azure.vercel.app.
 
 Build remoto e TypeScript passaram. Após a publicação, `/login` e `/demo/dashboard` responderam HTTP 200 no alias público; os estilos publicados contêm a identidade clara (`dashboard-redesign` e fundo `#f6f5f1`). As verificações autenticadas e persistência real continuam com os limites descritos em [Dashboard Hoje](dashboard-redesign.md). Não houve merge ou publicação de novo instalador desktop nesta etapa.
+
+
+## Preparação do atualizador desktop · 2026-10-21
+
+Código `3b6bbbb`, deployment `dpl_AeKU6PTGXj94NVZgXG9mPNQ6B5UW` **READY**, alias https://hub-one-azure.vercel.app. Build remoto e TypeScript passaram; 32 checks HTTP de produção passaram. Novo `/api/desktop/manifest` respondeu 204 para a release atual sem assinatura. Frontend inclui modo automático para o futuro instalador 0.1.3 e mantém download manual para versões antigas. O instalador e a ativação real dependem da configuração do segredo de assinatura, build nativo e release Windows. [Estado e limites](desktop-updates.md).

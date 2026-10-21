@@ -8,7 +8,7 @@ A versão 0.1.3 acrescenta o Tauri Updater para Windows x64. Depois que essa ver
 
 As versões anteriores continuam com o download manual para permitir essa migração. Publicações apenas da interface continuam com **Aplicar melhorias**, que recarrega a janela; elas não substituem o executável. A aplicação ainda carrega a interface hospedada na Vercel.
 
-O plugin é usado somente pelo Rust. A página recebe três comandos específicos, sem permissão genérica para configurar endpoints, trocar chaves, executar processos ou gravar arquivos. A origem do manifesto é fixa e o Rust aceita somente o instalador Windows x64 no repositório oficial, correspondente à versão anunciada. Instalações concorrentes e mudança de versão entre aviso e confirmação são recusadas. O pacote precisa passar pela verificação da chave pública embutida antes de ser executado.
+O plugin é usado somente pelo Rust. A página recebe três comandos específicos, sem permissão genérica para configurar endpoints, trocar chaves, executar processos ou gravar arquivos. A origem do manifesto é fixa e o Rust aceita somente o instalador Windows x64 no repositório oficial, correspondente à versão anunciada. Instalações concorrentes e mudança de versão entre aviso e confirmação são recusadas. O pacote precisa passar pela verificação da chave pública embutida antes de ser executado. `requireSignedVersion=true` também exige que a versão anunciada corresponda à versão coberta pela assinatura.
 
 ### Preparação da assinatura
 
@@ -24,6 +24,8 @@ O plugin é usado somente pelo Rust. A página recebe três comandos específico
 - 29 testes unitários passaram, incluindo quatro novos casos de release assinada, manifesto, ausência de assinatura e limites/erros de leitura.
 - Build Next.js e TypeScript passaram.
 - `scripts/desktop-update-browser.py` passou em 1360px e 390px: modo automático, progresso, falha/nova tentativa, instalação, bloqueio de dispensa e compatibilidade com o instalador anterior. API/IPC simulados; não instala software.
+- Verificação criptográfica local passou com um arquivo de teste assinado pela chave gerada: chave pública correspondente, rejeição de conteúdo adulterado e rejeição de versão divergente. O workflow repete a verificação com o instalador real antes de aprovar sua publicação.
+- Servidor publicado no deployment `dpl_AeKU6PTGXj94NVZgXG9mPNQ6B5UW`, READY, no alias estável. 32 testes HTTP de produção passaram. `/api/desktop/manifest` respondeu 204, corretamente, enquanto a última release estável continua sendo a 0.1.2 sem assinatura de atualização.
 - O ambiente Linux não contém `lib.exe`/MSVC para validar o executável Windows localmente. Compilação e smoke nativos devem ocorrer no runner Windows do workflow.
 - Nesta etapa a versão 0.1.3 ainda precisa de build nativo e publicação; a atualização real entre dois instaladores assinados continua pendente. Os registros abaixo descrevem a entrega anterior 0.1.2.
 

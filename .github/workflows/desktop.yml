@@ -13,7 +13,7 @@ on:
         default: ''
   push:
     branches: [codex/hub-foundation-kanban]
-    paths: [src-tauri/**, scripts/windows-smoke.ps1, package.json, package-lock.json, .github/workflows/desktop.yml]
+    paths: [src-tauri/**, scripts/windows-smoke.ps1, scripts/updater-verifier/**, package.json, package-lock.json, .github/workflows/desktop.yml]
 permissions:
   contents: read
 jobs:
@@ -61,6 +61,14 @@ jobs:
           $installer = Get-ChildItem src-tauri/target/release/bundle/nsis/*-setup.exe | Select-Object -First 1
           if (-not $installer) { throw 'Windows installer missing.' }
           ./scripts/windows-smoke.ps1 -Installer $installer.FullName
+      - name: Verify signed Windows update and reject tampering
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $installer = Get-ChildItem src-tauri/target/release/bundle/nsis/*-setup.exe | Select-Object -First 1
+          if (-not $installer) { throw 'Windows installer missing.' }
+          cargo run --locked --manifest-path scripts/updater-verifier/Cargo.toml -- src-tauri/tauri.conf.json $installer.FullName
+          if ($LASTEXITCODE -ne 0) { throw 'Updater signature validation failed.' }
       - name: Save installer and evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
