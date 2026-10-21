@@ -18,6 +18,12 @@ Identificadores técnicos de compatibilidade como `app.hub.team`, `Hub` no produ
 
 Por decisão do usuário, novos componentes e componentes retrabalhados devem partir dos componentes e exemplos oficiais **HeroUI v3**, conforme [a skill local obrigatória](.agents/skills/zulu-heroui/SKILL.md) e `AGENTS.md`. Adaptar os tokens à autoridade de cada superfície, preservando teclado, foco e acessibilidade. O catálogo e o guia React v3 oficiais foram consultados; esta orientação não significa migração das telas existentes nem instalação de dependências HeroUI. O efeito Prism escolhido pelo usuário continua sendo a referência especializada do fundo do timer.
 
+### Microinterações e movimento
+
+Por decisão explícita do usuário, microinterações fazem parte de toda interface nova ou retrabalhada: feedback ao pressionar, passar o cursor, selecionar, abrir/fechar e concluir ações, conforme o contexto. Usar interações oficiais HeroUI e movimento breve e consistente, preservando a identidade de cada superfície. Quando faltar uma solução, pesquisar referências reais em HeroUI, Refero, Unlume e outros sites de UI e registrar a origem.
+
+Priorizar transform e opacity, sem deslocar layout ou atrasar ações. Garantir equivalência por teclado e toque e preservar o foco. `prefers-reduced-motion` troca movimento não essencial por feedback estático; animações contínuas não essenciais pausam fora da tela ou com a página oculta. A política detalhada está na skill local `zulu-heroui`. Aplicação progressiva no escopo de cada tarefa.
+
 ## Tokens implementados
 
 | Token CSS | Valor | Uso |

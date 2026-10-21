@@ -26,6 +26,17 @@ Decisão explícita do usuário em 21/10/2026: **HeroUI é a referência total d
 7. Não misturar outra biblioteca de componentes por preferência do agente. Código específico de produto integra as primitivas HeroUI; efeitos especializados já escolhidos explicitamente pelo usuário, como o fundo **Prism da Spell UI**, mantêm essa escolha, sem substituir a biblioteca padrão de controles.
 8. A regra não pede uma migração global imediata das telas existentes. Migrar os componentes ao trabalhar no seu escopo, preservando lógica, dados e integrações.
 
+## Microinterações obrigatórias
+
+Decisão explícita do usuário: toda interface nova ou retrabalhada deve ter microinterações e microanimações modernas, agradáveis e coerentes com a ação. Planejar esse feedback como parte do componente.
+
+- Usar, conforme o contexto, hover, pressionamento, seleção, transições de estado, abertura/fechamento, carregamento e confirmação de ações. Priorizar respostas visuais claras e pequenos detalhes satisfatórios.
+- Partir das interações oficiais HeroUI, preservando seus contratos. Quando faltar uma boa ideia, pesquisar exemplos reais em **HeroUI, Refero, Unlume** e outros sites de UI; registrar a fonte e o comportamento aproveitado. Essas referências complementam a biblioteca obrigatória, sem substituir as primitivas HeroUI por outra biblioteca.
+- Manter movimento curto e consistente; como ponto de partida, 120–200 ms em controles e 180–300 ms em overlays. Ajustar ao comportamento e à superfície. Preferir transform e opacity, sem deslocar o layout nem atrasar a execução da ação.
+- Garantir respostas equivalentes por teclado e toque; não esconder informações essenciais apenas no hover. Preservar foco, nomes acessíveis e estados disabled/loading.
+- Respeitar `prefers-reduced-motion`: substituir movimento não essencial por feedback estático, preservando a informação de estado. Pausar animações contínuas não essenciais fora da tela ou com a página oculta. Não adicionar loops decorativos a cada componente.
+- Conferir os estados de interação, movimento reduzido e responsividade ao trabalhar na interface. Esta regra vale progressivamente no escopo de cada tarefa; não exige uma migração global imediata.
+
 ## Preferências da marca
 
 Usar principalmente o símbolo oficial `public/brand/zulu-mark.svg` por meio de `BrandMark`. Pouco texto; sem nome ou tagline ao lado da marca na sidebar, barra de título e cabeçalhos principais. O wordmark fica reservado a usos pontuais. Manter nomes acessíveis mesmo quando o texto visual for removido.
