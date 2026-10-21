@@ -1,0 +1,13 @@
+{
+  "deployment": "dpl_6mikFxBKWd3Q7eAnL6T3wJBz5i4R",
+  "url": "https://hub-one-azure.vercel.app",
+  "immutableUrl": "https://hub-bu3xlm5fy-yemorgxs-projects.vercel.app",
+  "readyState": "READY",
+  "codeCommit": "3b442e5",
+  "publicHttpChecksPassed": 32,
+  "legacyAnnouncementVersion": "0.1.4",
+  "nativeManifestVersion": "0.1.4",
+  "signatureMatchesPublishedAsset": true,
+  "publicDownloadHashMatchesVerifiedInstaller": true,
+  "firstLegacyResponse": "stale 0.1.3 once; immediate subsequent read returned 0.1.4 after revalidation"
+}

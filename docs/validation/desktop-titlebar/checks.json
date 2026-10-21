@@ -3,7 +3,7 @@
   "sourceCommit": "cd3969a4880fef16fe27b519855d406136cb3be7",
   "build": true,
   "unitTestsPassed": 29,
-  "productionHttpChecksPassed": null,
+  "productionHttpChecksPassed": 32,
   "dashboardBrowserWidths": [
     1440,
     1280,
@@ -26,7 +26,7 @@
   "visualVerdict": "ship",
   "detectorAvailable": false,
   "businessWrites": 0,
-  "webDeployment": "pending final",
+  "webDeployment": "dpl_6mikFxBKWd3Q7eAnL6T3wJBz5i4R",
   "nativeRun": 39648289490,
   "nativeStatus": "passed",
   "nativeBuiltRun": 39645508848,
@@ -40,5 +40,9 @@
   "prismWidths": [
     1440,
     390
-  ]
+  ],
+  "legacyAnnouncementVersion": "0.1.4",
+  "nativeManifestVersion": "0.1.4",
+  "signatureMatchesPublishedAsset": true,
+  "publicDownloadHashMatches": true
 }

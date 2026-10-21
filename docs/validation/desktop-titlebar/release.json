@@ -9,5 +9,11 @@
   "verificationCommit": "cd3969a4880fef16fe27b519855d406136cb3be7",
   "nativeTree": "54aa364ba68e354496fdfe5d056adcc100486154",
   "promotionRun": 39648700277,
-  "signatureVerified": true
+  "signatureVerified": true,
+  "published": true,
+  "release": "https://github.com/yeMorGx/Hub/releases/tag/desktop-v0.1.4",
+  "download": "https://github.com/yeMorGx/Hub/releases/download/desktop-v0.1.4/Hub_0.1.4_x64-setup.exe",
+  "webDeployment": "dpl_6mikFxBKWd3Q7eAnL6T3wJBz5i4R",
+  "publicHttpChecksPassed": 32,
+  "realUpgradeBetweenVersionsVerified": false
 }
