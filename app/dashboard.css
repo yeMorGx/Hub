@@ -1219,7 +1219,7 @@ html:has(.dashboard-redesign) {
   .search-trigger, .notification-button, .notification-count, .running-pill,
   .calendar-event, .calendar-grid, .time-gutter-header, .day-header,
   .day-column, .hour-cell, .home-office-gutter, .home-office-cell,
-  .month-grid, .month-weekdays, .month-cell, .month-cell-header, .month-date,
+  .calendar-month, .month-event, .month-grid, .month-weekdays, .month-cell, .month-cell-header, .month-date,
   .filter-button, .home-office-open, .today-button, .icon-button,
   .filter-popover, .popover, .dialog, .dialog-head, .dialog-actions,
   .form-row, .form-note, .resource-note, .list-row, .notification-row,

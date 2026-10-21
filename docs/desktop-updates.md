@@ -87,3 +87,18 @@ Isto **não é o Tauri Updater**: não instala pacotes automaticamente e não su
 ## Publicação para o site de downloads
 
 A release `desktop-v0.1.2` foi publicada como release estável pública para atender ao pedido de uma landing page com download sem login. O instalador e seu SHA-256 permanecem os mesmos da prévia testada. As referências a rascunho acima descrevem a entrega anterior. A partir desta publicação, ela pode ser anunciada pelo endpoint de atualizações para clientes compatíveis com versão menor. [Site e validação](marketing-research.md).
+
+## Barra de título Windows — implementação 0.1.4 pendente de publicação
+
+A versão nativa preparada é **0.1.4**. Ainda não há publicação desta versão: CI e verificação real dos controles no Windows permanecem gates da release. Os registros de publicação da 0.1.3 acima continuam sendo o estado da distribuição estável.
+
+A nova barra de 36px integra marca Hub, legenda “Seu espaço de trabalho” e contador de mensagens não lidas extraído do título da página. Em Hoje, acompanha o marfim, azul profundo e Inter da superfície plana. A remoção de bordas decorativas pertence somente ao dashboard; outras autoridades visuais permanecem próprias.
+
+- **Controles:** minimizar, maximizar/restaurar e fechar acionam a janela real. A área da marca inicia arraste; duplo clique alterna maximização. Os botões têm nomes acessíveis e foco visível, e o estado maximizado atualiza ícone e rótulo.
+- **Contrato Rust:** `desktop_titlebar` aceita apenas `state`, `enable`, `restore`, `minimize`, `toggle_maximize`, `close` e `drag`, na própria janela `main`. Não aceita rótulos de janelas nem operações arbitrárias. Somente Windows informa suporte.
+- **Ativação:** a moldura nativa permanece até a interface confirmar suporte e montar os controles substitutos; então `enable` remove as decorações. Navegador comum, plataformas não Windows e instaladores antigos sem o comando mantêm seus controles nativos.
+- **Recuperação:** falha ao ativar oculta a barra; erro em uma ação tenta restaurar as decorações nativas antes de ocultá-la. A desmontagem também tenta restaurá-las. O início de cada navegação restaura a moldura pelo Rust, inclusive quando a página seguinte falha ou fica offline.
+
+Build Next.js, TypeScript e 29 testes unitários passaram. `scripts/dashboard-browser.py` passou em produção local (`http://127.0.0.1:3005`) a 1440px, 1280px e 390px, sem overflow, erros JavaScript ou gravações de negócio. `scripts/desktop-titlebar-browser.py` passou com web, legado e Windows simulado, cobrindo controles, arraste, não lidas e ausência de bordas visíveis no dashboard renderizado. Capturas: `.impeccable/review/dashboard-flat/1440.png`, `390.png`, `desktop-titlebar.png` e `focus-1440.png`. Revisão visual independente: **`ship`**, sem achados materiais; detector Impeccable indisponível.
+
+Essas verificações usam API/IPC simulados e não executam controles reais do Windows, instalação ou atualização entre executáveis. O CI nativo e a comprovação de minimizar, maximizar/restaurar, fechar, arrastar e recuperar a moldura no Windows precisam passar antes da publicação da 0.1.4. Não constituem validação de autenticação, persistência ou acessibilidade completa.

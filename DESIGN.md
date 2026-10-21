@@ -29,7 +29,7 @@ Os demais módulos mantêm trilho fixo de 76px, barra superior de 72px, conteúd
 
 ### Hoje — identidade clara aprovada
 
-A identidade clara substitui Shakuro, Manrope, grafite e laranja exclusivamente em Hoje e `/demo/dashboard`. A autoridade é a escolha explícita do usuário por marfim, texto escuro e azul profundo. A implementação está escopada a `.dashboard-redesign`; os tokens globais acima continuam normativos para as outras superfícies.
+A identidade clara substitui Shakuro, Manrope, grafite e laranja exclusivamente em Hoje e `/demo/dashboard`. A autoridade é a escolha explícita do usuário por marfim, texto escuro e azul profundo, seguida pela remoção de todas as bordas decorativas do dashboard. A implementação está escopada a `.dashboard-redesign`; os tokens globais acima continuam normativos para as outras superfícies.
 
 #### Overview
 
@@ -45,7 +45,7 @@ Valores normativos desta superfície, extraídos de `app/dashboard.css`:
 | `--rail` | `#fdfcf9` | Navegação clara |
 | `--surface` | `#ffffff` | Jornada, calendário e diálogos |
 | `--surface-raised` | `#eef1f7` | Camadas secundárias |
-| `--border` | `#e0e3ea` | Divisões |
+| `--border` | `#e0e3ea` | Token retido; não autoriza bordas decorativas nesta superfície |
 | `--text` | `#202b40` | Tinta do texto |
 | `--muted`, `--quiet` | `#59667c` | Texto auxiliar |
 | `--accent` | `#294d94` | Ações e seleção |
@@ -66,21 +66,24 @@ Até 1200px o contexto segue abaixo em duas colunas. Até 760px a sidebar dá lu
 
 #### Elevation & Depth
 
-Campos brancos, bordas suaves e fundos azulados estruturam as camadas. A opção selecionada do controle de visão da agenda recebe sombra discreta; o timer mantém um campo azul sólido.
+Campos brancos, fundos azulados, espaçamento e tipografia estruturam as camadas sem bordas decorativas. Painéis, navegação, controles, agenda, contexto, popovers e diálogos do dashboard não usam traços de contorno ou divisórias; campos de formulário usam fundo azulado. A seleção da agenda usa preenchimento, sem sombra decorativa; o timer mantém um campo azul sólido. Contornos de foco continuam visíveis e funcionais.
 
 #### Shapes
 
-Contêiner principal com cantos de 14px; agenda com 10px; faixa de home office e conversa com 9px; ações com 6–7px. Divisões finas separam os saldos.
+Contêiner principal com cantos de 14px; agenda com 10px; faixa de home office e conversa com 9px; ações com 6–7px. Espaçamento e alinhamento separam os saldos, sem divisórias.
 
 #### Components
 
-Timer com ação branca sobre azul e encerramento secundário; jornada com progresso e configuração opcional; resumo de home office com erro, ausência e nova tentativa; calendário compacto com cabeçalho fixo; navegação com rótulos permanentes e estado ativo azul claro. O foco visível recebe contorno azul de 2px, afastado 4px; dentro do timer azul, o contorno é branco, com as mesmas dimensões. A legenda Eventos usa verde, acompanhando os blocos de evento desta superfície.
+Timer com ação branca sobre azul e encerramento secundário; jornada com progresso e configuração opcional; resumo de home office com erro, ausência e nova tentativa; calendário compacto com cabeçalho fixo; navegação com rótulos permanentes e estado ativo azul claro. O foco visível recebe contorno azul de 2px, afastado 4px; dentro do timer azul, o contorno é branco, com as mesmas dimensões. A legenda Eventos usa verde, acompanhando os blocos de evento desta superfície. No Windows compatível, uma barra de título de 36px acompanha o marfim e o azul de Hoje, com marca Hub, legenda, indicador de mensagens não lidas e controles nativos de minimizar, maximizar/restaurar e fechar. A área da marca permite arrastar e o duplo clique alterna maximização; foco permanece visível. Contrato de compatibilidade e entrega: [barra desktop](docs/desktop-updates.md#barra-de-título-windows--implementação-014-pendente-de-publicação).
 
 #### Do's and Don'ts
 
 - **Do** aplicar esta identidade somente ao escopo de Hoje e sua prévia compartilhada.
+- **Do** separar grupos por preenchimento, espaço e hierarquia, preservando os contornos de foco.
 - **Do** manter rótulos separados para tempo da atividade, total do dia e saldos sobre o previsto até hoje.
 - **Don't** herdar o veredito visual da versão escura para esta composição clara.
+
+Revisão atual da superfície plana: **`ship`**, sem achados materiais na revisão independente das capturas em `.impeccable/review/dashboard-flat/`: `1440.png`, `390.png`, `desktop-titlebar.png` e `focus-1440.png`. Build, TypeScript, 29 testes unitários e os cenários de produção em 1440px/1280px/390px passaram; a barra Windows foi exercitada com IPC simulado. Controles reais em Windows permanecem um gate da versão 0.1.4, ainda não publicada; esta evidência não comprova acessibilidade completa nem integração autenticada.
 
 ## Interações e limites
 

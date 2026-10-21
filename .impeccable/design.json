@@ -22,11 +22,14 @@
   "dashboard": {
     "mode": "operate",
     "designDocument": "docs/dashboard-redesign.md",
-    "authority": "Explicit user choice of a new light identity replaces Shakuro for Hoje and its public preview only; other modules and marketing retain their existing authorities.",
+    "authority": "Explicit user choice of a new light identity replaces Shakuro for Hoje and its public preview only; other modules and marketing retain their existing authorities. Subsequent explicit user direction removes all decorative dashboard borders while preserving ivory, navy and Inter.",
     "sources": [
       "components/today-dashboard.tsx",
       "components/live-hub-app.tsx",
-      "app/dashboard.css"
+      "app/dashboard.css",
+      "components/desktop-titlebar.tsx",
+      "app/desktop.css",
+      "src-tauri/src/titlebar.rs"
     ],
     "preview": {
       "route": "/demo/dashboard",
@@ -42,8 +45,8 @@
       "homeOffice": "Current week Sunday through today + 42 days, independent of calendar selection; holiday weeks suppress assignments; empty and retry states."
     },
     "verification": {
-      "unit": "25 passed; business rules unchanged",
-      "build": "final light-identity build passed; production served at http://127.0.0.1:3002",
+      "unit": "29 passed",
+      "build": "flat dashboard and desktop-titlebar build passed; production served at http://127.0.0.1:3005",
       "fullCalendarRegression": "Prior calendar-browser.py run passed at 1440px/390px; does not establish light-identity visual approval.",
       "browser": {
         "script": "scripts/dashboard-browser.py",
@@ -52,7 +55,7 @@
           1280,
           390
         ],
-        "result": "final light-identity production round at http://127.0.0.1:3002 passed at all three widths; no page overflow, JavaScript errors or business-record writes",
+        "result": "flat dashboard production round at http://127.0.0.1:3005 passed at 1440px/1280px/390px; no page overflow, JavaScript errors or business-record writes",
         "scenarios": [
           "pause and resume",
           "stop and restart",
@@ -63,25 +66,23 @@
           "retry"
         ]
       },
-      "typescript": "passed before latest CSS adjustment"
+      "typescript": "passed",
+      "desktopTitlebar": "scripts/desktop-titlebar-browser.py passed for web, legacy installer and mocked Windows: controls, drag, unread count and visible dashboard border scan; no native Windows proof",
+      "detector": "Impeccable detector unavailable; no detector pass claimed"
     },
     "review": {
       "visual_verdict": "ship",
-      "scope": "Light-identity public-preview visual review and closure of the focus finding only; local production interactions verified separately as listed.",
-      "finding": "Resolved: white 2px focus outline with 4px offset inside blue timer, confirmed in focus-1440.png and app/dashboard.css:352; contrast 10.15:1. Final 1440px/390px composition preserved, green Eventos legend corrected, no development indicator.",
-      "evidence": ".impeccable/review/dashboard/",
+      "scope": "Independent final review of flat dashboard desktop/mobile, keyboard focus and mocked Windows titlebar; local production interactions verified separately.",
+      "finding": "No material findings; functional focus outlines retained.",
+      "evidence": ".impeccable/review/dashboard-flat/",
       "captures": [
         "1440.png",
-        "1280.png",
         "390.png",
-        "lunch-1440.png",
-        "unconfigured-390.png",
-        "holiday-1440.png",
-        "empty-390.png",
+        "desktop-titlebar.png",
         "focus-1440.png"
       ],
-      "limits": "No full product approval, complete accessibility audit, real-account authentication, MFA, RLS, Presence or real RPC persistence validation.",
-      "previousVerdict": "Current ship is a new review of the light identity; the earlier dark-preview verdict does not supply its approval."
+      "limits": "No full product approval, complete accessibility audit, real-account authentication, MFA, RLS, Presence or real RPC persistence validation. Real native Windows controls remain a release gate; 0.1.4 not published.",
+      "previousVerdict": "Current ship reviews the flat dashboard; previous light/dark verdicts are historical evidence."
     },
     "font": "Inter Variable, npm-installed and locally served",
     "tokens": {
@@ -103,6 +104,29 @@
       "default": "2px solid #3764b6; outline-offset:4px",
       "insideTimer": "2px solid #ffffff; outline-offset:4px",
       "verifiedContrast": "10.15:1"
+    },
+    "flat": {
+      "scope": ".dashboard-redesign only; other modules and marketing retain their authorities",
+      "separation": "white and tinted fields, spacing and typography; no decorative borders or dividers across dashboard navigation, panels, calendar, controls, context, popovers or dialogs",
+      "inputs": "tinted background, no decorative border",
+      "shadows": "no decorative shadow on selected calendar view or scoped flat controls",
+      "focus": "functional visible outlines preserved",
+      "retainedBorderToken": "#e0e3ea is retained in CSS; it does not authorize decorative dashboard borders"
+    },
+    "desktopTitlebar": {
+      "height": "36px",
+      "appearance": "Hub brand, caption, unread count; ivory and navy on dashboard",
+      "controls": [
+        "minimize",
+        "maximize/restore",
+        "close",
+        "drag",
+        "double-click maximize/restore"
+      ],
+      "integration": "Rust desktop_titlebar command; fixed actions on own main window only",
+      "compatibility": "native decorations retained on web, non-Windows and older installers; restore attempted after control errors/unmount; navigation starts with native decorations",
+      "release": "native version 0.1.4 prepared; CI and native Windows control verification pending; not published",
+      "contract": "docs/desktop-updates.md#barra-de-título-windows--implementação-014-pendente-de-publicação"
     }
   },
   "status": "implemented adaptation; Supabase Auth/MFA, workspace onboarding, RPC adapter and PWA implemented; browser-local demonstration at /demo; authenticated flows await real-account validation",

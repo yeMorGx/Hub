@@ -49,6 +49,8 @@ try {
     if (-not $control) { throw "Missing window control: $Name" }
     $control.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
   }
+  $titlebarButton = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Maximizar janela')
+  Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $titlebarButton) } 30
   Invoke-HubControl 'Maximizar janela'
   Wait-Until { [HubNativeWindow]::IsZoomed($handle) } 10
   Invoke-HubControl 'Restaurar janela'
