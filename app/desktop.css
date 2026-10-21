@@ -488,3 +488,4 @@ html:has(.desktop-mini-page) body {
 }
 .desktop-titlebar .avatar { border: 0; box-shadow: none; background: #e5eaf3; color: #294d94; }
 .desktop-titlebar .avatar [data-slot=avatar-fallback] { background: inherit; color: inherit; }
+html:has(.dashboard-redesign) .desktop-titlebar .workspace-icon { color: #52617b; }

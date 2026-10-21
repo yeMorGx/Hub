@@ -12,7 +12,7 @@ with sync_playwright() as p:
   page=ctx.new_page()
   page.route('**/api/desktop/update',lambda r:r.fulfill(json={'release':{'version':'0.1.3'}}))
   page.goto(base+'/login')
-  notice=page.get_by_role('complementary',name='Atualização do Hub')
+  notice=page.get_by_role('complementary',name='Atualização do ZULU')
   notice.wait_for()
   assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth')
   page.screenshot(path=f'/tmp/hub-update-review/{width}.png',full_page=True)
@@ -51,7 +51,7 @@ with sync_playwright() as p:
   ''')
   page=ctx.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
   page.goto(base+'/login')
-  notice=page.get_by_role('complementary',name='Atualização do Hub');notice.wait_for()
+  notice=page.get_by_role('complementary',name='Atualização do ZULU');notice.wait_for()
   page.get_by_role('button',name='Instalar e reiniciar',exact=True).click()
   page.get_by_role('alert').filter(has_text='Não foi possível concluir').wait_for()
   page.get_by_role('button',name='Instalar e reiniciar',exact=True).click()
@@ -60,7 +60,7 @@ with sync_playwright() as p:
   assert page.get_by_role('button',name='Atualizando…',exact=True).is_disabled()
   page.screenshot(path=f'/tmp/hub-update-review/automatic-download-{width}.png',full_page=True)
   page.evaluate("window.callbacks[window.progressHandler]({event:'hub:desktop-update',id:1,payload:{phase:'installing',downloaded:100,total:100}})")
-  page.get_by_text('Instalando… O Hub será reiniciado.',exact=True).wait_for()
+  page.get_by_text('Instalando… O ZULU será reiniciado.',exact=True).wait_for()
   assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth')
   assert page.evaluate("window.updateCalls.filter(c=>c.cmd==='open_desktop_update').length") == 0
   assert not errors, errors
@@ -72,7 +72,7 @@ with sync_playwright() as p:
   if current!='web':ctx.add_init_script("window.__TAURI_INTERNALS__={invoke:async()=>"+("{throw Error('legacy')}" if current=='legacy' else json.dumps(current))+"}")
   page=ctx.new_page();page.route('**/api/desktop/update',lambda r:r.fulfill(status=result,json={'release':{'version':'0.1.3'}}))
   page.goto(base+'/login');page.wait_for_timeout(800)
-  assert page.get_by_role('complementary',name='Atualização do Hub').count()==0
+  assert page.get_by_role('complementary',name='Atualização do ZULU').count()==0
   ctx.close()
  browser.close()
 print('PASS: 1360/390px, automatic update/progress/install/retry, legacy download/dismissal, current version, web and offline; IPC/API mocked, no real installation.')

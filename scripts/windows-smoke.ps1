@@ -99,6 +99,9 @@ try {
   $appProcess.Refresh()
   if ($appProcess.HasExited) { throw 'Closing must keep the tray process alive.' }
   $report.backgroundTray = $true
+  $silentSecond = Start-Process -FilePath $appPath -ArgumentList '--background' -PassThru
+  Wait-Until { $silentSecond.Refresh(); $silentSecond.HasExited } 20
+  if ([HubNativeWindow]::IsWindowVisible($handle)) { throw 'A duplicate background launch must not reveal the main window.' }
   $second = Start-Process -FilePath $appPath -PassThru
   Wait-Until { $second.Refresh(); $second.HasExited } 20
   Wait-Until { [HubNativeWindow]::IsWindowVisible($handle) } 15

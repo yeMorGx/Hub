@@ -288,7 +288,7 @@ pub fn desktop_mini(
                 || (matches!(action, MiniAction::Resume) && current.phase != TimerPhase::Lunch)
                 || current.phase == TimerPhase::Idle
             {
-                return Err("O timer mudou. Tente novamente.");
+                return Err("O timer mudou. Tente novamente.".into());
             }
             *state.error.lock().map_err(|_| "Timer indisponível.")? = None;
             app.emit_to("main", "zulu:mini-action", action)

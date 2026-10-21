@@ -38,6 +38,11 @@ export function DesktopTitlebar() {
     void control("state")
       .then((state) => {
         if (disposed || state?.supported !== true) return;
+        const next = new URL(window.location.href);
+        if (next.searchParams.has("desktop_notification")) {
+          next.searchParams.delete("desktop_notification");
+          window.history.replaceState(window.history.state, "", next.href);
+        }
         setMaximized(state.maximized);
         setVisible(true);
       })

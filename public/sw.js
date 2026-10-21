@@ -1,5 +1,5 @@
 /* ZULU PWA shell only. Authenticated documents, RSC and team data are never cached. */
-const CACHE = 'hub-public-shell-v3';
+const CACHE = 'hub-public-shell-v4';
 const PUBLIC_ASSETS = ['/offline.html', '/offline.css', '/offline-reader.js', '/offline-vault.js', '/pwa/icon/192?v=zulu-1', '/pwa/icon/512?v=zulu-1', '/brand/zulu-mark.svg', '/brand/zulu-wordmark.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(PUBLIC_ASSETS)));
@@ -44,7 +44,8 @@ self.addEventListener('notificationclick', event => {
   const target = new URL(event.notification.data?.url || '/?inbox=1', self.location.origin);
   if (target.origin !== self.location.origin) return;
   event.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(async windows => {
-    const existing=windows.find(client=>new URL(client.url).origin===self.location.origin);
+    const existing=windows.find(client=>{const url=new URL(client.url);return url.origin===self.location.origin&&url.pathname.replace(/\/+$/, '')!=='/desktop/timer';});
+    target.searchParams.set('desktop_notification','1');
     if(existing){await existing.navigate(target.href);return existing.focus();}
     return clients.openWindow(target.href);
   }));

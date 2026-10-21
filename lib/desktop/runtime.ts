@@ -35,7 +35,10 @@ export function timerSnapshot(
   const active = hub.snapshot.entries.find(
     (entry) => entry.user_id === hub.userId && !entry.ended_at,
   );
-  const paused = hub.snapshot.pausedTimer?.user_id === hub.userId ? hub.snapshot.pausedTimer : null;
+  const paused =
+    hub.snapshot.pausedTimer?.user_id === hub.userId
+      ? hub.snapshot.pausedTimer
+      : null;
   const session = active ?? paused;
   const seconds = active
     ? Number(active.carried_seconds ?? 0) +

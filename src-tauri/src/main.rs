@@ -70,8 +70,10 @@ fn main() {
             native_screen_share::start_native_screen_share,
             native_screen_share::stop_native_screen_share
         ])
-        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            show_main_window(app);
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            if !args.iter().any(|arg| arg == "--background") {
+                show_main_window(app);
+            }
         }))
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
@@ -93,6 +95,14 @@ fn main() {
             {
                 let _ = webview.window().set_decorations(true);
                 runtime::clear_timer(webview.app_handle());
+                if payload.url().host_str() == Some("hub-one-azure.vercel.app")
+                    && payload
+                        .url()
+                        .query_pairs()
+                        .any(|(key, value)| key == "desktop_notification" && value == "1")
+                {
+                    show_main_window(webview.app_handle());
+                }
             }
         })
         .on_window_event(|window, event| {

@@ -19,8 +19,8 @@ MOCK='''
    return {supported:true,background:true,autostart:window.auto,miniVisible:window.miniVisible};
   }
   if(cmd==='desktop_mini'){
-   if(window.timer.phase==='running'){window.timer.elapsedSeconds+=Math.floor((Date.now()-window.lastTimer)/1000);}window.lastTimer=Date.now();
-   if(args.action==='pause')window.timer.phase='lunch';if(args.action==='resume')window.timer.phase='running';
+   if(window.timer.phase==='running'){const delta=Math.floor((Date.now()-window.lastTimer)/1000);window.timer.elapsedSeconds+=delta;window.lastTimer+=delta*1000;}
+   if(args.action==='pause')window.timer.phase='lunch';if(args.action==='resume'){window.timer.phase='running';window.lastTimer=Date.now();}
    if(args.action==='stop'){window.timer.phase='idle';window.timer.elapsedSeconds=0;window.timer.canControl=false;}
    window.timer.sampledAt=Date.now();return {...window.timer};
   }
@@ -36,7 +36,8 @@ with sync_playwright() as p:
  for width in [1440,390]:
   page=browser.new_page(viewport={'width':width,'height':1000},reduced_motion='reduce',user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130 Safari/537.36')
   page.add_init_script(MOCK);errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-  page.goto(BASE+'/demo/dashboard');page.locator('#desktop-titlebar-content .topbar').wait_for();page.evaluate('document.fonts.ready')
+  page.goto(BASE+'/demo/dashboard?desktop_notification=1');page.locator('#desktop-titlebar-content .topbar').wait_for();page.evaluate('document.fonts.ready')
+  assert 'desktop_notification' not in page.url
   assert page.locator('.app-content > .topbar').count()==0
   assert page.locator('.rail .avatar').count()==0
   assert page.locator('.today-person small svg').count()==0
@@ -70,7 +71,7 @@ with sync_playwright() as p:
  page.get_by_role('button',name='Pausar para almoço',exact=True).click();page.get_by_role('button',name='Retomar trabalho',exact=True).wait_for()
  paused=timer.inner_text();page.wait_for_timeout(1500);assert timer.inner_text()==paused
  page.screenshot(path=str(OUT/'mini-lunch.png'),omit_background=True)
- page.get_by_role('button',name='Retomar trabalho',exact=True).click();page.wait_for_timeout(1600);assert timer.inner_text()!=paused
+ page.get_by_role('button',name='Retomar trabalho',exact=True).click();expect(timer).not_to_have_text(paused,timeout=5000)
  page.get_by_role('button',name='Encerrar e salvar',exact=True).click();expect(timer).to_have_text('00:00:00')
  expect(page.get_by_role('button',name='Pausar para almoço',exact=True)).to_be_disabled()
  page.get_by_role('button',name='Ocultar mini timer',exact=True).click()
