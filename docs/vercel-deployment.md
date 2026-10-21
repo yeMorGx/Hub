@@ -102,3 +102,10 @@ Build remoto e TypeScript passaram. Após a publicação, `/login` e `/demo/dash
 ## Preparação do atualizador desktop · 2026-10-21
 
 Código `3b6bbbb`, deployment `dpl_AeKU6PTGXj94NVZgXG9mPNQ6B5UW` **READY**, alias https://hub-one-azure.vercel.app. Build remoto e TypeScript passaram; 32 checks HTTP de produção passaram. Novo `/api/desktop/manifest` respondeu 204 para a release atual sem assinatura. Frontend inclui modo automático para o futuro instalador 0.1.3 e mantém download manual para versões antigas. O instalador e a ativação real dependem da configuração do segredo de assinatura, build nativo e release Windows. [Estado e limites](desktop-updates.md).
+
+
+## Hub Windows 0.1.3 e central de downloads · 2026-10-21
+
+Frontend `2b2ba74`, deployment `dpl_D7PVrkXJ84xmc8yDceSuVgu8SBk1` **READY**, mesmo alias estável. 32 checks HTTP de produção passaram; central de downloads oferece a 0.1.3. Release desktop estável publicada após build, instalação, abertura, atalho, remoção e assinatura de atualização aprovados no Windows.
+
+Os endpoints legado e nativo anunciaram 0.1.3 após a renovação do cache. Assinatura do manifesto e SHA-256 do download público conferidos contra o artefato aprovado. A 0.1.3 exige instalação manual única a partir dos clientes anteriores e habilita instalação das próximas versões pelo app; a troca real entre duas versões assinadas ainda depende de uma versão seguinte. Authenticode continua pendente. [Evidências e limites](desktop-updates.md).
