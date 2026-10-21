@@ -561,7 +561,7 @@ const statuses: Record<string, string> = {
   meeting: "Em reunião",
   away: "Ausente",
   offline: "Offline",
-  unknown: "Presença indisponível",
+  unknown: "",
 };
 
 export function TodayContext(props: TodayContextProps) {
@@ -631,11 +631,7 @@ export function TodayContext(props: TodayContextProps) {
         <Card.Header className="today-section-heading">
           <Card.Title>Por aqui agora</Card.Title>
           <span className="today-online">
-            {props.presence === "live"
-              ? `${onlineCount} online`
-              : props.presence === "connecting"
-                ? "Conectando…"
-                : "Indisponível"}
+            {props.presence === "live" ? `${onlineCount} online` : ""}
           </span>
         </Card.Header>
         <div className="today-team-list">
@@ -657,7 +653,7 @@ export function TodayContext(props: TodayContextProps) {
                 <PersonAvatar
                   name={person.display_name}
                   id={person.id}
-                  presence={status}
+                  presence={status === "unknown" ? undefined : status}
                 />
                 <span>
                   <strong>
@@ -665,16 +661,12 @@ export function TodayContext(props: TodayContextProps) {
                     {person.id === props.currentUserId && <em> · Você</em>}
                   </strong>
                   <small>
-                    {working ? (
-                      <>
-                        <Play size={11} weight="fill" /> {working}
-                      </>
-                    ) : person.id !== props.currentUserId &&
-                      person.timer_running ? (
-                      "Trabalhando agora"
-                    ) : (
-                      person.body || statuses[status] || statuses.unknown
-                    )}
+                    {working
+                      ? working
+                      : person.id !== props.currentUserId &&
+                          person.timer_running
+                        ? "Trabalhando agora"
+                        : person.body || statuses[status] || statuses.unknown}
                   </small>
                 </span>
               </ZuluButton>

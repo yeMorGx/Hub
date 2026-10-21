@@ -23,10 +23,21 @@ html:has(.dashboard-redesign) .desktop-titlebar {
   padding-left: 20px;
   touch-action: none;
 }
-.desktop-titlebar-drag > svg { color: #e26540; flex-shrink: 0; }
-html:has(.dashboard-redesign) .desktop-titlebar-drag > svg { color: #294d94; }
-.desktop-titlebar-brand { font-size: 12px; font-weight: 650; }
-.desktop-titlebar-caption { font-size: 10px; margin-left: 12px; }
+.desktop-titlebar-drag > svg {
+  color: #e26540;
+  flex-shrink: 0;
+}
+html:has(.dashboard-redesign) .desktop-titlebar-drag > svg {
+  color: #294d94;
+}
+.desktop-titlebar-brand {
+  font-size: 12px;
+  font-weight: 650;
+}
+.desktop-titlebar-caption {
+  font-size: 10px;
+  margin-left: 12px;
+}
 .desktop-titlebar-unread {
   color: #fff;
   background: #294d94;
@@ -35,7 +46,10 @@ html:has(.dashboard-redesign) .desktop-titlebar-drag > svg { color: #294d94; }
   padding: 2px 6px;
   border-radius: 4px;
 }
-.desktop-window-controls { display: flex; flex-shrink: 0; }
+.desktop-window-controls {
+  display: flex;
+  flex-shrink: 0;
+}
 .desktop-window-controls button {
   width: 46px;
   min-height: 36px;
@@ -46,35 +60,431 @@ html:has(.dashboard-redesign) .desktop-titlebar-drag > svg { color: #294d94; }
   background: transparent;
   color: inherit;
 }
-.desktop-window-controls button:hover { background: #ffffff14; }
-html:has(.dashboard-redesign) .desktop-window-controls button:hover { background: #e6e9ef; }
+.desktop-window-controls button:hover {
+  background: #ffffff14;
+}
+html:has(.dashboard-redesign) .desktop-window-controls button:hover {
+  background: #e6e9ef;
+}
 .desktop-window-controls .desktop-window-close:hover,
-html:has(.dashboard-redesign) .desktop-window-controls .desktop-window-close:hover { background: #c42b1c; color: #fff; }
-.desktop-window-controls button:focus-visible { outline: 2px solid currentColor; outline-offset: -5px; }
-html[data-desktop-titlebar] body { padding-top: 36px; }
-html[data-desktop-titlebar] :is(.app-shell, .dashboard-redesign, .auth-shell, .auth-story) { min-height: calc(100dvh - 36px); }
-html[data-desktop-titlebar] .rail { top: 36px; }
-html[data-desktop-titlebar] .notifications-popover { top: 97px; }
+html:has(.dashboard-redesign)
+  .desktop-window-controls
+  .desktop-window-close:hover {
+  background: #c42b1c;
+  color: #fff;
+}
+.desktop-window-controls button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -5px;
+}
+html[data-desktop-titlebar] body {
+  padding-top: 36px;
+}
+html[data-desktop-titlebar]
+  :is(.app-shell, .dashboard-redesign, .auth-shell, .auth-story) {
+  min-height: calc(100dvh - 36px);
+}
+html[data-desktop-titlebar] .rail {
+  top: 36px;
+}
+html[data-desktop-titlebar] .notifications-popover {
+  top: 97px;
+}
 @media (max-width: 760px) {
-  .desktop-titlebar-caption { display: none; }
-  html[data-desktop-titlebar] .dashboard-redesign .rail { top: auto; }
+  .desktop-titlebar-caption {
+    display: none;
+  }
+  html[data-desktop-titlebar] .dashboard-redesign .rail {
+    top: auto;
+  }
 }
 
 @media (max-width: 520px) {
-  html[data-desktop-titlebar] .rail { top: auto; }
+  html[data-desktop-titlebar] .rail {
+    top: auto;
+  }
 }
 /* Official identity assets retain their supplied paths and texture. */
-.brand-mark { display: block; flex-shrink: 0; object-fit: contain; }
-.brand-wordmark { display: block; flex-shrink: 0; object-fit: contain; filter: invert(1); }
-.dashboard-redesign .brand-wordmark,
-.m-page .brand-wordmark { filter: none; }
-.dashboard-redesign .dashboard-wordmark > .brand-wordmark { width: 90px; height: 27px; margin: 0; }
-.desktop-titlebar .brand-wordmark { width: 49px; height: 15px; }
-html:has(.dashboard-redesign) .desktop-titlebar .brand-wordmark { filter: none; }
-.m-policy-brand { display: inline-flex; align-items: center; gap: 9px; flex-shrink: 0; }
-.m-policy-brand .brand-wordmark { width: 82px; height: 25px; }
-@media (max-width: 520px) {
-  .m-policy-brand { gap: 6px; }
-  .m-policy-brand .brand-mark { width: 26px; height: 26px; }
-  .m-policy-brand .brand-wordmark { width: 70px; height: 22px; }
+.brand-mark {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
 }
+.brand-wordmark {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: invert(1);
+}
+.dashboard-redesign .brand-wordmark,
+.m-page .brand-wordmark {
+  filter: none;
+}
+.dashboard-redesign .dashboard-wordmark > .brand-wordmark {
+  width: 90px;
+  height: 27px;
+  margin: 0;
+}
+.desktop-titlebar .brand-wordmark {
+  width: 49px;
+  height: 15px;
+}
+html:has(.dashboard-redesign) .desktop-titlebar .brand-wordmark {
+  filter: none;
+}
+.m-policy-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+}
+.m-policy-brand .brand-wordmark {
+  width: 82px;
+  height: 25px;
+}
+@media (max-width: 520px) {
+  .m-policy-brand {
+    gap: 6px;
+  }
+  .m-policy-brand .brand-mark {
+    width: 26px;
+    height: 26px;
+  }
+  .m-policy-brand .brand-wordmark {
+    width: 70px;
+    height: 22px;
+  }
+}
+
+/* Native chrome owns the app header, account and runtime actions. */
+.desktop-titlebar {
+  height: 48px;
+  gap: 0;
+}
+.desktop-window-controls button {
+  min-height: 48px;
+  width: 42px;
+}
+html[data-desktop-titlebar] body {
+  padding-top: 48px;
+}
+html[data-desktop-titlebar]
+  :is(.app-shell, .dashboard-redesign, .auth-shell, .auth-story) {
+  min-height: calc(100dvh - 48px);
+}
+html[data-desktop-titlebar] .rail {
+  top: 48px;
+}
+html[data-desktop-titlebar] .dashboard-redesign .rail {
+  top: 60px;
+  height: calc(100dvh - 72px);
+}
+#desktop-titlebar-content:empty {
+  display: none;
+}
+html[data-desktop-app-chrome] .desktop-titlebar-drag {
+  flex: 0 0 48px;
+  padding-left: 16px;
+}
+#desktop-titlebar-content {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+}
+.desktop-titlebar .topbar {
+  display: flex;
+  width: 100%;
+  height: 48px;
+  min-width: 0;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  gap: 10px;
+  position: static;
+}
+.desktop-titlebar .topbar-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+.desktop-titlebar .breadcrumb-divider,
+.desktop-titlebar .breadcrumb {
+  font-size: 11px;
+}
+.desktop-titlebar .workspace-button {
+  font-size: 12px;
+  min-height: 34px;
+}
+.desktop-titlebar .workspace-button strong {
+  color: inherit;
+}
+.desktop-titlebar .workspace-icon {
+  width: 26px;
+  height: 26px;
+}
+.desktop-titlebar .top-avatar {
+  padding: 0;
+  min-width: 32px;
+  border: 0;
+  background: transparent;
+}
+.desktop-titlebar .avatar {
+  width: 28px;
+  height: 28px;
+  font-size: 10px;
+}
+.desktop-titlebar :is(.icon-button, .search-button) {
+  min-height: 32px;
+  height: 32px;
+}
+.desktop-titlebar .search-button {
+  font-size: 11px;
+}
+.desktop-runtime-tools {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 6px;
+}
+.desktop-runtime-tools .button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+}
+.desktop-runtime-tools .button:hover {
+  background: #ffffff1a;
+}
+html:has(.dashboard-redesign) .desktop-titlebar .topbar {
+  color: #202b40;
+  --foreground: #202b40;
+  --accent: #294d94;
+  --muted: #59667c;
+}
+html:has(.dashboard-redesign)
+  .desktop-titlebar
+  :is(.workspace-button, .search-button, .icon-button) {
+  color: #52617b;
+}
+html:has(.dashboard-redesign)
+  .desktop-titlebar
+  :is(.workspace-button, .search-button, .icon-button, .workspace-icon) {
+  background: transparent;
+  border: 0;
+}
+html:has(.dashboard-redesign) .desktop-runtime-tools .button:hover {
+  background: #e6e9ef;
+}
+.desktop-runtime-popover {
+  width: 286px;
+  padding: 20px;
+  border: 0;
+  border-radius: 14px;
+  box-shadow: none;
+}
+.desktop-runtime-popover [role="dialog"] {
+  display: grid;
+  gap: 16px;
+  outline: none;
+}
+.desktop-runtime-popover strong {
+  font-size: 14px;
+}
+.desktop-runtime-popover .zulu-checkbox {
+  font-size: 13px;
+}
+.desktop-runtime-popover p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #59667c;
+}
+.desktop-runtime-popover .desktop-option-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  border: 0;
+  background: #eef1f7;
+  color: #294d94;
+  padding: 10px 12px;
+  min-height: 40px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+@media (max-width: 900px) {
+  .desktop-titlebar :is(.breadcrumb, .breadcrumb-divider, .search-button) {
+    display: none;
+  }
+  .desktop-titlebar .topbar {
+    padding-inline: 5px;
+    gap: 6px;
+  }
+  .desktop-titlebar .topbar-right {
+    gap: 5px;
+  }
+  .desktop-titlebar .workspace-button strong {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  html[data-desktop-titlebar] .dashboard-redesign .rail {
+    top: auto;
+    height: 62px;
+  }
+  .desktop-titlebar .topbar .icon-button[aria-label="Atualizar dados"] {
+    display: none;
+  }
+  .desktop-titlebar .today-demo-controls {
+    width: 92px;
+  }
+  html[data-desktop-app-chrome] .desktop-titlebar-drag {
+    flex-basis: 36px;
+    padding-left: 8px;
+  }
+}
+/* Compact, transparent native window: only the rounded capsule is painted. */
+html:has(.desktop-mini-page),
+html:has(.desktop-mini-page) body {
+  background: transparent !important;
+  padding: 0 !important;
+  overflow: hidden;
+  min-height: 0;
+  color-scheme: dark;
+}
+.desktop-mini-page {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  align-items: center;
+  padding: 4px;
+  background: transparent;
+  font-family: "Inter Variable", sans-serif;
+}
+.mini-capsule {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  height: 72px;
+  padding: 8px 10px 8px 4px;
+  border-radius: 999px;
+  overflow: hidden;
+  color: #fff;
+  background: #111b2a;
+  isolation: isolate;
+}
+.mini-gradient {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.mini-gradient:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #0009;
+}
+.mini-lava {
+  opacity: 0;
+  transition: opacity 650ms ease;
+}
+.mini-running .mini-lava {
+  opacity: 1;
+}
+.mini-capsule .button {
+  border: 0;
+  color: #fff;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  min-width: 0;
+  flex-shrink: 0;
+}
+.mini-capsule .button:focus-visible,
+.mini-capsule .button[data-focus-visible="true"] {
+  outline: 2px solid white;
+  outline-offset: -3px;
+}
+.mini-capsule .mini-clock {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  border-radius: 10px;
+  padding: 4px;
+  min-height: 48px;
+}
+.mini-clock [role="timer"] {
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.mini-clock small {
+  color: #e4edff;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.mini-capsule .mini-action {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff1c;
+  transition:
+    background 150ms ease,
+    transform 150ms ease;
+}
+.mini-capsule .mini-action:hover {
+  background: #ffffff36;
+}
+.mini-capsule .button[data-pressed="true"] {
+  transform: scale(0.95);
+}
+.mini-capsule .button:disabled,
+.mini-capsule .button[data-disabled="true"] {
+  opacity: 0.4;
+}
+.mini-capsule .mini-dismiss {
+  width: 25px;
+  height: 32px;
+  border-radius: 12px;
+}
+.mini-capsule .mini-grab {
+  width: 18px;
+  height: 42px;
+  cursor: grab;
+  color: #d8e2f9;
+}
+.mini-capsule .mini-error {
+  position: absolute;
+  inset: 0;
+  background: #1b2a47;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  font-size: 11px;
+  white-space: normal;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mini-lava,
+  .mini-capsule .button {
+    transition: none;
+  }
+}
+.desktop-titlebar .avatar { border: 0; box-shadow: none; background: #e5eaf3; color: #294d94; }
+.desktop-titlebar .avatar [data-slot=avatar-fallback] { background: inherit; color: inherit; }

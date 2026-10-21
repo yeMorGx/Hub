@@ -1,9 +1,9 @@
-param([Parameter(Mandatory)][string]$Installer, [string]$OutputDirectory = "$env:RUNNER_TEMP\hub-desktop-evidence")
+﻿param([Parameter(Mandatory)][string]$Installer, [string]$OutputDirectory = "$env:RUNNER_TEMP\hub-desktop-evidence")
 $ErrorActionPreference = 'Stop'
 New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 $installDirectory = Join-Path $env:RUNNER_TEMP 'HubDesktopSmoke'
 if (Test-Path $installDirectory) { throw 'The smoke install directory must be empty.' }
-$report = [ordered]@{ platform = 'Windows'; installer = (Split-Path $Installer -Leaf); sha256 = (Get-FileHash $Installer -Algorithm SHA256).Hash.ToLower(); signature = (Get-AuthenticodeSignature $Installer).Status.ToString(); signed = $false; installed = $false; windowOpened = $false; loginPageLoaded = $false; customTitlebar = $false; maximizeRestored = $false; minimizeControl = $false; singleInstance = $false; shortcutRestoredWindow = $false; uninstalled = $false; accountsCreated = 0; businessWrites = 0 }
+$report = [ordered]@{ platform = 'Windows'; installer = (Split-Path $Installer -Leaf); sha256 = (Get-FileHash $Installer -Algorithm SHA256).Hash.ToLower(); signature = (Get-AuthenticodeSignature $Installer).Status.ToString(); signed = $false; installed = $false; windowOpened = $false; loginPageLoaded = $false; customTitlebar = $false; maximizeRestored = $false; minimizeControl = $false; singleInstance = $false; shortcutRestoredWindow = $false; backgroundTray = $false; autostartToggle = $false; miniWindow = $false; miniTopmost = $false; hiddenStartup = $false; uninstalled = $false; accountsCreated = 0; businessWrites = 0 }
 $report.signed = $report.signature -eq 'Valid'
 $appProcess = $null
 $uninstaller = $null
@@ -15,6 +15,8 @@ public static class HubNativeWindow {
   [DllImport("user32.dll")] public static extern bool IsZoomed(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hwnd);
+  [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hwnd);
+  [DllImport("user32.dll", EntryPoint="GetWindowLongW")] public static extern int GetWindowLong(IntPtr hwnd, int index);
 }
 '@
 function Wait-Until([scriptblock]$Condition, [int]$Seconds = 45) {
@@ -74,6 +76,44 @@ try {
   [System.Windows.Forms.SendKeys]::SendWait('^+h')
   Wait-Until { -not [HubNativeWindow]::IsIconic($handle) } 15
   $report.shortcutRestoredWindow = $true
+  # Local runtime preferences only. No account, email or business operation.
+  Invoke-HubControl 'Opções do aplicativo'
+  $checkCondition = [System.Windows.Automation.AndCondition]::new(
+    [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Abrir ao ligar o PC'),
+    [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::ControlTypeProperty, [System.Windows.Automation.ControlType]::CheckBox))
+  Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $checkCondition) } 15
+  $check = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $checkCondition)
+  $toggle = $check.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern)
+  if ($toggle.Current.ToggleState -ne [System.Windows.Automation.ToggleState]::Off) { throw 'Startup must be opt-in on a fresh installation.' }
+  $toggle.Toggle()
+  Wait-Until { (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU -like '*--background*' } 15
+  $startup = (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU).ZULU
+  if ($startup -notlike "*$installDirectory*") { throw 'Startup entry must point to this installation.' }
+  Wait-Until { $toggle.Current.ToggleState -eq [System.Windows.Automation.ToggleState]::On } 15
+  $toggle.Toggle()
+  Wait-Until { -not (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU } 15
+  $report.autostartToggle = $true
+  [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
+  Invoke-HubControl 'Fechar ZULU'
+  Wait-Until { -not [HubNativeWindow]::IsWindowVisible($handle) } 15
+  $appProcess.Refresh()
+  if ($appProcess.HasExited) { throw 'Closing must keep the tray process alive.' }
+  $report.backgroundTray = $true
+  $second = Start-Process -FilePath $appPath -PassThru
+  Wait-Until { $second.Refresh(); $second.HasExited } 20
+  Wait-Until { [HubNativeWindow]::IsWindowVisible($handle) } 15
+  Invoke-HubControl 'Abrir mini timer'
+  $miniCondition = [System.Windows.Automation.AndCondition]::new(
+    [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::ProcessIdProperty, $appProcess.Id),
+    [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, ('ZULU ' + [char]0x2014 + ' Mini timer')))
+  Wait-Until { $null -ne [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $miniCondition) } 30
+  $miniRoot = [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $miniCondition)
+  $miniHandle = [IntPtr]$miniRoot.Current.NativeWindowHandle
+  if (([HubNativeWindow]::GetWindowLong($miniHandle, -20) -band 8) -eq 0) { throw 'Mini timer must be topmost.' }
+  $report.miniTopmost = $true
+  $miniCloseCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Ocultar mini timer')
+  Wait-Until { $null -ne $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition) } 45
+  $report.miniWindow = $true
   Add-Type -AssemblyName System.Drawing
   $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
   $bitmap = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
@@ -81,6 +121,24 @@ try {
   $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
   $bitmap.Save((Join-Path $OutputDirectory 'desktop.png'))
   $graphics.Dispose(); $bitmap.Dispose()
+  $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition).GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+  Wait-Until { -not [HubNativeWindow]::IsWindowVisible($miniHandle) } 15
+  Invoke-HubControl 'Opções do aplicativo'
+  Invoke-HubControl 'Sair do ZULU'
+  if (-not $appProcess.WaitForExit(10000)) { throw 'Quit must exit the background process.' }
+  $appProcess = Start-Process -FilePath $appPath -ArgumentList '--background' -PassThru
+  Start-Sleep -Seconds 5
+  $appProcess.Refresh()
+  if ($appProcess.HasExited -or $appProcess.MainWindowHandle -ne [IntPtr]::Zero) { throw 'Background startup must stay alive without a visible window.' }
+  $report.hiddenStartup = $true
+  $second = Start-Process -FilePath $appPath -PassThru
+  Wait-Until { $second.Refresh(); $second.HasExited } 20
+  Wait-Until { $appProcess.Refresh(); $appProcess.MainWindowHandle -ne [IntPtr]::Zero } 20
+  $handle = $appProcess.MainWindowHandle
+  $root = [System.Windows.Automation.AutomationElement]::FromHandle($handle)
+  Invoke-HubControl 'Opções do aplicativo'
+  Invoke-HubControl 'Sair do ZULU'
+  if (-not $appProcess.WaitForExit(10000)) { throw 'Background instance failed to quit.' }
 } finally {
   if ($appProcess -and -not $appProcess.HasExited) {
     $appProcess.CloseMainWindow() | Out-Null

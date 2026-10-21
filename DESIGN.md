@@ -36,6 +36,12 @@ A revisão posterior do usuário adota sidebar flutuante em Hoje: 12px das borda
 
 Escolher atividade abre formulário HeroUI no próprio card do timer, com descrição, projeto e sugestões reais de tarefas/atividades recentes. A jornada apresenta duração e legenda explícita (a mais/a compensar), horas feitas e previstas, e informa que a meta inclui hoje. Em Por aqui agora, o próprio usuário aparece primeiro, com atividade/pausa atual; colegas compartilham atividade pela Presence privada do time. Prévias de DMs próprias não lidas abrem a conversa e não marcam leitura por exibição. Contrato: [fluxo diário](docs/dashboard-workflow.md).
 
+### Desktop — title bar e cápsula
+
+A title bar no Windows passa a 48px e recebe o mesmo cabeçalho de workspace/time, ações e perfil por portal. O avatar sai da sidebar e o status de conexão redundante é removido; no navegador, o cabeçalho continua acessível. A atividade das pessoas é apenas texto, sem play, e a presença desconhecida não mostra rótulo indisponível.
+
+O seletor de atividade recebe **liquid glass** por escolha explícita do usuário: translucidez e blur sobre Prism/Lava, texto claro, campos escuros e foco legível. Essa escolha substitui o branco sólido somente nesse seletor. O mini timer nativo usa cápsula totalmente arredondada (raio 999px), sem borda/sombra, com o mesmo fundo original e controles HeroUI compactos. Detalhes funcionais em [desktop runtime](docs/desktop-runtime.md).
+
 ## Tokens implementados
 
 | Token CSS | Valor | Uso |

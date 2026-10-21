@@ -1114,3 +1114,34 @@
   outline: 2px solid #294d94;
   outline-offset: 3px;
 }
+
+/* User-selected liquid glass over the existing Prism/Lava surface. */
+.dashboard-redesign .today-activity-picker {
+  background: linear-gradient(135deg, #ffffff30, #ffffff14);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  backdrop-filter: blur(24px) saturate(150%);
+  color: #fff;
+}
+.dashboard-redesign .today-activity-form > label,
+.dashboard-redesign .today-activity-form .label,
+.dashboard-redesign .today-activity-suggestions small { color: #e4edff; }
+.dashboard-redesign .today-activity-form .input,
+.dashboard-redesign .today-activity-form .select__trigger {
+  color: #fff; background: #101b33b3; caret-color: #fff;
+}
+.dashboard-redesign .today-activity-form .input::placeholder { color: #d2dcf2; }
+.dashboard-redesign .today-activity-suggestions .button { color: #fff; background: #ffffff1f; }
+.dashboard-redesign .today-activity-suggestions .button:hover,
+.dashboard-redesign .today-activity-suggestions .button[aria-pressed=true] { color: #fff; background: #ffffff36; }
+.dashboard-redesign .today-picker-heading .button { color: #fff; }
+.dashboard-redesign .today-activity-picker :is(button,input):focus-visible,
+.dashboard-redesign .today-activity-picker :is(.button,.select__trigger)[data-focus-visible=true] { outline-color: #fff; }
+@supports not (backdrop-filter: blur(1px)) { .dashboard-redesign .today-activity-picker { background: #243653f2; } }
+.dashboard-redesign .today-activity-picker {
+  --field: #101b33b3;
+  --field-focus: #101b33e6;
+  --field-hover: #202f4a;
+  --field-foreground: #fff;
+  --field-placeholder: #d2dcf2;
+}
+.dashboard-redesign .today-activity-form .input:is(:focus,[data-focused=true]) { background-color: #101b33e6; color: #fff; box-shadow: none; }

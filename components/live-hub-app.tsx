@@ -64,6 +64,7 @@ import { errorMessage } from "@/lib/supabase/errors";
 import { AdvancedConversation } from "./advanced-conversation";
 import { TeamAccess } from "./team-access";
 import { NotificationBell } from "./notification-bell";
+import { DesktopChrome } from "./desktop-chrome";
 import { DesktopBridge } from "./desktop-bridge";
 import { LiveCalls } from "./live-calls";
 import { LiveIntegrations } from "./live-integrations";
@@ -723,22 +724,12 @@ export function LiveHubApp({ userId }: { userId: string }) {
             <DashboardNavIcon name="settings" />
             <span className="nav-tooltip">Preferências</span>
           </ZuluButton>
-          <ZuluButton
-            className="profile-button"
-            aria-label="Meu perfil"
-            onClick={() => openModal("profile")}
-          >
-            <PersonAvatar
-              name={currentName}
-              id={userId}
-              presence={hub.availability}
-            />
-          </ZuluButton>
+
         </div>
       </aside>
       <DesktopBridge hub={hub} />
       <div className="app-content">
-        <header className="topbar">
+        <DesktopChrome><header className="topbar">
           <div className="workspace-wrap">
             {page === "overview" ? <DashboardWorkspacePicker
               workspace={hub.workspace?.name ?? "Meu workspace"} teamId={hub.teamId}
@@ -816,23 +807,6 @@ export function LiveHubApp({ userId }: { userId: string }) {
           <span className="breadcrumb-divider">/</span>
           <span className="breadcrumb">{currentPage.label}</span>
           <div className="topbar-right">
-            <span
-              className={`connection-label connection-${hub.connection}`}
-              title={
-                hub.connection === "degraded"
-                  ? "Atualizações por consulta periódica enquanto o tempo real reconecta."
-                  : undefined
-              }
-            >
-              <i />
-              {hub.connection === "live"
-                ? "Conectado"
-                : hub.connection === "offline"
-                  ? "Sem conexão"
-                  : hub.connection === "degraded"
-                    ? "Reconectando"
-                    : "Conectando"}
-            </span>
             <ZuluButton
               className="search-button"
               aria-label="Buscar no ZULU"
@@ -867,7 +841,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
               <PersonAvatar name={currentName} id={userId} />
             </ZuluButton>
           </div>
-        </header>
+        </header></DesktopChrome>
         <main id="main-content" className={`main-content ${page === "overview" ? "today-page" : ""}`}>
           <div className="page-heading">
             <div>

@@ -1,11 +1,19 @@
 "use client";
+import { DesktopRuntimeControls } from "./desktop-runtime-controls";
 import { BrandMark } from "./brand";
 
 import { useEffect, useRef, useState } from "react";
 import { CopySimple, Minus, Square, X } from "@phosphor-icons/react";
 
 type WindowState = { supported: boolean; maximized: boolean };
-type Action = "state" | "enable" | "restore" | "minimize" | "toggle_maximize" | "close" | "drag";
+type Action =
+  | "state"
+  | "enable"
+  | "restore"
+  | "minimize"
+  | "toggle_maximize"
+  | "close"
+  | "drag";
 
 async function control(action: Action) {
   const { invoke } = await import("@tauri-apps/api/core");
@@ -20,14 +28,25 @@ export function DesktopTitlebar() {
   useEffect(() => () => window.clearTimeout(stateTimer.current), []);
 
   useEffect(() => {
-    if (!("__TAURI_INTERNALS__" in window) || !/Windows/.test(navigator.userAgent)) return;
+    if (
+      window.location.pathname === "/desktop/timer" ||
+      !("__TAURI_INTERNALS__" in window) ||
+      !/Windows/.test(navigator.userAgent)
+    )
+      return;
     let disposed = false;
-    void control("state").then((state) => {
-      if (disposed || state?.supported !== true) return;
-      setMaximized(state.maximized);
-      setVisible(true);
-    }).catch(() => { /* Older installers retain their native frame. */ });
-    return () => { disposed = true; };
+    void control("state")
+      .then((state) => {
+        if (disposed || state?.supported !== true) return;
+        setMaximized(state.maximized);
+        setVisible(true);
+      })
+      .catch(() => {
+        /* Older installers retain their native frame. */
+      });
+    return () => {
+      disposed = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -37,26 +56,36 @@ export function DesktopTitlebar() {
     document.documentElement.dataset.desktopTitlebar = "true";
     // Keep the OS controls until the replacement is mounted.
     const frame = requestAnimationFrame(() => {
-      void control("enable").then(() => {
-        if (disposed) void control("restore").catch(() => {});
-      }).catch(() => {
-        delete document.documentElement.dataset.desktopTitlebar;
-        setVisible(false);
-      });
+      void control("enable")
+        .then(() => {
+          if (disposed) void control("restore").catch(() => {});
+        })
+        .catch(() => {
+          delete document.documentElement.dataset.desktopTitlebar;
+          setVisible(false);
+        });
     });
     const resize = () => {
       cancelAnimationFrame(resizeFrame);
       resizeFrame = requestAnimationFrame(() => {
-        void control("state").then((state) => {
-          if (!disposed) setMaximized(state.maximized);
-        }).catch(() => {});
+        void control("state")
+          .then((state) => {
+            if (!disposed) setMaximized(state.maximized);
+          })
+          .catch(() => {});
       });
     };
-    const title = () => setUnread(document.title.match(/^\((\d+\+?)\)/)?.[1] ?? "");
+    const title = () =>
+      setUnread(document.title.match(/^\((\d+\+?)\)/)?.[1] ?? "");
     title();
     const observer = new MutationObserver(title);
     const element = document.querySelector("title");
-    if (element) observer.observe(element, { childList: true, characterData: true, subtree: true });
+    if (element)
+      observer.observe(element, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
     window.addEventListener("resize", resize);
     return () => {
       disposed = true;
@@ -78,7 +107,9 @@ export function DesktopTitlebar() {
         setMaximized(!maximized);
         window.clearTimeout(stateTimer.current);
         stateTimer.current = window.setTimeout(() => {
-          void control("state").then(next => setMaximized(next.maximized)).catch(() => {});
+          void control("state")
+            .then((next) => setMaximized(next.maximized))
+            .catch(() => {});
         }, 180);
       } else {
         setMaximized(state.maximized);
@@ -90,23 +121,69 @@ export function DesktopTitlebar() {
     }
   };
   return (
-    <header className="desktop-titlebar" aria-label="Barra de título do ZULU">
-      <div className="desktop-titlebar-drag"
-        onMouseDown={(event) => {
-          if (event.button !== 0) return;
-          event.preventDefault();
-          void act(event.detail === 2 ? "toggle_maximize" : "drag");
-        }}>
+    <header
+      className="desktop-titlebar"
+      aria-label="Barra de título do ZULU"
+      onMouseDown={(event) => {
+        if (
+          event.button !== 0 ||
+          (event.target as HTMLElement).closest(
+            "button,a,input,select,[role=button],[role=dialog]",
+          )
+        )
+          return;
+        event.preventDefault();
+        void act(event.detail === 2 ? "toggle_maximize" : "drag");
+      }}
+    >
+      <div className="desktop-titlebar-drag">
         <BrandMark size={24} />
 
-        {unread && <span className="desktop-titlebar-unread" aria-label={`${unread} mensagens não lidas`}>{unread}</span>}
+        {unread && (
+          <span
+            className="desktop-titlebar-unread"
+            aria-label={`${unread} mensagens não lidas`}
+          >
+            {unread}
+          </span>
+        )}
       </div>
-      <div className="desktop-window-controls" role="group" aria-label="Controles da janela">
-        <button type="button" aria-label="Minimizar janela" title="Minimizar" onClick={() => void act("minimize")}><Minus size={14} aria-hidden="true" /></button>
-        <button type="button" aria-label={maximized ? "Restaurar janela" : "Maximizar janela"} title={maximized ? "Restaurar" : "Maximizar"} onClick={() => void act("toggle_maximize")}>
-          {maximized ? <CopySimple size={13} aria-hidden="true" /> : <Square size={12} aria-hidden="true" />}
+      <div id="desktop-titlebar-content" />
+      <DesktopRuntimeControls />
+      <div
+        className="desktop-window-controls"
+        role="group"
+        aria-label="Controles da janela"
+      >
+        <button
+          type="button"
+          aria-label="Minimizar janela"
+          title="Minimizar"
+          onClick={() => void act("minimize")}
+        >
+          <Minus size={14} aria-hidden="true" />
         </button>
-        <button type="button" className="desktop-window-close" aria-label="Fechar ZULU" title="Fechar" onClick={() => void act("close")}><X size={15} aria-hidden="true" /></button>
+        <button
+          type="button"
+          aria-label={maximized ? "Restaurar janela" : "Maximizar janela"}
+          title={maximized ? "Restaurar" : "Maximizar"}
+          onClick={() => void act("toggle_maximize")}
+        >
+          {maximized ? (
+            <CopySimple size={13} aria-hidden="true" />
+          ) : (
+            <Square size={12} aria-hidden="true" />
+          )}
+        </button>
+        <button
+          type="button"
+          className="desktop-window-close"
+          aria-label="Fechar ZULU"
+          title="Fechar"
+          onClick={() => void act("close")}
+        >
+          <X size={15} aria-hidden="true" />
+        </button>
       </div>
     </header>
   );

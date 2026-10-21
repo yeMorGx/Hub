@@ -8,6 +8,7 @@ import {
   ZuluSelect,
 } from "./dashboard-ui";
 import { Link, Spinner } from "@heroui/react";
+import { DesktopChrome } from "./desktop-chrome";
 import { DashboardNavIcon } from "./dashboard-nav-icon";
 import { BrandMark } from "./brand";
 // Public, in-memory preview. Shared dashboard components; no Supabase client or credentials.
@@ -248,44 +249,45 @@ export function DashboardDemo() {
             >
               <DashboardNavIcon name="settings" />
             </ZuluButton>
-            <PersonAvatar name="Rafa Costa" id="demo-current" />
           </div>
         </aside>
         <div className="app-content">
-          <header className="topbar">
-            <div className="workspace-button">
-              <span className="workspace-icon">
-                <SquaresFour size={18} weight="fill" />
-              </span>
-              <strong>Estúdio</strong>
-            </div>
-            <span className="breadcrumb-divider">/</span>
-            <span className="breadcrumb">Hoje</span>
-            <div className="topbar-right">
-              <div className="today-demo-controls">
-                {" "}
-                <ZuluLabel>
-                  Cenário da demonstração
-                  <ZuluSelect
-                    aria-label="Cenário da demonstração"
-                    value={scenario}
-                    onValueChange={(value) => showScenario(value)}
-                  >
-                    <option value="running">Timer ativo</option>
-                    <option value="lunch">Pausa para almoço</option>
-                    <option value="idle">Timer parado</option>
-                    <option value="unconfigured">
-                      Jornada não configurada
-                    </option>
-                    <option value="holiday">Semana com feriado</option>
-                    <option value="empty">Sem dados</option>
-                    <option value="error">Falha ao carregar escala</option>
-                  </ZuluSelect>
-                </ZuluLabel>
+          <DesktopChrome>
+            <header className="topbar">
+              <div className="workspace-button">
+                <span className="workspace-icon">
+                  <SquaresFour size={18} weight="fill" />
+                </span>
+                <strong>Estúdio</strong>
               </div>
-              <PersonAvatar name="Rafa Costa" id="demo-current" />
-            </div>
-          </header>
+              <span className="breadcrumb-divider">/</span>
+              <span className="breadcrumb">Hoje</span>
+              <div className="topbar-right">
+                <div className="today-demo-controls">
+                  {" "}
+                  <ZuluLabel>
+                    Cenário da demonstração
+                    <ZuluSelect
+                      aria-label="Cenário da demonstração"
+                      value={scenario}
+                      onValueChange={(value) => showScenario(value)}
+                    >
+                      <option value="running">Timer ativo</option>
+                      <option value="lunch">Pausa para almoço</option>
+                      <option value="idle">Timer parado</option>
+                      <option value="unconfigured">
+                        Jornada não configurada
+                      </option>
+                      <option value="holiday">Semana com feriado</option>
+                      <option value="empty">Sem dados</option>
+                      <option value="error">Falha ao carregar escala</option>
+                    </ZuluSelect>
+                  </ZuluLabel>
+                </div>
+                <PersonAvatar name="Rafa Costa" id="demo-current" />
+              </div>
+            </header>
+          </DesktopChrome>
           <main className="main-content today-page" id="main-content">
             <div className="page-heading">
               <div>

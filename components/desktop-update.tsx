@@ -17,7 +17,7 @@ export function DesktopUpdate() {
   const [percent, setPercent] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!("__TAURI_INTERNALS__" in window) || !/Windows/.test(navigator.userAgent))
+    if (window.location.pathname === "/desktop/timer" || !("__TAURI_INTERNALS__" in window) || !/Windows/.test(navigator.userAgent))
       return;
 
     let disposed = false;

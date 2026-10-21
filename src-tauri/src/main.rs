@@ -1,8 +1,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use tauri::{Emitter, Manager};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
-mod native_screen_share;
 mod desktop_update;
+mod native_screen_share;
+mod runtime;
 mod titlebar;
 
 fn show_main_window(app: &tauri::AppHandle) {
@@ -17,13 +18,22 @@ fn show_main_window(app: &tauri::AppHandle) {
 fn open_desktop_update(version: String) -> Result<(), String> {
     // Only official, stable Windows installers; never accept a caller-supplied URL.
     let parts: Vec<&str> = version.split('.').collect();
-    if parts.len() != 3 || parts.iter().any(|p| p.is_empty() || p.len() > 6 || !p.bytes().all(|b| b.is_ascii_digit())) {
+    if parts.len() != 3
+        || parts
+            .iter()
+            .any(|p| p.is_empty() || p.len() > 6 || !p.bytes().all(|b| b.is_ascii_digit()))
+    {
         return Err("Versão inválida.".into());
     }
     #[cfg(target_os = "windows")]
     {
-        let url = format!("https://github.com/yeMorGx/Hub/releases/download/desktop-v{0}/Hub_{0}_x64-setup.exe", version);
-        std::process::Command::new("explorer.exe").arg(url).spawn()
+        let url = format!(
+            "https://github.com/yeMorGx/Hub/releases/download/desktop-v{0}/Hub_{0}_x64-setup.exe",
+            version
+        );
+        std::process::Command::new("explorer.exe")
+            .arg(url)
+            .spawn()
             .map_err(|_| "Não foi possível abrir o navegador.".to_string())?;
         Ok(())
     }
@@ -34,11 +44,23 @@ fn open_desktop_update(version: String) -> Result<(), String> {
 fn main() {
     let builder = tauri::Builder::default();
     #[cfg(target_os = "windows")]
-    let builder = builder.plugin(tauri_plugin_updater::Builder::new().build());
+    let builder = builder
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(
+            tauri_plugin_autostart::Builder::new()
+                .app_name("ZULU")
+                .args(["--background"])
+                .build(),
+        );
     builder
         .manage(native_screen_share::NativeShareState::default())
+        .manage(runtime::DesktopRuntime::default())
         .invoke_handler(tauri::generate_handler![
             open_desktop_update,
+            runtime::desktop_runtime,
+            runtime::desktop_timer_sync,
+            runtime::desktop_timer_feedback,
+            runtime::desktop_mini,
             titlebar::desktop_titlebar,
             desktop_update::desktop_updater_supported,
             desktop_update::check_desktop_update,
@@ -66,11 +88,39 @@ fn main() {
         .on_page_load(|webview, payload| {
             // A failed/offline navigation must still have standard OS controls.
             #[cfg(target_os = "windows")]
-            if payload.event() == tauri::webview::PageLoadEvent::Started && webview.label() == "main" {
+            if payload.event() == tauri::webview::PageLoadEvent::Started
+                && webview.label() == "main"
+            {
                 let _ = webview.window().set_decorations(true);
+                runtime::clear_timer(webview.app_handle());
+            }
+        })
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                if window.label() == "mini-timer"
+                    || (window.label() == "main"
+                        && window
+                            .state::<runtime::DesktopRuntime>()
+                            .background
+                            .load(std::sync::atomic::Ordering::SeqCst))
+                {
+                    api.prevent_close();
+                    let _ = window.hide();
+                }
             }
         })
         .setup(|app| {
+            if let Err(error) = runtime::setup(app.handle()) {
+                eprintln!("Bandeja indisponível: {error}");
+            }
+            let background = std::env::args().any(|arg| arg == "--background")
+                && app
+                    .state::<runtime::DesktopRuntime>()
+                    .background
+                    .load(std::sync::atomic::Ordering::SeqCst);
+            if !background {
+                show_main_window(app.handle());
+            }
             // A conflicting shortcut must not prevent the app from opening.
             if app
                 .global_shortcut()

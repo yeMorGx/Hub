@@ -72,6 +72,9 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: npm run desktop:build -- --bundles ${{ matrix.bundle }}
+      - name: Native timer state tests
+        if: runner.os == 'Windows'
+        run: cargo test --locked --manifest-path src-tauri/Cargo.toml --bin hub-desktop
       - name: Windows install, launch, shortcut and uninstall
         if: runner.os == 'Windows'
         shell: powershell

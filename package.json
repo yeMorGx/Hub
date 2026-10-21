@@ -9,7 +9,7 @@
     "test:public": "node --test scripts/public.test.mjs",
     "desktop:dev": "tauri dev",
     "desktop:build": "tauri build",
-    "test:unit": "node --import tsx --test scripts/unit.test.ts scripts/dashboard.test.ts scripts/dashboard-ui.test.ts"
+    "test:unit": "node --import tsx --test scripts/unit.test.ts scripts/dashboard.test.ts scripts/dashboard-ui.test.ts scripts/desktop-runtime.test.ts"
   },
   "dependencies": {
     "@animate-ui/react": "^2.0.0",
