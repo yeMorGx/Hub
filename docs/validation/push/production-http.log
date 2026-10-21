@@ -1,0 +1,36 @@
+
+> hub-team@0.1.0 test:public
+> node --test scripts/public.test.mjs
+
+✔ sem sessão, / exige login (680.451535ms)
+✔ sem sessão, /mfa exige login (246.092626ms)
+✔ /login responde sem permitir cache compartilhado (199.975731ms)
+✔ /reset-password responde sem permitir cache compartilhado (291.698943ms)
+✔ /auth/callback retorna ao login quando o link é incompleto/inválido (333.196817ms)
+✔ /auth/callback?next=https%3A%2F%2Fexample.invalid%2F retorna ao login quando o link é incompleto/inválido (201.511913ms)
+✔ /auth/confirm retorna ao login quando o link é incompleto/inválido (283.820893ms)
+✔ /auth/confirm?token_hash=not-a-real-token&type=unknown retorna ao login quando o link é incompleto/inválido (208.376288ms)
+✔ manifest contém escopo e ícones da PWA (252.032271ms)
+✔ ícone 180 é um PNG com dimensões corretas (513.731413ms)
+✔ ícone 192 é um PNG com dimensões corretas (198.932536ms)
+✔ ícone 512 é um PNG com dimensões corretas (151.061441ms)
+✔ service worker é servido para a raiz sem cache persistente do script (41.689114ms)
+✔ página offline está disponível sem sessão (40.710739ms)
+✔ /demo retorna o HTML público esperado antes da hidratação (350.155315ms)
+✔ /demo/kanban retorna o HTML público esperado antes da hidratação (277.888695ms)
+✔ /api/integrations/status recusa acesso sem sessão ou segredo de job (177.719345ms)
+✔ /api/integrations/jobs recusa acesso sem sessão ou segredo de job (477.388208ms)
+✔ /api/livekit/token exige sessão MFA para POST de origem permitida (162.526253ms)
+✔ /api/livekit/access exige sessão MFA para POST de origem permitida (147.464678ms)
+✔ /api/integrations/google/sync exige sessão MFA para POST de origem permitida (152.220522ms)
+✔ /api/integrations/google/disconnect exige sessão MFA para POST de origem permitida (159.375431ms)
+✔ calendário Outlook responde ao desafio como texto sem refletir HTML executável (157.168802ms)
+✔ demonstração operacional é pública e declara seus dados fictícios (341.500033ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6247.079623

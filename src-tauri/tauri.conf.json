@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Hub",
+  "version": "0.1.2",
+  "identifier": "app.hub.team",
+  "build": {
+    "devUrl": "http://localhost:3000",
+    "frontendDist": "https://hub-one-azure.vercel.app"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Hub",
+        "width": 1360,
+        "height": 900,
+        "minWidth": 390,
+        "minHeight": 640,
+        "url": "https://hub-one-azure.vercel.app"
+      }
+    ],
+    "security": {
+      "capabilities": [
+        "hub-app"
+      ]
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis",
+      "dmg",
+      "deb"
+    ],
+    "shortDescription": "Um espaço para seu time trabalhar.",
+    "category": "Productivity",
+    "icon": [
+      "icons/icon.png",
+      "icons/icon.ico",
+      "icons/icon.icns"
+    ],
+    "publisher": "Hub",
+    "windows": {
+      "allowDowngrades": false,
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": [
+          "PortugueseBR"
+        ],
+        "displayLanguageSelector": false,
+        "startMenuFolder": "Hub"
+      }
+    }
+  }
+}

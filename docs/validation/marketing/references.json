@@ -1,0 +1,37 @@
+[
+  {
+    "url": "https://dribbble.com/search/saas-productivity-landing-page",
+    "status": 202,
+    "title": "Browse thousands of Saas Productivity Landing Page images for design inspiration | Dribbble"
+  },
+  {
+    "url": "https://www.behance.net/search/projects?search=productivity%20landing%20page",
+    "status": 403,
+    "title": "www.behance.net"
+  },
+  {
+    "url": "https://mobbin.com/discover/sites/latest",
+    "status": 403,
+    "title": "403: Forbidden"
+  },
+  {
+    "url": "https://linear.app/download",
+    "status": 200,
+    "title": "Download Linear"
+  },
+  {
+    "url": "https://www.notion.com/desktop",
+    "status": 200,
+    "title": "Download Notion for desktop"
+  },
+  {
+    "url": "https://screen.studio",
+    "status": 200,
+    "title": "Screen Studio — Professional screen recorder for macOS"
+  },
+  {
+    "url": "https://ui.shadcn.com/docs/components/accordion",
+    "status": 200,
+    "title": "Accordion - shadcn/ui"
+  }
+]

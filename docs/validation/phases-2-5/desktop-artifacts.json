@@ -1,0 +1,17 @@
+[
+  {
+    "artifact": "Hub-macOS-unsigned/dmg/Hub_0.1.0_aarch64.dmg",
+    "bytes": 3411211,
+    "sha256": "4e3d018a2525336990247bf359e4508b3fa81b3ccb0b08e99b0d8773f6c930ee"
+  },
+  {
+    "artifact": "Hub-Linux-unsigned/deb/Hub_0.1.0_amd64.deb",
+    "bytes": 3737508,
+    "sha256": "e9ffb2e79dde7aa11cec3e71d10577825eb8343a7b20e2fc18d01a5b379f1e26"
+  },
+  {
+    "artifact": "Hub-Windows-unsigned/nsis/Hub_0.1.0_x64-setup.exe",
+    "bytes": 2298993,
+    "sha256": "1d26bca5cec7ad34f629098c01e99c37a4fc26015413980a02259c6c4a907ed1"
+  }
+]

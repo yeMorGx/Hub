@@ -1,0 +1,19 @@
+{
+  "id": "dpl_3Z2MUArkXCcBHn1MRgjJNfxQKKzw",
+  "url": "https://hub-qkk3b1hn3-yemorgxs-projects.vercel.app",
+  "productionUrl": "https://hub-one-azure.vercel.app",
+  "inspectorUrl": "https://vercel.com/yemorgxs-projects/hub/3Z2MUArkXCcBHn1MRgjJNfxQKKzw",
+  "readyState": "READY",
+  "target": "production",
+  "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_3Z2MUArkXCcBHn1MRgjJNfxQKKzw",
+  "buildMachine": {
+    "cores": 2,
+    "memory": 8192,
+    "machine": "basic",
+    "selectionType": "fixed",
+    "selectionSource": "plan-default"
+  },
+  "deploymentProtection": [
+    "vercel_authentication"
+  ]
+}

@@ -1,0 +1,2 @@
+2026-10-20T14:46:07.571Z  LiveKit: a API rejeitou as credenciais (HTTP 401/403). Confira API Key e API Secret do mesmo projeto da URL.
+2026-10-20T14:46:07.625Z  Error: [BUILD_UTILS_SPAWN_1] Command "node lib/livekit/verify-configuration.mjs && npm run build" exited with 1

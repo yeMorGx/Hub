@@ -1,0 +1,73 @@
+name: Hub desktop installers
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Installer targets
+        type: choice
+        options: [windows, all]
+        default: windows
+      publishRun:
+        description: Successful Windows run to attach to an existing draft (empty builds installers)
+        type: string
+        default: ''
+  push:
+    branches: [codex/hub-foundation-kanban]
+    paths: [src-tauri/**, scripts/windows-smoke.ps1, package.json, package-lock.json, .github/workflows/desktop.yml]
+permissions:
+  contents: read
+jobs:
+  package:
+    if: ${{ inputs.publishRun == '' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(github.event_name == 'workflow_dispatch' && inputs.platform == 'all' && '[{"os":"ubuntu-24.04","bundle":"deb"},{"os":"windows-latest","bundle":"nsis"},{"os":"macos-latest","bundle":"dmg"}]' || '[{"os":"windows-latest","bundle":"nsis"}]') }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec
+        with:
+          toolchain: stable
+      - name: Linux prerequisites
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - run: npm ci
+      - name: Build installer (unsigned preview)
+        run: npm run desktop:build -- --bundles ${{ matrix.bundle }}
+      - name: Windows install, launch, shortcut and uninstall
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $installer = Get-ChildItem src-tauri/target/release/bundle/nsis/*-setup.exe | Select-Object -First 1
+          if (-not $installer) { throw 'Windows installer missing.' }
+          ./scripts/windows-smoke.ps1 -Installer $installer.FullName
+      - name: Save installer and evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Hub-${{ runner.os }}-unsigned
+          path: |
+            src-tauri/target/release/bundle/**
+            src-tauri/Cargo.lock
+            ${{ runner.temp }}/hub-desktop-evidence/**
+          if-no-files-found: error
+          retention-days: 14
+
+  publish-draft:
+    if: github.event_name == 'workflow_dispatch' && inputs.publishRun != ''
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Attach verified Windows installer to draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.publishRun }}
+        run: node scripts/publish-desktop-draft.mjs

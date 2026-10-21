@@ -1,0 +1,60 @@
+
+> hub-team@0.1.0 build
+> next build
+
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 56ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 8.1s
+  Running TypeScript ...
+  Finished TypeScript in 12.9s ...
+  Collecting page data using 4 workers ...
+  Generating static pages using 4 workers (0/26) ...
+  Generating static pages using 4 workers (6/26) 
+  Generating static pages using 4 workers (12/26) 
+  Generating static pages using 4 workers (19/26) 
+✓ Generating static pages using 4 workers (26/26) in 909ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/desktop/update
+├ ƒ /api/integrations/[provider]/callback
+├ ƒ /api/integrations/[provider]/connect
+├ ƒ /api/integrations/[provider]/disconnect
+├ ƒ /api/integrations/[provider]/sync
+├ ƒ /api/integrations/jobs
+├ ƒ /api/integrations/status
+├ ƒ /api/integrations/webhooks/[provider]
+├ ƒ /api/livekit/access
+├ ƒ /api/livekit/token
+├ ƒ /api/team-invitations
+├ ƒ /api/team-invitations/accept
+├ ƒ /api/team-invitations/pending
+├ ƒ /auth/callback
+├ ƒ /auth/confirm
+├ ○ /demo
+├ ○ /demo/calendar
+├ ○ /demo/kanban
+├ ○ /demo/operations
+├ ○ /download
+├ ƒ /invite
+├ ○ /login
+├ ○ /manifest.webmanifest
+├ ○ /marketing/og.png
+├ ƒ /mfa
+├ ƒ /pwa/icon/[size]
+├ ○ /reset-password
+├ ○ /robots.txt
+├ ○ /site
+└ ○ /sitemap.xml
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

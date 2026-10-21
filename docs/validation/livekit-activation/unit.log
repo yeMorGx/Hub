@@ -1,0 +1,30 @@
+
+> hub-team@0.1.0 test:unit
+> node --import tsx --test scripts/unit.test.ts
+
+✔ comandos reconhecem ações, textos comuns e ajuda (3.182422ms)
+✔ reunião valida data e horário, usa 30 minutos e rejeita passado (21.970701ms)
+✔ AES-GCM cifra com nonce aleatório e rejeita adulteração ou chave errada (2.409041ms)
+✔ state compara tamanho/conteúdo e PKCE produz SHA256 base64url (0.768779ms)
+✔ OAuth fixa destinos oficiais, PKCE e callback configurado (1.258786ms)
+✔ Google exporta com ID determinístico, sem convites e com precondição (51.191976ms)
+✔ Outlook cancela via DELETE e leitura ausente retorna null (2.210345ms)
+✔ Outlook recusa paginação fora do Graph (1.334736ms)
+✔ renovação preserva refresh token quando provedor não o repete (32.897318ms)
+✔ sala remove somente identidades fora do roster e propaga falhas do servidor (60.656151ms)
+✔ convites usam tokens aleatórios de 256 bits, hash SHA-256 e formato estrito (4.570221ms)
+✔ agenda mensal cobre semanas inteiras, inclusive ano anterior e fevereiro bissexto (7.504686ms)
+✔ agenda navega por mês sem saltar fevereiro e por dia/semana incluindo fins de semana (1.141274ms)
+✔ agenda divide eventos na meia-noite sem repetir término na abertura do dia seguinte (0.827967ms)
+✔ agenda carrega todas as páginas com filtros de time, intervalo e cancelamento (4.983559ms)
+✔ agenda interrompe uma paginação obsoleta e propaga falhas de consulta (0.846937ms)
+✔ verificação LiveKit é opt-in, somente leitura e não expõe erros do provedor (385.804499ms)
+✔ verificação LiveKit distingue credenciais recusadas de rede sem refletir dados do provedor (1.934879ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1149.658604

@@ -1,0 +1,15 @@
+{
+  "cron": [
+    {
+      "jobid": 1,
+      "schedule": "* * * * *",
+      "active": true
+    }
+  ],
+  "function": {
+    "name": "hub-notifications",
+    "status": "ACTIVE",
+    "version": 1,
+    "verify_jwt": false
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "source_commit": "ec558a5",
+  "deployment": {
+    "id": "dpl_BCunKVSmBHPR8J3hGtcXZ2weRLqY",
+    "url": "https://hub-80tzg1tky-yemorgxs-projects.vercel.app",
+    "readyState": "READY",
+    "inspectorUrl": "https://vercel.com/yemorgxs-projects/hub/BCunKVSmBHPR8J3hGtcXZ2weRLqY"
+  },
+  "production_alias": "https://hub-one-azure.vercel.app"
+}

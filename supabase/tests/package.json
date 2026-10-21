@@ -1,0 +1,7 @@
+{
+  "name": "hub-database-tests",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node phase01.test.mjs" },
+  "devDependencies": { "@electric-sql/pglite": "0.5.10" }
+}

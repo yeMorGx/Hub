@@ -1,0 +1,23 @@
+{
+  "source_commit": "db79aae",
+  "deployment": {
+    "id": "dpl_3qFqt3YDgA34cQridiwT6wpipUSf",
+    "url": "https://hub-3lzqflsdz-yemorgxs-projects.vercel.app",
+    "readyState": "READY",
+    "inspectorUrl": "https://vercel.com/yemorgxs-projects/hub/3qFqt3YDgA34cQridiwT6wpipUSf"
+  },
+  "production_alias": "https://hub-one-azure.vercel.app",
+  "change": "Provider configuration status is loaded independently of calendar and webhook database queries. Status endpoint errors are shown instead of being interpreted as missing provider configuration.",
+  "build": "passed",
+  "unit_tests": {
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0
+  },
+  "production_http_tests": {
+    "passed": 24,
+    "failed": 0,
+    "skipped": 0
+  },
+  "real_google_oauth": "pending user connection"
+}

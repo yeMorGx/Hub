@@ -1,0 +1,3 @@
+[target.x86_64-pc-windows-msvc]
+# Match the static CRT used by LiveKit's bundled Windows WebRTC library.
+rustflags = ["-C", "target-feature=+crt-static"]

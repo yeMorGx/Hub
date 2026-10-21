@@ -1,0 +1,18 @@
+{
+  "source_commit": "908f552",
+  "deployment": {
+    "id": "dpl_CywxL4RVkrXpniYq7DPGjJjeHjMM",
+    "url": "https://hub-qs70ehktk-yemorgxs-projects.vercel.app",
+    "readyState": "READY",
+    "inspectorUrl": "https://vercel.com/yemorgxs-projects/hub/CywxL4RVkrXpniYq7DPGjJjeHjMM"
+  },
+  "production_alias": "https://hub-one-azure.vercel.app",
+  "oauth_test_configuration": "Google Calendar API enabled; external testing audience/test user and calendar.app.created scope configured by user; OAuth client credentials stored as Vercel Production secrets",
+  "server_variables": [
+    "GOOGLE_CALENDAR_CLIENT_ID",
+    "GOOGLE_CALENDAR_CLIENT_SECRET",
+    "HUB_INTEGRATION_ENCRYPTION_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "CRON_SECRET"
+  ]
+}

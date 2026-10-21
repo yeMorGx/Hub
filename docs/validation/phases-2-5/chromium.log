@@ -1,0 +1,12 @@
+test_demo_declares_fiction_after_hydration (__main__.PublicBrowserChecks.test_demo_declares_fiction_after_hydration) ... ok
+test_demo_reports_export_csv_and_pdf (__main__.PublicBrowserChecks.test_demo_reports_export_csv_and_pdf) ... ok
+test_invalid_callback_stays_on_browser_origin (__main__.PublicBrowserChecks.test_invalid_callback_stays_on_browser_origin) ... ok
+test_offline_messages_are_encrypted_and_require_local_password (__main__.PublicBrowserChecks.test_offline_messages_are_encrypted_and_require_local_password) ... ok
+test_password_reset_without_session_has_no_password_form (__main__.PublicBrowserChecks.test_password_reset_without_session_has_no_password_form) ... ok
+test_pwa_offline_fallback_and_public_cache (__main__.PublicBrowserChecks.test_pwa_offline_fallback_and_public_cache) ... ok
+test_signup_constraints_and_password_visibility (__main__.PublicBrowserChecks.test_signup_constraints_and_password_visibility) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 7.050s
+
+OK

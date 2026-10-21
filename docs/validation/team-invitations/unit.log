@@ -1,0 +1,23 @@
+
+> hub-team@0.1.0 test:unit
+> node --import tsx --test scripts/unit.test.ts
+
+✔ comandos reconhecem ações, textos comuns e ajuda (17.243858ms)
+✔ reunião valida data e horário, usa 30 minutos e rejeita passado (47.81332ms)
+✔ AES-GCM cifra com nonce aleatório e rejeita adulteração ou chave errada (3.49594ms)
+✔ state compara tamanho/conteúdo e PKCE produz SHA256 base64url (3.493434ms)
+✔ OAuth fixa destinos oficiais, PKCE e callback configurado (2.910757ms)
+✔ Google exporta com ID determinístico, sem convites e com precondição (123.756587ms)
+✔ Outlook cancela via DELETE e leitura ausente retorna null (10.460324ms)
+✔ Outlook recusa paginação fora do Graph (7.857369ms)
+✔ renovação preserva refresh token quando provedor não o repete (0.923843ms)
+✔ sala remove somente identidades fora do roster e propaga falhas do servidor (6.38833ms)
+✔ convites usam tokens aleatórios de 256 bits, hash SHA-256 e formato estrito (19.930208ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 764.588669

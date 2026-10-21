@@ -1,0 +1,10 @@
+test_demo_declares_fiction_after_hydration (__main__.PublicBrowserChecks.test_demo_declares_fiction_after_hydration) ... ok
+test_invalid_callback_stays_on_browser_origin (__main__.PublicBrowserChecks.test_invalid_callback_stays_on_browser_origin) ... ok
+test_password_reset_without_session_has_no_password_form (__main__.PublicBrowserChecks.test_password_reset_without_session_has_no_password_form) ... ok
+test_pwa_offline_fallback_and_public_cache (__main__.PublicBrowserChecks.test_pwa_offline_fallback_and_public_cache) ... ok
+test_signup_constraints_and_password_visibility (__main__.PublicBrowserChecks.test_signup_constraints_and_password_visibility) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 5.486s
+
+OK

@@ -1,0 +1,53 @@
+# Ativação de notificações push
+
+20/10/2026, America/Sao_Paulo. O usuário autorizou explicitamente o armazenamento de chaves/segredo em tabela privada e a publicação da função com autenticação própria. A restrição de autorização anterior foi atendida.
+
+## Configuração
+
+- Migração `20261020110148_notification_delivery.sql` aplicada e registrada no histórico; substitui o arquivo provisório `20261020030000_notification_delivery.sql`.
+- VAPID gerada com `web-push`; chave privada e segredo de agendamento armazenados somente em `private.delivery_settings` (RLS e ACL restrita a serviço).
+- `hub-notifications` publicada como ACTIVE v2; `verify_jwt:false` no gateway, com autenticação na própria função por JWT/AAL2/autoria ou segredo do agendamento.
+- Cron `hub-notifications`: `* * * * *`, ativo. Durante a preparação ficou pausado; só foi habilitado após a função responder corretamente.
+- Vercel Production: `NEXT_PUBLIC_VAPID_PUBLIC_KEY` e `NEXT_PUBLIC_PUSH_ENABLED=true`. Nenhuma chave privada foi configurada no frontend ou na Vercel.
+- Tipos do banco regenerados. Nenhuma conta ou inscrição fictícia foi criada em produção.
+
+## Verificações
+
+- [83 testes SQL locais](validation/push/sql.log): todos passaram. Novo caso cobre notificação lida, claim exclusivo durante lease e limite de quatro tentativas. PGlite não valida cron/pg_net reais.
+- [10 unitários](validation/push/unit.tap): todos passaram.
+- [Build de produção](validation/push/build.log): passou com a flag habilitada.
+- [Checks reais da função](validation/push/edge-checks.json): segredo inválido → 401; mensagem sem sessão → 401; origem não permitida → 403; job autorizado → 200.
+- [Estado do serviço](validation/push/service-state.json) e [execução real do cron](validation/push/cron-verification.json): job bem-sucedido e resposta pg_net HTTP 200. Consulta de ACL confirmou que usuários não podem obter a configuração privada.
+- Busca pelos valores de chave privada, job secret e token administrativo encontrou zero ocorrências nos arquivos versionados e nos assets JS/CSS do browser gerados localmente. Os valores não foram gravados nos relatórios.
+
+## Publicação
+
+Código `ec558a5` publicado em produção: deployment `dpl_BCunKVSmBHPR8J3hGtcXZ2weRLqY`, estado **READY**. [URL imutável](https://hub-80tzg1tky-yemorgxs-projects.vercel.app); alias https://hub-one-azure.vercel.app. [Metadados](validation/push/deployment.json).
+
+Os [24 checks HTTP públicos](validation/push/production-http.log) passaram após o deploy, sem falhas/skips e sem criar contas ou enviar e-mails.
+
+## Validação pendente no aparelho
+
+Nenhum dispositivo estava inscrito durante os checks; `processed=0` e `sent=0`. Isso demonstra a configuração/execução do serviço, não a entrega por FCM/Mozilla/Apple nem o comportamento do sistema operacional.
+
+O usuário precisa atualizar o Hub, entrar com MFA, abrir o perfil e clicar em **Ativar notificações**, concedendo permissão. Depois, validar uma menção recebida e um lembrete; testar desativação e saída/troca de conta. iOS/iPadOS exige PWA instalada. As notificações contêm avisos genéricos, e a cópia local de mensagens é uma configuração separada.
+
+## Ativação no Brave
+
+Se a permissão de notificações estiver concedida mas a inscrição push falhar, abra `brave://settings/privacy` e confira **Usar serviços do Google para mensagens push**. Ative a opção se quiser receber push pelo Brave, recarregue o Hub e tente novamente. A permissão de notificações do site também precisa estar habilitada. Uma rede que bloqueia o serviço push pode causar a mesma falha.
+
+No diagnóstico de 20/10/2026, a chave pública de produção era um ponto P-256 válido de 65 bytes e correspondia à configuração do serviço. Nenhum dispositivo estava inscrito naquele momento; a configuração do Brave e a entrega no aparelho ainda dependem de validação pelo usuário.
+
+O fluxo solicita permissão diretamente no clique, antes de aguardar o service worker, e diferencia falhas de permissão, inicialização, inscrição no navegador e registro no Hub. A espera pelo service worker tem limite de 15 segundos. A interface só restaura o estado ativo de uma inscrição local quando ela pertence à conta atual.
+
+## Mensagens diretas
+
+Após a ativação no Brave, havia um dispositivo registrado, mensagens diretas recentes e nenhuma notificação gerada. A implementação anterior criava avisos de chat somente para menções explícitas; uma DM comum não entrava na fila.
+
+A migração `20261020133000_direct_message_notifications.sql` faz o envio de DM criar uma notificação do tipo `message` para o outro participante ativo. A criação ocorre na mesma transação da mensagem, inclusive no envio básico; o identificador da mensagem mantém o retry idempotente e evita duplicação se também houver menção. O serviço revalida a participação antes de enviar o push. Mensagens comuns em canais não geram esse aviso de DM; menções continuam gerando o aviso correspondente.
+
+O payload mostra apenas “Você recebeu uma nova mensagem direta.”, sem remetente ou conteúdo da conversa. O cliente tenta iniciar a entrega após enviar; o job executado a cada minuto também processa a fila.
+
+Validação local: **86/86 testes SQL passaram**, cobrindo destinatário ativo, isolamento entre usuários, retry, DM com menção e canais comuns. O build de produção passou. A entrega real de uma nova DM no dispositivo ainda precisa ser confirmada pelo usuário.
+
+Publicação: commit `c4b7d1d`, migração aplicada e registrada no Supabase, função `hub-notifications` ACTIVE v2 e Vercel Production `dpl_7WwMHyt7DTfjKpSKXPG7tBf8gzKC` READY no alias oficial. A função recusou JWT inválido com HTTP 401. Após a publicação, um dispositivo continuava inscrito e o job retornava HTTP 200; nenhuma nova DM havia entrado na fila naquele momento.

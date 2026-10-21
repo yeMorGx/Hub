@@ -1,0 +1,79 @@
+
+> hub-team@0.1.0 test:public
+> node --test scripts/public.test.mjs
+
+✔ sem sessão, / exige login (1228.808059ms)
+✔ sem sessão, /mfa exige login (1047.17597ms)
+✔ /login responde sem permitir cache compartilhado (212.216353ms)
+✔ /reset-password responde sem permitir cache compartilhado (457.450248ms)
+✔ /auth/callback retorna ao login quando o link é incompleto/inválido (338.730445ms)
+✔ /auth/callback?next=https%3A%2F%2Fexample.invalid%2F retorna ao login quando o link é incompleto/inválido (200.19882ms)
+✔ /auth/confirm retorna ao login quando o link é incompleto/inválido (161.682851ms)
+✔ /auth/confirm?token_hash=not-a-real-token&type=unknown retorna ao login quando o link é incompleto/inválido (235.316021ms)
+✔ manifest contém escopo e ícones da PWA (149.511764ms)
+✔ ícone 180 é um PNG com dimensões corretas (253.251398ms)
+✔ ícone 192 é um PNG com dimensões corretas (1705.017533ms)
+✔ ícone 512 é um PNG com dimensões corretas (185.822551ms)
+✔ service worker é servido para a raiz sem cache persistente do script (95.0783ms)
+✔ página offline está disponível sem sessão (106.217413ms)
+✔ /demo retorna o HTML público esperado antes da hidratação (333.854739ms)
+✔ /demo/kanban retorna o HTML público esperado antes da hidratação (260.674488ms)
+✔ /api/integrations/status recusa acesso sem sessão ou segredo de job (178.079741ms)
+✔ /api/integrations/jobs recusa acesso sem sessão ou segredo de job (368.469366ms)
+✔ /api/livekit/token exige sessão MFA para POST de origem permitida (230.005168ms)
+✔ /api/livekit/access exige sessão MFA para POST de origem permitida (164.844812ms)
+✔ /api/integrations/google/sync exige sessão MFA para POST de origem permitida (155.405177ms)
+✔ /api/integrations/google/disconnect exige sessão MFA para POST de origem permitida (214.83285ms)
+✔ calendário Outlook responde ao desafio como texto sem refletir HTML executável (171.681298ms)
+✔ demonstração operacional é pública e declara seus dados fictícios (238.064291ms)
+✔ convite público responde sem cache e sem enviar referência (259.732734ms)
+✔ /api/team-invitations exige sessão MFA e rejeita origem externa (461.784677ms)
+✖ /api/team-invitations/accept exige sessão MFA e rejeita origem externa (5051.329098ms)
+✔ convite pendente: token inválido é recusado; cookie é privado e pode ser descartado (1024.055811ms)
+✖ prévia do calendário é pública e declara seus dados fictícios (5022.0709ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 27
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20826.017511
+
+✖ failing tests:
+
+test at scripts/public.test.mjs:157:3
+✖ /api/team-invitations/accept exige sessão MFA e rejeita origem externa (5051.329098ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  503 !== 401
+
+      at TestContext.<anonymous> (file:///workspace/Hub/scripts/public.test.mjs:167:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 401,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/public.test.mjs:206:1
+✖ prévia do calendário é pública e declara seus dados fictícios (5022.0709ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  503 !== 200
+
+      at TestContext.<anonymous> (file:///workspace/Hub/scripts/public.test.mjs:208:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

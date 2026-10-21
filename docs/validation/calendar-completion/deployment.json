@@ -1,0 +1,47 @@
+{
+  "codeCommit": "8c71025",
+  "migrationRequired": false,
+  "local": {
+    "database": 94,
+    "unitPerTimezone": 16,
+    "unitTimezones": [
+      "America/Sao_Paulo",
+      "America/New_York"
+    ],
+    "http": 29,
+    "browserViewports": [
+      [
+        1440,
+        1000
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "browserFixture": true,
+    "browserWrites": 0
+  },
+  "pendingManual": [
+    "authenticated team calendar creation, editing and RSVP with real accounts"
+  ],
+  "deferred": [
+    "automatic invitation email",
+    "personal calendar import"
+  ],
+  "deployment": {
+    "id": "dpl_GV1JJtczg93jhZDx7mYpn3FC2qEM",
+    "url": "https://hub-9vxft87zn-yemorgxs-projects.vercel.app",
+    "productionUrl": "https://hub-one-azure.vercel.app",
+    "readyState": "READY"
+  },
+  "productionHttp": {
+    "passed": 29,
+    "failed": 0,
+    "initialAttempt": {
+      "passed": 27,
+      "failed": 2,
+      "reason": "HTTP 503 on two requests; immediate independent requests returned expected status; full suite rerun passed"
+    }
+  }
+}

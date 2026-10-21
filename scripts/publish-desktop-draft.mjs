@@ -1,0 +1,32 @@
+// Attaches a previously tested installer to a draft; never publishes the release.
+import { execFileSync } from "node:child_process";
+import { readFileSync, mkdirSync, readdirSync, copyFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { createHash } from "node:crypto";
+const repository = process.env.GITHUB_REPOSITORY;
+const runId = process.env.SOURCE_RUN;
+if (!repository || !/^\d+$/.test(runId || "")) throw new Error("A numeric source run is required.");
+const gh = (...args) => execFileSync("gh", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+const run = JSON.parse(gh("api", `repos/${repository}/actions/runs/${runId}`));
+if (run.conclusion !== "success" || run.status !== "completed" || run.path !== ".github/workflows/desktop.yml" || run.head_repository.full_name !== repository || run.head_branch !== "codex/hub-foundation-kanban") throw new Error("Source must be a successful installer workflow in this repository and branch.");
+const config = JSON.parse(readFileSync("src-tauri/tauri.conf.json", "utf8"));
+const tag = `desktop-v${config.version}`;
+const release = JSON.parse(gh("release", "view", tag, "--repo", repository, "--json", "isDraft,targetCommitish,url"));
+if (!release.isDraft || release.targetCommitish !== run.head_sha) throw new Error("Only the matching draft may receive these assets.");
+const root = "desktop-verified-artifact";
+gh("run", "download", runId, "--repo", repository, "--name", "Hub-Windows-unsigned", "--dir", root);
+function files(path) { return readdirSync(path, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? files(join(path, entry.name)) : [join(path, entry.name)]); }
+const entries = files(root), reports = entries.filter(path => path.endsWith("smoke.json"));
+const expectedName = `Hub_${config.version}_x64-setup.exe`;
+const installers = entries.filter(path => path.endsWith(expectedName));
+if (reports.length !== 1 || installers.length !== 1) throw new Error("Expected exactly one smoke report and installer.");
+const report = JSON.parse(readFileSync(reports[0], "utf8").replace(/^\uFEFF/, ""));
+for (const key of ["installed", "windowOpened", "loginPageLoaded", "singleInstance", "shortcutRestoredWindow", "uninstalled"]) if (report[key] !== true) throw new Error(`Native check missing: ${key}`);
+const hash = createHash("sha256").update(readFileSync(installers[0])).digest("hex");
+if (hash !== report.sha256 || report.installer !== expectedName || report.signature !== "NotSigned") throw new Error("Unexpected installer identity, hash or signing state.");
+mkdirSync("desktop-release-assets", { recursive: true });
+const output = join("desktop-release-assets", expectedName), checksum = join("desktop-release-assets", "SHA256SUMS.txt");
+copyFileSync(installers[0], output);
+writeFileSync(checksum, `${hash}  ${expectedName}\n`);
+gh("release", "upload", tag, "--repo", repository, output, checksum, "--clobber");
+console.log(JSON.stringify({ draft: true, published: false, url: release.url, installer: expectedName, sha256: hash }));
