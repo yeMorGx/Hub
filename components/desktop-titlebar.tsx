@@ -1,7 +1,7 @@
 "use client";
 import { BrandMark } from "./brand";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CopySimple, Minus, Square, X } from "@phosphor-icons/react";
 
 type WindowState = { supported: boolean; maximized: boolean };
@@ -16,6 +16,8 @@ export function DesktopTitlebar() {
   const [visible, setVisible] = useState(false);
   const [maximized, setMaximized] = useState(false);
   const [unread, setUnread] = useState("");
+  const stateTimer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(stateTimer.current), []);
 
   useEffect(() => {
     if (!("__TAURI_INTERNALS__" in window) || !/Windows/.test(navigator.userAgent)) return;
@@ -71,7 +73,16 @@ export function DesktopTitlebar() {
   const act = async (action: Action) => {
     try {
       const state = await control(action);
-      setMaximized(state.maximized);
+      if (action === "toggle_maximize") {
+        // Windows can finish the transition after the command returns.
+        setMaximized(!maximized);
+        window.clearTimeout(stateTimer.current);
+        stateTimer.current = window.setTimeout(() => {
+          void control("state").then(next => setMaximized(next.maximized)).catch(() => {});
+        }, 180);
+      } else {
+        setMaximized(state.maximized);
+      }
     } catch {
       // Restore standard OS controls if a custom action is unavailable.
       await control("restore").catch(() => {});

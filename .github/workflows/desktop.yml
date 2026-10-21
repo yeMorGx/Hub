@@ -115,6 +115,9 @@ jobs:
 
   verify-existing:
     if: github.event_name == 'workflow_dispatch' && inputs.verifyRun != ''
+    permissions:
+      contents: read
+      actions: read
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
