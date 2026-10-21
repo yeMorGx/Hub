@@ -50,6 +50,18 @@ jobs:
             echo 'Configure the TAURI_SIGNING_PRIVATE_KEY repository secret before building releases.' >&2
             exit 1
           fi
+      - name: Validate updater key before compiling
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          fixture="$RUNNER_TEMP/hub-signing-check.bin"
+          printf 'Hub updater signing preflight' > "$fixture"
+          app_version=$(node -p 'require("./src-tauri/tauri.conf.json").version')
+          npx tauri signer sign --app-version "$app_version" "$fixture"
+          cargo run --locked --manifest-path scripts/updater-verifier/Cargo.toml -- src-tauri/tauri.conf.json "$fixture"
+          rm -f "$fixture" "$fixture.sig"
       - name: Build installer and signed updater package
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
