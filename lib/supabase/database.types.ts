@@ -583,6 +583,30 @@ export type Database = {
           },
         ]
       }
+      home_office_holidays: {
+        Row: { created_at: string; holiday_date: string; label: string; team_id: string }
+        Insert: { created_at?: string; holiday_date: string; label?: string; team_id: string }
+        Update: { created_at?: string; holiday_date?: string; label?: string; team_id?: string }
+        Relationships: []
+      }
+      home_office_members: {
+        Row: { anchor_weekday: number; team_id: string; user_id: string }
+        Insert: { anchor_weekday: number; team_id: string; user_id: string }
+        Update: { anchor_weekday?: number; team_id?: string; user_id?: string }
+        Relationships: []
+      }
+      home_office_schedules: {
+        Row: { anchor_week: string; created_at: string; created_by: string; enabled: boolean; reminder_time: string; team_id: string; timezone: string; updated_at: string }
+        Insert: { anchor_week: string; created_at?: string; created_by: string; enabled?: boolean; reminder_time?: string; team_id: string; timezone?: string; updated_at?: string }
+        Update: { anchor_week?: string; created_at?: string; created_by?: string; enabled?: boolean; reminder_time?: string; team_id?: string; timezone?: string; updated_at?: string }
+        Relationships: []
+      }
+      home_office_swaps: {
+        Row: { created_at: string; id: string; requested_by: string; status: string; target_user_id: string; team_id: string; updated_at: string; week_start: string }
+        Insert: { created_at?: string; id?: string; requested_by: string; status?: string; target_user_id: string; team_id: string; updated_at?: string; week_start: string }
+        Update: { created_at?: string; id?: string; requested_by?: string; status?: string; target_user_id?: string; team_id?: string; updated_at?: string; week_start?: string }
+        Relationships: []
+      }
       meeting_documents: {
         Row: {
           agenda: string
@@ -1480,6 +1504,7 @@ export type Database = {
       }
       time_entries: {
         Row: {
+          carried_seconds: number
           created_at: string
           description: string
           duration_seconds: number | null
@@ -1494,6 +1519,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          carried_seconds?: number
           created_at?: string
           description?: string
           duration_seconds?: number | null
@@ -1508,6 +1534,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          carried_seconds?: number
           created_at?: string
           description?: string
           duration_seconds?: number | null
@@ -1575,6 +1602,24 @@ export type Database = {
             referencedRelation: "team_members"
             referencedColumns: ["team_id", "user_id"]
           },
+        ]
+      }
+      work_schedules: {
+        Row: { daily_minutes: number; effective_from: string; setup_state: string; team_id: string; timezone: string; updated_at: string; user_id: string; workdays_mask: number }
+        Insert: { daily_minutes: number; effective_from: string; setup_state: string; team_id: string; timezone?: string; updated_at?: string; user_id: string; workdays_mask: number }
+        Update: { daily_minutes?: number; effective_from?: string; setup_state?: string; team_id?: string; timezone?: string; updated_at?: string; user_id?: string; workdays_mask?: number }
+        Relationships: [
+          { foreignKeyName: "work_schedules_team_id_user_id_fkey"; columns: ["team_id", "user_id"]; isOneToOne: false; referencedRelation: "team_members"; referencedColumns: ["team_id", "user_id"] }
+        ]
+      }
+      paused_timers: {
+        Row: { accumulated_seconds: number; description: string; paused_at: string; project_id: string | null; task_id: string | null; team_id: string; user_id: string }
+        Insert: { accumulated_seconds: number; description?: string; paused_at?: string; project_id?: string | null; task_id?: string | null; team_id: string; user_id: string }
+        Update: { accumulated_seconds?: number; description?: string; paused_at?: string; project_id?: string | null; task_id?: string | null; team_id?: string; user_id?: string }
+        Relationships: [
+          { foreignKeyName: "paused_timers_team_id_user_id_fkey"; columns: ["team_id", "user_id"]; isOneToOne: true; referencedRelation: "team_members"; referencedColumns: ["team_id", "user_id"] },
+          { foreignKeyName: "paused_timers_team_id_project_id_fkey"; columns: ["team_id", "project_id"]; isOneToOne: false; referencedRelation: "projects"; referencedColumns: ["team_id", "id"] },
+          { foreignKeyName: "paused_timers_team_id_task_id_fkey"; columns: ["team_id", "task_id"]; isOneToOne: false; referencedRelation: "tasks"; referencedColumns: ["team_id", "id"] }
         ]
       }
       workspace_members: {
@@ -1823,6 +1868,7 @@ export type Database = {
         Returns: string
       }
       create_workspace: { Args: { p_name: string }; Returns: string }
+      decide_home_office_swap: { Args: { p_action: string; p_request_id: string }; Returns: undefined }
       decide_absence: {
         Args: { p_absence_id: string; p_note?: string; p_status: string }
         Returns: undefined
@@ -1851,6 +1897,17 @@ export type Database = {
         }
         Returns: undefined
       }
+      get_home_office_calendar: {
+        Args: { p_ends_on: string; p_starts_on: string; p_team_id: string }
+        Returns: { avatar_url: string | null; display_name: string | null; entry_kind: string; entry_label: string | null; scheduled_on: string; team_id: string; user_id: string | null; week_start: string }[]
+      }
+      get_work_hour_balance: {
+        Args: { p_from: string; p_team_id: string; p_to: string }
+        Returns: { actual_seconds: number; expected_minutes: number; work_date: string }[]
+      }
+      pause_timer: { Args: Record<PropertyKey, never>; Returns: string }
+      resume_timer: { Args: Record<PropertyKey, never>; Returns: string }
+      stop_paused_timer: { Args: Record<PropertyKey, never>; Returns: undefined }
       finish_attachment: {
         Args: { p_attachment_id: string }
         Returns: undefined
@@ -1883,6 +1940,7 @@ export type Database = {
         Args: { p_other_user_id: string; p_team_id: string }
         Returns: string
       }
+      queue_home_office_reminders: { Args: never; Returns: undefined }
       pin_message: {
         Args: { p_active: boolean; p_message_id: string }
         Returns: undefined
@@ -1946,6 +2004,7 @@ export type Database = {
         }
         Returns: string
       }
+      request_home_office_swap: { Args: { p_target_user_id: string; p_team_id: string; p_week_start: string }; Returns: string }
       request_shift_swap: {
         Args: { p_shift_id: string; p_target_user_id: string }
         Returns: string
@@ -2019,6 +2078,10 @@ export type Database = {
           p_title: string
         }
         Returns: string
+      }
+      save_home_office_schedule: {
+        Args: { p_anchor_week: string; p_holidays?: Json; p_member_ids: string[]; p_reminder_time?: string; p_team_id: string; p_timezone?: string }
+        Returns: undefined
       }
       save_meeting_documents: {
         Args: {
@@ -2100,6 +2163,10 @@ export type Database = {
         }
         Returns: string
       }
+      save_work_schedule: {
+        Args: { p_daily_minutes: number; p_team_id: string; p_timezone?: string; p_user_id: string; p_workdays_mask: number }
+        Returns: undefined
+      }
       search_channel_messages: {
         Args: {
           p_before_ordinal?: number
@@ -2180,6 +2247,10 @@ export type Database = {
           p_user_id: string
           p_weekly_minutes: number
         }
+        Returns: undefined
+      }
+      skip_work_schedule_setup: {
+        Args: { p_team_id: string }
         Returns: undefined
       }
       set_work_status: {

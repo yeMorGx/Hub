@@ -104,6 +104,9 @@ export function CalendarDemo() {
             )
           }
           onSelect={setEvent}
+          onHomeOffice={() =>
+            setNotice("Demonstração: a escala de home office não usa dados reais.")
+          }
           full
         />
       ) : (

@@ -18,6 +18,7 @@ import {
   Plus,
   MagnifyingGlass,
   Play,
+  Coffee,
   Stop,
   Check,
   X,
@@ -67,6 +68,8 @@ import { LiveManagement } from "./live-management";
 import { LiveCollaboration } from "./live-collaboration";
 import { LiveBoard, type TaskInput } from "./live-board";
 import { LiveCalendar } from "./live-calendar";
+import { HomeOfficeManager } from "./home-office-manager";
+import { WorkScheduleSetup } from "./work-schedule-setup";
 import {
   calendarRange,
   moveCalendarDate,
@@ -165,6 +168,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
     [editingMessage, setEditingMessage] = useState<Row<"messages"> | null>(
       null,
     );
+  const [homeOfficeOpen, setHomeOfficeOpen] = useState(false),
+    [homeOfficeFocusWeek, setHomeOfficeFocusWeek] = useState("");
+  const [workScheduleOpen, setWorkScheduleOpen] = useState(false);
   const [atBottom, setAtBottom] = useState(true),
     [showChannelList, setShowChannelList] = useState(true);
   const chatEnd = useRef<HTMLDivElement>(null),
@@ -227,28 +233,39 @@ export function LiveHubApp({ userId }: { userId: string }) {
     return () => window.removeEventListener("keydown", keyboard);
   }, []);
   const activeTimer = data.entries.find((e) => e.ended_at === null);
-  const elapsed = activeTimer
-    ? Math.max(
-        0,
-        Math.floor((now - new Date(activeTimer.started_at).getTime()) / 1000),
-      )
+  const pausedTimer = data.pausedTimer;
+  const timerSession = activeTimer ?? pausedTimer;
+  const activeSegmentSeconds = activeTimer
+    ? Math.max(0, Math.floor((now - new Date(activeTimer.started_at).getTime()) / 1000))
     : 0;
+  const elapsed = activeTimer
+    ? Number(activeTimer.carried_seconds ?? 0) + activeSegmentSeconds
+    : Number(pausedTimer?.accumulated_seconds ?? 0);
   const entries = data.entries.filter(
     (e) => e.team_id === hub.teamId && e.ended_at !== null,
   );
-  const durationForDay = (key: string) =>
-    entries
-      .filter((e) => dayKey(new Date(e.started_at)) === key)
-      .reduce((sum, e) => sum + Number(e.duration_seconds ?? 0), 0) +
-    (activeTimer?.team_id === hub.teamId &&
-    dayKey(new Date(activeTimer.started_at)) === key
-      ? elapsed
-      : 0);
-  const todaySeconds = durationForDay(todayKey),
-    weekSeconds = [0, 1, 2, 3, 4, 5, 6].reduce(
-      (sum, day) => sum + durationForDay(dayKey(dateAt(currentMonday, day))),
-      0,
+  const currentSunday = dateAt(currentMonday, 6);
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  const workScheduleConfigured = data.workSchedule?.setup_state === "complete";
+  const runningBalanceSeconds = activeTimer?.team_id === hub.teamId
+    ? Math.max(0, Math.floor((now - data.workBalanceLoadedAt) / 1000))
+    : 0;
+  const workBalanceFor = (start: string, end: string) => {
+    const days = data.workBalance.filter(
+      (entry) => entry.work_date >= start && entry.work_date <= end && entry.work_date <= todayKey,
     );
+    const expectedMinutes = days.reduce((sum, entry) => sum + entry.expected_minutes, 0);
+    const actualSeconds = days.reduce((sum, entry) => sum + entry.actual_seconds, 0) +
+      (todayKey >= start && todayKey <= end ? runningBalanceSeconds : 0);
+    return { expectedMinutes, actualSeconds, balanceMinutes: Math.round(actualSeconds / 60) - expectedMinutes };
+  };
+  const todayBalance = workBalanceFor(todayKey, todayKey);
+  const weekBalance = workBalanceFor(dayKey(currentMonday), dayKey(currentSunday));
+  const monthBalance = workBalanceFor(dayKey(monthStart), dayKey(monthEnd));
+  const fullMonthTargetMinutes = data.workBalance
+    .filter((entry) => entry.work_date >= dayKey(monthStart) && entry.work_date <= dayKey(monthEnd))
+    .reduce((sum, entry) => sum + entry.expected_minutes, 0);
   const currentName = hub.bootstrap?.profile.display_name ?? "Meu perfil";
   const totalUnread = Object.values(data.unread).reduce((sum, n) => sum + n, 0);
   const todayStart = new Date(`${todayKey}T00:00:00`),
@@ -339,6 +356,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
     else window.location.replace("/login");
   }
   async function startTimer(text = description, id = projectId) {
+    if (pausedTimer) {
+      hub.notify("Seu timer está pausado para o almoço. Retome ou encerre antes de iniciar outro.", true);
+      return;
+    }
     if (activeTimer) {
       hub.notify(
         "Você já tem um timer em andamento. Pare-o antes de iniciar outro.",
@@ -361,11 +382,37 @@ export function LiveHubApp({ userId }: { userId: string }) {
     );
   }
   async function stopTimer() {
+    if (pausedTimer) {
+      await hub.mutate(
+        () => hub.rpc("stop_paused_timer", {}),
+        "Timer encerrado. O tempo anterior ao almoço ficou salvo.",
+      );
+      return;
+    }
     if (!activeTimer) return;
     await hub.mutate(
       () => hub.rpc("stop_timer", { p_entry_id: activeTimer.id }),
       "Tempo registrado pelo servidor.",
     );
+  }
+  async function pauseTimer() {
+    if (!activeTimer) return;
+    await hub.mutate(
+      () => hub.rpc("pause_timer", {}),
+      "Timer pausado. O almoço não será contado como hora trabalhada.",
+    );
+  }
+  async function resumeTimer() {
+    if (!pausedTimer) return;
+    await hub.mutate(
+      () => hub.rpc("resume_timer", {}),
+      "Timer retomado. Bom trabalho!",
+    );
+  }
+  async function toggleFocusTimer() {
+    if (pausedTimer) return resumeTimer();
+    if (activeTimer) return pauseTimer();
+    return startTimer();
   }
   async function sendMessage(e: FormEvent) {
     e.preventDefault();
@@ -838,15 +885,15 @@ export function LiveHubApp({ userId }: { userId: string }) {
               </p>
             </div>
             <div className="page-heading-actions">
-              {activeTimer && page !== "overview" && (
+              {timerSession && page !== "overview" && (
                 <button
-                  className="running-pill"
+                  className={`running-pill ${pausedTimer ? "is-paused" : ""}`}
                   onClick={() => navigate("hours")}
-                  aria-label={`Abrir timer ativo: ${clock(elapsed)}`}
+                  aria-label={`Abrir timer${pausedTimer ? " pausado" : " ativo"}: ${clock(elapsed)}`}
                 >
-                  <i className="live-dot live" />
+                  <i className={`live-dot ${activeTimer ? "live" : ""}`} />
                   <span>{clock(elapsed)}</span>
-                  <TimerIcon size={16} />
+                  {pausedTimer ? <Coffee size={16} /> : <TimerIcon size={16} />}
                 </button>
               )}
               {(page === "overview" || page === "calendar") &&
@@ -898,6 +945,29 @@ export function LiveHubApp({ userId }: { userId: string }) {
               no time é necessária para conversar e registrar horas.
             </div>
           )}
+          {hub.canParticipate && !hub.teamLoading && !data.workSchedule && (
+            <section className="work-schedule-nudge" aria-label="Configurar jornada">
+              <div>
+                <strong>Defina sua jornada</strong>
+                <p>Informe seus dias e horas para acompanhar saldo diário, semanal e mensal.</p>
+              </div>
+              <div>
+                <button className="text-button" onClick={() => setWorkScheduleOpen(true)}>
+                  Configurar agora
+                </button>
+                <button
+                  className="text-button muted"
+                  disabled={hub.busy}
+                  onClick={() => void hub.mutate(
+                    () => hub.rpc("skip_work_schedule_setup", { p_team_id: hub.teamId }),
+                    "Tudo certo. Você pode configurar sua jornada em Minhas horas quando quiser.",
+                  )}
+                >
+                  Agora não
+                </button>
+              </div>
+            </section>
+          )}
           {hub.teamError ? (
             <EmptyState
               icon={<WifiSlash size={35} />}
@@ -921,7 +991,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     {page === "overview" && (
                       <div className="summary-grid">
                         <section
-                          className={`focus-card ${activeTimer ? "is-running" : ""}`}
+                          className={`focus-card ${timerSession ? "is-running" : ""}`}
                           aria-label="Registro de tempo"
                         >
                           <div className="card-topline">
@@ -931,19 +1001,21 @@ export function LiveHubApp({ userId }: { userId: string }) {
                               />
                               {activeTimer
                                 ? "Foco em andamento"
+                                : pausedTimer
+                                  ? "Pausa para almoço"
                                 : "Seu próximo foco"}
                             </span>
                             <TimerIcon size={17} />
                           </div>
                           <div className="focus-title">
                             <h2>
-                              {activeTimer?.description ||
+                              {timerSession?.description ||
                                 description ||
                                 "Escolha seu próximo foco"}
                             </h2>
                             <span>
-                              {activeTimer
-                                ? projectName(activeTimer.project_id)
+                              {timerSession
+                                ? projectName(timerSession.project_id)
                                 : projectId
                                   ? projectName(projectId)
                                   : "Uma coisa de cada vez."}
@@ -952,23 +1024,27 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           <button
                             className="timer-control"
                             disabled={
-                              hub.busy || (!activeTimer && !hub.canParticipate)
+                              hub.busy || (!timerSession && !hub.canParticipate)
                             }
                             aria-label={
-                              activeTimer
-                                ? "Parar timer"
+                              timerSession
+                                ? pausedTimer
+                                  ? "Retomar timer"
+                                  : "Pausar para almoço"
                                 : description
                                   ? "Iniciar timer"
                                   : "Escolher atividade"
                             }
                             onClick={() =>
-                              activeTimer ? void stopTimer() : void startTimer()
+                              void toggleFocusTimer()
                             }
                           >
                             {hub.busy ? (
                               <CircleNotch className="spinning" size={24} />
+                            ) : pausedTimer ? (
+                              <Play size={25} weight="fill" />
                             ) : activeTimer ? (
-                              <Stop size={25} weight="fill" />
+                              <Coffee size={25} />
                             ) : (
                               <Play size={25} weight="fill" />
                             )}
@@ -978,11 +1054,18 @@ export function LiveHubApp({ userId }: { userId: string }) {
                               {clock(elapsed)}
                             </span>
                             <span>
-                              {activeTimer
-                                ? "Parar e registrar"
+                              {pausedTimer
+                                ? "Retomar quando voltar"
+                                : activeTimer
+                                  ? "Pausar para almoço"
                                 : "Pronto para começar"}
                             </span>
                           </div>
+                          {timerSession && (
+                            <button className="focus-end-link" onClick={() => void stopTimer()}>
+                              Encerrar e salvar
+                            </button>
+                          )}
                         </section>
                         <section className="work-card panel">
                           <div className="section-heading">
@@ -999,7 +1082,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                                   key={entry.id}
                                   disabled={
                                     hub.busy ||
-                                    !!activeTimer ||
+                                    !!timerSession ||
                                     !hub.canParticipate
                                   }
                                   onClick={() =>
@@ -1127,6 +1210,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       }}
                       onNew={newEvent}
                       onSelect={(event) => setEventId(event.id)}
+                      onHomeOffice={(entry) => {
+                        setHomeOfficeFocusWeek(entry.week_start);
+                        setHomeOfficeOpen(true);
+                      }}
                       full={page === "calendar"}
                     />
                   </div>
@@ -1198,7 +1285,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         <TimerIcon size={16} />
                       </div>
                       <div className="weekly-total">
-                        {shortDuration(weekSeconds)}
+                        {shortDuration(weekBalance.actualSeconds)}
                         <span>registradas</span>
                       </div>
                       <div
@@ -1207,7 +1294,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       >
                         {[0, 1, 2, 3, 4].map((day) => {
                           const key = dayKey(dateAt(currentMonday, day)),
-                            seconds = durationForDay(key);
+                            seconds = Number(data.workBalance.find((item) => item.work_date === key)?.actual_seconds ?? 0) +
+                              (key === todayKey ? runningBalanceSeconds : 0);
                           return (
                             <div
                               className={`week-bar-item ${key === todayKey ? "current" : ""}`}
@@ -1229,7 +1317,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       </div>
                       <div className="hours-summary-bottom">
                         <span>Hoje</span>
-                        <strong>{shortDuration(todaySeconds)}</strong>
+                        <strong>{shortDuration(todayBalance.actualSeconds)}</strong>
                       </div>
                     </section>
                     <section className="quick-chat">
@@ -1374,6 +1462,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       : result.error || "Não foi possível arquivar a tarefa.";
                   }}
                   onStart={async (task) => {
+                    if (pausedTimer)
+                      return "Seu timer está pausado para o almoço. Retome ou encerre antes de iniciar outro.";
                     const result = await hub.mutate(
                       () => hub.rpc("start_task_timer", { p_task_id: task.id }),
                       "Timer iniciado na tarefa.",
@@ -1399,14 +1489,14 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 <div className="hours-page">
                   <section className="time-entry-panel panel">
                     <div>
-                      <h2>No que você está trabalhando?</h2>
-                      <p>Uma coisa de cada vez. O tempo a gente cuida.</p>
+                      <h2>{pausedTimer ? "Seu timer está pausado" : "No que você está trabalhando?"}</h2>
+                      <p>{pausedTimer ? "O tempo parado para o almoço não entra no seu saldo." : "Uma coisa de cada vez. O tempo a gente cuida."}</p>
                     </div>
                     <form
                       className="timer-form"
                       onSubmit={(e) => {
                         e.preventDefault();
-                        void (activeTimer ? stopTimer() : startTimer());
+                        void (pausedTimer ? resumeTimer() : activeTimer ? pauseTimer() : startTimer());
                       }}
                     >
                       <label>
@@ -1416,8 +1506,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           onChange={(e) => setDescription(e.target.value)}
                           placeholder="Descreva sua próxima atividade"
                           maxLength={2000}
-                          required={!activeTimer}
-                          disabled={!!activeTimer || !hub.canParticipate}
+                          required={!timerSession}
+                          disabled={!!timerSession || !hub.canParticipate}
                         />
                       </label>
                       <label>
@@ -1425,7 +1515,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         <select
                           value={projectId}
                           onChange={(e) => setProjectId(e.target.value)}
-                          disabled={!!activeTimer || !hub.canParticipate}
+                          disabled={!!timerSession || !hub.canParticipate}
                         >
                           <option value="">Sem projeto</option>
                           {data.projects.map((project) => (
@@ -1438,30 +1528,44 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       <div className="inline-timer">
                         <strong>{clock(elapsed)}</strong>
                         <button
-                          className={`primary-button ${activeTimer ? "stop-button" : ""}`}
+                          className={`primary-button ${activeTimer ? "pause-button" : pausedTimer ? "resume-button" : ""}`}
                           disabled={
-                            hub.busy || (!activeTimer && !hub.canParticipate)
+                            hub.busy || (!timerSession && !hub.canParticipate)
                           }
                         >
                           {hub.busy ? (
                             <CircleNotch className="spinning" size={17} />
+                          ) : pausedTimer ? (
+                            <Play size={16} weight="fill" />
                           ) : activeTimer ? (
-                            <Stop size={16} weight="fill" />
+                            <Coffee size={16} />
                           ) : (
                             <Play size={16} weight="fill" />
                           )}
-                          {activeTimer ? "Parar" : "Iniciar"}
+                          {pausedTimer ? "Retomar" : activeTimer ? "Pausa para almoço" : "Iniciar"}
                         </button>
+                        {timerSession && (
+                          <button
+                            className="timer-end-button"
+                            type="button"
+                            disabled={hub.busy}
+                            onClick={() => void stopTimer()}
+                          >
+                            <Stop size={15} weight="fill" />
+                            Encerrar
+                          </button>
+                        )}
                       </div>
                     </form>
-                    {activeTimer && (
-                      <p className="running-description">
-                        <i className="live-dot live" />
-                        {activeTimer.description ||
+                    {timerSession && (
+                      <p className={`running-description ${pausedTimer ? "is-paused" : ""}`}>
+                        <i className={`live-dot ${activeTimer ? "live" : ""}`} />
+                        {timerSession.description ||
                           "Trabalho em andamento"} ·{" "}
-                        {activeTimer.team_id === hub.teamId
-                          ? projectName(activeTimer.project_id)
+                        {timerSession.team_id === hub.teamId
+                          ? projectName(timerSession.project_id)
                           : "Timer de outro time"}
+                        {pausedTimer ? " · pausado para almoço" : ""}
                       </p>
                     )}
                     {hub.canManage && (
@@ -1474,20 +1578,47 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       </button>
                     )}
                   </section>
-                  <div className="hours-overview">
-                    <div>
-                      <span>Hoje · neste time</span>
-                      <strong>{shortDuration(todaySeconds)}</strong>
+                  <section className="hours-balance" aria-label="Saldo de horas">
+                    <div className="hours-balance-heading">
+                      <div>
+                        <h2>Seu saldo de horas</h2>
+                        <p>O tempo registrado é comparado com sua jornada prevista.</p>
+                      </div>
+                      <button className="text-button" onClick={() => setWorkScheduleOpen(true)}>
+                        {workScheduleConfigured ? "Editar jornada" : "Configurar jornada"}
+                      </button>
                     </div>
-                    <div>
-                      <span>Esta semana</span>
-                      <strong>{shortDuration(weekSeconds)}</strong>
+                    <div className="hours-balance-grid">
+                      {[
+                        { label: "Hoje", balance: todayBalance, actual: todayBalance.actualSeconds, target: todayBalance.expectedMinutes },
+                        { label: "Esta semana", balance: weekBalance, actual: weekBalance.actualSeconds, target: weekBalance.expectedMinutes },
+                        { label: "Este mês", balance: monthBalance, actual: monthBalance.actualSeconds, target: monthBalance.expectedMinutes },
+                      ].map((item) => (
+                        <div className="hours-balance-item" key={item.label}>
+                          <span>{item.label}</span>
+                          <strong className={
+                            !workScheduleConfigured ? "" : item.balance.balanceMinutes > 0 ? "positive" : item.balance.balanceMinutes < 0 ? "negative" : "balanced"
+                          }>
+                            {!workScheduleConfigured
+                              ? shortDuration(item.actual)
+                              : item.balance.expectedMinutes === 0 && item.actual === 0
+                                ? "Folga prevista"
+                                : item.balance.balanceMinutes === 0
+                                  ? "Em dia"
+                                  : `${item.balance.balanceMinutes > 0 ? "+" : "−"}${shortDuration(Math.abs(item.balance.balanceMinutes) * 60)}`}
+                          </strong>
+                          <small>
+                            {workScheduleConfigured
+                              ? `${shortDuration(item.actual)} registradas · ${shortDuration(item.target * 60)} previstas`
+                              : "horas registradas"}
+                          </small>
+                        </div>
+                      ))}
                     </div>
-                    <div>
-                      <span>Entradas carregadas</span>
-                      <strong>{entries.length}</strong>
-                    </div>
-                  </div>
+                    {workScheduleConfigured && (
+                      <p className="hours-month-target">Meta prevista para o mês: {shortDuration(fullMonthTargetMinutes * 60)} · feriados do time e ausências aprovadas já são descontados.</p>
+                    )}
+                  </section>
                   <section className="time-history">
                     <div className="section-heading">
                       <h2>Histórico de horas</h2>
@@ -1902,6 +2033,17 @@ export function LiveHubApp({ userId }: { userId: string }) {
         </main>
       </div>
       {Notice}
+      <HomeOfficeManager
+        hub={hub}
+        open={homeOfficeOpen}
+        focusWeek={homeOfficeFocusWeek}
+        onClose={() => setHomeOfficeOpen(false)}
+      />
+      <WorkScheduleSetup
+        hub={hub}
+        open={workScheduleOpen}
+        onClose={() => setWorkScheduleOpen(false)}
+      />
       {selectedEvent && (
         <HubDialog title="Detalhes do evento" onClose={() => setEventId("")}>
           <div

@@ -166,7 +166,7 @@ scenario('AAL1 só acessa o próprio perfil; dados colaborativos e RPCs exigem M
   await login(users.alice, 'aal1');
   assert.equal(await count('select count(*) from public.profiles'), 1);
   for (const table of ['workspaces','workspace_members','teams','team_members','member_statuses',
-    'channels','channel_members','messages','projects','tasks','time_entries','events','event_attendees','channel_unread_counts']) {
+    'channels','channel_members','messages','projects','tasks','time_entries','events','event_attendees','channel_unread_counts','work_schedules','paused_timers']) {
     assert.equal(await count(`select count(*) from public.${table}`), 0, table);
   }
   await sqlError('select public.create_workspace($1)', ['bloqueado'], '42501');
@@ -344,6 +344,32 @@ scenario('timer único global, início/parada idempotentes e projeção de statu
   await rpc('stop_timer', [timer]);
   assert.equal(await rpc('stop_timer', [timer]), timer);
   assert.equal(await scalar('select timer_running from public.member_statuses where team_id=$1 and user_id=$2', [ids.red, users.alice]), false);
+});
+
+scenario('timer pausa para almoço, exclui o intervalo e retoma a mesma atividade', async () => {
+  await login(users.alice);
+  const firstSegment = await rpc('start_timer', [ids.red, ids.project, 'Escrever proposta']);
+  await rpc('pause_timer', []);
+  assert.ok(await scalar('select ended_at from public.time_entries where id=$1', [firstSegment]));
+  assert.equal(await scalar('select timer_running from public.member_statuses where team_id=$1 and user_id=$2', [ids.red, users.alice]), false);
+  const paused = (await query('select * from public.paused_timers where user_id=$1', [users.alice])).rows[0];
+  assert.equal(paused.description, 'Escrever proposta');
+  assert.equal(paused.project_id, ids.project);
+  assert.ok(Number(paused.accumulated_seconds) >= 0);
+  await sqlError('select public.start_timer($1)', [ids.blue], '23505');
+  await login(users.bob);
+  assert.equal(await count('select count(*) from public.paused_timers'), 0);
+  await sqlError('select public.resume_timer()', [], '22023');
+  await login(users.alice);
+  const resumed = await rpc('resume_timer', []);
+  assert.equal(await count('select count(*) from public.paused_timers'), 0);
+  assert.equal(await scalar('select project_id from public.time_entries where id=$1', [resumed]), ids.project);
+  assert.equal(await scalar('select description from public.time_entries where id=$1', [resumed]), 'Escrever proposta');
+  assert.equal(Number(await scalar('select carried_seconds from public.time_entries where id=$1', [resumed])), Number(paused.accumulated_seconds));
+  await rpc('pause_timer', []);
+  await rpc('stop_paused_timer', []);
+  assert.equal(await count('select count(*) from public.paused_timers'), 0);
+  assert.equal(await count('select count(*) from public.time_entries where user_id=$1 and ended_at is null', [users.alice]), 0);
 });
 
 scenario('status do timer é visível sem revelar horas/descrição de outro membro', async () => {
@@ -844,7 +870,7 @@ scenario('Colaboração: assinatura push só pertence à conta e todas as novas 
  await login(users.alice);await rpc('register_push_subscription',['https://fcm.googleapis.com/fcm/send/local-fixture','x'.repeat(40),'y'.repeat(30)]);
  await login(users.bob);assert.equal(await count('select count(*) from public.push_subscriptions'),0);
  await login(users.alice,'aal1');
- for(const tbl of ['team_notes','standups','meeting_documents','message_reactions','message_pins','attachments','notifications','push_subscriptions']) assert.equal(await count(`select count(*) from public.${tbl}`),0);
+ for(const tbl of ['team_notes','standups','meeting_documents','message_reactions','message_pins','attachments','notifications','push_subscriptions','work_schedules','paused_timers']) assert.equal(await count(`select count(*) from public.${tbl}`),0);
  await sqlError('select public.save_team_note($1,$2,$3)',[ids.red,'Bloqueado','Texto'],'42501');
 });
 scenario('Colaboração: busca respeita participação, histórico removido e paginação',async()=>{
@@ -1157,4 +1183,143 @@ scenario('Convites: auditoria não armazena e-mail nem hash do token e tabela pr
  assert.ok(!JSON.stringify(audit).includes(inviteHash(1)));
  await db.exec('set role service_role');
  await sqlError('select * from private.team_invitations',[],'42501');
+});
+scenario('Jornada pessoal calcula meta semanal e ignora feriados e ausências',async()=>{
+ await login(users.alice);
+ const today=await scalar("select (clock_timestamp() at time zone 'America/Sao_Paulo')::date::text");
+ const nextMonday=await scalar("select (current_date+((8-extract(isodow from current_date)::integer)%7))::text");
+ await rpc('save_work_schedule',[ids.red,users.alice,480,31,'America/Sao_Paulo']);
+ assert.equal(await scalar('select weekly_minutes from public.time_goals where team_id=$1 and user_id=$2',[ids.red,users.alice]),2400);
+ await login(users.bob);
+ assert.equal(await count('select count(*) from public.work_schedules where team_id=$1',[ids.red]),0);
+ await login(users.leader);
+ assert.equal(await count('select count(*) from public.work_schedules where team_id=$1 and user_id=$2',[ids.red,users.alice]),1);
+ await login(users.alice);
+ const monday=(await query('select * from public.get_work_hour_balance($1,$2,$3)',[ids.red,nextMonday,nextMonday])).rows[0];
+ assert.equal(monday.expected_minutes,480);
+ assert.equal(Number(monday.actual_seconds),0);
+ const daily=(await query('select * from public.get_work_hour_balance($1,$2,$3)',[ids.red,today,today])).rows[0];
+ assert.equal(daily.expected_minutes,Number(await scalar("select case when extract(isodow from $1::date) between 1 and 5 then 480 else 0 end",[today])));
+ await db.exec('reset role');
+ await query('insert into public.home_office_holidays(team_id,holiday_date,label) values ($1,$2,$3)',[ids.red,nextMonday,'Feriado do teste']);
+ await login(users.alice);
+ assert.equal(await scalar('select expected_minutes from public.get_work_hour_balance($1,$2,$3)',[ids.red,nextMonday,nextMonday]),0);
+ const absenceMonday=await scalar('select ($1::date+7)::text',[nextMonday]);
+ await login(users.alice);
+ const absence=await rpc('request_absence',[ids.red,'vacation',absenceMonday,absenceMonday,'']);
+ await login(users.leader);
+ await rpc('decide_absence',[absence,'approved','']);
+ await login(users.alice);
+ assert.equal(await scalar('select expected_minutes from public.get_work_hour_balance($1,$2,$3)',[ids.red,absenceMonday,absenceMonday]),0);
+ await rpc('skip_work_schedule_setup',[ids.red]);
+ assert.equal(await scalar('select weekly_minutes from public.time_goals where team_id=$1 and user_id=$2',[ids.red,users.alice]),0);
+});
+scenario('Home office: aplica a escala do PDF, pausa feriados e aceita trocas com lembrete diário',async()=>{
+ await login(users.admin);
+ await rpc('set_workspace_member',[ids.workspace,users.outsider,'member']);
+ await rpc('set_team_member',[ids.red,users.blueLeader,'member']);
+ await rpc('set_team_member',[ids.red,users.outsider,'member']);
+ const holidayList=JSON.stringify([
+  {holiday_date:'2026-10-12',label:'Nossa Senhora Aparecida'},
+  {holiday_date:'2026-11-02',label:'Finados'},
+ ]);
+ await login(users.leader);
+ await rpc('save_home_office_schedule',[ids.red,'2026-10-04',[users.leader,users.alice,users.bob,users.blueLeader,users.outsider],'08:30','America/Sao_Paulo',holidayList]);
+
+ const firstWeek=await query("select scheduled_on::text,display_name from public.get_home_office_calendar($1,$2,$3) where entry_kind='home_office' order by scheduled_on",[ids.red,'2026-10-05','2026-10-09']);
+ assert.deepEqual(firstWeek.rows.map(row=>[row.scheduled_on,row.display_name]),[
+  ['2026-10-05','leader'],['2026-10-06','alice'],['2026-10-07','bob'],['2026-10-08','blueLeader'],['2026-10-09','outsider'],
+ ]);
+ await login(users.admin);
+ assert.equal(await count("select count(*) from public.get_home_office_calendar($1,'2026-10-05','2026-10-09') where entry_kind='home_office'",[ids.red]),5,'workspace admin can view calendar data without joining the team');
+ await login(users.leader);
+ const holidayWeek=await query("select entry_kind,scheduled_on::text,entry_label from public.get_home_office_calendar($1,$2,$3) where week_start='2026-10-11' order by entry_kind",[ids.red,'2026-10-11','2026-10-17']);
+ assert.equal(holidayWeek.rows.filter(row=>row.entry_kind==='home_office').length,0);
+ assert.equal(holidayWeek.rows.filter(row=>row.entry_kind==='holiday_week').length,1);
+ const resumed=await scalar("select display_name from public.get_home_office_calendar($1,'2026-10-19','2026-10-19') where entry_kind='home_office'",[ids.red]);
+ assert.equal(resumed,'outsider','a semana de feriado pausa a rotação sem consumir a próxima posição');
+
+ await login(users.bob);
+ await sqlError('select public.save_home_office_schedule($1,$2,$3,$4,$5,$6)',[ids.red,'2026-10-04',[users.leader,users.alice,users.bob,users.blueLeader,users.outsider],'08:30','America/Sao_Paulo',holidayList],'42501');
+ await login(users.alice,'aal1');
+ assert.equal(await count('select count(*) from public.home_office_schedules where team_id=$1',[ids.red]),0);
+ await sqlError('select * from public.get_home_office_calendar($1,$2,$3)',[ids.red,'2026-10-05','2026-10-09'],'42501');
+
+ await login(users.leader);
+ const nextWeek=await scalar('select (current_date-extract(dow from current_date)::integer+7)::text');
+ const dateRange=await query('select ($1::date+1)::text as monday,($1::date+5)::text as friday',[nextWeek]);
+ const scheduled=await query("select user_id,scheduled_on::text from public.get_home_office_calendar($1,$2,$3) where entry_kind='home_office' order by scheduled_on",[ids.red,dateRange.rows[0].monday,dateRange.rows[0].friday]);
+ const requester=scheduled.rows.find(row=>row.user_id===users.leader);
+ const target=scheduled.rows.find(row=>row.user_id!==users.leader);
+ assert.ok(requester&&target);
+ const requestId=await rpc('request_home_office_swap',[ids.red,nextWeek,target.user_id]);
+ await login(users.bob);
+ assert.equal(await count("select count(*) from public.home_office_swaps where id=$1",[requestId]),0,'pedido pendente só aparece para as duas pessoas envolvidas');
+ await sqlError('select public.decide_home_office_swap($1,$2)',[requestId,'accept'],'42501');
+ await login(target.user_id);
+ await rpc('decide_home_office_swap',[requestId,'accept']);
+ const afterSwap=await query("select user_id,scheduled_on::text from public.get_home_office_calendar($1,$2,$3) where entry_kind='home_office' and user_id in($4,$5) order by scheduled_on",[ids.red,dateRange.rows[0].monday,dateRange.rows[0].friday,users.leader,target.user_id]);
+ assert.equal(afterSwap.rows.find(row=>row.user_id===users.leader).scheduled_on,target.scheduled_on);
+ assert.equal(afterSwap.rows.find(row=>row.user_id===target.user_id).scheduled_on,requester.scheduled_on);
+ assert.equal(await scalar('select status from public.home_office_swaps where id=$1',[requestId]),'accepted');
+ assert.ok(await scalar("select read_at from public.notifications where user_id=$1 and dedupe_key=$2",[target.user_id,`home_office_swap:${requestId}`]));
+ await login(users.leader);
+ assert.equal(await count("select count(*) from public.notifications where user_id=$1 and dedupe_key=$2",[users.leader,`home_office_swap_result:${requestId}`]),1);
+ await sqlError('select public.queue_home_office_reminders()',[],'42501');
+
+ // Exercise the scheduled push queue using today's local date, regardless of the configured reference week.
+ await db.exec('reset role');
+ await query('delete from public.home_office_holidays where team_id=$1',[ids.red]);
+ const localDate=await scalar("select (clock_timestamp() at time zone 'America/Sao_Paulo')::date::text");
+ const weekday=Number(await scalar("select extract(isodow from (clock_timestamp() at time zone 'America/Sao_Paulo')::date)"));
+ let originalTodayAssignment=null;
+ if(weekday<=4){
+  const currentWeek=await scalar("select ($1::date-extract(dow from $1::date)::integer)::text",[localDate]);
+  const tomorrow=await scalar("select ($1::date+1)::text",[localDate]);
+  const currentAssignments=await query("select user_id,scheduled_on::text from public.get_home_office_calendar($1,$2,$3) where entry_kind='home_office' and scheduled_on between $2::date and $3::date order by scheduled_on",[ids.red,localDate,tomorrow]);
+  const today=currentAssignments.rows.find(row=>row.scheduled_on===localDate);
+  const nextDay=currentAssignments.rows.find(row=>row.scheduled_on===tomorrow);
+  if(today&&nextDay){
+   originalTodayAssignment=today.user_id;
+   await login(today.user_id);
+   const sameDaySwap=await rpc('request_home_office_swap',[ids.red,currentWeek,nextDay.user_id]);
+   await login(nextDay.user_id);
+   await rpc('decide_home_office_swap',[sameDaySwap,'accept']);
+  }
+ }
+ if(weekday<=5){
+  const todayAssignment=await scalar("select user_id from public.get_home_office_calendar($1,$2,$2) where entry_kind='home_office'",[ids.red,localDate]);
+  if(todayAssignment){
+   const localTime=await scalar("select to_char(clock_timestamp() at time zone 'America/Sao_Paulo','HH24:MI:SS')");
+   const futureReminder=await scalar("select ((clock_timestamp() at time zone timezone+interval '10 minutes')::time)::text from public.home_office_schedules where team_id=$1",[ids.red]);
+   if(futureReminder>localTime){
+    await db.exec('reset role');
+    await query('update public.home_office_schedules set reminder_time=$2::time where team_id=$1',[ids.red,futureReminder]);
+    await login(todayAssignment);
+    await rpc('refresh_my_reminders',[ids.red]);
+    assert.equal(await count("select count(*) from public.notifications where user_id=$1 and kind='home_office' and dedupe_key like $2",[todayAssignment,`home_office:${ids.red}:${todayAssignment}:${localDate}`]),0,'opening the app before the configured time must not queue the reminder');
+    await db.exec('reset role');
+   }
+   await query("update public.home_office_schedules set reminder_time=case when (clock_timestamp() at time zone timezone)::time>time '00:02' then ((clock_timestamp() at time zone timezone)-interval '2 minutes')::time else time '00:00' end where team_id=$1",[ids.red]);
+   await login(todayAssignment);
+   await rpc('refresh_my_reminders',[ids.red]);
+   assert.equal(await count("select count(*) from public.notifications where user_id=$1 and kind='home_office' and dedupe_key like $2",[todayAssignment,`home_office:${ids.red}:${todayAssignment}:${localDate}`]),1,'opening the app after the configured time queues one reminder');
+   if(originalTodayAssignment&&originalTodayAssignment!==todayAssignment){
+    assert.equal(await count("select count(*) from public.notifications where user_id=$1 and kind='home_office' and dedupe_key like $2",[originalTodayAssignment,`home_office:${ids.red}:${originalTodayAssignment}:${localDate}`]),0,'an accepted swap sends the daily reminder to the new assignee');
+   }
+   await db.exec('reset role');
+   await query("delete from public.notifications where user_id=$1 and kind='home_office' and dedupe_key like $2",[todayAssignment,`home_office:${ids.red}:${todayAssignment}:${localDate}`]);
+   await db.exec('set role service_role');
+   await rpc('queue_home_office_reminders');
+   await db.exec('reset role');
+   assert.equal(await count("select count(*) from public.notifications where user_id=$1 and kind='home_office' and dedupe_key like $2",[todayAssignment,`home_office:${ids.red}:${todayAssignment}:${localDate}`]),1);
+   if(originalTodayAssignment&&originalTodayAssignment!==todayAssignment){
+    assert.equal(await count("select count(*) from public.notifications where user_id=$1 and kind='home_office' and dedupe_key like $2",[originalTodayAssignment,`home_office:${ids.red}:${originalTodayAssignment}:${localDate}`]),0,'the scheduled queue also honors an accepted swap');
+   }
+   await db.exec('set role service_role');
+   await rpc('queue_home_office_reminders');
+   await db.exec('reset role');
+   assert.equal(await count("select count(*) from public.notifications where user_id=$1 and kind='home_office' and dedupe_key like $2",[todayAssignment,`home_office:${ids.red}:${todayAssignment}:${localDate}`]),1,'scheduled reminders are idempotent');
+  }
+ }
 });

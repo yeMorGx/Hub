@@ -554,7 +554,13 @@ export function LiveCollaboration({
                               ? "Você foi mencionado em uma conversa"
                               : n.kind === "meeting"
                                 ? "Uma reunião está próxima"
-                                : "Novo aviso do time"}
+                                : n.kind === "home_office"
+                                  ? "Hoje é seu dia de home office"
+                                  : n.kind === "home_office_swap"
+                                    ? n.dedupe_key.startsWith("home_office_swap_result:")
+                                      ? "Seu pedido de troca de home office foi respondido"
+                                      : "Pedido de troca de home office"
+                                    : "Novo aviso do time"}
                         </strong>
                         <small>
                           {new Date(n.created_at).toLocaleString("pt-BR")}

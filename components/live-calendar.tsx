@@ -7,9 +7,10 @@ import {
   CaretRight,
   Clock,
   CalendarDots,
+  House,
 } from "@phosphor-icons/react";
 import type { HubController } from "@/lib/hub/use-hub";
-import type { Row } from "@/lib/hub/types";
+import type { HomeOfficeEntry, Row } from "@/lib/hub/types";
 import { dayKey, dateAt, hourLabel } from "@/lib/hub/dates";
 import {
   calendarDays,
@@ -20,6 +21,12 @@ import {
 } from "@/lib/hub/calendar";
 import { PeopleAvatars } from "./hub-ui";
 const days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+function sundayKey(date: Date) {
+  const sunday = new Date(date);
+  sunday.setHours(0, 0, 0, 0);
+  sunday.setDate(sunday.getDate() - sunday.getDay());
+  return dayKey(sunday);
+}
 type SegmentEvent = { event: Row<"events">; start: number; end: number };
 function eventLanes(items: SegmentEvent[]) {
   const result: (SegmentEvent & { lane: number; lanes: number })[] = [];
@@ -60,6 +67,7 @@ export function LiveCalendar({
   onToday,
   onNew,
   onSelect,
+  onHomeOffice,
   full = false,
 }: {
   hub: HubController;
@@ -75,14 +83,18 @@ export function LiveCalendar({
   onToday: () => void;
   onNew: (date: Date, hour?: number) => void;
   onSelect: (event: Row<"events">) => void;
+  onHomeOffice: (entry: HomeOfficeEntry) => void;
   full?: boolean;
 }) {
   const [filter, setFilter] = useState("all"),
     [filterOpen, setFilterOpen] = useState(false);
   const range = calendarRange(date, view);
   const monthDays = view === "month" ? calendarDays(date, "month") : [];
+  const showEvents = filter !== "home_office",
+    showHomeOffice = filter === "all" || filter === "home_office";
   const events = hub.snapshot.events.filter(
     (e) =>
+      showEvents &&
       (filter === "all" || e.kind === filter) &&
       overlapsPeriod(e, range.start, range.end),
   );
@@ -92,6 +104,9 @@ export function LiveCalendar({
     return {
       index,
       start,
+      homeOffice: showHomeOffice
+        ? hub.snapshot.homeOffice.filter((item) => item.scheduled_on === dayKey(start))
+        : [],
       events: events.flatMap((event) => {
         const segment = eventDaySegment(event, start);
         return segment ? [{ event, ...segment }] : [];
@@ -154,11 +169,30 @@ export function LiveCalendar({
                 <option value="all">Todos os eventos</option>
                 <option value="meeting">Reuniões</option>
                 <option value="event">Eventos</option>
+                <option value="home_office">Home office</option>
               </select>
             </div>
           )}
         </div>
         <div className="calendar-actions">
+          {(hub.canParticipate || hub.canManage) && (
+            <button
+              className="home-office-open"
+              onClick={() => onHomeOffice({
+                team_id: hub.teamId,
+                user_id: null,
+                scheduled_on: dayKey(date),
+                week_start: sundayKey(date),
+                display_name: null,
+                avatar_url: null,
+                entry_kind: "home_office",
+                entry_label: null,
+              })}
+            >
+              <House size={14} />
+              Escala
+            </button>
+          )}
           <div className="segmented" aria-label="Visualização da agenda">
             <button
               className={view === "month" ? "selected" : ""}
@@ -256,6 +290,18 @@ export function LiveCalendar({
                     a.starts_at.localeCompare(b.starts_at) ||
                     a.id.localeCompare(b.id),
                 );
+              const markers = showHomeOffice
+                ? hub.snapshot.homeOffice.filter((item) => item.scheduled_on === dayKey(cell))
+                : [];
+              const office = markers.find((item) => item.entry_kind === "home_office");
+              const holidayWeek = markers.find((item) => item.entry_kind === "holiday_week");
+              const holiday = markers.find((item) => item.entry_kind === "holiday");
+              const monthItems = [
+                ...(office ? [{ type: "home_office" as const, office }] : []),
+                ...(holidayWeek ? [{ type: "holiday_week" as const, holidayWeek }] : []),
+                ...(holiday ? [{ type: "holiday" as const, holiday }] : []),
+                ...entries.map((event) => ({ type: "event" as const, event })),
+              ];
               const isToday = dayKey(cell) === dayKey(today);
               const openDay = () => {
                 onDate(cell);
@@ -286,7 +332,32 @@ export function LiveCalendar({
                     )}
                   </div>
                   <div className="month-events">
-                    {entries.slice(0, 3).map((event) => {
+                    {monthItems.slice(0, 3).map((item) => {
+                      if (item.type === "home_office")
+                        return (
+                          <button
+                            key={`home-office-${item.office.user_id}-${item.office.scheduled_on}`}
+                            className="month-event month-event-home-office"
+                            title={`Home office · ${item.office.display_name}`}
+                            onClick={() => onHomeOffice(item.office)}
+                          >
+                            <House size={10} />
+                            <strong>{item.office.display_name}</strong>
+                          </button>
+                        );
+                      if (item.type === "holiday_week")
+                        return (
+                          <span key={`holiday-week-${item.holidayWeek.week_start}`} className="month-event month-event-holiday-week" title={item.holidayWeek.entry_label ?? undefined}>
+                            <strong>Sem escala · feriado</strong>
+                          </span>
+                        );
+                      if (item.type === "holiday")
+                        return (
+                          <span key={`holiday-${item.holiday.scheduled_on}`} className="month-event month-event-holiday" title={item.holiday.entry_label ?? undefined}>
+                            <strong>{item.holiday.entry_label}</strong>
+                          </span>
+                        );
+                      const event = item.event;
                       const continues = new Date(event.starts_at) < cell;
                       const time = continues
                         ? "Continua"
@@ -307,19 +378,19 @@ export function LiveCalendar({
                       );
                     })}
                   </div>
-                  {entries.length > 3 && (
+                  {monthItems.length > 3 && (
                     <button className="month-more" onClick={openDay}>
-                      +{entries.length - 3} eventos
+                      +{monthItems.length - 3} itens
                     </button>
                   )}
-                  {entries.length > 0 && (
+                  {monthItems.length > 0 && (
                     <button
                       className="month-count"
-                      aria-label={`${entries.length} ${entries.length === 1 ? "evento" : "eventos"} em ${cell.toLocaleDateString("pt-BR")}`}
+                      aria-label={`${monthItems.length} itens em ${cell.toLocaleDateString("pt-BR")}`}
                       onClick={openDay}
                     >
                       <span aria-hidden="true" className="month-count-dot" />
-                      {entries.length}
+                      {monthItems.length}
                     </button>
                   )}
                 </div>
@@ -352,6 +423,32 @@ export function LiveCalendar({
                 )}
               </button>
             ))}
+            <div className="home-office-gutter" aria-hidden="true">
+              <House size={12} />
+            </div>
+            {segments.map((segment) => {
+              const office = segment.homeOffice.find((item) => item.entry_kind === "home_office");
+              const holidayWeek = segment.homeOffice.find((item) => item.entry_kind === "holiday_week");
+              const holiday = segment.homeOffice.find((item) => item.entry_kind === "holiday");
+              return (
+                <div className="home-office-cell" key={`home-office-${segment.index}`}>
+                  {holidayWeek ? (
+                    <span className="home-office-pause" title={holidayWeek.entry_label ?? undefined}>
+                      Sem home office · feriado
+                    </span>
+                  ) : office ? (
+                    <button className="home-office-assignment" onClick={() => onHomeOffice(office)} title={`Home office · ${office.display_name}`}>
+                      <House size={11} />
+                      {office.display_name}
+                    </button>
+                  ) : holiday ? (
+                    <span className="home-office-holiday" title={holiday.entry_label ?? undefined}>
+                      Feriado · {holiday.entry_label}
+                    </span>
+                  ) : null}
+                </div>
+              );
+            })}
             <div
               className="time-gutter"
               style={{ height: (endHour - startHour) * 84 }}
@@ -422,6 +519,14 @@ export function LiveCalendar({
       )}
       <div className="calendar-footer">
         <span>
+          <i className="legend-dot home-office" />
+          Home office
+        </span>
+        <span>
+          <i className="legend-dot holiday" />
+          Semana sem escala por feriado
+        </span>
+        <span>
           <i className="legend-dot blue" />
           Reuniões
         </span>
@@ -429,7 +534,7 @@ export function LiveCalendar({
           <i className="legend-dot orange" />
           Eventos
         </span>
-        {!events.length && (
+        {!events.length && !hub.snapshot.homeOffice.length && (
           <span>
             <CalendarDots size={12} />
             Nenhum evento neste período

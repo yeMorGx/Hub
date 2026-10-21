@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { errorMessage } from "@/lib/supabase/errors";
 import type { Database } from "@/lib/supabase/database.types";
+import { dayKey } from "./dates";
 import {
   EMPTY_TEAM,
   type Bootstrap,
@@ -171,6 +172,14 @@ export function useHub(
       const todayStart = new Date(`${todayKey}T00:00:00`);
       const todayEnd = new Date(todayStart);
       todayEnd.setDate(todayEnd.getDate() + 1);
+      const weekStart = new Date(todayStart);
+      weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+      const monthStart = new Date(todayStart.getFullYear(), todayStart.getMonth(), 1);
+      const monthEnd = new Date(todayStart.getFullYear(), todayStart.getMonth() + 1, 0);
+      const balanceStart = weekStart < monthStart ? weekStart : monthStart;
+      const balanceEnd = weekEnd > monthEnd ? weekEnd : monthEnd;
       const todayInsideRange =
         todayStart.toISOString() >= rangeStart &&
         todayEnd.toISOString() <= rangeEnd;
@@ -203,6 +212,10 @@ export function useHub(
         activeTimers,
         eventPage,
         todayEventPage,
+        homeOfficePage,
+        workSchedulePage,
+        workBalancePage,
+        pausedTimerPage,
         unread,
       ] = await Promise.all([
         loadTasks(),
@@ -256,6 +269,28 @@ export function useHub(
               todayEnd.toISOString(),
               () => mounted.current && serial === teamGeneration.current,
             ),
+        client.rpc("get_home_office_calendar", {
+          p_team_id: teamId,
+          p_starts_on: dayKey(new Date(rangeStart)),
+          p_ends_on: dayKey(new Date(new Date(rangeEnd).getTime() - 1)),
+        }),
+        client
+          .from("work_schedules")
+          .select("*")
+          .eq("team_id", teamId)
+          .eq("user_id", userId)
+          .order("effective_from", { ascending: false })
+          .limit(1),
+        client.rpc("get_work_hour_balance", {
+          p_team_id: teamId,
+          p_from: dayKey(balanceStart),
+          p_to: dayKey(balanceEnd),
+        }),
+        client
+          .from("paused_timers")
+          .select("*")
+          .eq("user_id", userId)
+          .limit(1),
         client
           .from("channel_unread_counts")
           .select("*")
@@ -277,6 +312,10 @@ export function useHub(
           ).values(),
         ].sort((a, b) => a.starts_at.localeCompare(b.starts_at)),
         unreadRows = rows(unread);
+      const homeOfficeRows = rows(homeOfficePage);
+      const workScheduleRows = rows(workSchedulePage);
+      const workBalanceRows = rows(workBalancePage);
+      const pausedTimerRows = rows(pausedTimerPage);
       const userIds = [
         ...new Set([userId, ...memberRows.map((m) => m.user_id)]),
       ];
@@ -336,6 +375,11 @@ export function useHub(
         entries: entryRows,
         events: eventRows,
         attendees: attendeeRows,
+        homeOffice: homeOfficeRows,
+        workSchedule: workScheduleRows[0] ?? null,
+        workBalance: workBalanceRows,
+        workBalanceLoadedAt: Date.now(),
+        pausedTimer: pausedTimerRows[0] ?? null,
         unread: Object.fromEntries(
           unreadRows
             .filter((r) => r.channel_id)
@@ -441,6 +485,10 @@ export function useHub(
         "member_statuses",
         "events",
         "event_attendees",
+        "home_office_schedules",
+        "home_office_members",
+        "home_office_holidays",
+        "home_office_swaps",
         "messages",
         "team_members",
       ] as const) {

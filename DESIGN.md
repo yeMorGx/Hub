@@ -33,10 +33,12 @@ Celular até 520px: navegação inferior com rótulos, foco horizontal, próximo
 
 ## Interações e limites
 
-- Timer mostra números tabulares e permanece ativo ao trocar de módulo; não há pausa.
+- Timer mostra números tabulares e permanece ativo ao trocar de módulo. Em **Minhas horas**, a pausa de almoço encerra o trecho atual, mantém a atividade para retomada e não inclui a pausa no saldo.
+- A jornada aparece como saldo de horas de hoje, da semana e do mês. A configuração de dias/horas é opcional durante a entrada no time e pode ser editada em **Minhas horas**.
 - Diálogos nativos oferecem foco modal e Escape; foco de teclado recebe contorno pêssego.
 - Busca acessível por botão e Ctrl/Cmd+K.
 - Campos, filtros, estados selecionados, mensagens, confirmações e avisos seguem a mesma linguagem.
+- Calendário apresenta atribuições e pausas de home office junto aos eventos; a escala, os feriados e as trocas ficam no diálogo **Escala**. [Comportamento e papéis](docs/home-office-schedule.md).
 - Redução de movimento desliga transições e animação de carregamento.
 - A demonstração `/demo` declara seus dados fictícios. A rota principal usa dados do Supabase e Presence privado; esses sinais continuam sendo informativos, sem efeito sobre permissões.
 
