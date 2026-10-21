@@ -15,3 +15,7 @@ Antes de criar ou retrabalhar componentes de interface, leia [`.agents/skills/zu
 ## ZULU: microinterações obrigatórias
 
 Toda interface nova ou retrabalhada deve incluir microinterações e microanimações intencionais: feedback de hover/pressionamento, mudanças de estado, abertura/fechamento e resultados de ações, conforme o contexto. Usar os comportamentos oficiais HeroUI e seguir a política de movimento da skill e de `DESIGN.md`. Quando faltar uma boa solução, pesquisar exemplos reais em HeroUI, Refero, Unlume e outros sites de UI antes de implementar; registrar a referência consultada. Preservar teclado, toque, foco e `prefers-reduced-motion`, com animações rápidas e fluidas que não atrasem ações. Aplicar progressivamente no escopo de cada tarefa.
+
+## ZULU: publicar ao concluir
+
+O usuário autorizou explicitamente **sempre publicar** as alterações concluídas. Depois das verificações aplicáveis, enviar os commits ao repositório e publicar a aplicação em produção na Vercel, conferindo o resultado no endereço público. Mudanças nativas do desktop também exigem o fluxo de release e atualização correspondente. Não pedir novamente autorização para essas publicações; comunicar bloqueios concretos e não declarar publicado sem confirmação do serviço. Uma instrução posterior do usuário para não publicar prevalece.
