@@ -3,6 +3,7 @@ use tauri::{Emitter, Manager};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 mod native_screen_share;
 mod desktop_update;
+mod titlebar;
 
 fn show_main_window(app: &tauri::AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
@@ -38,6 +39,7 @@ fn main() {
         .manage(native_screen_share::NativeShareState::default())
         .invoke_handler(tauri::generate_handler![
             open_desktop_update,
+            titlebar::desktop_titlebar,
             desktop_update::desktop_updater_supported,
             desktop_update::check_desktop_update,
             desktop_update::install_desktop_update,
@@ -61,6 +63,13 @@ fn main() {
                 })
                 .build(),
         )
+        .on_page_load(|webview, payload| {
+            // A failed/offline navigation must still have standard OS controls.
+            #[cfg(target_os = "windows")]
+            if payload.event() == tauri::webview::PageLoadEvent::Started && webview.label() == "main" {
+                let _ = webview.window().set_decorations(true);
+            }
+        })
         .setup(|app| {
             // A conflicting shortcut must not prevent the app from opening.
             if app

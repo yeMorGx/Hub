@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 $installDirectory = Join-Path $env:RUNNER_TEMP 'HubDesktopSmoke'
 if (Test-Path $installDirectory) { throw 'The smoke install directory must be empty.' }
-$report = [ordered]@{ platform = 'Windows'; installer = (Split-Path $Installer -Leaf); sha256 = (Get-FileHash $Installer -Algorithm SHA256).Hash.ToLower(); signature = (Get-AuthenticodeSignature $Installer).Status.ToString(); signed = $false; installed = $false; windowOpened = $false; loginPageLoaded = $false; singleInstance = $false; shortcutRestoredWindow = $false; uninstalled = $false; accountsCreated = 0; businessWrites = 0 }
+$report = [ordered]@{ platform = 'Windows'; installer = (Split-Path $Installer -Leaf); sha256 = (Get-FileHash $Installer -Algorithm SHA256).Hash.ToLower(); signature = (Get-AuthenticodeSignature $Installer).Status.ToString(); signed = $false; installed = $false; windowOpened = $false; loginPageLoaded = $false; customTitlebar = $false; maximizeRestored = $false; minimizeControl = $false; singleInstance = $false; shortcutRestoredWindow = $false; uninstalled = $false; accountsCreated = 0; businessWrites = 0 }
 $report.signed = $report.signature -eq 'Valid'
 $appProcess = $null
 $uninstaller = $null
@@ -12,6 +12,7 @@ using System;
 using System.Runtime.InteropServices;
 public static class HubNativeWindow {
   [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hwnd, int command);
+  [DllImport("user32.dll")] public static extern bool IsZoomed(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hwnd);
 }
@@ -42,6 +43,22 @@ try {
   $loginHeading = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, $headingText)
   Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $loginHeading) } 60
   $report.loginPageLoaded = $true
+  function Invoke-HubControl([string]$Name) {
+    $condition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, $Name)
+    $control = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition)
+    if (-not $control) { throw "Missing window control: $Name" }
+    $control.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+  }
+  Invoke-HubControl 'Maximizar janela'
+  Wait-Until { [HubNativeWindow]::IsZoomed($handle) } 10
+  Invoke-HubControl 'Restaurar janela'
+  Wait-Until { -not [HubNativeWindow]::IsZoomed($handle) } 10
+  $report.customTitlebar = $true
+  $report.maximizeRestored = $true
+  Invoke-HubControl 'Minimizar janela'
+  Wait-Until { [HubNativeWindow]::IsIconic($handle) } 10
+  $report.minimizeControl = $true
+  [HubNativeWindow]::ShowWindow($handle, 9) | Out-Null
   # No sign-in or timer operation: the remote page stays unauthenticated.
   $second = Start-Process -FilePath $appPath -PassThru
   Wait-Until { $second.Refresh(); $second.HasExited } 20

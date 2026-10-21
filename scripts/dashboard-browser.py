@@ -8,7 +8,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 BASE = os.environ.get("HUB_APP_URL", "http://127.0.0.1:3000").rstrip("/")
-OUTPUT = Path(".impeccable/review/dashboard")
+OUTPUT = Path(os.environ.get("HUB_REVIEW_DIR", ".impeccable/review/dashboard"))
 OUTPUT.mkdir(parents=True, exist_ok=True)
 
 

@@ -1,0 +1,65 @@
+.desktop-titlebar {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 36px;
+  display: flex;
+  align-items: stretch;
+  z-index: 1100;
+  background: #101112;
+  color: #b8bbc3;
+  font-family: "Inter Variable", sans-serif;
+  user-select: none;
+}
+html:has(.dashboard-redesign) .desktop-titlebar {
+  background: #f6f5f1;
+  color: #52617b;
+}
+.desktop-titlebar-drag {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-left: 20px;
+  touch-action: none;
+}
+.desktop-titlebar-drag > svg { color: #e26540; flex-shrink: 0; }
+html:has(.dashboard-redesign) .desktop-titlebar-drag > svg { color: #294d94; }
+.desktop-titlebar-brand { font-size: 12px; font-weight: 650; }
+.desktop-titlebar-caption { font-size: 10px; margin-left: 12px; }
+.desktop-titlebar-unread {
+  color: #fff;
+  background: #294d94;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.desktop-window-controls { display: flex; flex-shrink: 0; }
+.desktop-window-controls button {
+  width: 46px;
+  min-height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+.desktop-window-controls button:hover { background: #ffffff14; }
+html:has(.dashboard-redesign) .desktop-window-controls button:hover { background: #e6e9ef; }
+.desktop-window-controls .desktop-window-close:hover,
+html:has(.dashboard-redesign) .desktop-window-controls .desktop-window-close:hover { background: #c42b1c; color: #fff; }
+.desktop-window-controls button:focus-visible { outline: 2px solid currentColor; outline-offset: -5px; }
+html[data-desktop-titlebar] body { padding-top: 36px; }
+html[data-desktop-titlebar] :is(.app-shell, .dashboard-redesign, .auth-shell, .auth-story) { min-height: calc(100dvh - 36px); }
+html[data-desktop-titlebar] .rail { top: 36px; }
+html[data-desktop-titlebar] .notifications-popover { top: 97px; }
+@media (max-width: 760px) {
+  .desktop-titlebar-caption { display: none; }
+  html[data-desktop-titlebar] .dashboard-redesign .rail { top: auto; }
+}
+
+@media (max-width: 520px) {
+  html[data-desktop-titlebar] .rail { top: auto; }
+}

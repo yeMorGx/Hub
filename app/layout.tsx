@@ -3,8 +3,10 @@ import "@fontsource-variable/manrope";
 import "@fontsource-variable/inter";
 import "./globals.css";
 import "./dashboard.css";
+import "./desktop.css";
 import { ServiceWorkerRegistration } from "@/components/pwa";
 import { DesktopUpdate } from "@/components/desktop-update";
+import { DesktopTitlebar } from "@/components/desktop-titlebar";
 export const metadata: Metadata = {
   title: "Hub — Seu time, conectado",
   description:
@@ -28,6 +30,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
+        <DesktopTitlebar />
         {children}
         <ServiceWorkerRegistration />
         <DesktopUpdate />
