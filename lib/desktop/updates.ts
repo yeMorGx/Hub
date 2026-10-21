@@ -20,3 +20,16 @@ export function readDesktopRelease(value: unknown): { version: string } | null {
   if (!r.assets.some(a => a && a.name === name && a.browser_download_url === url && a.state === "uploaded" && a.size > 0)) return null;
   return { version };
 }
+
+/** Only a published Windows installer accompanied by its detached signature. */
+export function readSignedDesktopRelease(value: unknown): { version: string; url: string; signatureUrl: string; publishedAt: string } | null {
+  const release = readDesktopRelease(value);
+  if (!release) return null;
+  const r = value as Record<string, unknown>;
+  if (typeof r.published_at !== "string" || !Number.isFinite(Date.parse(r.published_at))) return null;
+  const url = `${DESKTOP_RELEASES}/download/desktop-v${release.version}/Hub_${release.version}_x64-setup.exe`;
+  const signatureUrl = `${url}.sig`;
+  const name = `Hub_${release.version}_x64-setup.exe.sig`;
+  if (!(r.assets as Record<string, unknown>[]).some(asset => asset?.name === name && asset.browser_download_url === signatureUrl && asset.state === "uploaded" && typeof asset.size === "number" && asset.size > 0 && asset.size <= 8192)) return null;
+  return { version: release.version, url, signatureUrl, publishedAt: new Date(r.published_at).toISOString() };
+}

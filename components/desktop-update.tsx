@@ -12,6 +12,9 @@ export function DesktopUpdate() {
   const [webBuild, setWebBuild] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const [opening, setOpening] = useState(false);
+  const [automatic, setAutomatic] = useState(false);
+  const [phase, setPhase] = useState<"idle" | "preparing" | "downloading" | "installing">("idle");
+  const [percent, setPercent] = useState<number | null>(null);
 
   useEffect(() => {
     if (!("__TAURI_INTERNALS__" in window) || !/Windows/.test(navigator.userAgent))
@@ -68,6 +71,17 @@ export function DesktopUpdate() {
       checkingRelease = true;
       lastReleaseCheck = Date.now();
       try {
+        const { invoke } = await import("@tauri-apps/api/core");
+        let supported = false;
+        try { supported = await invoke<boolean>("desktop_updater_supported") === true; } catch { /* Installers before 0.1.3 use the manual bridge. */ }
+        if (supported) {
+          if (!disposed) setAutomatic(true);
+          const release = await invoke<{ version: string } | null>("check_desktop_update");
+          if (!disposed && release && versionParts(release.version) && sessionStorage.getItem("hub-update-dismissed") !== release.version) {
+            setVersion(release.version);
+          }
+          return;
+        }
         const { getVersion } = await import("@tauri-apps/api/app");
         const current = await getVersion();
         const response = await fetch("/api/desktop/update", {
@@ -127,16 +141,22 @@ export function DesktopUpdate() {
           <div role="status">
             <strong>Hub {version} disponível</strong>
             <p>
-              Baixe a nova versão e execute o instalador quando puder. Sua
-              conta e os dados do time são mantidos.
+              {automatic
+                ? "Salve o que estiver editando. O Hub vai baixar a atualização, instalar e abrir novamente. Sua conta e os dados do time são mantidos."
+                : "Instale esta versão uma vez para habilitar as próximas atualizações pelo próprio Hub. Sua conta e os dados do time são mantidos."}
             </p>
           </div>
+          {phase !== "idle" && <div role="status" aria-live="polite">
+            <p>{phase === "preparing" ? "Preparando atualização…" : phase === "installing" ? "Instalando… O Hub será reiniciado." : `Baixando atualização${percent === null ? "…" : `: ${percent}%`}`}</p>
+            {phase === "downloading" && <progress aria-label="Download da atualização" max={100} value={percent ?? undefined} />}
+          </div>}
           {error && (
-            <p role="alert">Não foi possível abrir o download. Tente novamente.</p>
+            <p role="alert">{automatic ? "Não foi possível concluir a atualização. Tente novamente." : "Não foi possível abrir o download. Tente novamente."}</p>
           )}
           <div className="desktop-update-actions">
             <button
               className="outline-button"
+              disabled={opening}
               onClick={() => {
                 sessionStorage.setItem("hub-update-dismissed", version);
                 setVersion(null);
@@ -150,25 +170,42 @@ export function DesktopUpdate() {
               onClick={async () => {
                 setOpening(true);
                 setError(false);
+                let unlisten: (() => void) | undefined;
                 try {
                   const { invoke } = await import("@tauri-apps/api/core");
-                  await invoke("open_desktop_update", { version });
+                  if (automatic) {
+                    setPhase("preparing");
+                    setPercent(null);
+                    const { listen } = await import("@tauri-apps/api/event");
+                    unlisten = await listen<{ phase: string; downloaded: number; total: number | null }>("hub:desktop-update", ({ payload }) => {
+                      if (payload.phase === "installing") setPhase("installing");
+                      else if (payload.phase === "downloading") {
+                        setPhase("downloading");
+                        setPercent(payload.total && payload.total > 0 ? Math.min(100, Math.floor(payload.downloaded / payload.total * 100)) : null);
+                      }
+                    });
+                    await invoke("install_desktop_update", { version });
+                  } else {
+                    await invoke("open_desktop_update", { version });
+                  }
                 } catch {
                   setError(true);
+                  setPhase("idle");
                 } finally {
+                  unlisten?.();
                   setOpening(false);
                 }
               }}
             >
-              {opening ? "Abrindo…" : "Baixar atualização"}
+              {opening ? (automatic ? "Atualizando…" : "Abrindo…") : automatic ? "Instalar e reiniciar" : "Baixar atualização"}
             </button>
           </div>
         </>
       ) : (
         <>
           <div role="status">
-            <strong>Nova versão do Hub disponível</strong>
-            <p>Atualize agora para carregar as mudanças publicadas no app.</p>
+            <strong>Melhorias disponíveis</strong>
+            <p>Recarregue para aplicar as mudanças da interface. Esta atualização não precisa de instalação.</p>
           </div>
           <div className="desktop-update-actions">
             <button
@@ -186,7 +223,7 @@ export function DesktopUpdate() {
               className="primary-button"
               onClick={() => window.location.reload()}
             >
-              Atualizar agora
+              Aplicar melhorias
             </button>
           </div>
         </>

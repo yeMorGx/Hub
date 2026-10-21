@@ -37,7 +37,22 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - run: npm ci
-      - name: Build installer (unsigned preview)
+      - name: Check native Windows integration
+        if: runner.os == 'Windows'
+        run: cargo check --locked --manifest-path src-tauri/Cargo.toml
+      - name: Require updater signing key
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        shell: bash
+        run: |
+          if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo 'Configure the TAURI_SIGNING_PRIVATE_KEY repository secret before building releases.' >&2
+            exit 1
+          fi
+      - name: Build installer and signed updater package
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: npm run desktop:build -- --bundles ${{ matrix.bundle }}
       - name: Windows install, launch, shortcut and uninstall
         if: runner.os == 'Windows'

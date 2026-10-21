@@ -2,7 +2,32 @@
 
 Solicitação: avisar dentro do aplicativo quando houver uma nova versão do instalador. A assinatura comercial de código permanece adiada pelo usuário.
 
-## Comportamento
+## Atualizador nativo 0.1.3 — implementação de 21/10/2026
+
+A versão 0.1.3 acrescenta o Tauri Updater para Windows x64. Depois que essa versão for compilada, publicada e instalada uma vez, o botão **Instalar e reiniciar** baixa o próximo pacote, verifica sua assinatura e inicia o NSIS em modo passivo. O instalador reabre o Hub ao concluir. O botão **Depois** fica desabilitado durante a operação; falhas permitem tentar novamente. Antes de confirmar, a interface pede para salvar o que estiver sendo editado.
+
+As versões anteriores continuam com o download manual para permitir essa migração. Publicações apenas da interface continuam com **Aplicar melhorias**, que recarrega a janela; elas não substituem o executável. A aplicação ainda carrega a interface hospedada na Vercel.
+
+O plugin é usado somente pelo Rust. A página recebe três comandos específicos, sem permissão genérica para configurar endpoints, trocar chaves, executar processos ou gravar arquivos. A origem do manifesto é fixa e o Rust aceita somente o instalador Windows x64 no repositório oficial, correspondente à versão anunciada. Instalações concorrentes e mudança de versão entre aviso e confirmação são recusadas. O pacote precisa passar pela verificação da chave pública embutida antes de ser executado.
+
+### Preparação da assinatura
+
+- Chave pública de atualização incluída em `src-tauri/tauri.conf.json`; a chave privada não é versionada nem enviada à Vercel.
+- GitHub Actions precisa do secret **TAURI_SIGNING_PRIVATE_KEY**, contendo a chave privada correspondente. A chave gerada nesta implementação não tem senha; o secret opcional `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` deve permanecer ausente/vazio.
+- O GitHub recusou a configuração desse secret pela sessão atual com HTTP 403. Foi solicitada configuração manual ao proprietário, com arquivo privado separado para backup. Sem esse passo, não se pode concluir a geração dos pacotes assinados.
+- A assinatura de atualização não é Authenticode: o certificado comercial do Windows continua sendo uma etapa distinta.
+- Builds novos geram `.exe` e `.exe.sig`; o fluxo de promoção só aceita artefatos com ambos, smoke aprovado e SHA-256 correspondente. O segredo fica restrito ao passo de build.
+- `/api/desktop/manifest` fornece apenas a release estável mais recente com instalador e assinatura oficiais. Sem um par válido responde 204; falhas do provedor/assinatura respondem 503. O cliente verifica a assinatura independentemente da resposta HTTPS.
+
+### Verificações e estado de entrega
+
+- 29 testes unitários passaram, incluindo quatro novos casos de release assinada, manifesto, ausência de assinatura e limites/erros de leitura.
+- Build Next.js e TypeScript passaram.
+- `scripts/desktop-update-browser.py` passou em 1360px e 390px: modo automático, progresso, falha/nova tentativa, instalação, bloqueio de dispensa e compatibilidade com o instalador anterior. API/IPC simulados; não instala software.
+- O ambiente Linux não contém `lib.exe`/MSVC para validar o executável Windows localmente. Compilação e smoke nativos devem ocorrer no runner Windows do workflow.
+- Nesta etapa a versão 0.1.3 ainda precisa de build nativo e publicação; a atualização real entre dois instaladores assinados continua pendente. Os registros abaixo descrevem a entrega anterior 0.1.2.
+
+## Comportamento anterior — 0.1.2
 
 - Disponível a partir do instalador Windows **0.1.2**. O instalador anterior precisa ser substituído manualmente uma vez, pois não permite consultar sua versão nativa nem abrir o download pelo comando novo.
 - Verifica releases do instalador na abertura, a cada hora e ao voltar ao foco. Builds do site são conferidos na abertura, a cada cinco minutos e ao voltar ao foco.

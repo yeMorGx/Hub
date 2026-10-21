@@ -486,7 +486,7 @@ test("verificação LiveKit distingue credenciais recusadas de rede sem refletir
   }
 });
 
-import { isNewerVersion, readDesktopRelease } from "../lib/desktop/updates";
+import { isNewerVersion, readDesktopRelease, readSignedDesktopRelease } from "../lib/desktop/updates";
 test("desktop compara versões numericamente e recusa prévias e valores malformados", () => {
   assert.equal(isNewerVersion("0.1.10", "0.1.9"), true);
   for (const version of ["0.1.1", "0.1.0", "0.1.2-beta", "https://evil.test", "1.2"]) assert.equal(isNewerVersion(version, "0.1.1"), false);
@@ -498,6 +498,50 @@ test("desktop só anuncia release estável publicada com instalador oficial", ()
 });
 
 import { GET as desktopUpdate } from "../app/api/desktop/update/route";
+import { GET as desktopManifest } from "../app/api/desktop/manifest/route";
+
+function signedDesktopFixture() {
+  const name = "Hub_0.1.3_x64-setup.exe";
+  const url = `https://github.com/yeMorGx/Hub/releases/download/desktop-v0.1.3/${name}`;
+  return { draft: false, prerelease: false, tag_name: "desktop-v0.1.3", published_at: "2026-10-21T18:00:00Z", assets: [
+    { name, browser_download_url: url, state: "uploaded", size: 100 },
+    { name: `${name}.sig`, browser_download_url: `${url}.sig`, state: "uploaded", size: 400 },
+  ] };
+}
+test("atualizador exige instalador e assinatura da mesma release oficial", () => {
+  const fixture = signedDesktopFixture();
+  assert.equal(readSignedDesktopRelease(fixture)?.version, "0.1.3");
+  for (const change of [
+    { draft: true }, { prerelease: true }, { published_at: "invalid" },
+    { assets: [fixture.assets[0]] },
+    { assets: [fixture.assets[0], { ...fixture.assets[1], browser_download_url: "https://example.com/other.sig" }] },
+    { assets: [fixture.assets[0], { ...fixture.assets[1], size: 9000 }] },
+  ]) assert.equal(readSignedDesktopRelease({ ...fixture, ...change }), null);
+});
+test("manifesto nativo não oferece versões antigas sem assinatura", async () => {
+  const fixture = signedDesktopFixture();
+  fixture.assets.pop();
+  globalThis.fetch = async () => Response.json(fixture);
+  assert.equal((await desktopManifest()).status, 204);
+  globalThis.fetch = async () => new Response(null, { status: 404 });
+  assert.equal((await desktopManifest()).status, 204);
+});
+test("manifesto nativo produz plataforma Windows x64 com assinatura e pacote oficiais", async () => {
+  const fixture = signedDesktopFixture();
+  const signature = Buffer.from("fixture detached signature").toString("base64");
+  globalThis.fetch = async (url) => String(url).endsWith(".sig") ? new Response(signature) : Response.json(fixture);
+  const response = await desktopManifest();
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { version: "0.1.3", notes: "Hub 0.1.3", pub_date: "2026-10-21T18:00:00.000Z", platforms: { "windows-x86_64": { signature, url: fixture.assets[0].browser_download_url } } });
+});
+test("manifesto rejeita assinatura ausente, HTML ou corpo excessivo sem expor erros", async () => {
+  for (const body of ["<html>error</html>", "a".repeat(9000), ""]) {
+    globalThis.fetch = async (url) => String(url).endsWith(".sig") ? new Response(body) : Response.json(signedDesktopFixture());
+    const response = await desktopManifest();
+    assert.equal(response.status, 503);
+    assert.deepEqual(await response.json(), { error: "Não foi possível verificar atualizações." });
+  }
+});
 test("desktop endpoint trata ausência de release e falhas sem expor dados internos", async () => {
   globalThis.fetch = async () => new Response(null, {status:404});
   assert.deepEqual(await (await desktopUpdate()).json(), {release:null});
