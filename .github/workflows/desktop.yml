@@ -57,6 +57,7 @@ jobs:
         shell: bash
         run: |
           fixture="$RUNNER_TEMP/hub-signing-check.bin"
+          node -e 'const k=process.env.TAURI_SIGNING_PRIVATE_KEY.trim(); console.log("Signing key character count:",k.length); if(!Buffer.from(k,"base64").toString("utf8").startsWith("untrusted comment:")) { console.error("Use the complete generated key file contents, not the decoded inner key or file path."); process.exit(1); }'
           printf 'Hub updater signing preflight' > "$fixture"
           app_version=$(node -p 'require("./src-tauri/tauri.conf.json").version')
           npx tauri signer sign --app-version "$app_version" "$fixture"
