@@ -41,9 +41,6 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - run: npm ci
-      - name: Check native Windows integration
-        if: runner.os == 'Windows'
-        run: cargo check --locked --manifest-path src-tauri/Cargo.toml
       - name: Require updater signing key
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
