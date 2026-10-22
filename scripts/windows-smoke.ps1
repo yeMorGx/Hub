@@ -18,6 +18,13 @@ public static class HubNativeWindow {
   [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hwnd);
+  [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+  [DllImport("user32.dll")] public static extern void mouse_event(uint flags, uint dx, uint dy, uint data, IntPtr extra);
+  public static void ClickCenter(int x, int y) {
+    SetCursorPos(x, y);
+    mouse_event(0x0002, 0, 0, 0, IntPtr.Zero);
+    mouse_event(0x0004, 0, 0, 0, IntPtr.Zero);
+  }
   [DllImport("user32.dll", EntryPoint="GetWindowLongW")] public static extern int GetWindowLong(IntPtr hwnd, int index);
   private delegate bool EnumProc(IntPtr hwnd, IntPtr data);
   [DllImport("user32.dll")] private static extern bool EnumWindows(EnumProc callback, IntPtr data);
@@ -77,8 +84,13 @@ try {
       $pattern.Invoke()
     } else {
       [HubNativeWindow]::SetForegroundWindow($WindowHandle) | Out-Null
-      $Control.SetFocus()
-      [System.Windows.Forms.SendKeys]::SendWait(' ')
+      try {
+        $Control.SetFocus()
+        [System.Windows.Forms.SendKeys]::SendWait(' ')
+      } catch {
+        $bounds = $Control.Current.BoundingRectangle
+        [HubNativeWindow]::ClickCenter([int][Math]::Round($bounds.X + $bounds.Width / 2), [int][Math]::Round($bounds.Y + $bounds.Height / 2))
+      }
     }
   }
   function Invoke-HubControl([string]$Name) {
