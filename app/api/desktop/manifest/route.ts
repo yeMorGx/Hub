@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const response = await fetch("https://api.github.com/repos/yeMorGx/Hub/releases/latest", {
       headers: { Accept: "application/vnd.github+json" },
-      next: { revalidate: 300 },
+      cache: "no-store",
       signal: AbortSignal.timeout(8000),
     });
     if (response.status === 404) return new Response(null, { status: 204 });
