@@ -193,6 +193,7 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
         let url = "https://hub-one-azure.vercel.app/desktop/timer"
             .parse()
             .map_err(|_| "Endereço inválido.")?;
+        let mini_url = url.clone();
         let mini =
             tauri::WebviewWindowBuilder::new(app, "mini-timer", tauri::WebviewUrl::External(url))
                 .title("ZULU — Mini timer")
@@ -205,6 +206,14 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
                 .resizable(false)
                 .maximizable(false)
                 .minimizable(false)
+                .on_page_load(|window, payload| {
+                    smoke_webview_diagnostic(&format!(
+                        "mini-page-load window={} event={:?} url={}",
+                        window.label(),
+                        payload.event(),
+                        payload.url()
+                    ));
+                })
                 .on_navigation(|url| {
                     let allowed = url.scheme() == "https"
                         && url.host_str() == Some("hub-one-azure.vercel.app")
@@ -216,6 +225,11 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
                 })
                 .build()
                 .map_err(|_| "Não foi possível abrir o mini timer.")?;
+        mini.navigate(mini_url)
+            .map_err(|_| "Não foi possível carregar o mini timer.")?;
+        if let Ok(current_url) = mini.url() {
+            smoke_webview_diagnostic(&format!("mini-current-url={current_url}"));
+        }
         if let Ok(Some(monitor)) = mini.current_monitor() {
             let area = monitor.work_area();
             let scale = monitor.scale_factor();

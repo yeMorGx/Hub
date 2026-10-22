@@ -258,7 +258,7 @@ try {
   try {
     if ($appProcess) {
       $appProcess.Refresh()
-      $pageLoads = if (Test-Path $webviewLog) { Get-Content $webviewLog -Raw } else { '' }
+      $pageLoads = if (Test-Path $webviewLog) { [System.IO.File]::ReadAllText($webviewLog) } else { '' }
       @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); miniBounds=$miniBounds; windows=[HubNativeWindow]::Windows($appProcess.Id); stage=$currentStage; pageLoads=$pageLoads; report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
     }
     if ($root) {
