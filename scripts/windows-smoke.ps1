@@ -194,19 +194,21 @@ try {
   $report.miniTopmost = $true
   $currentStage = 'wait for mini timer controls'
   Start-Sleep -Seconds 5
-  $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
-  $miniCapture = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
+  $miniRect = [System.Drawing.Rectangle]::FromLTRB($miniBounds[0], $miniBounds[1], $miniBounds[2], $miniBounds[3])
+  $miniCapture = New-Object System.Drawing.Bitmap $miniRect.Width, $miniRect.Height
   $miniPaint = [System.Drawing.Graphics]::FromImage($miniCapture)
-  $miniPaint.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+  $captureFlags = [System.Drawing.CopyPixelOperation]([int][System.Drawing.CopyPixelOperation]::SourceCopy -bor [int][System.Drawing.CopyPixelOperation]::CaptureBlt)
+  $miniPaint.CopyFromScreen($miniRect.Location, [System.Drawing.Point]::Empty, $miniRect.Size, $captureFlags)
   $miniCapture.Save((Join-Path $OutputDirectory 'mini-open.png'))
   $miniPaint.Dispose(); $miniCapture.Dispose()
   [HubNativeWindow]::SetForegroundWindow($miniHandle) | Out-Null
   Start-Sleep -Seconds 3
-  $focusedCapture = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
-  $focusedPaint = [System.Drawing.Graphics]::FromImage($focusedCapture)
-  $focusedPaint.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
-  $focusedCapture.Save((Join-Path $OutputDirectory 'mini-focused.png'))
-  $focusedPaint.Dispose(); $focusedCapture.Dispose()
+  $miniRoot = [System.Windows.Automation.AutomationElement]::FromHandle($miniHandle)
+  $miniCapture = New-Object System.Drawing.Bitmap $miniRect.Width, $miniRect.Height
+  $focusedPaint = [System.Drawing.Graphics]::FromImage($miniCapture)
+  $focusedPaint.CopyFromScreen($miniRect.Location, [System.Drawing.Point]::Empty, $miniRect.Size, $captureFlags)
+  $miniCapture.Save((Join-Path $OutputDirectory 'mini-focused.png'))
+  $focusedPaint.Dispose(); $miniCapture.Dispose()
   $miniCloseCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Ocultar mini timer')
   Wait-Until { $null -ne $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition) } 45
   $report.miniWindow = $true
