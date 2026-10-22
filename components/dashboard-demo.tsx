@@ -7,7 +7,7 @@ import {
   ZuluButton,
   ZuluSelect,
 } from "./dashboard-ui";
-import { Link, Spinner } from "@heroui/react";
+import { Link, Spinner, Tooltip } from "@heroui/react";
 import { DesktopChrome } from "./desktop-chrome";
 import { DashboardNavIcon } from "./dashboard-nav-icon";
 import { BrandMark } from "./brand";
@@ -48,6 +48,7 @@ export function DashboardDemo() {
   );
   const [notice, setNotice] = useState("");
   const [dialog, setDialog] = useState("");
+  const [navTooltip, setNavTooltip] = useState<string | null>(null);
   useEffect(() => {
     const current = new Date();
     setToday(current);
@@ -220,12 +221,16 @@ export function DashboardDemo() {
           <div className="rail-divider" />
           <nav>
             {demoNav.map((item, i) => (
-              <Link
-                key={item.label}
-                className={`rail-button ${i === 0 ? "active" : ""} ${i === 4 || i === 5 ? "nav-secondary" : ""} ${i === 6 ? "mobile-more-button" : ""}`}
-                href={item.href}
-                aria-label={item.label}
-                aria-current={i === 0 ? "page" : undefined}
+              <Tooltip key={item.label} isOpen={navTooltip === item.label} onOpenChange={open => { if (!open) setNavTooltip(null); }}>
+              <Tooltip.Trigger<"a">
+                render={(triggerProps) => <a {...triggerProps}
+                  className={`rail-button ${i === 0 ? "active" : ""} ${i === 4 || i === 5 ? "nav-secondary" : ""} ${i === 6 ? "mobile-more-button" : ""}`}
+                  href={item.href} role="link" aria-label={item.label}
+                  onMouseEnter={() => setNavTooltip(item.label)} onMouseLeave={() => setNavTooltip(null)}
+                  onFocus={event => { triggerProps.onFocus?.(event); setNavTooltip(item.label); }}
+                  onBlur={event => { triggerProps.onBlur?.(event); setNavTooltip(null); }}
+                  aria-current={i === 0 ? "page" : undefined}
+                />}
               >
                 <DashboardNavIcon
                   name={
@@ -241,7 +246,9 @@ export function DashboardDemo() {
                   }
                 />
                 <span className="nav-tooltip">{item.label}</span>
-              </Link>
+              </Tooltip.Trigger>
+              <Tooltip.Content className="zulu-tooltip" placement="right">{item.label}</Tooltip.Content>
+              </Tooltip>
             ))}
           </nav>
           <div className="rail-bottom">

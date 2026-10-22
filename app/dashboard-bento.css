@@ -1178,3 +1178,28 @@
 @media (prefers-reduced-motion: reduce) {
   .today-new-project, .dashboard-redesign .today-lunch-timer { animation: none; }
 }
+
+/* Compact floating navigation, with accessible HeroUI tooltips. */
+@media (min-width: 761px) {
+  .dashboard-redesign .rail {
+    width: 80px;
+    padding-inline: 12px;
+    align-items: center;
+  }
+  .dashboard-redesign .rail .brand {
+    width: 44px;
+    margin-inline: 0;
+    justify-content: center;
+  }
+  .dashboard-redesign .rail nav { width: 100%; }
+  .dashboard-redesign .rail-button {
+    width: 48px;
+    padding: 0;
+    margin-inline: auto;
+    justify-content: center;
+    gap: 0;
+  }
+  .dashboard-redesign .rail .nav-tooltip { display: none; }
+  .dashboard-redesign .rail-bottom { align-items: center; }
+  .dashboard-redesign .app-content { margin-left: 104px; }
+}

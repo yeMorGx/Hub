@@ -32,3 +32,7 @@ O Select/ListBox HeroUI v3 do projeto inclui a ação de rodapé “Adicionar no
 Durante o almoço, o card mostra um cronômetro secundário, o horário de início e a indicação de que a pausa não conta como trabalho. A duração parte de `paused_timers.paused_at` e continua correta após recarregar uma sessão autenticada. O cronômetro principal permanece parado; retomar remove o indicador de almoço e continua o trabalho. Sem alterações no banco ou no instalador nativo.
 
 Verificação: `scripts/dashboard-project-lunch-browser.py` exercita criação/seleção, início da atividade, pausa, avanço independente do almoço, retomada, erros de página e overflow em 1440px e 390px. A prévia não comprova uma gravação real autenticada no Supabase.
+
+## Sidebar recolhida
+
+Por decisão do usuário, a navegação flutuante de Hoje fica compacta, com 80px de largura, ícones centralizados e 104px reservados no conteúdo. Os nomes ficam em tooltips oficiais HeroUI por hover ou foco, com `aria-label` preservado. O dock móvel mantém o comportamento existente.

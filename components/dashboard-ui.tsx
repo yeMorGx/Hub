@@ -79,7 +79,7 @@ export function ZuluButton({
     />
   );
   return props["aria-label"] &&
-    /icon-button|today-link|top-avatar/.test(props.className ?? "") ? (
+    /icon-button|today-link|top-avatar|rail-button/.test(props.className ?? "") ? (
     <Tooltip delay={450}>
       {button}
       <Tooltip.Content className="zulu-tooltip">
