@@ -85,7 +85,10 @@ pub fn smoke_webview_diagnostic(message: &str) {
     #[cfg(target_os = "windows")]
     if std::env::var_os("ZULU_DESKTOP_SMOKE").is_some() {
         use std::io::Write;
-        let path = std::env::temp_dir().join("zulu-desktop-smoke-webview.log");
+        let temp = std::env::var_os("RUNNER_TEMP")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(std::env::temp_dir);
+        let path = temp.join("zulu-desktop-smoke-webview.log");
         if let Ok(mut file) = std::fs::OpenOptions::new()
             .create(true)
             .append(true)
