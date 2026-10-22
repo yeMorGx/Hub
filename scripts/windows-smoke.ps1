@@ -18,6 +18,7 @@ public static class HubNativeWindow {
   [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hwnd);
+  [DllImport("user32.dll", EntryPoint="PostMessageW")] public static extern bool PostCloseMessage(IntPtr hwnd, uint message, IntPtr wParam, IntPtr lParam);
   [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
   [DllImport("user32.dll")] public static extern void mouse_event(uint flags, uint dx, uint dy, uint data, IntPtr extra);
   public static void ClickCenter(int x, int y) {
@@ -147,10 +148,8 @@ try {
   $check.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ')
   Wait-Until { -not (Get-ZuluRunEntry) } 15
   $report.autostartToggle = $true
-  $currentStage = 'close runtime options'
-  Invoke-HubControl 'Opções do aplicativo'
   $currentStage = 'close main window to tray'
-  Invoke-HubControl 'Fechar ZULU'
+  [HubNativeWindow]::PostCloseMessage($handle, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero) | Out-Null
   $currentStage = 'verify tray process remains open'
   Wait-Until { -not [HubNativeWindow]::IsWindowVisible($handle) } 15
   $appProcess.Refresh()
