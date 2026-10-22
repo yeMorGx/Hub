@@ -225,16 +225,9 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
                 })
                 .build()
                 .map_err(|_| "Não foi possível abrir o mini timer.")?;
-        if let Ok(current_url) = mini.url() {
-            smoke_webview_diagnostic(&format!("mini-url-before-show={current_url}"));
-        }
-        if let Ok(Some(monitor)) = mini.current_monitor() {
-            let area = monitor.work_area();
-            let scale = monitor.scale_factor();
-            let x = f64::from(area.position.x) / scale + f64::from(area.size.width) / scale - 352.0;
-            let y = f64::from(area.position.y) / scale + 24.0;
-            let _ = mini.set_position(tauri::LogicalPosition::new(x, y));
-        }
+        smoke_webview_diagnostic("mini-window-built");
+        mini.set_position(tauri::LogicalPosition::new(24.0, 24.0))
+            .map_err(|_| "Não foi possível posicionar o mini timer.")?;
         mini.set_always_on_top(true)
             .map_err(|_| "Não foi possível manter o mini timer por cima.")?;
         mini.show()
@@ -243,9 +236,7 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
             smoke_webview_diagnostic(&format!("mini-navigation-error={error}"));
             "Não foi possível carregar o mini timer."
         })?;
-        if let Ok(current_url) = mini.url() {
-            smoke_webview_diagnostic(&format!("mini-url-after-show={current_url}"));
-        }
+        smoke_webview_diagnostic("mini-navigation-requested");
         Ok(())
     }
     #[cfg(not(target_os = "windows"))]
