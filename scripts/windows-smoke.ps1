@@ -83,10 +83,6 @@ try {
     $pattern = $null
     if ($Control.TryGetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern, [ref]$pattern)) {
       $pattern.Invoke()
-    } elseif ($Control.Current.ControlType -eq [System.Windows.Automation.ControlType]::Button) {
-      $bounds = $Control.Current.BoundingRectangle
-      [HubNativeWindow]::SetForegroundWindow($WindowHandle) | Out-Null
-      [HubNativeWindow]::ClickCenter([int][Math]::Round($bounds.X + $bounds.Width / 2), [int][Math]::Round($bounds.Y + $bounds.Height / 2))
     } else {
       [HubNativeWindow]::SetForegroundWindow($WindowHandle) | Out-Null
       try {
