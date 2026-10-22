@@ -19,6 +19,9 @@ public static class HubNativeWindow {
   [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hwnd);
+  [DllImport("user32.dll", EntryPoint="GetDC")] public static extern IntPtr GetDeviceContext(IntPtr hwnd);
+  [DllImport("user32.dll", EntryPoint="ReleaseDC")] public static extern int ReleaseDeviceContext(IntPtr hwnd, IntPtr hdc);
+  [DllImport("gdi32.dll", EntryPoint="BitBlt")] public static extern bool BitBlt(IntPtr destination, int x, int y, int width, int height, IntPtr source, int sourceX, int sourceY, uint rasterOperation);
   [DllImport("user32.dll", EntryPoint="PostMessageW")] public static extern bool PostCloseMessage(IntPtr hwnd, uint message, IntPtr wParam, IntPtr lParam);
   [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
   [DllImport("user32.dll")] public static extern void mouse_event(uint flags, uint dx, uint dy, uint data, IntPtr extra);
@@ -68,6 +71,18 @@ function Wait-Until([scriptblock]$Condition, [int]$Seconds = 45) {
   $deadline = [DateTime]::UtcNow.AddSeconds($Seconds)
   do { if (& $Condition) { return }; Start-Sleep -Milliseconds 500 } while ([DateTime]::UtcNow -lt $deadline)
   throw 'Timed out waiting for a desktop smoke condition.'
+}
+function Capture-LayeredScreen($Graphics, [int[]]$Bounds) {
+  $source = [HubNativeWindow]::GetDeviceContext([IntPtr]::Zero)
+  $destination = $Graphics.GetHdc()
+  try {
+    if (-not [HubNativeWindow]::BitBlt($destination, 0, 0, $Bounds[2] - $Bounds[0], $Bounds[3] - $Bounds[1], $source, $Bounds[0], $Bounds[1], 0x40CC0020)) {
+      throw 'Could not capture the mini timer window.'
+    }
+  } finally {
+    $Graphics.ReleaseHdc($destination)
+    [HubNativeWindow]::ReleaseDeviceContext([IntPtr]::Zero, $source) | Out-Null
+  }
 }
 function Get-ZuluRunEntry {
   foreach ($path in @('HKCU:\Software\Microsoft\Windows\CurrentVersion\Run', 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run')) {
@@ -197,8 +212,7 @@ try {
   $miniRect = [System.Drawing.Rectangle]::FromLTRB($miniBounds[0], $miniBounds[1], $miniBounds[2], $miniBounds[3])
   $miniCapture = New-Object System.Drawing.Bitmap $miniRect.Width, $miniRect.Height
   $miniPaint = [System.Drawing.Graphics]::FromImage($miniCapture)
-  $captureFlags = [System.Drawing.CopyPixelOperation]([int][System.Drawing.CopyPixelOperation]::SourceCopy -bor [int][System.Drawing.CopyPixelOperation]::CaptureBlt)
-  $miniPaint.CopyFromScreen($miniRect.Location, [System.Drawing.Point]::Empty, $miniRect.Size, $captureFlags)
+  Capture-LayeredScreen $miniPaint $miniBounds
   $miniCapture.Save((Join-Path $OutputDirectory 'mini-open.png'))
   $miniPaint.Dispose(); $miniCapture.Dispose()
   [HubNativeWindow]::SetForegroundWindow($miniHandle) | Out-Null
@@ -206,7 +220,7 @@ try {
   $miniRoot = [System.Windows.Automation.AutomationElement]::FromHandle($miniHandle)
   $miniCapture = New-Object System.Drawing.Bitmap $miniRect.Width, $miniRect.Height
   $focusedPaint = [System.Drawing.Graphics]::FromImage($miniCapture)
-  $focusedPaint.CopyFromScreen($miniRect.Location, [System.Drawing.Point]::Empty, $miniRect.Size, $captureFlags)
+  Capture-LayeredScreen $focusedPaint $miniBounds
   $miniCapture.Save((Join-Path $OutputDirectory 'mini-focused.png'))
   $focusedPaint.Dispose(); $miniCapture.Dispose()
   $miniCloseCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Ocultar mini timer')
