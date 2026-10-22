@@ -131,15 +131,20 @@ try {
   $check.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ')
   Wait-Until { -not (Get-ZuluRunEntry) } 15
   $report.autostartToggle = $true
-  [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
+  $currentStage = 'close runtime options'
+  Invoke-HubControl 'Opções do aplicativo'
+  $currentStage = 'close main window to tray'
   Invoke-HubControl 'Fechar ZULU'
+  $currentStage = 'verify tray process remains open'
   Wait-Until { -not [HubNativeWindow]::IsWindowVisible($handle) } 15
   $appProcess.Refresh()
   if ($appProcess.HasExited) { throw 'Closing must keep the tray process alive.' }
   $report.backgroundTray = $true
+  $currentStage = 'verify duplicate background launch'
   $silentSecond = Start-Process -FilePath $appPath -ArgumentList '--background' -PassThru
   Wait-Until { $silentSecond.Refresh(); $silentSecond.HasExited } 20
   if ([HubNativeWindow]::IsWindowVisible($handle)) { throw 'A duplicate background launch must not reveal the main window.' }
+  $currentStage = 'restore main window from second launch'
   $second = Start-Process -FilePath $appPath -PassThru
   Wait-Until { $second.Refresh(); $second.HasExited } 20
   Wait-Until { [HubNativeWindow]::IsWindowVisible($handle) } 15
