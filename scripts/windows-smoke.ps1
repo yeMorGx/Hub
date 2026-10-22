@@ -144,6 +144,11 @@ try {
   $check.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ')
   Wait-Until { -not (Get-ZuluRunEntry) } 15
   $report.autostartToggle = $true
+  $currentStage = 'dismiss runtime options'
+  [HubNativeWindow]::SetForegroundWindow($handle) | Out-Null
+  [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
+  $quitOption = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Sair do ZULU')
+  Wait-Until { $null -eq $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $quitOption) } 10
   $currentStage = 'close main window to tray'
   [HubNativeWindow]::PostCloseMessage($handle, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero) | Out-Null
   $currentStage = 'verify tray process remains open'
