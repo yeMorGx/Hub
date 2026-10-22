@@ -190,7 +190,7 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
             let _ = window.emit("zulu:timer-changed", ());
             return Ok(());
         }
-        let url = "https://hub-one-azure.vercel.app/desktop/timer"
+        let url: tauri::Url = "https://hub-one-azure.vercel.app/desktop/timer"
             .parse()
             .map_err(|_| "Endereço inválido.")?;
         let mini_url = url.clone();
