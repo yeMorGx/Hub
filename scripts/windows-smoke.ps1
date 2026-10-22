@@ -73,7 +73,7 @@ public static class HubNativeWindow {
 function Wait-Until([scriptblock]$Condition, [int]$Seconds = 45) {
   $deadline = [DateTime]::UtcNow.AddSeconds($Seconds)
   do { if (& $Condition) { return }; Start-Sleep -Milliseconds 500 } while ([DateTime]::UtcNow -lt $deadline)
-  throw 'Timed out waiting for a desktop smoke condition.'
+  throw "Timed out waiting for a desktop smoke condition at stage '$script:currentStage'."
 }
 function Capture-LayeredScreen($Graphics, [int[]]$Bounds) {
   $source = [HubNativeWindow]::GetDeviceContext([IntPtr]::Zero)
@@ -232,6 +232,7 @@ try {
   $miniCloseCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Ocultar mini timer')
   Wait-Until { $null -ne $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition) } 45
   $report.miniWindow = $true
+  $currentStage = 'capture desktop with mini timer'
   Add-Type -AssemblyName System.Drawing
   $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
   $bitmap = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
@@ -239,23 +240,34 @@ try {
   $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
   $bitmap.Save((Join-Path $OutputDirectory 'desktop.png'))
   $graphics.Dispose(); $bitmap.Dispose()
+  $currentStage = 'hide mini timer from its close control'
   Invoke-HubElement ($miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition)) $miniHandle
+  $currentStage = 'wait for mini timer to hide'
   Wait-Until { -not [HubNativeWindow]::IsWindowVisible($miniHandle) } 15
+  $currentStage = 'open runtime options before quitting'
   Invoke-HubControl 'Opções do aplicativo'
+  $currentStage = 'quit ZULU from runtime options'
   Invoke-HubControl 'Sair do ZULU'
+  $currentStage = 'wait for tray process to exit'
   if (-not $appProcess.WaitForExit(10000)) { throw 'Quit must exit the background process.' }
+  $currentStage = 'start ZULU hidden in the tray'
   $appProcess = Start-Process -FilePath $appPath -ArgumentList '--background' -PassThru
   Start-Sleep -Seconds 5
+  $currentStage = 'verify hidden startup'
   $appProcess.Refresh()
   if ($appProcess.HasExited -or [HubNativeWindow]::Find($appProcess.Id, $false) -ne [IntPtr]::Zero) { throw 'Background startup must stay alive without a visible window.' }
   $report.hiddenStartup = $true
+  $currentStage = 'restore main window from a second launch'
   $second = Start-Process -FilePath $appPath -PassThru
   Wait-Until { $second.Refresh(); $second.HasExited } 20
   Wait-Until { $appProcess.Refresh(); [HubNativeWindow]::Find($appProcess.Id, $false) -ne [IntPtr]::Zero } 20
   $handle = [HubNativeWindow]::Find($appProcess.Id, $false)
   $root = [System.Windows.Automation.AutomationElement]::FromHandle($handle)
+  $currentStage = 'open runtime options in hidden-startup instance'
   Invoke-HubControl 'Opções do aplicativo'
+  $currentStage = 'quit hidden-startup instance'
   Invoke-HubControl 'Sair do ZULU'
+  $currentStage = 'wait for hidden-startup instance to exit'
   if (-not $appProcess.WaitForExit(10000)) { throw 'Background instance failed to quit.' }
 } finally {
   try {
