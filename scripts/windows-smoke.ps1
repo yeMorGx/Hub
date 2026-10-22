@@ -7,6 +7,7 @@ $report = [ordered]@{ platform = 'Windows'; installer = (Split-Path $Installer -
 $report.signed = $report.signature -eq 'Valid'
 $appProcess = $null
 $uninstaller = $null
+$currentStage = 'start'
 Add-Type @'
 using System;
 using System.Runtime.InteropServices;
@@ -142,12 +143,22 @@ try {
   $second = Start-Process -FilePath $appPath -PassThru
   Wait-Until { $second.Refresh(); $second.HasExited } 20
   Wait-Until { [HubNativeWindow]::IsWindowVisible($handle) } 15
+  $currentStage = 'open mini timer'
   Invoke-HubControl 'Abrir mini timer'
   Wait-Until { [HubNativeWindow]::Find($appProcess.Id, $true) -ne [IntPtr]::Zero } 30
   $miniHandle = [HubNativeWindow]::Find($appProcess.Id, $true)
   $miniRoot = [System.Windows.Automation.AutomationElement]::FromHandle($miniHandle)
+  $currentStage = 'verify mini timer topmost'
   if (([HubNativeWindow]::GetWindowLong($miniHandle, -20) -band 8) -eq 0) { throw 'Mini timer must be topmost.' }
   $report.miniTopmost = $true
+  $currentStage = 'wait for mini timer controls'
+  Start-Sleep -Seconds 5
+  $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+  $miniCapture = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
+  $miniPaint = [System.Drawing.Graphics]::FromImage($miniCapture)
+  $miniPaint.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+  $miniCapture.Save((Join-Path $OutputDirectory 'mini-open.png'))
+  $miniPaint.Dispose(); $miniCapture.Dispose()
   $miniCloseCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Ocultar mini timer')
   Wait-Until { $null -ne $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition) } 45
   $report.miniWindow = $true
@@ -180,11 +191,15 @@ try {
   try {
     if ($appProcess) {
       $appProcess.Refresh()
-      @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
+      @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); stage=$currentStage; report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
     }
     if ($root) {
       $names=@($root.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.Condition]::TrueCondition) | Select-Object -First 120 | ForEach-Object { @{name=$_.Current.Name;class=$_.Current.ClassName;type=$_.Current.ControlType.ProgrammaticName} })
       $names | ConvertTo-Json -Depth 3 | Set-Content (Join-Path $OutputDirectory 'accessibility.json') -Encoding utf8
+    }
+    if ($miniRoot) {
+      $miniNames=@($miniRoot.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.Condition]::TrueCondition) | Select-Object -First 120 | ForEach-Object { @{name=$_.Current.Name;class=$_.Current.ClassName;type=$_.Current.ControlType.ProgrammaticName} })
+      $miniNames | ConvertTo-Json -Depth 3 | Set-Content (Join-Path $OutputDirectory 'mini-accessibility.json') -Encoding utf8
     }
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing
