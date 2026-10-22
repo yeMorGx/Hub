@@ -68,7 +68,28 @@ export function ZuluButton({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   const enabled = useDashboardUI();
-  if (!enabled) return <button {...props} disabled={disabled} />;
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const railTooltip = Boolean(props["aria-label"] && /rail-button/.test(props.className ?? ""));
+  if (!enabled) {
+    const button = (
+      <button
+        {...props}
+        disabled={disabled}
+        onMouseEnter={railTooltip ? () => setTooltipOpen(true) : props.onMouseEnter}
+        onMouseLeave={railTooltip ? () => setTooltipOpen(false) : props.onMouseLeave}
+        onFocus={railTooltip ? event => { props.onFocus?.(event); setTooltipOpen(true); } : props.onFocus}
+        onBlur={railTooltip ? event => { props.onBlur?.(event); setTooltipOpen(false); } : props.onBlur}
+      />
+    );
+    return railTooltip ? (
+      <Tooltip isOpen={tooltipOpen} onOpenChange={setTooltipOpen} delay={450}>
+        {button}
+        <Tooltip.Content className="zulu-tooltip">
+          {props["aria-label"]}
+        </Tooltip.Content>
+      </Tooltip>
+    ) : button;
+  }
   const button = (
     <Button
       {...(props as ComponentProps<typeof Button>)}
@@ -76,11 +97,15 @@ export function ZuluButton({
       type={props.type ?? "submit"}
       isDisabled={disabled}
       variant="tertiary"
+      onMouseEnter={railTooltip ? () => setTooltipOpen(true) : props.onMouseEnter}
+      onMouseLeave={railTooltip ? () => setTooltipOpen(false) : props.onMouseLeave}
+      onFocus={railTooltip ? () => setTooltipOpen(true) : props.onFocus as ComponentProps<typeof Button>["onFocus"]}
+      onBlur={railTooltip ? () => setTooltipOpen(false) : props.onBlur as ComponentProps<typeof Button>["onBlur"]}
     />
   );
   return props["aria-label"] &&
     /icon-button|today-link|top-avatar|rail-button/.test(props.className ?? "") ? (
-    <Tooltip delay={450}>
+    <Tooltip isOpen={railTooltip ? tooltipOpen : undefined} onOpenChange={railTooltip ? setTooltipOpen : undefined} delay={450}>
       {button}
       <Tooltip.Content className="zulu-tooltip">
         {props["aria-label"]}

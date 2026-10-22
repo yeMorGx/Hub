@@ -30,25 +30,26 @@
   },
   "mode": "operate",
   "reference": "https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard",
-  "font": "Manrope Variable",
+  "font": "Inter Variable",
   "icons": "@phosphor-icons/react",
   "tokens": {
-    "background": "#101112",
-    "rail": "#0c0d0e",
-    "surface": "#191b1d",
-    "border": "#2b2d30",
-    "text": "#f0f0f1",
-    "muted": "#a0a2a6",
-    "accent": "#e26540",
+    "background": "#f6f5f1",
+    "rail": "#fdfcf9",
+    "surface": "#ffffff",
+    "surfaceRaised": "#eef1f7",
+    "border": "#e0e3ea",
+    "text": "#202b40",
+    "muted": "#59667c",
+    "accent": "#294d94",
     "radius": 14
   },
   "surface": {
     "name": "Hoje",
-    "scope": ".dashboard-redesign; authenticated Hoje and /demo/dashboard only",
+    "scope": ".live-app across authenticated app pages; .dashboard-redesign adds the Hoje Bento composition; marketing remains independent.",
     "desktop": "12-column Bento: timer/journey/calendar span 8; photo home-office/meetings/people/recent/chat span 4",
     "mobile": "Single-column Bento with 14px gaps and bottom navigation",
-    "sidebarWidth": "224px",
-    "sidebarWidthAt1200": "196px",
+    "sidebarWidth": "80px",
+    "sidebarWidthAt1200": "80px",
     "contextBelowAt": "1200px",
     "mobileNavigationAt": "760px",
     "initialDayViewAt": "520px",
@@ -58,7 +59,7 @@
   "dashboard": {
     "mode": "operate",
     "designDocument": "docs/dashboard-bento.md",
-    "authority": "Explicit user choice of a new light identity replaces Shakuro for Hoje and its public preview only; other modules and marketing retain their existing authorities. Subsequent explicit user direction removes all decorative dashboard borders while preserving ivory, navy and Inter. User explicitly selected original Spell UI AnimatedGradient Prism for the timer card only. Subsequent explicit user choice adds Bento Grid, official HeroUI v3 controls and a home-office photo background.",
+    "authority": "User chose ivory, white surfaces, dark text, deep blue and Inter for Hoje, then explicitly extended that identity to every app page. Decorative shell/card borders are removed. The public marketing site keeps its own visual authority. Prism/Lava remains specialized to the timer; Bento and the home-office image remain specific to Hoje.",
     "sources": [
       "components/today-dashboard.tsx",
       "components/live-hub-app.tsx",
@@ -69,7 +70,9 @@
       "components/animated-gradient.tsx",
       "components/dashboard-ui.tsx",
       "app/dashboard-bento.css",
-      "public/dashboard/home-office.webp"
+      "public/dashboard/home-office.webp",
+      "app/zulu-workspace.css",
+      "components/hub-app.tsx"
     ],
     "preview": {
       "route": "/demo/dashboard",
@@ -139,10 +142,7 @@
       "text": "#202b40",
       "muted": "#59667c",
       "accent": "#294d94",
-      "accentHover": "#1f3e7b",
-      "timerBackground": "#050505",
-      "homeOfficeBackground": "#22362e with local photograph and dark overlay",
-      "positive": "#39714f"
+      "radius": 14
     },
     "tokenAuthority": "DESIGN.md and docs/dashboard-bento.md; app/dashboard.css plus app/dashboard-bento.css",
     "focus": {
@@ -346,5 +346,15 @@
     "mini": "328x80 transparent always-on-top window; 72px capsule with radius 999px; original Prism/Lava; no credentials or description transferred",
     "glass": "Explicit user choice: liquid glass for inline activity picker, dark focused fields and light text",
     "contract": "docs/desktop-runtime.md"
+  },
+  "application": {
+    "scope": "Authenticated app pages, account access and local app demonstration; public marketing keeps its independent world.",
+    "authority": "User extended the approved ivory, navy and Inter identity from Hoje to all app pages, with a compact icon rail and flat surfaces.",
+    "font": "Inter Variable, locally served",
+    "desktopSidebar": "80px floating rail, 12px inset, 22px radius, icon centered, HeroUI tooltip on hover and keyboard focus",
+    "mobileNavigation": "62px floating bottom dock below 760px",
+    "surfaces": "Ivory page background, white content, blue-gray field fill, navy actions and text, no decorative card or shell borders; preserve useful structure and visible focus.",
+    "motion": "Short HeroUI state feedback; respect prefers-reduced-motion.",
+    "source": "app/zulu-workspace.css"
   }
 }

@@ -2,7 +2,7 @@
 
 ## Autoridade
 
-Referência escolhida pelo usuário: [Team Management Calendar UI Dashboard — Shakuro](https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard). Captura: `docs/design-references/calendar-shakuro.png`. O ZULU adapta a composição; não reproduz o dispositivo, fotografia de fundo, dados, logo ou funcionalidades futuras da referência. Esta autoridade permanece nos demais módulos, acesso e demonstração original. Em Hoje e `/demo/dashboard`, a decisão posterior do usuário substitui essa identidade pela superfície clara documentada abaixo.
+Referência escolhida pelo usuário: [Team Management Calendar UI Dashboard — Shakuro](https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard). Captura: `docs/design-references/calendar-shakuro.png`. O ZULU adapta a composição; não reproduz o dispositivo, fotografia de fundo, dados, logo ou funcionalidades futuras da referência. Em Hoje, o usuário escolheu marfim, texto escuro, azul profundo, Inter e superfície plana. Em 22/10/2026, estendeu essa identidade a todas as páginas do aplicativo e aos fluxos de acesso; Shakuro passa a ser somente referência histórica. `/site` e `/download` mantêm a identidade pública independente.
 
 Modo da superfície: **Operate**. Clareza das tarefas diárias, densidade útil, legibilidade e estados reconhecíveis orientam a interface.
 
@@ -10,13 +10,13 @@ Modo da superfície: **Operate**. Clareza das tarefas diárias, densidade útil,
 
 O nome atual do produto é **ZULU**. O SVG oficial fornecido pelo usuário foi preservado integralmente em `public/brand/zulu-source.svg`. O símbolo em `public/brand/zulu-mark.svg` foi extraído desse arquivo, sem redesenhar os caminhos: retângulo preto arredondado com o desenho branco de ULU/sorriso. `public/brand/zulu-wordmark.svg` preserva o lettering como asset disponível.
 
-A preferência explícita do usuário é priorizar o símbolo e reduzir texto nas marcas. Os espaços principais de marca não mostram nome nem tagline adjacentes: sidebar (44px), barra de título (24px), marketing e acesso (40px) e privacidade (30px). O nome acessível continua ZULU. Ícones de PWA e desktop usam o mesmo símbolo oficial; Phosphor continua sendo a biblioteca de ícones funcionais. Essa mudança de marca preserva as paletas e autoridades de cada superfície, incluindo marfim, azul profundo e Inter em Hoje.
+A preferência explícita do usuário é priorizar o símbolo e reduzir texto nas marcas. Os espaços principais de marca não mostram nome nem tagline adjacentes: sidebar (44px), barra de título (24px), marketing e acesso (40px) e privacidade (30px). O nome acessível continua ZULU. Ícones de PWA e desktop usam o mesmo símbolo oficial; Animate UI Hugeicons aparece na navegação do app e Phosphor continua no conteúdo. A paleta do app usa marfim, texto escuro, azul profundo e Inter em todos os módulos.
 
 Identificadores técnicos de compatibilidade como `app.hub.team`, `Hub` no produto/arquivo de instalação nativo, repositório e chaves de registro/cache/cofre permanecem existentes. A marca visível ZULU não representa uma migração desses identificadores.
 
 ### Referência obrigatória de componentes
 
-Por decisão do usuário, novos componentes e componentes retrabalhados devem partir dos componentes e exemplos oficiais **HeroUI v3**, conforme [a skill local obrigatória](.agents/skills/zulu-heroui/SKILL.md) e `AGENTS.md`. Adaptar os tokens à autoridade de cada superfície, preservando teclado, foco e acessibilidade. O catálogo e o guia React v3 oficiais foram consultados. HeroUI React e Styles 3.2.6 estão instalados; Hoje e seus diálogos usam os componentes oficiais, com adaptadores de escopo para preservar os demais módulos. O efeito Prism escolhido pelo usuário continua sendo a referência especializada do fundo do timer.
+Por decisão do usuário, novos componentes e componentes retrabalhados devem partir dos componentes e exemplos oficiais **HeroUI v3**, conforme [a skill local obrigatória](.agents/skills/zulu-heroui/SKILL.md) e `AGENTS.md`. Adaptar os tokens à identidade comum do app, preservando teclado, foco e acessibilidade. O catálogo e o guia React v3 oficiais foram consultados. HeroUI React e Styles 3.2.6 estão instalados; Hoje, seus diálogos e os tooltips da navegação usam os componentes oficiais. Os adaptadores dos módulos existentes ainda migram progressivamente. O efeito Prism escolhido pelo usuário continua sendo a referência especializada do fundo do timer.
 
 ### Microinterações e movimento
 
@@ -30,9 +30,9 @@ A decisão posterior do usuário adota **Bento Grid** em Hoje e `/demo/dashboard
 
 `app/dashboard-bento.css` complementa `app/dashboard.css` e define os tokens claros dos portais HeroUI. `components/dashboard-ui.tsx` mantém os contratos de formulário e limita a migração à tela Hoje e seus diálogos. O seletor de visualização é um radiogroup oficial, o filtro usa Dropdown e o seletor de data usa Calendar. A grade de eventos continua específica do produto. Os vereditos e medidas da composição anterior abaixo são históricos; a evidência desta entrega está em `.impeccable/review/zulu-bento/`.
 
-### Hoje — navegação e ações do dia
+### Navegação do aplicativo
 
-A revisão posterior do usuário adota sidebar flutuante em Hoje: 12px das bordas, 212px de largura, raio de 22px, sem borda ou sombra. Até 1200px, 184px; até 760px, dock inferior flutuante de 62px com raio de 20px. Barra de título nativa preserva os 36px superiores. Os ícones da sidebar do app e da prévia usam source oficial **Animate UI Hugeicons** com hover/foco e redução de movimento; os controles continuam HeroUI, e Phosphor permanece no conteúdo. Esta exceção substitui a regra anterior de Phosphor na sidebar. O rodapé promocional/MFA foi removido.
+A sidebar flutuante compacta aparece em todas as páginas do app: 80px de largura, 12px das bordas, raio de 22px, sem borda ou sombra. Rótulos aparecem em tooltips HeroUI por hover e foco. A partir de 760px, a navegação vira dock inferior flutuante de 62px com raio de 20px. Barra de título nativa preserva a área superior do Windows. Os ícones da sidebar usam source oficial **Animate UI Hugeicons** com hover/foco e redução de movimento; Phosphor permanece no conteúdo. O rodapé promocional/MFA da sidebar foi removido.
 
 Escolher atividade abre formulário HeroUI no próprio card do timer, com descrição, projeto e sugestões reais de tarefas/atividades recentes. A jornada apresenta duração e legenda explícita (a mais/a compensar), horas feitas e previstas, e informa que a meta inclui hoje. Em Por aqui agora, o próprio usuário aparece primeiro, com atividade/pausa atual; colegas compartilham atividade pela Presence privada do time. Prévias de DMs próprias não lidas abrem a conversa e não marcam leitura por exibição. Contrato: [fluxo diário](docs/dashboard-workflow.md).
 
@@ -46,30 +46,30 @@ O seletor de atividade recebe **liquid glass** por escolha explícita do usuári
 
 | Token CSS | Valor | Uso |
 | --- | --- | --- |
-| `--bg` | `#101112` | Fundo geral |
-| `--rail` | `#0c0d0e` | Navegação |
-| `--surface` | `#191b1d` | Painéis |
-| `--surface-raised` | `#202224` | Elementos internos |
-| `--border` | `#2b2d30` | Divisões |
-| `--text` | `#f0f0f1` | Texto principal |
-| `--muted` | `#a0a2a6` | Texto secundário |
-| `--accent` | `#e26540` | Ação principal e timer |
-| `--accent-hover` | `#f17a54` | Hover da ação |
+| `--bg` | `#f6f5f1` | Fundo do aplicativo |
+| `--rail` | `#fdfcf9` | Navegação flutuante |
+| `--surface` | `#ffffff` | Superfícies de conteúdo |
+| `--surface-raised` | `#eef1f7` | Campos e camadas secundárias |
+| `--border` | `#e0e3ea` | Valor sem uso decorativo; manter foco funcional |
+| `--text` | `#202b40` | Texto principal |
+| `--muted` | `#59667c` | Texto secundário |
+| `--accent` | `#294d94` | Ação principal e seleção |
+| `--accent-hover` | `#1f3e7b` | Hover da ação |
 | `--radius` | `14px` | Painéis principais |
 
-Fonte: Manrope Variable, instalada por npm e servida localmente. Ícones: Phosphor React, traço regular e preenchimento no módulo ativo. Na demonstração, avatares são identidades por iniciais dos personagens fictícios, com cor fixa por pessoa; não dependem de fotos externas.
+Fonte: Inter Variable, instalada por npm e servida localmente. Ícones: Animate UI Hugeicons na navegação e Phosphor React no conteúdo. Na demonstração, avatares são identidades por iniciais dos personagens fictícios, com cor fixa por pessoa; não dependem de fotos externas.
 
 ## Composição
 
-Os demais módulos mantêm trilho fixo de 76px, barra superior de 72px, conteúdo com margem de 36px e calendário completo com 84px por hora. Acentos de eventos e comportamento móvel da identidade anterior permanecem nessas superfícies.
+Os módulos seguem a identidade clara, a barra superior de 72px e os tokens comuns. A navegação compacta reserva 104px no desktop. Calendário, conversas, horas, pessoas, tarefas, colaboração, gestão, chamadas, integrações e acesso preservam informação e fluxos. Ver [sistema visual das páginas do app](docs/app-design-system.md).
 
-### Hoje — identidade clara aprovada
+### Identidade clara do aplicativo
 
-A identidade clara substitui Shakuro, Manrope, grafite e laranja exclusivamente em Hoje e `/demo/dashboard`. A autoridade é a escolha explícita do usuário por marfim, texto escuro e azul profundo, seguida pela remoção de todas as bordas decorativas do dashboard. A implementação está escopada a `.dashboard-redesign`; os tokens globais acima continuam normativos para as outras superfícies.
+A identidade clara substitui Shakuro, Manrope, grafite e laranja em todas as páginas do aplicativo e nos fluxos de acesso. A autoridade é a escolha explícita do usuário por marfim, texto escuro e azul profundo, seguida pela remoção das bordas decorativas. `.live-app:not(.dashboard-redesign)` aplica o acabamento compartilhado às telas secundárias; `.dashboard-redesign` mantém a composição Bento aprovada de Hoje e a sidebar permanece compacta conforme pedido anterior. O site público mantém sua paleta própria.
 
 #### Overview
 
-Modo **Operate**. Campos claros organizam a leitura; o bloco do timer com Prism concentra a atenção no trabalho atual. Navegação com rótulos, jornada branca e agenda compacta oferecem uma composição própria para Hoje. Contrato: [Dashboard Hoje](docs/dashboard-redesign.md).
+Modo **Operate**. Campos claros organizam a leitura; o bloco do timer com Prism concentra a atenção no trabalho atual. Navegação compacta, jornada branca e agenda compacta oferecem uma composição própria para Hoje. Contrato: [Dashboard Hoje](docs/dashboard-redesign.md).
 
 #### Colors
 
@@ -94,13 +94,13 @@ Valores normativos desta superfície, extraídos de `app/dashboard.css`:
 
 #### Typography
 
-Inter Variable, instalada por npm e servida localmente, rege a superfície clara. Título de página usa peso 650 e 32px (28px no celular); atividade usa peso 550 e 21px; timer usa peso 400, números tabulares e escala de 40–57px no desktop. Horas e saldos também usam números tabulares. Ícones continuam Phosphor React.
+Inter Variable, instalada por npm e servida localmente, rege todas as páginas do app. Título de página usa peso 650 e 32px (28px no celular); atividade usa peso 550 e 21px; timer usa peso 400, números tabulares e escala de 40–57px no desktop. Horas e saldos também usam números tabulares. Ícones da navegação usam Animate UI Hugeicons; o conteúdo usa Phosphor React.
 
 #### Layout
 
-Sidebar expandida com rótulos (224px; 196px até 1200px), topo de 72px e conteúdo com 30px de margem interna, limitado a 1660px. O timer com Prism é horizontal, com atividade à esquerda e dígitos à direita; a jornada branca vem abaixo com horas do dia e saldos da semana e do mês em três colunas. Uma faixa azul clara mostra home office de hoje e próximo. A agenda branca usa 60px por hora, com rolagem interna de até 376px. Contexto lateral de 248px reúne encontros, presença, retomada e conversas.
+Sidebar compacta de 80px, topo de 72px e conteúdo com 30px de margem interna, limitado a 1660px. O timer com Prism é horizontal, com atividade à esquerda e dígitos à direita; a jornada branca vem abaixo com horas do dia e saldos da semana e do mês em três colunas. Uma faixa fotográfica mostra home office de hoje e próximo. A agenda branca usa 60px por hora, com rolagem interna de até 376px. Contexto lateral de 248px reúne encontros, presença, retomada e conversas.
 
-Até 1200px o contexto segue abaixo em duas colunas. Até 760px a sidebar dá lugar à barra inferior de 68px, o contexto passa a uma coluna, atividade e timer se empilham e a jornada coloca horas do dia acima de dois saldos paralelos. A agenda inicial abre no dia em telas até 520px; a semana continua disponível com rolagem interna.
+Até 1200px o contexto segue abaixo em duas colunas. Até 760px a sidebar dá lugar ao dock inferior flutuante de 62px, o contexto passa a uma coluna, atividade e timer se empilham e a jornada coloca horas do dia acima de dois saldos paralelos. A agenda inicial abre no dia em telas até 520px; a semana continua disponível com rolagem interna.
 
 #### Elevation & Depth
 
@@ -112,7 +112,7 @@ Contêiner principal com cantos de 14px; agenda com 10px; faixa de home office e
 
 #### Components
 
-Timer com ação branca sobre Prism escurecido e encerramento secundário; jornada com progresso e configuração opcional; resumo de home office com erro, ausência e nova tentativa; calendário compacto com cabeçalho fixo; navegação com rótulos permanentes e estado ativo azul claro. O foco visível recebe contorno azul de 2px, afastado 4px; dentro do timer escuro, o contorno é branco, com as mesmas dimensões. A legenda Eventos usa verde, acompanhando os blocos de evento desta superfície. No Windows compatível, uma barra de título de 36px acompanha o marfim e o azul de Hoje, com símbolo oficial ZULU de 24px, sem nome ou tagline adjacentes, indicador de mensagens não lidas e controles nativos de minimizar, maximizar/restaurar e fechar. A área da marca permite arrastar e o duplo clique alterna maximização; foco permanece visível. Contrato de compatibilidade e entrega: [barra desktop](docs/desktop-updates.md#barra-de-título-windows--014-publicada).
+Timer com ação branca sobre Prism escurecido e encerramento secundário; jornada com progresso e configuração opcional; resumo de home office com erro, ausência e nova tentativa; calendário compacto com cabeçalho fixo; navegação por ícones com rótulos em tooltips e estado ativo azul claro. O foco visível recebe contorno azul de 2px, afastado 4px; dentro do timer escuro, o contorno é branco, com as mesmas dimensões. A legenda Eventos usa verde, acompanhando os blocos de evento desta superfície. No Windows compatível, a barra de título de 48px acompanha o marfim e o azul, com símbolo oficial ZULU de 24px, sem nome ou tagline adjacentes, indicador de mensagens não lidas e controles nativos de minimizar, maximizar/restaurar e fechar. A área da marca permite arrastar e o duplo clique alterna maximização; foco permanece visível. Contrato de compatibilidade e entrega: [barra desktop](docs/desktop-updates.md#barra-de-título-windows--014-publicada).
 
 O fundo de `.today-focus` usa o **AnimatedGradient original da Spell UI**, por escolha explícita do usuário: **Prism** quando parado ou em pausa de almoço e **Lava** enquanto o timer está em andamento. [Source fixado](https://github.com/xxtomm/spell-ui/blob/659b5c2ae405ea9e1c363e09cca7380a0d98e271/registry/spell-ui/animated-gradient.tsx), componente local `components/animated-gradient.tsx`, licença MIT em `docs/licenses/spell-ui-MIT.txt` e `public/licenses/spell-ui-MIT.txt`. Shader e presets foram preservados; a fase inicial de Prism avança 3 unidades de tempo do shader para evitar o primeiro quadro preto. Os canvases decorativos ficam atrás do conteúdo, sem receber interação. O overlay preto limita o fundo mais claro a `#5c5c5c`; o texto secundário `#ccd9f1` mantém contraste superior a 4,5:1. Renderização limitada a 30fps e DPR 1,5, pausada fora da tela ou com documento oculto; movimento reduzido usa quadro estático com redesenho no resize. Sem WebGL2, usa gradiente CSS nas cores do respectivo preset. Este efeito pertence somente ao timer; a superfície marfim e a regra sem bordas decorativas permanecem.
 
@@ -145,7 +145,7 @@ Capturas desktop e celular em `.impeccable/review/`. Compilação da entrega ant
 
 ## Acesso e integração
 
-Login, cadastro e recuperação herdam o grafite e o acento quente. Desktop divide contexto do produto e formulário; celular prioriza marca e tarefa. Formulários usam nomes acessíveis, campos confortáveis e estados de erro/sucesso. MFA usa QR/chave vindos do Auth, sem ilustração ou segredo fictício.
+Login, cadastro, recuperação, MFA e convite compartilham os tons claros e azuis do app. Desktop divide contexto do produto e formulário; celular prioriza a tarefa. Formulários usam nomes acessíveis, campos confortáveis e estados de erro/sucesso. MFA usa QR/chave vindos do Auth, sem ilustração ou segredo fictício.
 
 O app integrado mantém a composição da demonstração e substitui dados de exemplo por estados vazios e conteúdo autorizado pelo RLS. Eventos reais usam azul para reunião e laranja para evento; colisões de horário usam faixas separadas. PWA usa ícones PNG derivados do símbolo oficial ZULU fornecido pelo usuário.
 
@@ -155,13 +155,13 @@ A revisão visual final de acesso teve veredito `ship` restrito ao login desktop
 
 ## Site público — autoridade independente
 
-Esta seção rege exclusivamente `/site`, `/download` e seus assets em `public/marketing/`. O usuário delegou a escolha de uma identidade própria para o site. A autoridade do aplicativo descrita acima continua restrita ao app, à demonstração e ao acesso. Implementação: `app/marketing.css`, `components/marketing.tsx`; contexto e referências: [pesquisa do site](docs/marketing-research.md). Os tokens desta superfície ficam no objeto `marketing` de `.impeccable/design.json`, separado dos tokens do app.
+Esta seção rege exclusivamente `/site`, `/download` e seus assets em `public/marketing/`. O usuário delegou a escolha de uma identidade própria para o site. A autoridade clara compartilhada pelo aplicativo não substitui a identidade pública. Implementação: `app/marketing.css`, `components/marketing.tsx`; contexto e referências: [pesquisa do site](docs/marketing-research.md). Os tokens desta superfície ficam no objeto `marketing` de `.impeccable/design.json`, separado dos tokens do app.
 
 ### Overview
 
-Modo **Persuade**. **Creative North Star: "Trabalho em sintonia".** Títulos amplos, alinhamento editorial e campos de cor apresentam o trabalho compartilhado com energia e clareza. Capturas reais da demonstração fazem a ponte entre a identidade pública e a interface escura do produto.
+Modo **Persuade**. **Creative North Star: "Trabalho em sintonia".** Títulos amplos, alinhamento editorial e campos de cor apresentam o trabalho compartilhado com energia e clareza. Capturas reais da demonstração fazem a ponte entre a identidade pública e a interface do produto.
 
-Características: hierarquia tipográfica expressiva, espaços generosos, contraste entre azul e verde vivo e demonstrações identificadas como fictícias. A composição inicial da landing é uma expressão desta superfície, não uma regra para futuras telas do aplicativo.
+Características: hierarquia tipográfica expressiva, espaços generosos, contraste entre azul e verde vivo e demonstrações identificadas como fictícias. A composição inicial da landing é uma expressão desta superfície, separada da interface clara do aplicativo.
 
 ### Colors
 

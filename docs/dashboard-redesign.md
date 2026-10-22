@@ -2,11 +2,11 @@
 
 > A composição atual usa HeroUI v3 e Bento Grid: ver [contrato atual](dashboard-bento.md). As medidas e revisões da composição anterior neste documento são históricas.
 
-Produto atual: **ZULU**. Modo: **Operate**. O usuário aprovou explicitamente uma nova identidade clara para Hoje: marfim, superfícies brancas, tinta escura, azul profundo e Inter Variable. A escolha substitui a identidade Shakuro/Manrope/grafite/laranja somente em Hoje e `/demo/dashboard`, no escopo `.dashboard-redesign`. Os demais módulos, `/demo` original e o site público mantêm suas autoridades. A decisão posterior remove todas as bordas decorativas do dashboard, preservando marfim, azul profundo e Inter. Os valores normativos desta superfície estão em [DESIGN.md](../DESIGN.md#hoje--identidade-clara-aprovada).
+Produto atual: **ZULU**. Modo: **Operate**. Este documento registra o primeiro redesenho claro de Hoje. Em 22/10/2026, o usuário estendeu marfim, superfícies brancas, tinta escura, azul profundo e Inter Variable a todas as páginas do app e aos fluxos de acesso. A composição antiga desta nota foi substituída pela Bento documentada em [dashboard-bento.md](dashboard-bento.md). O site público mantém sua identidade independente. O sistema visual atual está em [páginas do app](app-design-system.md) e [DESIGN.md](../DESIGN.md#identidade-clara-do-aplicativo).
 
 ## Composição aprovada
 
-Sidebar expandida de 224px com rótulos, reduzida a 196px até 1200px. O timer ocupa um campo horizontal com o preset Prism no topo, com atividade à esquerda e dígitos à direita. A jornada branca vem abaixo, com horas do dia e saldos da semana e do mês em colunas. Tempo da atividade e total do dia têm rótulos próprios; almoço pausa somente por ação da pessoa, com retomada manual. Os saldos usam o previsto até hoje, com configuração disponível quando falta uma jornada.
+Na primeira proposta, a sidebar tinha 224px com rótulos e 196px até 1200px. A navegação atual é compacta e está especificada em [páginas do app](app-design-system.md). O timer ocupa um campo horizontal com o preset Prism no topo, com atividade à esquerda e dígitos à direita. A jornada branca vem abaixo, com horas do dia e saldos da semana e do mês em colunas. Tempo da atividade e total do dia têm rótulos próprios; almoço pausa somente por ação da pessoa, com retomada manual. Os saldos usam o previsto até hoje, com configuração disponível quando falta uma jornada.
 
 Uma faixa azul clara mostra home office de hoje e a próxima data com atribuições. A agenda branca usa 60px por hora e rolagem interna de até 376px; o calendário completo mantém 84px por hora. Compromissos restantes de hoje, presença, retomada de atividades e conversas ocupam a lateral de 248px. Até 1200px, o contexto segue abaixo em duas colunas. Até 760px, a navegação vira barra inferior, o contexto passa a uma coluna, o timer se empilha e os dois saldos ficam lado a lado abaixo das horas do dia. Até 520px, a agenda inicial abre no dia; a semana continua disponível.
 
@@ -32,7 +32,7 @@ Nenhuma imagem foi acrescentada à faixa de home office; a escolha do usuário c
 
 ## Referências pesquisadas
 
-- [Shakuro · Team Management Calendar UI Dashboard](https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard): referência anterior, preservada nos demais módulos; substituída pela escolha clara em Hoje.
+- [Shakuro · Team Management Calendar UI Dashboard](https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard): referência histórica da identidade anterior, substituída pelo sistema claro em todo o aplicativo.
 - [Gradienta · Task Management App UI](https://dribbble.com/shots/27324770-Task-Management-App-UI-Productivity-Dashboard): hierarquia diária móvel.
 - [WorkWise](https://dribbble.com/shots/23764759-WorkWise-Productivity-Dashboard): organização de projetos e responsáveis.
 - [Ductivity](https://dribbble.com/shots/19052149-Ductivity-Productivity-Dashboard): agrupamento e navegação por contexto.

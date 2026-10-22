@@ -1,0 +1,1480 @@
+/* ZULU's light product language across authenticated app surfaces. */
+:root:has(.live-app:not(.dashboard-redesign)),
+:root:has(.auth-shell) {
+  color-scheme: light;
+  --bg: #f6f5f1;
+  --rail: #fdfcf9;
+  --surface: #ffffff;
+  --surface-raised: #eef1f7;
+  --border: #e0e3ea;
+  --text: #202b40;
+  --muted: #59667c;
+  --quiet: #59667c;
+  --accent: #294d94;
+  --accent-hover: #1f3e7b;
+  --blue: #496ba8;
+  --green: #39714f;
+  --purple: #6c5a92;
+  --orange: #a55c3f;
+  background: var(--bg);
+}
+
+body:has(.live-app:not(.dashboard-redesign)),
+body:has(.auth-shell) {
+  color: var(--text);
+  background: var(--bg);
+  font-family: "Inter Variable", sans-serif;
+}
+
+body:has(.live-app:not(.dashboard-redesign)) ::selection,
+body:has(.auth-shell) ::selection {
+  color: #162d5c;
+  background: #dce6ff;
+}
+
+body:has(.live-app:not(.dashboard-redesign)) ::-webkit-scrollbar-thumb,
+body:has(.auth-shell) ::-webkit-scrollbar-thumb {
+  background: #b5bdce;
+}
+
+body:has(.live-app:not(.dashboard-redesign)) *,
+body:has(.auth-shell) * {
+  scrollbar-color: #b5bdce transparent;
+}
+
+html:has(.live-app:not(.dashboard-redesign)) .desktop-titlebar,
+html:has(.auth-shell) .desktop-titlebar {
+  color: #52617b;
+  background: #f6f5f1;
+}
+
+html:has(.live-app:not(.dashboard-redesign)) .desktop-titlebar-drag > svg,
+html:has(.auth-shell) .desktop-titlebar-drag > svg {
+  color: #294d94;
+}
+
+html:has(.live-app:not(.dashboard-redesign)) .desktop-window-controls button:hover,
+html:has(.auth-shell) .desktop-window-controls button:hover {
+  background: #e6e9ef;
+}
+
+.live-app:not(.dashboard-redesign) {
+  min-height: 100dvh;
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  font-family: "Inter Variable", sans-serif;
+}
+
+.live-app:not(.dashboard-redesign) :is(button, a, input, select, textarea, summary):focus-visible {
+  outline: 2px solid #3764b6;
+  outline-offset: 3px;
+}
+
+@media (min-width: 761px) {
+  .live-app .rail {
+    position: fixed;
+    inset: 12px auto 12px 12px;
+    z-index: 40;
+    width: 80px;
+    padding: 14px 10px 16px;
+    align-items: center;
+    overflow: hidden;
+    background: #fdfcf9;
+    border: 0;
+    border-radius: 22px;
+  }
+
+  .live-app .brand {
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    justify-content: center;
+  }
+
+  .live-app .rail-divider {
+    width: 0;
+    height: 0;
+    margin: 8px 0;
+  }
+
+  .live-app .rail nav {
+    width: 100%;
+    min-height: 0;
+    align-items: center;
+    gap: 4px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .live-app .rail-button {
+    width: 48px;
+    min-width: 48px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    margin: 0 auto;
+    justify-content: center;
+    gap: 0;
+    color: #64728a;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+  }
+
+  .live-app .rail-button:hover {
+    color: #243b63;
+    background: #eef1f7;
+  }
+
+  .live-app .rail-button.active {
+    color: #244584;
+    background: #e8edf8;
+  }
+
+  .live-app .rail-button.active::before {
+    display: none;
+  }
+
+  .live-app .rail-button .nav-tooltip {
+    display: none;
+  }
+
+  .live-app .rail-bottom {
+    width: 100%;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 10px;
+  }
+
+  .live-app .profile-button {
+    margin: 0;
+  }
+
+  .live-app .rail-bottom .profile-button {
+    display: none;
+  }
+
+  .live-app .app-content {
+    margin-left: 104px;
+  }
+}
+
+@media (min-width: 761px) {
+  html[data-desktop-titlebar] .live-app .rail {
+    inset: 60px auto 12px 12px;
+    height: auto;
+  }
+}
+
+.live-app:not(.dashboard-redesign) .topbar {
+  height: 72px;
+  padding-inline: 30px;
+  background: var(--bg);
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-button {
+  color: var(--text);
+}
+
+.live-app:not(.dashboard-redesign) .workspace-button > svg,
+.live-app:not(.dashboard-redesign) .topbar-divider,
+.live-app:not(.dashboard-redesign) .breadcrumb-divider {
+  color: #9aa5b8;
+}
+
+.live-app:not(.dashboard-redesign) .topbar-divider {
+  background: transparent;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-icon {
+  color: #52617b;
+  background: white;
+  border: 0;
+  border-radius: 9px;
+}
+
+.live-app:not(.dashboard-redesign) .main-content {
+  max-width: 1660px;
+  padding: 30px 30px 64px;
+}
+
+.live-app:not(.dashboard-redesign) .page-heading {
+  margin-bottom: 28px;
+}
+
+.live-app:not(.dashboard-redesign) .page-heading h1 {
+  color: #202b40;
+  font-size: 32px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+
+.live-app:not(.dashboard-redesign) .page-heading p,
+.live-app:not(.dashboard-redesign) .muted,
+.live-app:not(.dashboard-redesign) .subtle-text,
+.live-app:not(.dashboard-redesign) .resource-note {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .primary-button {
+  color: white;
+  background: #294d94;
+  border: 0;
+  border-radius: 9px;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.live-app:not(.dashboard-redesign) .primary-button:hover:not(:disabled) {
+  color: white;
+  background: #1f3e7b;
+  transform: translateY(-1px);
+}
+
+.live-app:not(.dashboard-redesign) .primary-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.live-app:not(.dashboard-redesign) .outline-button,
+.live-app:not(.dashboard-redesign) .secondary-button {
+  color: #334563;
+  background: #eef1f7;
+  border: 0;
+  border-radius: 9px;
+}
+
+.live-app:not(.dashboard-redesign) .outline-button:hover:not(:disabled),
+.live-app:not(.dashboard-redesign) .secondary-button:hover:not(:disabled) {
+  color: #243b63;
+  background: #e2e8f3;
+}
+
+.live-app:not(.dashboard-redesign) .text-button {
+  color: #42618d;
+}
+
+.live-app:not(.dashboard-redesign) .text-button:hover:not(:disabled) {
+  color: #203f78;
+}
+
+.live-app:not(.dashboard-redesign) .icon-button {
+  color: #64728a;
+}
+
+.live-app:not(.dashboard-redesign) .icon-button:hover:not(:disabled),
+.live-app:not(.dashboard-redesign) .icon-button.is-open {
+  color: #203f78;
+  background: #e9edf5;
+}
+
+.live-app:not(.dashboard-redesign) .team-pill,
+.live-app:not(.dashboard-redesign) .running-pill {
+  color: #315e42;
+  background: #e8f0e9;
+  border: 0;
+  border-radius: 999px;
+}
+
+.live-app:not(.dashboard-redesign) .running-pill {
+  color: #244584;
+  background: #e8edf8;
+  font-variant-numeric: tabular-nums;
+}
+
+.live-app:not(.dashboard-redesign) .running-pill.is-paused {
+  color: #74552d;
+  background: #f4eddf;
+}
+
+.live-app:not(.dashboard-redesign) .live-dot.live {
+  background: #4b8b60;
+}
+
+.live-app:not(.dashboard-redesign) :is(.panel, .card, .focus-card, .time-entry-panel, .hours-balance, .person-card, .call-lobby, .integration-card, .goal-list > article, .board-card) {
+  color: var(--text);
+  background-color: #fff;
+  border: 0;
+  box-shadow: none;
+  border-radius: 14px;
+}
+
+.live-app:not(.dashboard-redesign) :is(.channel-sidebar, .chat-main, .board-column) {
+  color: var(--text);
+  background-color: #fff;
+}
+
+.live-app:not(.dashboard-redesign) :is(input, select, textarea) {
+  color: #202b40;
+  background-color: #eef1f7;
+  border: 0;
+  border-radius: 9px;
+  caret-color: #294d94;
+}
+
+.live-app:not(.dashboard-redesign) :is(input, select, textarea):hover {
+  background-color: #e8edf5;
+}
+
+.live-app:not(.dashboard-redesign) :is(input, select, textarea)::placeholder {
+  color: #68758b;
+}
+
+.live-app:not(.dashboard-redesign) :is(.popover, .filter-popover) {
+  color: #202b40;
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px #2538581a;
+}
+
+.live-app:not(.dashboard-redesign) .search-button kbd {
+  color: #59667c;
+  background: #eef1f7;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) :is(.calendar-section, .today-layout > .calendar-section) {
+  color: var(--text);
+}
+
+.live-app:not(.dashboard-redesign) .calendar-section {
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.live-app:not(.dashboard-redesign) .calendar-section .section-heading h2 {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .calendar-heading h2,
+.live-app:not(.dashboard-redesign) .date-controls > span {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) :is(.filter-button, .today-button, .add-calendar) {
+  color: #334563;
+  background: #eef1f7;
+  border: 0;
+  border-radius: 9px;
+}
+
+.live-app:not(.dashboard-redesign) .filter-button:hover,
+.live-app:not(.dashboard-redesign) .filter-active {
+  color: #244584;
+  background: #e2e8f3;
+}
+
+.live-app:not(.dashboard-redesign) .segmented {
+  padding: 3px;
+  background: #eef1f7;
+  border: 0;
+  border-radius: 10px;
+}
+
+.live-app:not(.dashboard-redesign) .segmented button {
+  color: #59667c;
+  border-radius: 8px;
+}
+
+.live-app:not(.dashboard-redesign) .segmented button.selected {
+  color: #244584;
+  background: #fff;
+}
+
+.live-app:not(.dashboard-redesign) :is(.calendar-scroll, .calendar-month) {
+  background: #fff;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .calendar-grid {
+  border: 0;
+  background: #fff;
+}
+
+.live-app:not(.dashboard-redesign) .day-header > span:first-child,
+.live-app:not(.dashboard-redesign) .timezone {
+  color: #68758b;
+}
+
+.live-app:not(.dashboard-redesign) :is(.day-header, .time-gutter-header, .time-gutter, .day-column, .hour-cell, .home-office-cell, .home-office-gutter, .month-cell, .month-cell-header, .month-weekdays) {
+  color: #52617b;
+  background: #fff;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .day-header.is-today,
+.live-app:not(.dashboard-redesign) .month-cell.month-today,
+.live-app:not(.dashboard-redesign) .today-column {
+  background: #f1f4fa;
+}
+
+.live-app:not(.dashboard-redesign) .hour-cell:hover,
+.live-app:not(.dashboard-redesign) .month-cell:hover {
+  background: #f7f8fb;
+}
+
+.live-app:not(.dashboard-redesign) .home-office-assignment,
+.live-app:not(.dashboard-redesign) .month-event {
+  color: #294d94;
+  background: #e8edf8;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .calendar-page-layout .calendar-full {
+  min-height: 620px;
+}
+
+.live-app:not(.dashboard-redesign) .calendar-page-layout .calendar-grid {
+  min-height: 500px;
+}
+
+.live-app:not(.dashboard-redesign) .chat-layout {
+  gap: 14px;
+  border: 0;
+  border-radius: 14px;
+  overflow: visible;
+}
+
+.live-app:not(.dashboard-redesign) .channel-sidebar,
+.live-app:not(.dashboard-redesign) .chat-main {
+  border: 0;
+  border-radius: 14px;
+}
+
+.live-app:not(.dashboard-redesign) .channel-sidebar {
+  padding: 20px 14px;
+}
+
+.live-app:not(.dashboard-redesign) .channel-sidebar-heading,
+.live-app:not(.dashboard-redesign) .channel-sidebar-heading h2 {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .list-label,
+.live-app:not(.dashboard-redesign) .channel-sidebar-note,
+.live-app:not(.dashboard-redesign) .channel-sidebar-note small,
+.live-app:not(.dashboard-redesign) .chat-head small,
+.live-app:not(.dashboard-redesign) .message-meta time,
+.live-app:not(.dashboard-redesign) .chat-date-divider,
+.live-app:not(.dashboard-redesign) .chat-local-note {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .channel-button {
+  color: #52617b;
+  border: 0;
+  border-radius: 9px;
+}
+
+.live-app:not(.dashboard-redesign) .channel-button:hover,
+.live-app:not(.dashboard-redesign) .channel-button.selected {
+  color: #244584;
+  background: #e8edf8;
+}
+
+.live-app:not(.dashboard-redesign) .channel-count,
+.live-app:not(.dashboard-redesign) .you-tag {
+  color: #294d94;
+  background: #e8edf8;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .chat-head,
+.live-app:not(.dashboard-redesign) .conversation-tools,
+.live-app:not(.dashboard-redesign) .thread-heading,
+.live-app:not(.dashboard-redesign) .conversation-search {
+  color: #202b40;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .chat-head h2,
+.live-app:not(.dashboard-redesign) .message-meta strong,
+.live-app:not(.dashboard-redesign) .advanced-message-body > p {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .message p {
+  color: #3f4e66;
+}
+
+.live-app:not(.dashboard-redesign) .chat-date-divider::before,
+.live-app:not(.dashboard-redesign) .chat-date-divider::after {
+  background: #e8ebf0;
+}
+
+.live-app:not(.dashboard-redesign) .message-form {
+  background: #f6f7fa;
+  border: 0;
+  border-radius: 12px;
+}
+
+.live-app:not(.dashboard-redesign) .message-form textarea {
+  color: #202b40;
+  background: transparent;
+}
+
+.live-app:not(.dashboard-redesign) .send-button {
+  color: #fff;
+  background: #294d94;
+  border-radius: 9px;
+}
+
+.live-app:not(.dashboard-redesign) .send-button:hover {
+  background: #1f3e7b;
+}
+
+.live-app:not(.dashboard-redesign) .composer-context > span,
+.live-app:not(.dashboard-redesign) .mention-token,
+.live-app:not(.dashboard-redesign) .message-attachment {
+  color: #294d94;
+  background: #e8edf8;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .hours-balance {
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+}
+
+.live-app:not(.dashboard-redesign) .hours-balance-item {
+  border: 0;
+  padding-inline: 0;
+}
+
+.live-app:not(.dashboard-redesign) .hours-balance-item > strong.negative {
+  color: #a64a34;
+}
+
+.live-app:not(.dashboard-redesign) .hours-month-target,
+.live-app:not(.dashboard-redesign) .work-schedule-actions,
+.live-app:not(.dashboard-redesign) .push-settings,
+.live-app:not(.dashboard-redesign) .offline-settings,
+.live-app:not(.dashboard-redesign) .onboarding-invite {
+  border-color: #e8ebf0;
+}
+
+.live-app:not(.dashboard-redesign) .time-table {
+  overflow: hidden;
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+}
+
+.live-app:not(.dashboard-redesign) .time-table-head {
+  color: #52617b;
+  background: #eef1f7;
+}
+
+.live-app:not(.dashboard-redesign) .time-table-row {
+  color: #52617b;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .time-table-row + .time-table-row {
+  background: #fafbfc;
+}
+
+.live-app:not(.dashboard-redesign) .time-table-row > strong,
+.live-app:not(.dashboard-redesign) .duration-cell {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .people-search {
+  color: #52617b;
+  background: #eef1f7;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .people-search input {
+  background: transparent;
+}
+
+.live-app:not(.dashboard-redesign) .person-card {
+  background: #fff;
+}
+
+.live-app:not(.dashboard-redesign) .person-work {
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .status-label {
+  color: #52617b;
+}
+
+.live-app:not(.dashboard-redesign) .board-column {
+  background: #eef1f7;
+  border: 0;
+  border-radius: 14px;
+}
+
+.live-app:not(.dashboard-redesign) .board-card {
+  background: #fff;
+  border: 0;
+  border-radius: 12px;
+}
+
+.live-app:not(.dashboard-redesign) .board-mine.selected,
+.live-app:not(.dashboard-redesign) .board-column-heading svg {
+  color: #294d94;
+}
+
+.live-app:not(.dashboard-redesign) .board-card .outline-button,
+.live-app:not(.dashboard-redesign) .board-card select {
+  background: #eef1f7;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-module,
+.live-app:not(.dashboard-redesign) .management-workspace {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) :is(.workspace-module-heading h2, .workspace-section-heading h2, .workspace-subheading) {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-module-heading p,
+.live-app:not(.dashboard-redesign) .workspace-module .eyebrow,
+.live-app:not(.dashboard-redesign) .workspace-section-heading p {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-tabs {
+  gap: 4px;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-tabs > button:not(.icon-button) {
+  color: #52617b;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-tabs > button.active {
+  color: #244584;
+  background: #e8edf8;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-section-heading {
+  padding: 20px 0 14px;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-filters select,
+.live-app:not(.dashboard-redesign) .workspace-filters input {
+  background: #eef1f7;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-table {
+  color: #3f4e66;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-table th {
+  color: #52617b;
+  background: #eef1f7;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-table td {
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .workspace-table tbody tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+.live-app:not(.dashboard-redesign) .goal-list progress::-webkit-progress-bar {
+  background: #e7ebf1;
+}
+
+.live-app:not(.dashboard-redesign) .schedule-list > article {
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .schedule-list > article:nth-child(even) {
+  background: #fafbfc;
+}
+
+.live-app:not(.dashboard-redesign) .integration-card {
+  color: #202b40;
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+}
+
+.live-app:not(.dashboard-redesign) .integration-symbol {
+  color: #294d94;
+  background: #e8edf8;
+}
+
+.live-app:not(.dashboard-redesign) .webhook-secret {
+  border: 0;
+  background: #f4eddf;
+}
+
+.live-app:not(.dashboard-redesign) .audit-row {
+  border: 0;
+  border-radius: 10px;
+  padding-inline: 12px;
+}
+
+.live-app:not(.dashboard-redesign) .audit-row[open] {
+  background: #fff;
+}
+
+.live-app:not(.dashboard-redesign) .audit-row summary span {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .inline-notice {
+  color: #315e42;
+  background: #e8f0e9;
+  border: 0;
+  border-radius: 10px;
+}
+
+.live-app:not(.dashboard-redesign) .calls-module > p,
+.live-app:not(.dashboard-redesign) .call-lobby-visual > span {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .call-lobby {
+  overflow: hidden;
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+}
+
+.live-app:not(.dashboard-redesign) .call-lobby-visual {
+  background: #eef1f7;
+}
+
+.live-app:not(.dashboard-redesign) .call-orbit {
+  color: #294d94;
+  background: #fff;
+  border: 0;
+  outline-color: #e8edf8;
+}
+
+.live-app:not(.dashboard-redesign) .call-lobby-controls {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .live-call [data-lk-theme="default"] {
+  --lk-bg: #f6f5f1;
+  --lk-accent-bg: #294d94;
+}
+
+.live-app:not(.dashboard-redesign) .work-schedule-nudge {
+  color: #202b40;
+  background: #e8edf8;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .connection-banner {
+  color: #74552d;
+  background: #f4eddf;
+  border: 0;
+  border-radius: 12px;
+}
+
+.live-app:not(.dashboard-redesign) .empty-state,
+.live-app:not(.dashboard-redesign) .empty-state h3 {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .empty-state > svg {
+  color: #496ba8;
+}
+
+/* The standalone demo uses an older overview layout; keep its surfaces legible. */
+.live-app:not(.dashboard-redesign) .focus-card {
+  color: #202b40;
+  background: #fff;
+}
+
+.live-app:not(.dashboard-redesign) .card-topline,
+.live-app:not(.dashboard-redesign) .card-topline > svg,
+.live-app:not(.dashboard-redesign) .focus-title > span,
+.live-app:not(.dashboard-redesign) .timer-bottom > span:last-child {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .focus-title h2 {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .timer-control {
+  color: #fff;
+  background: #294d94;
+  border: 0;
+  box-shadow: 0 8px 18px #294d9433;
+}
+
+.live-app:not(.dashboard-redesign) .timer-control:hover {
+  background: #1f3e7b;
+}
+
+.live-app:not(.dashboard-redesign) .work-item {
+  color: #202b40;
+  background: #f3f5f9;
+  border: 0;
+  border-radius: 10px;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.live-app:not(.dashboard-redesign) .work-item:hover {
+  background: #e9edf5;
+  transform: translateY(-1px);
+}
+
+.live-app:not(.dashboard-redesign) .work-item strong {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .work-item small,
+.live-app:not(.dashboard-redesign) .work-arrow {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .small-play {
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .tone-orange {
+  color: #8b452e;
+  background: #f8e9e2;
+}
+
+.live-app:not(.dashboard-redesign) .tone-purple {
+  color: #614a86;
+  background: #eee9f6;
+}
+
+.live-app:not(.dashboard-redesign) .tone-green {
+  color: #386647;
+  background: #e8f0e9;
+}
+
+.live-app:not(.dashboard-redesign) .tone-blue {
+  color: #294d94;
+  background: #e8edf8;
+}
+
+.live-app:not(.dashboard-redesign) .meeting-preview {
+  color: #334563;
+  background: #eef1f7;
+  border: 0;
+  border-radius: 10px;
+}
+
+.live-app:not(.dashboard-redesign) .meeting-featured {
+  color: #244584;
+  background: #e8edf8;
+}
+
+.live-app:not(.dashboard-redesign) .meeting-preview > strong {
+  color: #202b40;
+}
+
+.live-app:not(.dashboard-redesign) .meeting-bottom .avatar {
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .context-sidebar,
+.live-app:not(.dashboard-redesign) .hours-summary,
+.live-app:not(.dashboard-redesign) .hours-summary-bottom,
+.live-app:not(.dashboard-redesign) .quick-chat {
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .context-sidebar {
+  padding-left: 0;
+}
+
+.live-app:not(.dashboard-redesign) :is(.section-description, .person-row small, .weekly-total > span, .week-bar-item > span, .hours-summary-bottom > span, .chat-snippet p) {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .week-bar-track {
+  background: #e9edf2;
+}
+
+.live-app:not(.dashboard-redesign) .week-bar-fill {
+  background: #94ad99;
+}
+
+.live-app:not(.dashboard-redesign) .week-bar-item.current .week-bar-fill {
+  background: #39714f;
+}
+
+.live-app:not(.dashboard-redesign) .week-bar-item.current > span {
+  color: #294d94;
+}
+
+.operations-demo.live-app {
+  background: #f6f5f1;
+}
+
+.operations-demo-header {
+  min-height: 72px;
+  padding: 14px 28px;
+  color: #59667c;
+  background: #f6f5f1;
+  border: 0;
+}
+
+.operations-demo-header a {
+  color: #42618d;
+}
+
+.operations-demo-header .demo-badge {
+  color: #59667c;
+  background: #eef1f7;
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 11px;
+}
+
+.operations-demo-layout {
+  grid-template-columns: 208px minmax(0, 1fr);
+}
+
+.operations-demo-layout > aside {
+  color: #202b40;
+  background: #fdfcf9;
+  border: 0;
+}
+
+.operations-brand {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+}
+
+.operations-demo-layout > aside > p,
+.operations-demo-layout > aside > small {
+  color: #59667c;
+}
+
+.operations-demo-layout > aside > nav button {
+  color: #59667c;
+  border-radius: 9px;
+  transition: color 150ms ease, background-color 150ms ease, transform 150ms ease;
+}
+
+.operations-demo-layout > aside > nav button:hover {
+  color: #244584;
+  background: #eef1f7;
+  transform: translateX(2px);
+}
+
+.operations-demo-layout > aside > nav button.active {
+  color: #244584;
+  background: #e8edf8;
+}
+
+.operations-demo-layout > aside > nav button.active svg {
+  color: #294d94;
+}
+
+.operations-demo-layout > main {
+  color: #202b40;
+}
+
+.demo-advanced-chat {
+  color: #202b40;
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+}
+
+.demo-advanced-chat > .chat-header {
+  color: #202b40;
+  border: 0;
+}
+
+.demo-advanced-chat .chat-header > span {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .task-card {
+  color: #202b40;
+  background: #fff;
+  border: 0;
+  border-radius: 12px;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.live-app:not(.dashboard-redesign) .task-card:hover {
+  background: #fbfcfe;
+  transform: translateY(-1px);
+}
+
+.live-app:not(.dashboard-redesign) .task-running {
+  background: #f0f3fa;
+}
+
+.live-app:not(.dashboard-redesign) .task-title:hover {
+  color: #294d94;
+}
+
+.live-app:not(.dashboard-redesign) .task-preview {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .task-overdue {
+  color: #a64a34;
+}
+
+.live-app:not(.dashboard-redesign) .task-card-actions {
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .task-timer-button {
+  color: #294d94;
+  border-radius: 8px;
+  transition: color 150ms ease, background-color 150ms ease, transform 150ms ease;
+}
+
+.live-app:not(.dashboard-redesign) .task-timer-button:hover,
+.live-app:not(.dashboard-redesign) .task-timer-button.is-running {
+  color: #244584;
+  background: #e8edf8;
+}
+
+.live-app:not(.dashboard-redesign) .board-mine.selected {
+  color: #244584;
+  background: #e8edf8;
+}
+
+.live-app:not(.dashboard-redesign) .board-search {
+  color: #52617b;
+  background: #eef1f7;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .document-list {
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) :is(.document-row, .notification-row) {
+  border: 0;
+  border-radius: 10px;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.live-app:not(.dashboard-redesign) :is(.document-row, .notification-row):hover {
+  background: #eef1f7;
+  transform: translateX(2px);
+}
+
+.live-app:not(.dashboard-redesign) :is(.workspace-tabs, .document-list, .table-scroll, .table-scroll > table, .workspace-section-heading, .workspace-section-heading + *) {
+  border-color: transparent;
+}
+
+.live-app:not(.dashboard-redesign) .home-office-open,
+.calendar-demo .home-office-open {
+  color: #294d94;
+  background: #e8edf8;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .home-office-open:hover,
+.calendar-demo .home-office-open:hover {
+  color: #244584;
+  background: #dce5f6;
+}
+
+.live-app:not(.dashboard-redesign) .month-event-home-office,
+.calendar-demo .month-event-home-office {
+  color: #294d94;
+  background: #e8edf8;
+  border: 0;
+  border-radius: 7px;
+}
+
+.live-app:not(.dashboard-redesign) :is(.home-office-roster, .home-office-holidays, .home-office-swaps, .home-office-save-row, .home-office-request, .home-office-request-list, .home-office-holiday-row) {
+  border-color: transparent;
+}
+
+.live-app:not(.dashboard-redesign) .home-office-manager :is(label, .home-office-hint, .home-office-save-row p, .home-office-request p, .home-office-request-list h4) {
+  color: #59667c;
+}
+
+.live-app:not(.dashboard-redesign) .home-office-section-title {
+  color: #294d94;
+}
+
+.live-app:not(.dashboard-redesign) .home-office-roster-row > span,
+.live-app:not(.dashboard-redesign) .home-office-holiday-row {
+  color: #334563;
+}
+
+.live-app:not(.dashboard-redesign) .home-office-roster-row b {
+  color: #294d94;
+  background: #e8edf8;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .home-office-time-input {
+  color: #52617b;
+  background: #eef1f7;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .home-office-confirmed-swaps {
+  color: #39714f;
+}
+
+.calendar-demo .operations-demo-header {
+  margin-bottom: 28px;
+}
+
+.calendar-demo .calendar-section {
+  color: #202b40;
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+}
+
+.calendar-demo .calendar-grid,
+.calendar-demo .calendar-scroll {
+  border: 0;
+}
+
+.calendar-demo .calendar-section .section-heading h2 {
+  color: #202b40;
+}
+
+.calendar-demo :is(.filter-button, .today-button, .add-calendar) {
+  color: #334563;
+  background: #eef1f7;
+  border: 0;
+  border-radius: 9px;
+}
+
+.calendar-demo .segmented {
+  background: #eef1f7;
+  border: 0;
+}
+
+.calendar-demo .segmented button {
+  color: #59667c;
+}
+
+.calendar-demo .segmented button.selected {
+  color: #244584;
+  background: #fff;
+}
+
+.calendar-demo :is(.day-header, .time-gutter-header, .time-gutter, .day-column, .hour-cell, .home-office-cell, .home-office-gutter, .month-cell, .month-cell-header, .month-weekdays) {
+  color: #52617b;
+  background: #fff;
+  border: 0;
+}
+
+.calendar-demo .day-header.is-today,
+.calendar-demo .month-cell.month-today,
+.calendar-demo .today-column {
+  background: #f1f4fa;
+}
+
+.calendar-demo .home-office-assignment,
+.calendar-demo .month-event {
+  color: #294d94;
+  background: #e8edf8;
+  border: 0;
+}
+
+@media (max-width: 700px) {
+  .operations-demo-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .operations-demo-layout > aside {
+    min-width: 0;
+    padding: 12px 16px;
+  }
+
+  .operations-demo-layout > aside > nav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 4px;
+  }
+
+  .operations-demo-layout > main {
+    padding: 24px 18px;
+  }
+
+  .operations-demo-layout > aside {
+    border: 0;
+  }
+
+  .operations-demo-layout > aside > .operations-brand,
+  .operations-demo-layout > aside > p,
+  .operations-demo-layout > aside > small {
+    display: none;
+  }
+
+  .operations-demo-layout > aside > nav button.active {
+    color: #244584;
+    background: #e8edf8;
+  }
+}
+
+.live-app:not(.dashboard-redesign) .dialog {
+  color: #202b40;
+  background: #fff;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 24px 70px #1b2d4d26;
+}
+
+.live-app:not(.dashboard-redesign) .dialog::backdrop {
+  background: #1a2a4b66;
+}
+
+.live-app:not(.dashboard-redesign) .dialog-form label,
+.live-app:not(.dashboard-redesign) .timer-form label {
+  color: #52617b;
+}
+
+.live-app:not(.dashboard-redesign) .dialog-actions {
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) :is(.project-tag, .channel-heading-icon, .notification-item > span:first-child) {
+  color: #294d94;
+  background: #e8edf8;
+}
+
+.live-app:not(.dashboard-redesign) .form-alert {
+  color: #843c2b;
+  background: #fbeee8;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .form-success {
+  color: #315e42;
+  background: #e8f0e9;
+  border: 0;
+}
+
+.live-app:not(.dashboard-redesign) .toast {
+  color: #202b40;
+  background: #fff;
+  border: 0;
+  box-shadow: 0 12px 32px #2538581a;
+}
+
+body:has(.live-app:not(.dashboard-redesign)) .dialog {
+  color: #202b40;
+  background: #fff;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 24px 70px #1b2d4d26;
+}
+
+body:has(.live-app:not(.dashboard-redesign)) .dialog::backdrop {
+  background: #1a2a4b66;
+}
+
+body:has(.live-app:not(.dashboard-redesign)) .dialog-actions {
+  border: 0;
+}
+
+body:has(.live-app:not(.dashboard-redesign)) .zulu-tooltip {
+  color: #fff;
+  background: #202b40;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: none;
+  font-family: "Inter Variable", sans-serif;
+  pointer-events: none;
+}
+
+/* Account access shares the same ivory, navy and icon-first language. */
+.auth-shell {
+  color: #202b40;
+  background: #f6f5f1;
+}
+
+.auth-story {
+  color: #202b40;
+  background: #eef1f7;
+  border: 0;
+}
+
+.auth-orbit-icon,
+.auth-step-icon {
+  color: #294d94;
+  background: #fff;
+  border: 0;
+  border-radius: 18px;
+}
+
+.auth-story-main h1,
+.auth-title h2 {
+  color: #202b40;
+}
+
+.auth-story-main h1 > span {
+  color: #294d94;
+}
+
+.auth-story-main > p,
+.auth-story-details > span,
+.auth-story-footer,
+.auth-title > p,
+.auth-form label,
+.auth-switch,
+.auth-bottom,
+.auth-security-note,
+.mfa-intro > p,
+.mfa-instructions,
+.mfa-secret summary,
+.mfa-secret p {
+  color: #59667c;
+}
+
+.auth-form input,
+.auth-form select {
+  color: #202b40;
+  background: #eef1f7;
+  border: 0;
+  border-radius: 9px;
+}
+
+.auth-form input:hover,
+.auth-form select:hover {
+  background: #e8edf5;
+}
+
+.auth-switch button,
+.auth-bottom a,
+.password-label .text-button {
+  color: #294d94;
+}
+
+.auth-switch button:hover,
+.auth-bottom a:hover {
+  color: #1f3e7b;
+}
+
+.auth-security-note,
+.onboarding-invite {
+  border-color: #e0e3ea;
+}
+
+.mfa-secret {
+  color: #202b40;
+  background: #eef1f7;
+  border: 0;
+  border-radius: 9px;
+}
+
+.mfa-secret code,
+.copy-id {
+  color: #294d94;
+  background: #fff;
+  border: 0;
+  border-radius: 8px;
+}
+
+.auth-step-icon {
+  margin-bottom: 18px;
+}
+
+@media (max-width: 760px) {
+  .live-app .rail {
+    position: fixed;
+    z-index: 40;
+    inset: auto 10px 10px;
+    width: auto;
+    height: 62px;
+    padding: 5px 9px;
+    flex-direction: row;
+    justify-content: center;
+    background: #fdfcf9ee;
+    border: 0;
+    border-radius: 20px;
+    overflow: visible;
+  }
+
+  .live-app .rail > .brand,
+  .live-app .rail-divider,
+  .live-app .rail-bottom {
+    display: none;
+  }
+
+  .live-app .rail nav {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    overflow: auto hidden;
+  }
+
+  .live-app .rail-button {
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    min-height: 46px;
+    margin: 0;
+  }
+
+  .live-app .app-content {
+    margin-left: 0;
+  }
+
+  .live-app:not(.dashboard-redesign) .main-content {
+    padding: 24px 18px 100px;
+  }
+
+  .live-app:not(.dashboard-redesign) .topbar {
+    padding-inline: 18px;
+  }
+}
+
+@media (max-width: 520px) {
+  .live-app:not(.dashboard-redesign) .page-heading {
+    align-items: flex-start;
+  }
+
+  .live-app:not(.dashboard-redesign) .page-heading h1 {
+    font-size: 27px;
+  }
+
+  .live-app:not(.dashboard-redesign) .page-heading-actions {
+    gap: 8px;
+  }
+
+  .live-app:not(.dashboard-redesign) .calendar-section {
+    padding: 16px 12px;
+  }
+
+  .live-app:not(.dashboard-redesign) .hours-overview {
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .live-app:not(.dashboard-redesign) .auth-content {
+    background: #f6f5f1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-app .primary-button,
+  .live-app .rail-button {
+    transition: none;
+  }
+}

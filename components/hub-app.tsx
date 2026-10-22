@@ -1,5 +1,7 @@
 "use client";
 import { BrandMark } from "./brand";
+import { DashboardNavIcon } from "./dashboard-nav-icon";
+import { Tooltip } from "@heroui/react";
 
 import {
   useEffect,
@@ -163,7 +165,8 @@ function Dialog({
 export function HubApp() {
   const [ready, setReady] = useState(false),
     [now, setNow] = useState<number>(0),
-    [page, setPage] = useState<Page>("overview");
+    [page, setPage] = useState<Page>("overview"),
+    [navTooltip, setNavTooltip] = useState<string | null>(null);
   const [events, setEvents] = useState<StoredEvent[]>([]),
     [messages, setMessages] = useState(initialMessages),
     [entries, setEntries] = useState<TimeEntry[]>([]),
@@ -750,7 +753,7 @@ export function HubApp() {
       </div>
     );
   return (
-    <div className="app-shell">
+    <div className="app-shell live-app">
       <a className="skip-link" href="#main-content">
         Pular para o conteúdo
       </a>
@@ -765,33 +768,52 @@ export function HubApp() {
         <div className="rail-divider" />
         <nav>
           {navigation.map((item) => (
-            <button
-              key={item.id}
-              className={`rail-button ${page === item.id ? "active" : ""}`}
-              onClick={() => navigate(item.id)}
-              aria-label={item.label}
-              aria-current={page === item.id ? "page" : undefined}
-            >
-              <item.icon
-                size={23}
-                weight={page === item.id ? "fill" : "regular"}
-              />
-              <span className="nav-tooltip">{item.label}</span>
-              {item.id === "chat" && !notified && (
-                <span className="nav-unread" />
-              )}
-            </button>
+            <Tooltip key={item.id} isOpen={navTooltip === item.label} onOpenChange={open => { if (!open) setNavTooltip(null); }} delay={450}>
+              <Tooltip.Trigger<"button">
+                render={(triggerProps) => (
+                  <button
+                    {...triggerProps}
+                    className={`rail-button ${page === item.id ? "active" : ""}`}
+                    onClick={() => navigate(item.id)}
+                    onMouseEnter={() => setNavTooltip(item.label)}
+                    onMouseLeave={() => setNavTooltip(null)}
+                    onFocus={event => { triggerProps.onFocus?.(event); setNavTooltip(item.label); }}
+                    onBlur={event => { triggerProps.onBlur?.(event); setNavTooltip(null); }}
+                    aria-label={item.label}
+                    aria-current={page === item.id ? "page" : undefined}
+                  />
+                )}
+              >
+                <DashboardNavIcon name={item.id} />
+              </Tooltip.Trigger>
+              <Tooltip.Content className="zulu-tooltip" placement="right">
+                {item.label}
+              </Tooltip.Content>
+            </Tooltip>
           ))}
         </nav>
         <div className="rail-bottom">
-          <button
-            className="rail-button"
-            aria-label="Preferências e perfil"
-            onClick={() => setDialog("settings")}
-          >
-            <GearSix size={23} />
-            <span className="nav-tooltip">Preferências</span>
-          </button>
+          <Tooltip isOpen={navTooltip === "Preferências"} onOpenChange={open => { if (!open) setNavTooltip(null); }} delay={450}>
+            <Tooltip.Trigger<"button">
+              render={(triggerProps) => (
+                <button
+                  {...triggerProps}
+                  className="rail-button"
+                  aria-label="Preferências e perfil"
+                  onClick={() => setDialog("settings")}
+                  onMouseEnter={() => setNavTooltip("Preferências")}
+                  onMouseLeave={() => setNavTooltip(null)}
+                  onFocus={event => { triggerProps.onFocus?.(event); setNavTooltip("Preferências"); }}
+                  onBlur={event => { triggerProps.onBlur?.(event); setNavTooltip(null); }}
+                />
+              )}
+            >
+              <DashboardNavIcon name="settings" />
+            </Tooltip.Trigger>
+            <Tooltip.Content className="zulu-tooltip" placement="right">
+              Preferências
+            </Tooltip.Content>
+          </Tooltip>
           <button
             className="profile-button"
             aria-label="Editar meu perfil"
@@ -1595,13 +1617,6 @@ export function HubApp() {
               )}
             </section>
           )}
-          <footer className="app-footer">
-            <span>Feito para o trabalho acontecer.</span>
-            <span>
-              <i className="local-dot" />
-              Ambiente visual · dados locais
-            </span>
-          </footer>
         </main>
       </div>
       {toast && (

@@ -64,7 +64,7 @@ export function CalendarDemo() {
   }, [today]);
   const monday = mondayOf(date);
   return (
-    <div className="calendar-demo">
+    <div className="calendar-demo live-app">
       <header className="operations-demo-header">
         <a href="/demo">Voltar ao dashboard</a>
         <span className="demo-badge">Demonstração · dados fictícios</span>

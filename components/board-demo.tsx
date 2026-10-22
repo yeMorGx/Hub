@@ -111,7 +111,7 @@ export function BoardDemo() {
       { id: string; task_id: string } | undefined
     >();
   return (
-    <main className="kanban-demo">
+    <main className="kanban-demo live-app">
       <header>
         <Link href="/demo" className="text-button">
           <ArrowLeft size={16} />

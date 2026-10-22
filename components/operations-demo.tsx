@@ -33,7 +33,7 @@ export function OperationsDemo() {
     isTyping: false,
   } as unknown as ReturnType<typeof useChannel>;
   return (
-    <div className="operations-demo">
+    <div className="operations-demo live-app">
       <header className="operations-demo-header">
         <a href="/demo">
           <ArrowLeft size={16} />
@@ -44,9 +44,9 @@ export function OperationsDemo() {
       </header>
       <div className="operations-demo-layout">
         <aside>
-          <span className="wordmark">
-            ZULU<span>.</span>
-          </span>
+          <a className="operations-brand" href="/demo" aria-label="ZULU">
+            <img src="/brand/zulu-mark.svg" alt="" width="42" height="42" />
+          </a>
           <p>ESTÚDIO FORMA</p>
           <nav aria-label="Módulos de demonstração">
             {[
