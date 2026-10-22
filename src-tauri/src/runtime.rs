@@ -180,15 +180,13 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
                 .title("ZULU — Mini timer")
                 .inner_size(328.0, 80.0)
                 .decorations(false)
-                .transparent(true)
-                .background_color(tauri::window::Color(0, 0, 0, 0))
+                .background_color(tauri::window::Color(16, 17, 18, 255))
                 .shadow(false)
                 .always_on_top(true)
                 .skip_taskbar(true)
                 .resizable(false)
                 .maximizable(false)
                 .minimizable(false)
-                .focused(false)
                 .on_navigation(|url| {
                     url.scheme() == "https"
                         && url.host_str() == Some("hub-one-azure.vercel.app")
