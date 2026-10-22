@@ -187,6 +187,13 @@ try {
   $miniPaint.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
   $miniCapture.Save((Join-Path $OutputDirectory 'mini-open.png'))
   $miniPaint.Dispose(); $miniCapture.Dispose()
+  [HubNativeWindow]::SetForegroundWindow($miniHandle) | Out-Null
+  Start-Sleep -Seconds 3
+  $focusedCapture = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
+  $focusedPaint = [System.Drawing.Graphics]::FromImage($focusedCapture)
+  $focusedPaint.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+  $focusedCapture.Save((Join-Path $OutputDirectory 'mini-focused.png'))
+  $focusedPaint.Dispose(); $focusedCapture.Dispose()
   $miniCloseCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Ocultar mini timer')
   Wait-Until { $null -ne $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition) } 45
   $report.miniWindow = $true
