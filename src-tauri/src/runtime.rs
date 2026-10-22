@@ -81,6 +81,21 @@ pub enum MiniAction {
     Drag,
 }
 
+pub fn smoke_webview_diagnostic(message: &str) {
+    #[cfg(target_os = "windows")]
+    if std::env::var_os("ZULU_DESKTOP_SMOKE").is_some() {
+        use std::io::Write;
+        let path = std::env::temp_dir().join("zulu-desktop-smoke-webview.log");
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(path)
+        {
+            let _ = writeln!(file, "{message}");
+        }
+    }
+}
+
 fn trusted(window: &tauri::WebviewWindow, label: &str) -> Result<(), String> {
     let url = window.url().map_err(|_| "Janela indisponível.")?;
     if window.label() != label
@@ -188,9 +203,13 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
                 .maximizable(false)
                 .minimizable(false)
                 .on_navigation(|url| {
-                    url.scheme() == "https"
+                    let allowed = url.scheme() == "https"
                         && url.host_str() == Some("hub-one-azure.vercel.app")
-                        && url.path() == "/desktop/timer"
+                        && url.path().trim_end_matches('/') == "/desktop/timer";
+                    smoke_webview_diagnostic(&format!(
+                        "mini-navigation allowed={allowed} url={url}"
+                    ));
+                    allowed
                 })
                 .build()
                 .map_err(|_| "Não foi possível abrir o mini timer.")?;

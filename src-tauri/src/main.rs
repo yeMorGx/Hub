@@ -88,6 +88,13 @@ fn main() {
                 .build(),
         )
         .on_page_load(|webview, payload| {
+            #[cfg(target_os = "windows")]
+            runtime::smoke_webview_diagnostic(&format!(
+                "page-load window={} event={:?} url={}",
+                webview.label(),
+                payload.event(),
+                payload.url()
+            ));
             // A failed/offline navigation must still have standard OS controls.
             #[cfg(target_os = "windows")]
             if payload.event() == tauri::webview::PageLoadEvent::Started

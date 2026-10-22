@@ -2,6 +2,9 @@
 $ErrorActionPreference = 'Stop'
 New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 $installDirectory = Join-Path $env:RUNNER_TEMP 'HubDesktopSmoke'
+$webviewLog = Join-Path $env:RUNNER_TEMP 'zulu-desktop-smoke-webview.log'
+Remove-Item $webviewLog -Force -ErrorAction SilentlyContinue
+$env:ZULU_DESKTOP_SMOKE = '1'
 if (Test-Path $installDirectory) { throw 'The smoke install directory must be empty.' }
 $report = [ordered]@{ platform = 'Windows'; installer = (Split-Path $Installer -Leaf); sha256 = (Get-FileHash $Installer -Algorithm SHA256).Hash.ToLower(); signature = (Get-AuthenticodeSignature $Installer).Status.ToString(); signed = $false; installed = $false; windowOpened = $false; loginPageLoaded = $false; customTitlebar = $false; maximizeRestored = $false; minimizeControl = $false; singleInstance = $false; shortcutRestoredWindow = $false; backgroundTray = $false; autostartToggle = $false; miniWindow = $false; miniTopmost = $false; hiddenStartup = $false; uninstalled = $false; accountsCreated = 0; businessWrites = 0 }
 $report.signed = $report.signature -eq 'Valid'
@@ -255,7 +258,8 @@ try {
   try {
     if ($appProcess) {
       $appProcess.Refresh()
-      @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); miniBounds=$miniBounds; windows=[HubNativeWindow]::Windows($appProcess.Id); stage=$currentStage; report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
+      $pageLoads = if (Test-Path $webviewLog) { Get-Content $webviewLog -Raw } else { '' }
+      @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); miniBounds=$miniBounds; windows=[HubNativeWindow]::Windows($appProcess.Id); stage=$currentStage; pageLoads=$pageLoads; report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
     }
     if ($root) {
       $names=@($root.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.Condition]::TrueCondition) | Select-Object -First 120 | ForEach-Object { @{name=$_.Current.Name;class=$_.Current.ClassName;type=$_.Current.ControlType.ProgrammaticName} })
