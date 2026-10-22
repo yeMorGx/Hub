@@ -183,7 +183,10 @@ try {
   $report.autostartToggle = $true
   $currentStage = 'dismiss runtime options'
   [HubNativeWindow]::SetForegroundWindow($handle) | Out-Null
-  [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
+  $mainBounds = [HubNativeWindow]::Bounds($handle)
+  [HubNativeWindow]::ClickCenter(
+    $mainBounds[0] + [int](($mainBounds[2] - $mainBounds[0]) * 0.2),
+    $mainBounds[1] + [int](($mainBounds[3] - $mainBounds[1]) * 0.75))
   $quitOption = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Sair do ZULU')
   Wait-Until { $null -eq $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $quitOption) } 10
   $currentStage = 'close main window to tray'
