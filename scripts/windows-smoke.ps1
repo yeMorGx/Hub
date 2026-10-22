@@ -41,6 +41,13 @@ function Wait-Until([scriptblock]$Condition, [int]$Seconds = 45) {
   do { if (& $Condition) { return }; Start-Sleep -Milliseconds 500 } while ([DateTime]::UtcNow -lt $deadline)
   throw 'Timed out waiting for a desktop smoke condition.'
 }
+function Get-ZuluRunEntry {
+  foreach ($path in @('HKCU:\Software\Microsoft\Windows\CurrentVersion\Run', 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run')) {
+    $entry = Get-ItemProperty -Path $path -Name ZULU -ErrorAction SilentlyContinue
+    if ($null -ne $entry) { return [string]$entry.ZULU }
+  }
+  return $null
+}
 try {
   $setup = Start-Process -FilePath $Installer -ArgumentList @('/S', "/D=$installDirectory") -PassThru -Wait
   if ($setup.ExitCode -ne 0) { throw "Installer failed with exit code $($setup.ExitCode)." }
@@ -111,17 +118,17 @@ try {
     [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::ControlTypeProperty, [System.Windows.Automation.ControlType]::CheckBox))
   Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $checkCondition) } 15
   $check = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $checkCondition)
-  if ((Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU) { throw 'Startup must be opt-in on a fresh installation.' }
+  if (Get-ZuluRunEntry) { throw 'Startup must be opt-in on a fresh installation.' }
   Wait-Until { $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants,$checkCondition).Current.IsEnabled } 15
   [HubNativeWindow]::SetForegroundWindow($handle) | Out-Null
   $check.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ')
-  Wait-Until { (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU -like '*--background*' } 15
-  $startup = (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU).ZULU
+  Wait-Until { (Get-ZuluRunEntry) -like '*--background*' } 15
+  $startup = Get-ZuluRunEntry
   if ($startup -notlike "*$installDirectory*") { throw 'Startup entry must point to this installation.' }
   Wait-Until { $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants,$checkCondition).Current.IsEnabled } 15
   $check=$root.FindFirst([System.Windows.Automation.TreeScope]::Descendants,$checkCondition)
   $check.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ')
-  Wait-Until { -not (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name ZULU -ErrorAction SilentlyContinue).ZULU } 15
+  Wait-Until { -not (Get-ZuluRunEntry) } 15
   $report.autostartToggle = $true
   [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
   Invoke-HubControl 'Fechar ZULU'
