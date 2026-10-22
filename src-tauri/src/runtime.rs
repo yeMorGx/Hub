@@ -184,7 +184,6 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
                 .background_color(tauri::window::Color(0, 0, 0, 0))
                 .shadow(false)
                 .always_on_top(true)
-                .visible(false)
                 .skip_taskbar(true)
                 .resizable(false)
                 .maximizable(false)
