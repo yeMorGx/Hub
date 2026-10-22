@@ -19,6 +19,7 @@ import {
   Coffee,
   House,
   Play,
+  Plus,
   Stop,
   X,
 } from "@phosphor-icons/react";
@@ -54,6 +55,7 @@ export type TodayOverviewProps = {
     description: string;
     project: string;
     projectId?: string;
+    pausedAt?: string;
   };
   busy: boolean;
   canParticipate: boolean;
@@ -67,6 +69,7 @@ export type TodayOverviewProps = {
   homeOfficeError: boolean;
   projects: { id: string; name: string }[];
   activities: ActivityChoice[];
+  onCreateProject?: (name: string) => Promise<{ id: string; name: string } | null>;
   onStartActivity: (input: ActivityInput) => Promise<boolean>;
   onToggleTimer: () => void;
   onStopTimer: () => void;
@@ -87,7 +90,46 @@ export function TodayOverview(props: TodayOverviewProps) {
   const [taskId, setTaskId] = useState<string>();
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState("");
+  const [addingProject, setAddingProject] = useState(false);
+  const [projectName, setProjectName] = useState("");
+  const [savingProject, setSavingProject] = useState(false);
+  const [projectError, setProjectError] = useState("");
+  const [createdProjects, setCreatedProjects] = useState<{ id: string; name: string }[]>([]);
+  const [lunchNow, setLunchNow] = useState(0);
+  const projectNameRef = useRef<HTMLInputElement>(null);
+  const projectSaveLock = useRef(false);
+  const projectOptions = [...props.projects, ...createdProjects.filter(item => !props.projects.some(existing => existing.id === item.id))];
   const activityRef = useRef<HTMLInputElement>(null);
+  useEffect(() => { if (addingProject) projectNameRef.current?.focus(); }, [addingProject]);
+  useEffect(() => {
+    if (timer.state !== "lunch") return;
+    setLunchNow(Date.now());
+    const interval = setInterval(() => setLunchNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, [timer.state, timer.pausedAt]);
+  const lunchStart = timer.pausedAt ? Date.parse(timer.pausedAt) : NaN;
+  const lunchSeconds = Number.isFinite(lunchStart) && lunchNow ? Math.max(0, Math.floor((lunchNow - lunchStart) / 1000)) : 0;
+  function closeProjectCreator() {
+    setAddingProject(false);
+    setProjectError("");
+    requestAnimationFrame(() => document.querySelector<HTMLButtonElement>("#today-activity-picker .select__trigger")?.focus());
+  }
+  async function saveNewProject() {
+    if (!props.onCreateProject || projectSaveLock.current || busy || !projectName.trim()) return;
+    projectSaveLock.current = true;
+    setSavingProject(true);
+    setProjectError("");
+    try {
+      const created = await props.onCreateProject(projectName.trim());
+      if (!created) { setProjectError("Não foi possível criar o projeto. Tente novamente."); return; }
+      setCreatedProjects(items => [...items.filter(item => item.id !== created.id), created]);
+      setProject(created.id);
+      setTaskId(undefined);
+      closeProjectCreator();
+      setProjectName("");
+    } catch { setProjectError("Não foi possível criar o projeto. Tente novamente."); }
+    finally { projectSaveLock.current = false; setSavingProject(false); }
+  }
   useEffect(() => {
     if (choosing) activityRef.current?.focus();
   }, [choosing]);
@@ -235,7 +277,7 @@ export function TodayOverview(props: TodayOverviewProps) {
                 className="today-activity-form"
                 onSubmit={async (event) => {
                   event.preventDefault();
-                  if (starting || busy || !activity.trim()) return;
+                  if (starting || busy || addingProject || !activity.trim()) return;
                   setStarting(true);
                   setStartError("");
                   try {
@@ -285,16 +327,36 @@ export function TodayOverview(props: TodayOverviewProps) {
                       setProject(value);
                       setTaskId(undefined);
                     }}
-                    disabled={starting || busy}
+                    disabled={starting || busy || savingProject}
+                    onAddNew={props.onCreateProject ? () => { setAddingProject(true); setProjectError(""); } : undefined}
+                    addNewLabel="Adicionar novo projeto"
                   >
                     <option value="">Sem projeto</option>
-                    {props.projects.map((item) => (
+                    {projectOptions.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.name}
                       </option>
                     ))}
                   </ZuluSelect>
                 </ZuluLabel>
+                {addingProject && (
+                  <div className="today-new-project">
+                    <ZuluLabel>
+                      Nome do novo projeto
+                      <ZuluInput ref={projectNameRef} aria-label="Nome do novo projeto" value={projectName} maxLength={120} disabled={savingProject || busy} placeholder="Ex.: Identidade visual" onChange={event => setProjectName(event.target.value)} onKeyDown={event => {
+                        if (event.key === "Enter") { event.preventDefault(); void saveNewProject(); }
+                        if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); if (!savingProject) closeProjectCreator(); }
+                      }} />
+                    </ZuluLabel>
+                    <div className="today-new-project-actions">
+                      <ZuluButton type="button" disabled={savingProject || busy || !projectName.trim()} onClick={() => void saveNewProject()}>
+                        {savingProject ? <Spinner size="sm" aria-label="Criando projeto" /> : <Plus size={16} />} Criar projeto
+                      </ZuluButton>
+                      <ZuluButton type="button" disabled={savingProject} onClick={closeProjectCreator}>Cancelar</ZuluButton>
+                    </div>
+                    {projectError && <p role="alert">{projectError}</p>}
+                  </div>
+                )}
                 {props.activities.length > 0 && (
                   <div
                     className="today-activity-suggestions"
@@ -329,7 +391,7 @@ export function TodayOverview(props: TodayOverviewProps) {
                 <ZuluButton
                   type="submit"
                   className="primary-button"
-                  disabled={starting || busy || !props.canParticipate}
+                  disabled={starting || busy || addingProject || !props.canParticipate}
                 >
                   {starting ? (
                     <Spinner size="sm" aria-label="Iniciando atividade" />
@@ -342,9 +404,14 @@ export function TodayOverview(props: TodayOverviewProps) {
             </section>
           )}
           {timer.state === "lunch" && (
-            <p className="today-lunch-note">
-              O almoço não entra nas horas. Retome quando voltar.
-            </p>
+            <div className="today-lunch-timer">
+              <Coffee size={18} aria-hidden="true" />
+              <div>
+                <span>Tempo de almoço</span>
+                <strong role="timer" aria-label="Duração do almoço">{clock(lunchSeconds)}</strong>
+              </div>
+              <small>{Number.isFinite(lunchStart) ? `Desde ${new Date(lunchStart).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })} · ` : ""}Não conta como trabalho</small>
+            </div>
           )}
         </Card>
         <Card className="today-journey">

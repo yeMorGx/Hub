@@ -24,3 +24,11 @@ Os testes de navegador usam a prévia pública em memória e a fixture isolada H
 ## Publicação
 
 Publicado em https://hub-one-azure.vercel.app, deployment `dpl_Hhmmh6gUhrAMSAKm3uksNozmEEZW` READY, fonte `e348d09`. Verificação pública: 32 checks HTTP e fluxo de atividade, pessoas, mensagem fictícia e navegação nas larguras 1440/390/320px. Ícones também conferidos com hover, teclado e redução de movimento. Identificação e evidências em `.impeccable/review/dashboard-workflow/`.
+
+## Projetos no timer e duração do almoço
+
+O Select/ListBox HeroUI v3 do projeto inclui a ação de rodapé “Adicionar novo projeto” (referências oficiais: https://heroui.com/en/docs/react/components/select e https://heroui.com/en/docs/react/components/text-field). Ela fecha o dropdown e abre um campo inline no próprio seletor de atividade. Criar seleciona o projeto retornado pela RPC `save_project`; cancelar/Escape devolve o foco ao seletor. Nome vazio, envio duplicado, carregamento e falha recebem tratamento. A ação segue `canManage`, preservando as permissões existentes do servidor. A prévia cria somente em memória.
+
+Durante o almoço, o card mostra um cronômetro secundário, o horário de início e a indicação de que a pausa não conta como trabalho. A duração parte de `paused_timers.paused_at` e continua correta após recarregar uma sessão autenticada. O cronômetro principal permanece parado; retomar remove o indicador de almoço e continua o trabalho. Sem alterações no banco ou no instalador nativo.
+
+Verificação: `scripts/dashboard-project-lunch-browser.py` exercita criação/seleção, início da atividade, pausa, avanço independente do almoço, retomada, erros de página e overflow em 1440px e 390px. A prévia não comprova uma gravação real autenticada no Supabase.

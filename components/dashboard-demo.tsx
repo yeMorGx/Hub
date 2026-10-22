@@ -40,6 +40,8 @@ export function DashboardDemo() {
   const [scenario, setScenario] = useState("running");
   const [timer, setTimer] = useState<"idle" | "running" | "lunch">("running");
   const [elapsed, setElapsed] = useState(5082);
+  const [pausedAt, setPausedAt] = useState<string>();
+  const [newProjects, setNewProjects] = useState<{id: string; name: string}[]>([]);
   const [activity, setActivity] = useState("Interface do aplicativo");
   const [activityProject, setActivityProject] = useState(
     "ZULU · Design de produto",
@@ -174,6 +176,7 @@ export function DashboardDemo() {
   }, [today, scenario]);
   function showScenario(value: string) {
     setScenario(value);
+    setPausedAt(value === "lunch" ? new Date(Date.now() - 12 * 60 * 1000).toISOString() : undefined);
     setTimer(
       value === "lunch"
         ? "lunch"
@@ -324,6 +327,7 @@ export function DashboardDemo() {
                   timer={{
                     state: timer,
                     elapsed,
+                    pausedAt,
                     description: activity,
                     project: activityProject,
                   }}
@@ -349,7 +353,7 @@ export function DashboardDemo() {
                   todayKey={dayKey(today)}
                   homeOffice={hub.snapshot.homeOffice}
                   homeOfficeError={scenario === "error"}
-                  projects={hub.snapshot.projects}
+                  projects={[...hub.snapshot.projects, ...newProjects]}
                   activities={
                     scenario === "empty"
                       ? []
@@ -368,10 +372,16 @@ export function DashboardDemo() {
                           },
                         ]
                   }
+                  onCreateProject={async name => {
+                    const project = {id: crypto.randomUUID(), name};
+                    setNewProjects(items => [...items, project]);
+                    setNotice("Projeto criado apenas nesta demonstração.");
+                    return project;
+                  }}
                   onStartActivity={async (input) => {
                     setActivity(input.description);
                     setActivityProject(
-                      hub.snapshot.projects.find(
+                      [...hub.snapshot.projects, ...newProjects].find(
                         (project) => project.id === input.projectId,
                       )?.name ?? "Sem projeto",
                     );
@@ -383,6 +393,7 @@ export function DashboardDemo() {
                     return true;
                   }}
                   onToggleTimer={() => {
+                    setPausedAt(timer === "running" ? new Date().toISOString() : undefined);
                     setTimer(timer === "running" ? "lunch" : "running");
                     setNotice(
                       "Timer demonstrativo. Nenhuma hora é enviada ao servidor.",

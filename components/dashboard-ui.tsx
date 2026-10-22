@@ -42,7 +42,7 @@ import {
 
 import { CalendarDate } from "@internationalized/date";
 import { I18nProvider } from "react-aria-components";
-import { CalendarDots, SquaresFour, CaretDown } from "@phosphor-icons/react";
+import { CalendarDots, SquaresFour, CaretDown, Plus } from "@phosphor-icons/react";
 
 // Scope the HeroUI migration to Today and the dialogs opened from it.
 const DashboardUI = createContext(false);
@@ -107,6 +107,8 @@ type SelectProps = Omit<
 > & {
   onValueChange?: (value: string) => void;
   label?: ReactNode;
+  onAddNew?: () => void;
+  addNewLabel?: string;
 };
 type Option = { value: string; text: string; disabled: boolean };
 function optionsFrom(children: ReactNode, group = ""): Option[] {
@@ -142,6 +144,8 @@ function optionsFrom(children: ReactNode, group = ""): Option[] {
 export function ZuluSelect({
   children,
   label,
+  onAddNew,
+  addNewLabel = "Adicionar novo",
   value,
   defaultValue,
   onValueChange,
@@ -154,6 +158,7 @@ export function ZuluSelect({
   ...props
 }: SelectProps) {
   const enabled = useDashboardUI();
+  const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(
     defaultValue == null ? undefined : String(defaultValue),
   );
@@ -184,6 +189,8 @@ export function ZuluSelect({
         id={id}
         className={`zulu-select ${className ?? ""}`}
         variant="secondary"
+        isOpen={open}
+        onOpenChange={setOpen}
         aria-label={
           ariaLabel ??
           {
@@ -234,6 +241,11 @@ export function ZuluSelect({
               </ListBox.Item>
             ))}
           </ListBox>
+          {onAddNew && (
+            <Button type="button" className="zulu-select-add" variant="tertiary" onPress={() => { setOpen(false); onAddNew(); }}>
+              <Plus size={16} />{addNewLabel}
+            </Button>
+          )}
         </Select.Popover>
       </Select>
       {name && (

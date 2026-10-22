@@ -939,7 +939,7 @@
   min-width: 0;
   color: #59667c;
 }
-.dashboard-redesign .today-activity-form .input {
+.dashboard-redesign .today-activity-form input.input {
   width: 100%;
   min-height: 42px;
   font-size: 12px;
@@ -1125,11 +1125,11 @@
 .dashboard-redesign .today-activity-form > label,
 .dashboard-redesign .today-activity-form .label,
 .dashboard-redesign .today-activity-suggestions small { color: #e4edff; }
-.dashboard-redesign .today-activity-form .input,
+.dashboard-redesign .today-activity-form input.input,
 .dashboard-redesign .today-activity-form .select__trigger {
   color: #fff; background: #101b33b3; caret-color: #fff;
 }
-.dashboard-redesign .today-activity-form .input::placeholder { color: #d2dcf2; }
+.dashboard-redesign .today-activity-form input.input::placeholder { color: #d2dcf2; }
 .dashboard-redesign .today-activity-suggestions .button { color: #fff; background: #ffffff1f; }
 .dashboard-redesign .today-activity-suggestions .button:hover,
 .dashboard-redesign .today-activity-suggestions .button[aria-pressed=true] { color: #fff; background: #ffffff36; }
@@ -1138,10 +1138,43 @@
 .dashboard-redesign .today-activity-picker :is(.button,.select__trigger)[data-focus-visible=true] { outline-color: #fff; }
 @supports not (backdrop-filter: blur(1px)) { .dashboard-redesign .today-activity-picker { background: #243653f2; } }
 .dashboard-redesign .today-activity-picker {
+  --field-background: #101b33b3;
   --field: #101b33b3;
   --field-focus: #101b33e6;
   --field-hover: #202f4a;
   --field-foreground: #fff;
   --field-placeholder: #d2dcf2;
 }
-.dashboard-redesign .today-activity-form .input:is(:focus,[data-focused=true]) { background-color: #101b33e6; color: #fff; box-shadow: none; }
+.dashboard-redesign .today-activity-form input.input:is(:focus,[data-focused=true]) { background-color: #101b33e6; color: #fff; box-shadow: none; }
+
+/* Inline project creation and the server-timed lunch break. */
+.zulu-select-popover .zulu-select-add {
+  width: 100%; justify-content: flex-start; gap: 8px; margin-top: 6px;
+  color: #294d94; background: #eef2fa; min-height: 40px;
+}
+.today-new-project {
+  grid-column: 1 / -1; display: grid; gap: 10px; min-width: 0;
+  animation: today-picker-reveal 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.today-new-project > label { display: grid; gap: 7px; }
+.today-new-project-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.dashboard-redesign .today-new-project-actions .button { gap: 6px; min-height: 40px; color: #fff; background: #ffffff24; }
+.dashboard-redesign .today-new-project-actions .button:hover { background: #ffffff38; }
+.today-new-project p { margin: 0; font-size: 12px; }
+.dashboard-redesign .today-lunch-timer {
+  grid-column: 1 / -1; display: flex; align-items: center; gap: 12px;
+  margin-top: 20px; padding: 14px 16px; background: #101b3366;
+  border-radius: 14px; color: #fff;
+  animation: today-picker-reveal 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.today-lunch-timer > div { display: grid; gap: 3px; }
+.today-lunch-timer span { font-size: 11px; color: #e4edff; }
+.today-lunch-timer strong { font-size: 25px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.today-lunch-timer small { margin-left: auto; font-size: 11px; color: #e4edff; }
+@media (max-width: 520px) {
+  .dashboard-redesign .today-lunch-timer { flex-wrap: wrap; }
+  .today-lunch-timer small { flex-basis: 100%; margin-left: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .today-new-project, .dashboard-redesign .today-lunch-timer { animation: none; }
+}

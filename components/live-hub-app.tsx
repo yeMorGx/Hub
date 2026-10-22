@@ -985,6 +985,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                               ? "lunch"
                               : "idle",
                           elapsed,
+                          pausedAt: pausedTimer?.paused_at,
                           projectId: timerSession?.project_id ?? projectId,
                           description: timerSession?.description || description,
                           project: timerSession
@@ -1010,6 +1011,12 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           ...data.tasks.filter(task => !task.archived_at && task.status !== "done" && (!task.project_id || data.projects.some(project => project.id === task.project_id))).slice(0, 3).map(task => ({id: task.id, description: task.title, projectId: task.project_id ?? "", kind: "task" as const})),
                           ...recentWork.map(entry => ({id: entry.id, description: entry.description, projectId: entry.project_id ?? "", kind: "recent" as const})),
                         ]}
+                        onCreateProject={hub.canManage ? async name => {
+                          const result = await hub.mutate(() => hub.rpc("save_project", {
+                            p_team_id: hub.teamId, p_name: name, p_description: "",
+                          }), "Projeto criado.");
+                          return result.ok ? { id: result.value, name } : null;
+                        } : undefined}
                         onStartActivity={async input => {
                           if (activeTimer || pausedTimer) {hub.notify("Encerre o timer atual antes de iniciar outro.", true); return false;}
                           const result = input.taskId
