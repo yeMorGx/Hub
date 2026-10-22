@@ -180,63 +180,14 @@ pub fn desktop_timer_feedback(
 pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
     #[cfg(target_os = "windows")]
     {
-        if let Some(window) = app.get_webview_window("mini-timer") {
-            window
-                .set_always_on_top(true)
-                .map_err(|_| "Não foi possível manter o mini timer por cima.")?;
-            window
-                .show()
-                .map_err(|_| "Não foi possível abrir o mini timer.")?;
-            let _ = window.emit("zulu:timer-changed", ());
-            return Ok(());
-        }
-        let url: tauri::Url = "https://hub-one-azure.vercel.app/desktop/timer"
-            .parse()
-            .map_err(|_| "Endereço inválido.")?;
-        let mini_url = url.clone();
-        let mini =
-            tauri::WebviewWindowBuilder::new(app, "mini-timer", tauri::WebviewUrl::External(url))
-                .title("ZULU — Mini timer")
-                .inner_size(328.0, 80.0)
-                .decorations(false)
-                .background_color(tauri::window::Color(16, 17, 18, 255))
-                .shadow(false)
-                .always_on_top(true)
-                .skip_taskbar(true)
-                .resizable(false)
-                .maximizable(false)
-                .minimizable(false)
-                .on_page_load(|window, payload| {
-                    smoke_webview_diagnostic(&format!(
-                        "mini-page-load window={} event={:?} url={}",
-                        window.label(),
-                        payload.event(),
-                        payload.url()
-                    ));
-                })
-                .on_navigation(|url| {
-                    let allowed = url.scheme() == "https"
-                        && url.host_str() == Some("hub-one-azure.vercel.app")
-                        && url.path().trim_end_matches('/') == "/desktop/timer";
-                    smoke_webview_diagnostic(&format!(
-                        "mini-navigation allowed={allowed} url={url}"
-                    ));
-                    allowed
-                })
-                .build()
-                .map_err(|_| "Não foi possível abrir o mini timer.")?;
-        smoke_webview_diagnostic("mini-window-built");
-        mini.set_position(tauri::LogicalPosition::new(24.0, 24.0))
-            .map_err(|_| "Não foi possível posicionar o mini timer.")?;
+        let mini = app
+            .get_webview_window("mini-timer")
+            .ok_or("Mini timer indisponível nesta versão.")?;
         mini.set_always_on_top(true)
             .map_err(|_| "Não foi possível manter o mini timer por cima.")?;
         mini.show()
             .map_err(|_| "Não foi possível abrir o mini timer.")?;
-        mini.navigate(mini_url).map_err(|error| {
-            smoke_webview_diagnostic(&format!("mini-navigation-error={error}"));
-            "Não foi possível carregar o mini timer."
-        })?;
-        smoke_webview_diagnostic("mini-navigation-requested");
+        let _ = mini.emit("zulu:timer-changed", ());
         Ok(())
     }
     #[cfg(not(target_os = "windows"))]

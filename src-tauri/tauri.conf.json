@@ -18,6 +18,24 @@
         "minHeight": 640,
         "url": "https://hub-one-azure.vercel.app",
         "visible": false
+      },
+      {
+        "label": "mini-timer",
+        "title": "ZULU — Mini timer",
+        "url": "https://hub-one-azure.vercel.app/desktop/timer",
+        "width": 328,
+        "height": 80,
+        "x": 24,
+        "y": 24,
+        "visible": false,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "shadow": false,
+        "backgroundColor": [16, 17, 18, 255]
       }
     ],
     "security": {
