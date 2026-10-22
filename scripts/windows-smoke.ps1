@@ -37,6 +37,19 @@ public static class HubNativeWindow {
   [DllImport("user32.dll")] private static extern bool EnumWindows(EnumProc callback, IntPtr data);
   [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint pid);
   [DllImport("user32.dll", CharSet=CharSet.Unicode)] private static extern int GetWindowText(IntPtr hwnd, System.Text.StringBuilder text, int max);
+  public static string[] Windows(int pid) {
+    var rows = new System.Collections.Generic.List<string>();
+    EnumWindows((hwnd,data)=>{
+      uint owner; GetWindowThreadProcessId(hwnd,out owner);
+      if(owner==(uint)pid) {
+        var title=new System.Text.StringBuilder(512);GetWindowText(hwnd,title,512);
+        Rect rect; GetWindowRect(hwnd,out rect);
+        rows.Add("visible="+IsWindowVisible(hwnd)+" topmost="+((GetWindowLong(hwnd,-20)&8)!=0)+" rect="+rect.Left+","+rect.Top+","+rect.Right+","+rect.Bottom+" title="+title.ToString());
+      }
+      return true;
+    },IntPtr.Zero);
+    return rows.ToArray();
+  }
   public static IntPtr Find(int pid, bool mini) {
     IntPtr found=IntPtr.Zero;
     EnumWindows((hwnd,data)=>{
@@ -226,7 +239,7 @@ try {
   try {
     if ($appProcess) {
       $appProcess.Refresh()
-      @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); miniBounds=$miniBounds; stage=$currentStage; report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
+      @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); miniBounds=$miniBounds; windows=[HubNativeWindow]::Windows($appProcess.Id); stage=$currentStage; report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
     }
     if ($root) {
       $names=@($root.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.Condition]::TrueCondition) | Select-Object -First 120 | ForEach-Object { @{name=$_.Current.Name;class=$_.Current.ClassName;type=$_.Current.ControlType.ProgrammaticName} })
