@@ -12,6 +12,7 @@ Add-Type @'
 using System;
 using System.Runtime.InteropServices;
 public static class HubNativeWindow {
+  [StructLayout(LayoutKind.Sequential)] private struct Rect { public int Left, Top, Right, Bottom; }
   [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hwnd, int command);
   [DllImport("user32.dll")] public static extern bool IsZoomed(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr hwnd);
@@ -27,6 +28,11 @@ public static class HubNativeWindow {
     mouse_event(0x0004, 0, 0, 0, IntPtr.Zero);
   }
   [DllImport("user32.dll", EntryPoint="GetWindowLongW")] public static extern int GetWindowLong(IntPtr hwnd, int index);
+  [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr hwnd, out Rect rect);
+  public static int[] Bounds(IntPtr hwnd) {
+    Rect rect; GetWindowRect(hwnd, out rect);
+    return new int[] { rect.Left, rect.Top, rect.Right, rect.Bottom };
+  }
   private delegate bool EnumProc(IntPtr hwnd, IntPtr data);
   [DllImport("user32.dll")] private static extern bool EnumWindows(EnumProc callback, IntPtr data);
   [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint pid);
@@ -169,6 +175,7 @@ try {
   Wait-Until { [HubNativeWindow]::Find($appProcess.Id, $true) -ne [IntPtr]::Zero } 30
   $miniHandle = [HubNativeWindow]::Find($appProcess.Id, $true)
   $miniRoot = [System.Windows.Automation.AutomationElement]::FromHandle($miniHandle)
+  $miniBounds = [HubNativeWindow]::Bounds($miniHandle)
   $currentStage = 'verify mini timer topmost'
   if (([HubNativeWindow]::GetWindowLong($miniHandle, -20) -band 8) -eq 0) { throw 'Mini timer must be topmost.' }
   $report.miniTopmost = $true
@@ -212,7 +219,7 @@ try {
   try {
     if ($appProcess) {
       $appProcess.Refresh()
-      @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); stage=$currentStage; report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
+      @{ exited=$appProcess.HasExited; processId=$appProcess.Id; mainHandle=$handle.ToInt64(); miniBounds=$miniBounds; stage=$currentStage; report=$report } | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutputDirectory 'diagnostic.json') -Encoding utf8
     }
     if ($root) {
       $names=@($root.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.Condition]::TrueCondition) | Select-Object -First 120 | ForEach-Object { @{name=$_.Current.Name;class=$_.Current.ClassName;type=$_.Current.ControlType.ProgrammaticName} })
