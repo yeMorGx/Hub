@@ -164,6 +164,9 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
     {
         if let Some(window) = app.get_webview_window("mini-timer") {
             window
+                .set_always_on_top(true)
+                .map_err(|_| "Não foi possível manter o mini timer por cima.")?;
+            window
                 .show()
                 .map_err(|_| "Não foi possível abrir o mini timer.")?;
             let _ = window.emit("zulu:timer-changed", ());
@@ -181,6 +184,7 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
                 .background_color(tauri::window::Color(0, 0, 0, 0))
                 .shadow(false)
                 .always_on_top(true)
+                .visible(false)
                 .skip_taskbar(true)
                 .resizable(false)
                 .maximizable(false)
@@ -200,6 +204,10 @@ pub fn show_mini(app: &tauri::AppHandle) -> Result<(), String> {
             let y = f64::from(area.position.y) / scale + 24.0;
             let _ = mini.set_position(tauri::LogicalPosition::new(x, y));
         }
+        mini.set_always_on_top(true)
+            .map_err(|_| "Não foi possível manter o mini timer por cima.")?;
+        mini.show()
+            .map_err(|_| "Não foi possível abrir o mini timer.")?;
         Ok(())
     }
     #[cfg(not(target_os = "windows"))]
