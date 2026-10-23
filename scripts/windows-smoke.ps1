@@ -278,13 +278,15 @@ try {
   foreach ($cancel in @($false, $true)) {
     $exportResult = Join-Path $OutputDirectory $(if ($cancel) { 'export-cancel.json' } else { 'export-save.json' })
     $exportHelper = Start-Process -FilePath 'node' -ArgumentList @('scripts/windows-export-cdp.mjs', ('"' + $exportResult + '"')) -PassThru -NoNewWindow
-    Wait-Until { $null -ne [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $dialogCondition) } 30
+    Wait-Until { (Test-Path $exportResult) -or $null -ne [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $dialogCondition) } 30
+    if (Test-Path $exportResult) { throw ('Export failed before dialog: ' + (Get-Content $exportResult -Raw)) }
     $saveDialog = [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $dialogCondition)
     [HubNativeWindow]::SetForegroundWindow([IntPtr]$saveDialog.Current.NativeWindowHandle) | Out-Null
     if ($cancel) {
       [System.Windows.Forms.SendKeys]::SendWait('{ESC}')
     } else {
       [System.Windows.Forms.SendKeys]::SendWait('%n')
+      [System.Windows.Forms.SendKeys]::SendWait('^a')
       [System.Windows.Forms.SendKeys]::SendWait($exportPath)
       [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
     }

@@ -14,7 +14,7 @@ try {
       const response = JSON.parse(data);
       if (response.id !== 1) return;
       clearTimeout(timeout);
-      if (response.error || response.result.exceptionDetails) reject(Error("Native save failed"));
+      if (response.error || response.result.exceptionDetails) reject(Error("Native save failed: "+JSON.stringify(response.error||response.result.exceptionDetails)));
       else resolve(response.result.result.value);
     };
   });
@@ -23,7 +23,7 @@ try {
     awaitPromise: true, returnByValue: true,
   } }));
   await writeFile(output, JSON.stringify(await result));
-} catch {
-  await writeFile(output, JSON.stringify({ error: "Native export check failed" }));
+} catch (error) {
+  await writeFile(output, JSON.stringify({ error: String(error?.message||error) }));
   process.exitCode = 1;
 } finally { socket?.close(); }
