@@ -138,6 +138,20 @@ try {
     if (-not $control) { throw "Missing window control: $Name" }
     Invoke-HubElement $control $handle
   }
+  function Open-HubRuntimeOptions {
+    [HubNativeWindow]::SetForegroundWindow($handle) | Out-Null
+    $quitCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Sair do ZULU')
+    if ($null -eq $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $quitCondition)) {
+      $optionsCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Opções do aplicativo')
+      $trigger = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $optionsCondition)
+      if (-not $trigger) { throw 'Runtime options trigger missing.' }
+      $bounds = $trigger.Current.BoundingRectangle
+      # The mini owns focus after hiding; use an actual pointer press on the main window.
+      $trigger.SetFocus()
+      [HubNativeWindow]::ClickCenter([int][Math]::Round($bounds.X + $bounds.Width / 2), [int][Math]::Round($bounds.Y + $bounds.Height / 2))
+    }
+    Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $quitCondition) } 15
+  }
   $titlebarButton = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Maximizar janela')
   Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $titlebarButton) } 30
   Invoke-HubControl 'Maximizar janela'
@@ -163,7 +177,7 @@ try {
   Wait-Until { -not [HubNativeWindow]::IsIconic($handle) } 15
   $report.shortcutRestoredWindow = $true
   # Local runtime preferences only. No account, email or business operation.
-  Invoke-HubControl 'Opções do aplicativo'
+  Open-HubRuntimeOptions
   $checkCondition = [System.Windows.Automation.AndCondition]::new(
     [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Abrir ao ligar o PC'),
     [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::ControlTypeProperty, [System.Windows.Automation.ControlType]::CheckBox))
@@ -256,7 +270,7 @@ try {
   $currentStage = 'wait for mini timer to hide'
   Wait-Until { -not [HubNativeWindow]::IsWindowVisible($miniHandle) } 15
   $currentStage = 'open runtime options before quitting'
-  Invoke-HubControl 'Opções do aplicativo'
+  Open-HubRuntimeOptions
   $currentStage = 'quit ZULU from runtime options'
   Invoke-HubControl 'Sair do ZULU'
   $currentStage = 'wait for tray process to exit'
@@ -275,7 +289,7 @@ try {
   $handle = [HubNativeWindow]::Find($appProcess.Id, $false)
   $root = [System.Windows.Automation.AutomationElement]::FromHandle($handle)
   $currentStage = 'open runtime options in hidden-startup instance'
-  Invoke-HubControl 'Opções do aplicativo'
+  Open-HubRuntimeOptions
   $currentStage = 'quit hidden-startup instance'
   Invoke-HubControl 'Sair do ZULU'
   $currentStage = 'wait for hidden-startup instance to exit'
