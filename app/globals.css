@@ -18,6 +18,15 @@
   --purple: #b3a0d7;
   --orange: #e79a7f;
   --radius: 14px;
+  --motion-duration-micro: 180ms;
+  --motion-duration-route: 180ms;
+  --motion-duration-route-exit: 120ms;
+  --motion-duration-reveal: 720ms;
+  --motion-distance-reveal: 32px;
+  --motion-stagger: 75ms;
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-gsap-ease-out: power3.out;
+  --motion-perspective: 900px;
 }
 * {
   box-sizing: border-box;

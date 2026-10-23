@@ -4,6 +4,9 @@ import { BrandMark } from "./brand";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
+import { MOTION_TOKENS, readMotionBezier, readMotionDuration } from "@/lib/motion/tokens";
+import { MagneticButton, ScrollReveal, SplitText, TiltCard } from "./motion/primitives";
 import {
   AppleLogo,
   ArrowDown,
@@ -164,13 +167,18 @@ export function ProductExplorer() {
   const [selected, setSelected] = useState(0);
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const view = views[selected];
+  const transition = {
+    duration: readMotionDuration(MOTION_TOKENS.routeDuration, 0.18),
+    ease: readMotionBezier(MOTION_TOKENS.cubicBezier),
+  };
   return (
+    <ScrollReveal stagger>
     <section
       className="m-product m-shell"
       id="produto"
       aria-labelledby="product-heading"
     >
-      <div className="m-section-heading">
+      <div className="m-section-heading" data-motion-item>
         <h2 id="product-heading">
           Encontre o ritmo.
           <br />
@@ -182,7 +190,7 @@ export function ProductExplorer() {
         </p>
       </div>
       <div className="m-explorer">
-        <div className="m-explorer-copy">
+        <div className="m-explorer-copy" data-motion-item>
           <div
             className="m-tabs"
             role="tablist"
@@ -217,14 +225,34 @@ export function ProductExplorer() {
               >
                 <span>{item.label}</span>
                 <ArrowUpRight aria-hidden="true" />
+                {selected === index && (
+                  <motion.span
+                    className="m-tab-indicator"
+                    layoutId="m-tab-indicator"
+                    aria-hidden="true"
+                    transition={transition}
+                  />
+                )}
               </button>
             ))}
           </div>
-          <h3>{view.title}</h3>
-          <p>{view.text}</p>
-          <Link href="/demo" className="m-text-link">
-            Explorar demonstração <ArrowRight aria-hidden="true" />
-          </Link>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              className="m-explorer-detail"
+              key={view.id}
+              layout
+              initial={{ opacity: 0, y: 7 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -3 }}
+              transition={transition}
+            >
+              <h3>{view.title}</h3>
+              <p>{view.text}</p>
+              <Link href="/demo" className="m-text-link">
+                Explorar demonstração <ArrowRight aria-hidden="true" />
+              </Link>
+            </motion.div>
+          </AnimatePresence>
         </div>
         <div
           className="m-explorer-visual"
@@ -232,21 +260,34 @@ export function ProductExplorer() {
           id={`panel-${view.id}`}
           aria-labelledby={`tab-${view.id}`}
           tabIndex={0}
+          data-motion-item
         >
-          <Image
-            key={view.id}
-            src={view.id === "today" ? "/marketing/today-zulu-prism.webp" : `/marketing/${view.id}-zulu.webp`}
-            alt={view.alt}
-            width={1440}
-            height={1000}
-            sizes="(max-width: 760px) 100vw, 70vw"
-          />
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              className="m-explorer-image-stage"
+              key={view.id}
+              initial={{ opacity: 0, scale: 0.985 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.99 }}
+              transition={transition}
+            >
+              <Image
+                src={view.id === "today" ? "/marketing/today-zulu-prism.webp" : `/marketing/${view.id}-zulu.webp`}
+                alt={view.alt}
+                width={1440}
+                height={1000}
+                sizes="(max-width: 760px) 100vw, 70vw"
+                data-motion-parallax
+              />
+            </motion.div>
+          </AnimatePresence>
           <span className="m-demo-caption">
             Telas do aplicativo · dados fictícios de demonstração
           </span>
         </div>
       </div>
     </section>
+    </ScrollReveal>
   );
 }
 
@@ -266,7 +307,8 @@ export function FocusDemo() {
       "0",
     )}:${(Math.floor(seconds / 60) % 60).toString().padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
   return (
-    <div className="m-focus-demo">
+    <TiltCard maxTilt={3}>
+    <div className="m-focus-demo" data-motion-spotlight>
       <div className="m-focus-top">
         <span>
           <span
@@ -303,6 +345,7 @@ export function FocusDemo() {
         </button>
       </div>
     </div>
+    </TiltCard>
   );
 }
 
@@ -334,12 +377,13 @@ export const questions = [
 ];
 export function MarketingFAQ({ compact = false }: { compact?: boolean }) {
   return (
+    <ScrollReveal stagger>
     <section
       className={`m-faq m-shell ${compact ? "m-faq-compact" : ""}`}
       id="duvidas"
       aria-labelledby="faq-heading"
     >
-      <div>
+      <div data-motion-item>
         <h2 id="faq-heading">
           Antes do
           <br />
@@ -361,7 +405,7 @@ export function MarketingFAQ({ compact = false }: { compact?: boolean }) {
       </div>
       <div className="m-faq-list">
         {questions.map(([question, answer]) => (
-          <details key={question}>
+          <details key={question} data-motion-item>
             <summary>
               {question}
               <Plus aria-hidden="true" />
@@ -371,6 +415,7 @@ export function MarketingFAQ({ compact = false }: { compact?: boolean }) {
         ))}
       </div>
     </section>
+    </ScrollReveal>
   );
 }
 
@@ -384,30 +429,35 @@ export function LandingPage() {
       <main id="conteudo">
         <section className="m-hero">
           <div className="m-shell m-hero-grid">
+            <ScrollReveal stagger>
             <div className="m-hero-copy">
-              <h1>
-                Seu time.
-                <br />
-                Um lugar.
-                <br />
-                <span>Mais fluxo.</span>
-              </h1>
-              <p>
+              <SplitText
+                lines={[
+                  { text: "Seu time." },
+                  { text: "Um lugar." },
+                  { text: "Mais fluxo.", accent: true },
+                ]}
+              />
+              <p data-motion-item>
                 Conversas, tarefas, agenda e horas.
                 <br />O trabalho se encontra no ZULU.
               </p>
-              <div className="m-hero-actions">
+              <div className="m-hero-actions" data-motion-item>
+                <MagneticButton strength={0.1}>
                 <Link href="/download" className="m-button m-button-lime">
                   Conheça os downloads <ArrowDown aria-hidden="true" />
                 </Link>
+                </MagneticButton>
                 <Link href="/demo" className="m-hero-demo">
                   Ver o ZULU por dentro <ArrowUpRight aria-hidden="true" />
                 </Link>
               </div>
-              <span className="m-hero-note">
+              <span className="m-hero-note" data-motion-item>
                 No Windows. No navegador. Com seu time.
               </span>
             </div>
+            </ScrollReveal>
+            <TiltCard maxTilt={2} spotlight={false}>
             <Link
               href="/demo"
               className="m-hero-stage"
@@ -429,6 +479,7 @@ export function LandingPage() {
                   height={1000}
                   sizes="(max-width: 760px) 900px, 1000px"
                   preload
+                  data-motion-parallax
                 />
               </div>
               <div className="m-stage-bottom">
@@ -442,6 +493,7 @@ export function LandingPage() {
                 </span>
               </div>
             </Link>
+            </TiltCard>
           </div>
           <div
             className="m-hero-words m-shell"
@@ -457,9 +509,10 @@ export function LandingPage() {
           </div>
         </section>
         <ProductExplorer />
-        <section className="m-connection" id="recursos">
+        <ScrollReveal stagger>
+        <section className="m-connection" id="recursos" data-motion-pin>
           <div className="m-shell">
-            <div className="m-connection-heading">
+            <div className="m-connection-heading" data-motion-item>
               <h2>
                 Menos troca de abas.
                 <br />
@@ -471,7 +524,7 @@ export function LandingPage() {
               </p>
             </div>
             <div className="m-connection-grid">
-              <div className="m-connection-image">
+              <div className="m-connection-image" data-motion-pin-target>
                 <Image
                   src="/marketing/chat-zulu.webp"
                   alt="Conversas do ZULU, com canais e mensagens de exemplo"
@@ -482,7 +535,7 @@ export function LandingPage() {
                 <span>Demonstração · conteúdo fictício</span>
               </div>
               <div className="m-connection-list">
-                <article>
+                <article data-motion-item>
                   <ChatCircleText aria-hidden="true" />
                   <h3>Conversa com contexto.</h3>
                   <p>
@@ -490,7 +543,7 @@ export function LandingPage() {
                     para retomar o assunto.
                   </p>
                 </article>
-                <article>
+                <article data-motion-item>
                   <CalendarBlank aria-hidden="true" />
                   <h3>Uma agenda em comum.</h3>
                   <p>
@@ -498,7 +551,7 @@ export function LandingPage() {
                     encontra.
                   </p>
                 </article>
-                <article>
+                <article data-motion-item>
                   <SquaresFour aria-hidden="true" />
                   <h3>Da tarefa para a ação.</h3>
                   <p>
@@ -510,8 +563,10 @@ export function LandingPage() {
             </div>
           </div>
         </section>
+        </ScrollReveal>
+        <ScrollReveal stagger>
         <section className="m-details-section m-shell">
-          <div className="m-details-copy">
+          <div className="m-details-copy" data-motion-item>
             <h2>
               Espaço para focar.
               <br />
@@ -548,51 +603,56 @@ export function LandingPage() {
               Levar o ZULU para o desktop <ArrowRight aria-hidden="true" />
             </Link>
           </div>
-          <FocusDemo />
+          <div data-motion-item><FocusDemo /></div>
         </section>
+        </ScrollReveal>
+        <ScrollReveal stagger>
         <section className="m-browser-band">
           <div className="m-shell">
-            <Globe size={40} aria-hidden="true" />
-            <div>
+            <Globe size={40} aria-hidden="true" data-motion-item />
+            <div data-motion-item>
               <h2>Seu espaço não cabe em um só dispositivo.</h2>
               <p>
                 Comece no computador. Continue no navegador. A mesma conta, o
                 mesmo time.
               </p>
             </div>
-            <Link href="/login" className="m-button m-button-outline">
+            <div data-motion-item><Link href="/login" className="m-button m-button-outline">
               Abrir versão web <ArrowUpRight aria-hidden="true" />
-            </Link>
+            </Link></div>
           </div>
         </section>
+        </ScrollReveal>
         <MarketingFAQ />
+        <ScrollReveal stagger>
         <section className="m-final">
           <div className="m-shell">
-            <span className="m-final-symbol" aria-hidden="true">
+            <span className="m-final-symbol" aria-hidden="true" data-motion-item>
               <BrandMark size={54} />
             </span>
-            <h2>
+            <h2 data-motion-item>
               Bom trabalho
               <br />
               começa com
               <br />
               <span>um bom lugar.</span>
             </h2>
-            <div>
+            <div data-motion-item>
               <p>
                 O seu time já tem o que fazer.
                 <br />
                 Agora tem onde se encontrar.
               </p>
-              <Link href="/download" className="m-button m-button-lime">
+              <MagneticButton strength={0.1}><Link href="/download" className="m-button m-button-lime">
                 Encontre sua versão do ZULU <ArrowDown aria-hidden="true" />
-              </Link>
+              </Link></MagneticButton>
               <Link href="/demo" className="m-final-demo">
                 Ou explore a demonstração <ArrowUpRight aria-hidden="true" />
               </Link>
             </div>
           </div>
         </section>
+        </ScrollReveal>
       </main>
       <MarketingFooter />
     </div>

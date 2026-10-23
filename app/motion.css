@@ -1,0 +1,211 @@
+.motion-route-frame {
+  width: 100%;
+}
+
+body :is(button:not(:disabled), a[href], [role="button"], [role="tab"]) {
+  transition-property:
+    transform, color, background-color, border-color, outline-color;
+  transition-duration: var(--motion-duration-micro);
+  transition-timing-function: var(--motion-ease-out);
+}
+
+body :is(input, textarea, select) {
+  transition:
+    outline-color var(--motion-duration-micro) var(--motion-ease-out),
+    background-color var(--motion-duration-micro) var(--motion-ease-out);
+}
+
+:is(button:not(:disabled), a[href], [role="button"], [role="tab"]):active {
+  transform: scale(0.97);
+}
+
+[data-motion-tilt] {
+  --motion-tilt-x: 0deg;
+  --motion-tilt-y: 0deg;
+  --motion-tilt-z: 0deg;
+  transform:
+    perspective(var(--motion-perspective))
+    rotateX(var(--motion-tilt-x))
+    rotateY(var(--motion-tilt-y))
+    rotateZ(var(--motion-tilt-z));
+  transform-style: preserve-3d;
+  transition: transform var(--motion-duration-micro) var(--motion-ease-out);
+}
+
+[data-motion-tilt].is-motion-pointer-active {
+  transition: none;
+}
+
+[data-motion-spotlight] {
+  position: relative;
+}
+
+.motion-spotlight-layer {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 18rem;
+  height: 18rem;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--motion-spotlight-color, currentColor) 18%, transparent),
+    transparent 70%
+  );
+  mix-blend-mode: soft-light;
+  transition: opacity var(--motion-duration-micro) var(--motion-ease-out);
+}
+
+[data-motion-spotlight].is-motion-hover .motion-spotlight-layer {
+  opacity: 0.88;
+}
+
+.dashboard-redesign [data-motion-spotlight] {
+  --motion-spotlight-color: var(--accent);
+}
+
+.m-page [data-motion-spotlight] {
+  --motion-spotlight-color: var(--m-lime);
+}
+
+.motion-magnetic-wrap {
+  --motion-magnetic-x: 0px;
+  --motion-magnetic-y: 0px;
+  display: inline-flex;
+  align-items: center;
+  transform: translate3d(var(--motion-magnetic-x), var(--motion-magnetic-y), 0);
+  transition: transform 260ms var(--motion-ease-out);
+}
+
+.motion-magnetic-wrap.is-motion-active {
+  transition: none;
+}
+
+.motion-split-visual,
+.motion-split-line {
+  display: block;
+}
+
+.motion-split-word {
+  display: inline-block;
+}
+
+.m-hero-copy h1 .motion-split-line {
+  color: inherit;
+}
+
+.m-hero-copy h1 .motion-split-line[data-accent="true"] {
+  color: var(--m-lime);
+}
+
+.m-hero-copy h1 .motion-split-word {
+  color: inherit;
+}
+
+.m-hero-stage[data-motion-tilt] {
+  --motion-tilt-z: -2deg;
+}
+
+.m-focus-demo {
+  overflow: hidden;
+}
+
+.m-tabs button {
+  position: relative;
+}
+
+.m-tab-indicator {
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--m-blue);
+  pointer-events: none;
+}
+
+.motion-cursor {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  color: var(--accent);
+  opacity: 0;
+  scale: 0.55;
+  translate: -50% -50%;
+  pointer-events: none;
+  transition:
+    opacity var(--motion-duration-micro) var(--motion-ease-out),
+    scale var(--motion-duration-micro) var(--motion-ease-out);
+}
+
+.motion-cursor.is-interactive {
+  opacity: 0.9;
+  scale: 1;
+}
+
+body:has(.m-page) .motion-cursor {
+  color: var(--m-lime);
+}
+
+html.lenis.lenis-smooth,
+html.lenis.lenis-smooth body {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+body.has-motion-cursor :is(a[href], button:not(:disabled), [role="button"]) {
+  cursor: none !important;
+}
+
+body.has-motion-cursor :is(input, textarea, [contenteditable="true"]) {
+  cursor: text !important;
+}
+
+.m-explorer-detail > p {
+  color: var(--m-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+@media (pointer: coarse), (hover: none) {
+  [data-motion-tilt] {
+    transform: none;
+    transition: none;
+  }
+  .motion-cursor {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .m-hero-stage[data-motion-tilt] {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-motion-tilt] {
+    transform: none !important;
+    transition: none !important;
+  }
+  .motion-spotlight-layer,
+  .motion-cursor {
+    display: none !important;
+  }
+  .motion-magnetic-wrap {
+    transform: none !important;
+    transition: none !important;
+  }
+  :is(button:not(:disabled), a[href], [role="button"], [role="tab"]):active {
+    transform: none;
+  }
+}

@@ -8,6 +8,7 @@ import {
   ZuluButton,
 } from "./dashboard-ui";
 import { Card, Chip, ProgressBar, Spinner } from "@heroui/react";
+import { TiltCard } from "./motion/primitives";
 import AnimatedGradient from "./animated-gradient";
 import {
   ArrowRight,
@@ -161,6 +162,7 @@ export function TodayOverview(props: TodayOverviewProps) {
         className={`today-workspace timer-${timer.state}`}
         aria-label="Timer e jornada"
       >
+        <TiltCard maxTilt={3}>
         <Card className="today-focus">
           <div className="today-prism" aria-hidden="true">
             <AnimatedGradient
@@ -415,8 +417,9 @@ export function TodayOverview(props: TodayOverviewProps) {
             </div>
           )}
         </Card>
+        </TiltCard>
       </section>}
-      {props.showCalendar !== false && <Card
+      {props.showCalendar !== false && <TiltCard maxTilt={2} spotlight={false}><Card
         role="region"
         className="today-home-office"
         aria-label="Resumo de home office"
@@ -495,7 +498,7 @@ export function TodayOverview(props: TodayOverviewProps) {
           Ver escala
           <ArrowUpRight size={15} />
         </ZuluButton>
-      </Card>}
+      </Card></TiltCard>}
     </>
   );
 }

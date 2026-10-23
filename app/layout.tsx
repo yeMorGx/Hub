@@ -9,10 +9,12 @@ import "./zulu-workspace.css";
 import "./calendar-interactions.css";
 import "./workspace-inset.css";
 import "./organization-admin.css";
+import "./motion.css";
 import { WorkspaceTheme } from "@/components/workspace-settings";
 import { ServiceWorkerRegistration } from "@/components/pwa";
 import { DesktopUpdate } from "@/components/desktop-update";
 import { DesktopTitlebar } from "@/components/desktop-titlebar";
+import { MotionProvider } from "@/components/motion/motion-provider";
 export const metadata: Metadata = {
   title: "ZULU — Seu time, conectado",
   description:
@@ -38,7 +40,7 @@ export default function RootLayout({
       <body>
         <WorkspaceTheme />
         <DesktopTitlebar />
-        {children}
+        <MotionProvider>{children}</MotionProvider>
         <ServiceWorkerRegistration />
         <DesktopUpdate />
       </body>

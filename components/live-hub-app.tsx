@@ -95,6 +95,7 @@ import {
   type CalendarView,
 } from "@/lib/hub/calendar";
 import { LiveOnboarding } from "./live-onboarding";
+import { usePageTransition } from "./motion/use-page-transition";
 import { PersonAvatar, PeopleAvatars, HubDialog, EmptyState } from "./hub-ui";
 const navigation = [
   { id: "overview", label: "Hoje", icon: SquaresFour },
@@ -133,6 +134,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
     [page, setPage] = useState<LivePage>("overview"),
     [calendarDate, setCalendarDate] = useState("2026-01-05"),
     [calendarView, setCalendarView] = useState<CalendarView>("week");
+  const mainContentRef = useRef<HTMLElement>(null);
+  usePageTransition(mainContentRef, page);
   const [collaborationInitialTab, setCollaborationInitialTab] = useState<
     "notes" | "notifications"
   >("notes");
@@ -778,7 +781,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
             </ZuluButton>
           </div>
         </header></DesktopChrome>
-        <main id="main-content" className={`main-content ${page === "overview" ? "today-page" : ""}`}>
+        <main ref={mainContentRef} id="main-content" data-motion-page={page} className={`main-content ${page === "overview" ? "today-page" : ""}`}>
           <WorkspaceAreaTabs page={page} onPage={navigate} isAllowed={isAllowed} />
           {organization.error&&<div className="org-notice-banner" role="alert"><p>{organization.error}</p><ZuluButton onClick={()=>void organization.refresh()}>Conferir acesso novamente</ZuluButton></div>}
           <OrganizationNotices hub={hub} authority={organization.authority} command={organization.command} />

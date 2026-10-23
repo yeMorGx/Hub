@@ -374,7 +374,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                   <p className="table-scroll-hint">
                     Deslize a tabela para ver todas as colunas.
                   </p>
-                  <div className="table-scroll">
+                  <div className="table-scroll" data-lenis-prevent>
                     <table className="workspace-table">
                       <thead>
                         <tr>

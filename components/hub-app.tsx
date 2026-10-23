@@ -603,7 +603,7 @@ export function HubApp() {
             {-today.getTimezoneOffset() / 60}
           </span>
         </div>
-        <div className="calendar-scroll">
+        <div className="calendar-scroll" data-lenis-prevent>
           <div
             className={`calendar-grid ${calendarView === "day" ? "day-view" : ""}`}
             style={{ "--days": visibleDays.length } as React.CSSProperties}

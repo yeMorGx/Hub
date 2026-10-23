@@ -431,7 +431,7 @@ export function LiveCalendar({
           </div>
         </div>
       ) : (
-        <div className="calendar-scroll">
+        <div className="calendar-scroll" data-lenis-prevent>
           <div
             className={`calendar-grid ${view === "day" ? "day-view" : "week-view"}`}
             style={{ "--days": visibleDays.length } as React.CSSProperties}
