@@ -19,6 +19,15 @@ with sync_playwright() as p:
   expect(page.get_by_role('dialog',name='Revisar alteração')).to_be_visible()
   page.get_by_role('button',name='Confirmar e executar',exact=True).click()
   expect(page.get_by_role('dialog')).to_have_count(0)
+  page.get_by_role('tab',name='Times',exact=True).click()
+  page.get_by_label('Nome do time',exact=True).fill('Pesquisa')
+  page.get_by_role('button',name='Criar time',exact=True).click()
+  expect(page.locator('.org-feature').filter(has=page.get_by_text('Pesquisa',exact=True))).to_be_visible()
+  expect(page.locator('.org-error')).to_have_count(0)
+  page.screenshot(path=str(out/f'teams-{width}.png'),full_page=True)
+  page.locator('.org-feature').filter(has=page.get_by_text('Pesquisa',exact=True)).get_by_role('button',name='Arquivar',exact=True).click()
+  page.get_by_role('button',name='Confirmar e executar',exact=True).click()
+  expect(page.locator('.org-feature').filter(has=page.get_by_text('Pesquisa',exact=True))).to_have_count(0)
   page.get_by_role('tab',name='Convites',exact=True).click()
   page.screenshot(path=str(out/f'invites-{width}.png'),full_page=True)
   page.get_by_role('tab',name='Aprovações',exact=False).click()
@@ -43,6 +52,6 @@ with sync_playwright() as p:
   page.keyboard.press('Escape')
   assert not errors,errors
   assert not writes,writes
-  print(json.dumps({'width':width,'people':True,'reviewAndConfirm':True,'invites':True,'approval':True,'features':True,'policies':True,'library':True,'share':True,'errors':errors,'writes':writes}),flush=True)
+  print(json.dumps({'width':width,'people':True,'reviewAndConfirm':True,'teams':True,'invites':True,'approval':True,'features':True,'policies':True,'library':True,'share':True,'errors':errors,'writes':writes}),flush=True)
   context.close()
  browser.close()

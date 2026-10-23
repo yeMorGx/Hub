@@ -12,7 +12,9 @@ export function OrganizationPreview({hub,library=false}:{hub:HubController;libra
  async function command(name:string,p:Record<string,unknown>={}){
  if(name==='request'){const d=p.data as Record<string,unknown>;
  if(p.action==='member_permissions')setState(s=>({...s,members:s.members.map(m=>m.user_id===d.user_id?{...m,job_title:String(d.job_title)}:m),memberships:s.memberships.map(m=>m.user_id===d.user_id&&m.team_id===d.team_id?{...m,permissions:d.permissions as Record<string,boolean>}:m)}));
+ if(p.action==='team_delete')setState(s=>({...s,teams:s.teams.filter(t=>t.id!==d.team_id),memberships:s.memberships.filter(m=>m.team_id!==d.team_id)}));
  if(p.action==='feature')setAuthority(a=>({...a,features:{...a.features,[String(d.feature)]:Boolean(d.enabled)}}));return {executed:true};}
+ if(name==='create_team'){const id=crypto.randomUUID();setState(s=>({...s,teams:[...s.teams,{id,name:String(p.name)}]}));return {id};}
  if(name==='decide')setState(s=>({...s,requests:s.requests.map(r=>r.id===p.id?{...r,status:p.decision==='approve'?'executed':p.decision==='reject'?'rejected':'cancelled'}:r)}));
  if(name==='approver')setState(s=>({...s,members:s.members.map(m=>m.user_id===p.user_id?{...m,can_approve:Boolean(p.enabled)}:m)}));
  if(name==='policy')setState(s=>({...s,policies:[...s.policies.filter(a=>a.action!==p.action),p as OrgState['policies'][number]]}));return {};

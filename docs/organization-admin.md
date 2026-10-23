@@ -4,7 +4,7 @@ Implementação do [plano aprovado](organization-admin-plan.md), em 23/10/2026. 
 
 ## Onde encontrar
 
-- Configurações → Organização: pessoas, convites, aprovações, funcionalidades, políticas e histórico. Administração geral vê a organização; administração de time recebe escopo limitado. Aprovadores têm a central de decisões.
+- Configurações → Organização: pessoas, times, convites, aprovações, funcionalidades, políticas e histórico. Administração geral vê a organização; administração de time recebe escopo limitado. Aprovadores têm a central de decisões.
 - Trabalho → Biblioteca: bibliotecas, pastas, documentos Markdown e anexos privados.
 - Conversas → Contatos: DM entre pessoas da organização, sem abrir os dados de outro time.
 - Notificações: decisões, responsabilidade por documentos e aceite da transferência de propriedade.
@@ -46,7 +46,7 @@ Ao sair o responsável, autoria histórica permanece. Responsabilidade é atribu
 
 ## QA e limites
 
-- 131 cenários SQL em PostgreSQL WASM/PGlite: isolamento, MFA, proteção do dono, aprovação, quórum, revogação, convites, ACL, anexos e contatos entre times.
+- 133 cenários SQL em PostgreSQL WASM/PGlite: isolamento, MFA, proteção do dono, aprovação, quórum, revogação, convites, ACL, anexos e contatos entre times.
 - 47 testes unitários existentes + 7 do modelo de permissões; build de produção aprovado.
 - 35 verificações HTTP públicas: incluindo bloqueio de emissão de convite/download sem sessão.
 - Chromium em 1440 e 390 px: painel, confirmação, convites, decisões, políticas, biblioteca e compartilhamento; sem erros JavaScript ou escritas de negócio. Regressão de dashboard, PDF, tema, configurações e seleção de calendário.
@@ -61,3 +61,7 @@ Cobrança/mudança de plano, E2EE, análise jurídica LGPD/ANPD, retenção e co
 - [Supabase — Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security): autorização no banco.
 - [GitHub — Protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches): referência para invalidar aprovação diante de alterações; implementação ZULU usa payload imutável e novo pedido.
 - [HeroUI v3 — guia oficial](https://github.com/heroui-inc/heroui/blob/v3/skills/heroui-react/SKILL.md), [Checkbox](https://heroui.com/en/docs/react/checkbox), [Tabs](https://heroui.com/en/docs/react/tabs), [Modal](https://heroui.com/en/docs/react/modal): primitivas oficiais, composição e comportamento acessível.
+
+## Publicação
+
+Migrações `20261023160000` e `20261023170000` aplicadas e registradas em transação no projeto Supabase existente. Conferência remota: duas organizações com dono, nenhuma tabela nova sem RLS, bucket privado e nenhuma execução anônima dos consoles. Consulta adicional com contexto autenticado simulado, em transação somente de leitura, confirmou capacidades do dono e carregamento da biblioteca; não substitui login real no navegador.

@@ -1470,3 +1470,11 @@ scenario('Governança: dono participa do grupo voluntário sem ignorar quórum',
  await org('decide',{id:r.request_id,decision:'approve'});assert.notEqual((await org('capabilities')).features.calls,false);
  await login(users.bob);await org('decide',{id:r.request_id,decision:'approve'});assert.equal((await org('capabilities')).features.calls,false);
 });
+scenario('Governança: time criado e arquivado desaparece dos seletores, espaço de DM fica oculto',async()=>{
+ await login(users.admin);const t=await org('create_team',{name:'Pesquisa'});assert.ok((await org('state')).teams.some(x=>x.id===t.id));
+ await requestChange('team_delete',{team_id:t.id});assert.equal((await org('state')).teams.some(x=>x.id===t.id),false);assert.equal((await library('list')).teams.some(x=>x.id===t.id),false);
+ await rpc('organization_contacts',[ids.workspace,users.bob]);assert.equal((await org('state')).teams.some(x=>x.name==='Conversas da organização'),false);assert.equal((await library('list')).teams.some(x=>x.name==='Conversas da organização'),false);
+});
+scenario('Governança: políticas aceitam os tipos críticos expostos pela interface',async()=>{
+ await login(users.admin);for(const action of ['member_permissions','member_restore'])await org('policy',{action,approvers:[users.admin],required_approvers:[],quorum:1,expires_days:7});assert.ok((await org('state')).policies.some(p=>p.action==='member_restore'));
+});
