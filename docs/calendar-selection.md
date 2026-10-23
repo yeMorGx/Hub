@@ -19,3 +19,9 @@ Em 23/10/2026, o usuário aprovou testar criação por clique e arraste no calen
 `/demo/calendar` permite preencher o formulário e criar um encontro fictício, abrir seus detalhes e continuar navegando. Tudo fica em memória; recarregar restaura os exemplos. Não utiliza uma conta autenticada nem grava dados de negócio.
 
 Verificações locais: build Next.js/TypeScript; 44 testes unitários, incluindo seleção bidirecional, limite da grade, minutos e passagem de meia-noite; Chromium em 1440×1000 e 390×844. Os scripts `calendar-selection-browser.py` e `calendar-browser.py` verificam clique, arraste, Esc, teclado, toque, validação de intervalo, criação local, detalhes, navegação, filtros, meia-noite e ausência de overflow, erros JS e requisições de escrita. O script de seleção também confere os estilos computados das linhas. O fluxo com eventos reais ainda precisa ser experimentado pelo usuário autenticado.
+
+## Publicação e conferência
+
+Código de aplicação `6612d68` enviado à branch `codex/hub-foundation-kanban`. Deployment `dpl_27iDvW1cPsPU1hPYKEzTieKvinSc`, estado **READY**, com alias https://hub-one-azure.vercel.app. URL imutável: https://hub-gussthkag-yemorgxs-projects.vercel.app. Não houve alteração nativa; esta entrega não requer um novo instalador.
+
+O script de seleção passou também no alias público, em desktop e celular, sem erros JS ou requisições de escrita. As 32 verificações HTTP públicas passaram após corrigir uma expectativa desatualizada no teste de download: ele esperava a versão 0.1.4 e seu hash, enquanto a configuração vigente já é 0.1.5. O teste agora confere nome e SHA-256 contra `lib/desktop/public-release.ts`. Essa correção é somente de teste; não modifica o instalador ou o conteúdo publicado.

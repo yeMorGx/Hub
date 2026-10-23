@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 // Run against an already-started Hub. No accounts, emails or business writes.
 const base = new URL(process.env.HUB_APP_URL || "http://127.0.0.1:3000");
@@ -223,11 +224,16 @@ test("downloads expõe o instalador oficial e informa versão e assinatura pende
   const response = await request("/download");
   assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /Hub_0\.1\.4_x64-setup\.exe/);
+  const release = readFileSync(new URL("../lib/desktop/public-release.ts", import.meta.url), "utf8");
+  const filename = release.match(/filename: "([^"]+)"/)?.[1];
+  const sha256 = release.match(/sha256: "([^"]+)"/)?.[1];
+  assert.match(filename ?? "", /^Hub_\d+\.\d+\.\d+_x64-setup\.exe$/);
+  assert.match(sha256 ?? "", /^[a-f0-9]{64}$/);
+  assert.ok(html.includes(filename), "download deve apontar para o instalador configurado");
   assert.match(html, /não tem assinatura de código/);
   assert.match(html, /macOS/);
   assert.match(html, /Linux/);
-  assert.match(html, /47ff27c6e337834a417477c0abc14462e09a57beb69ea5b90a662a2e8b430f34/);
+  assert.ok(html.includes(sha256), "download deve informar o SHA-256 configurado");
 });
 test("marketing publica apenas as páginas públicas no sitemap e serve imagem social", async () => {
   const response = await request("/sitemap.xml");
