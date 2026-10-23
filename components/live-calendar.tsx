@@ -23,6 +23,7 @@ import {
   type CalendarView,
 } from "@/lib/hub/calendar";
 import { PeopleAvatars } from "./hub-ui";
+import { CalendarTimeColumn } from "./calendar-time-column";
 const days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 function sundayKey(date: Date) {
   const sunday = new Date(date);
@@ -85,7 +86,7 @@ export function LiveCalendar({
   onDay: (day: number) => void;
   onMove: (direction: number) => void;
   onToday: () => void;
-  onNew: (date: Date, hour?: number) => void;
+  onNew: (date: Date, hour?: number, endHour?: number) => void;
   onSelect: (event: Row<"events">) => void;
   onHomeOffice: (entry: HomeOfficeEntry) => void;
   full?: boolean;
@@ -339,6 +340,9 @@ export function LiveCalendar({
                 <div
                   key={dayKey(cell)}
                   className={`month-cell ${cell.getMonth() !== date.getMonth() ? "outside-month" : ""} ${isToday ? "month-today" : ""}`}
+                  onClick={(event) => {
+                    if (hub.canParticipate && !hub.busy && !(event.target as HTMLElement).closest("button, a")) onNew(cell);
+                  }}
                 >
                   <div className="month-cell-header">
                     <ZuluButton
@@ -488,21 +492,17 @@ export function LiveCalendar({
               ))}
             </div>
             {segments.map((segment) => (
-              <div
-                key={segment.index}
-                className={`day-column ${dayKey(segment.start) === dayKey(today) ? "today-column" : ""}`}
-                style={{ height: (endHour - startHour) * hourHeight }}
+              <CalendarTimeColumn
+                key={dayKey(segment.start)}
+                date={segment.start}
+                label={days[segment.index]}
+                startHour={startHour}
+                endHour={endHour}
+                hourHeight={hourHeight}
+                enabled={hub.canParticipate && !hub.busy}
+                isToday={dayKey(segment.start) === dayKey(today)}
+                onNew={onNew}
               >
-                {hours.slice(0, -1).map((hour) => (
-                  <ZuluButton
-                    key={hour}
-                    className="hour-cell"
-                    disabled={!hub.canParticipate}
-                    aria-label={`Criar evento ${days[segment.index]} às ${hourLabel(hour)}`}
-                    style={{ height: hourHeight }}
-                    onClick={() => onNew(segment.start, hour)}
-                  />
-                ))}
                 {eventLanes(segment.events).map(
                   ({ event, start, end, lane, lanes }) => {
                     const attendees = hub.snapshot.people.filter((p) =>
@@ -540,7 +540,7 @@ export function LiveCalendar({
                     );
                   },
                 )}
-              </div>
+              </CalendarTimeColumn>
             ))}
           </div>
         </div>

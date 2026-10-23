@@ -1,0 +1,67 @@
+/* The grid is a time ruler: these lines carry scheduling information. */
+.calendar-section {
+  --calendar-line: color-mix(in srgb, var(--muted, #59667c) 18%, transparent);
+  --calendar-selection: color-mix(in srgb, var(--accent, #294d94) 16%, var(--surface, white));
+}
+
+.calendar-section .calendar-grid .calendar-selectable-column {
+  background-image: repeating-linear-gradient(to bottom, var(--calendar-line) 0 1px, transparent 1px var(--calendar-hour-height));
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.calendar-section .calendar-selectable-column + .calendar-selectable-column {
+  border-inline-start: 1px solid var(--calendar-line);
+}
+
+.calendar-section .calendar-selectable-column .calendar-time-slot {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: crosshair;
+  transition: background-color 150ms ease-out;
+}
+
+.calendar-section .calendar-selectable-column .calendar-time-slot:is(:hover, [data-hovered="true"]) {
+  background: color-mix(in srgb, var(--accent, #294d94) 6%, transparent);
+}
+
+.calendar-section .calendar-time-slot:focus-visible {
+  outline: 2px solid var(--accent, #294d94);
+  outline-offset: -2px;
+}
+
+.calendar-section .calendar-time-slot:disabled {
+  cursor: default;
+}
+
+.calendar-selection {
+  position: absolute;
+  inset-inline: 3px;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 4px 6px;
+  color: var(--accent, #294d94);
+  background: var(--calendar-selection);
+  outline: 1px solid var(--accent, #294d94);
+  outline-offset: -1px;
+  font-size: 10px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-selection span {
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendar-section .calendar-time-slot { transition: none; }
+}

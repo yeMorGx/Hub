@@ -1,5 +1,19 @@
 import { dateAt, dayKey, localHour, mondayOf } from "./dates";
 export type CalendarView = "month" | "week" | "day";
+
+// Selection uses local wall-clock hours, including 24:00 on the following day.
+export function calendarSelection(anchor: number, current: number, limit: number, dragged = true) {
+  return dragged
+    ? { start: Math.min(anchor, current), end: Math.min(Math.max(anchor, current) + 0.25, limit) }
+    : { start: anchor, end: Math.min(anchor + 1, limit) };
+}
+
+export function calendarDraft(date: Date, hour = 10, endHour = hour + 1) {
+  const start = new Date(date), end = new Date(date);
+  start.setHours(Math.floor(hour), Math.round((hour % 1) * 60), 0, 0);
+  end.setHours(Math.floor(endHour), Math.round((endHour % 1) * 60), 0, 0);
+  return { start, end };
+}
 export function calendarRange(date: Date, view: CalendarView) {
   if (view === "day") {
     const start = new Date(date);

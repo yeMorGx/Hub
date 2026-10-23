@@ -6,6 +6,7 @@ import "./dashboard.css";
 import "./dashboard-bento.css";
 import "./desktop.css";
 import "./zulu-workspace.css";
+import "./calendar-interactions.css";
 import { ServiceWorkerRegistration } from "@/components/pwa";
 import { DesktopUpdate } from "@/components/desktop-update";
 import { DesktopTitlebar } from "@/components/desktop-titlebar";

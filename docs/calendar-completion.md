@@ -8,12 +8,12 @@ Entrega de 20/10/2026, após convites e gestão de membros. Complementa as Fases
 - Grade mensal começa na segunda e inclui dias dos meses vizinhos para completar as semanas. Navegação mensal preserva o dia quando possível e ajusta para o último dia em meses menores. O botão Hoje retorna à data atual.
 - Desktop mostra três eventos por dia e um botão para abrir os restantes na visão diária. Mobile mostra contagem de eventos por dia; tocar na contagem abre esse dia. Tocar no número de qualquer dia também abre a agenda diária.
 - Eventos que atravessam a meia-noite aparecem em cada dia ocupado. O término exatamente à meia-noite não gera presença no dia seguinte. Continuação é indicada nos cartões mensais.
-- Criar evento pelo botão geral utiliza a data em navegação; botões de cada dia usam a data daquela célula. Selecionar um evento preserva o fluxo existente de detalhes/edição/RSVP.
+- Clique em uma área vazia do mês ou em um horário da grade para criar um evento. Na semana/dia, arrastar seleciona um intervalo; detalhes em [seleção de horários](calendar-selection.md). Selecionar um evento preserva o fluxo existente de detalhes/edição/RSVP.
 - O carregamento agora usa paginação por ID, em lotes de 500, em vez de truncar o resultado. Mantém filtros de time, cancelamento e sobreposição do intervalo e interrompe paginações tornadas obsoletas por navegação. O resumo do dia atual continua sendo carregado quando estiver fora da agenda aberta.
 
 ## Prévia e verificações
 
-`/demo/calendar` reutiliza o componente real com eventos fictícios em memória. Não acessa a agenda da organização nem grava eventos; criação mostra uma mensagem de demonstração. A prévia só monta a agenda após obter o relógio/fuso do navegador, evitando diferença de hidratação entre UTC do servidor e o horário local.
+`/demo/calendar` reutiliza o componente real com eventos fictícios em memória. Não acessa a agenda da organização nem grava eventos no servidor; criação abre um formulário e adiciona o encontro apenas à memória da demonstração. Recarregar restaura os exemplos. A prévia só monta a agenda após obter o relógio/fuso do navegador, evitando diferença de hidratação entre UTC do servidor e o horário local.
 
 | Verificação | Resultado |
 | --- | --- |

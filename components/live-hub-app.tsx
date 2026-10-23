@@ -77,6 +77,7 @@ import { HomeOfficeManager } from "./home-office-manager";
 import { WorkScheduleSetup } from "./work-schedule-setup";
 import {
   calendarRange,
+  calendarDraft,
   moveCalendarDate,
   type CalendarView,
 } from "@/lib/hub/calendar";
@@ -169,6 +170,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
   const [eventId, setEventId] = useState(""),
     [editingEvent, setEditingEvent] = useState<Row<"events"> | null>(null),
     [eventStart, setEventStart] = useState(""),
+    [eventEnd, setEventEnd] = useState(""),
     [editingTime, setEditingTime] = useState<Row<"time_entries"> | null>(null),
     [editingMessage, setEditingMessage] = useState<Row<"messages"> | null>(
       null,
@@ -315,16 +317,17 @@ export function LiveHubApp({ userId }: { userId: string }) {
     setPopover(false);
     setModal(next);
   }
-  function newEvent(date = selectedDate, hour = 10) {
-    const start = new Date(date);
-    start.setHours(Math.floor(hour), Math.round((hour % 1) * 60), 0, 0);
+  function newEvent(date = selectedDate, hour = 10, endHour = hour + 1) {
+    const { start, end } = calendarDraft(date, hour, endHour);
     setEventStart(toLocalInput(start.toISOString()));
+    setEventEnd(toLocalInput(end.toISOString()));
     setEditingEvent(null);
     openModal("event");
   }
   function editEvent(event: Row<"events">) {
     setEditingEvent(event);
     setEventStart(toLocalInput(event.starts_at));
+    setEventEnd(toLocalInput(event.ends_at));
     setEventId("");
     openModal("event");
   }
@@ -883,17 +886,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   {pausedTimer ? <Coffee size={16} /> : <TimerIcon size={16} />}
                 </ZuluButton>
               )}
-              {(page === "overview" || page === "calendar") &&
-              hub.canParticipate ? (
-                <ZuluButton
-                  className="primary-button"
-                  disabled={hub.busy}
-                  onClick={() => newEvent()}
-                >
-                  <Plus size={17} />
-                  Novo evento
-                </ZuluButton>
-              ) : page === "hours" && hub.canParticipate ? (
+              {page === "hours" && hub.canParticipate ? (
                 <ZuluButton
                   className="primary-button"
                   disabled={hub.busy}
@@ -2171,17 +2164,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 name="end"
                 type="datetime-local"
                 required
-                defaultValue={
-                  editingEvent
-                    ? toLocalInput(editingEvent.ends_at)
-                    : eventStart
-                      ? toLocalInput(
-                          new Date(
-                            new Date(eventStart).getTime() + 3600000,
-                          ).toISOString(),
-                        )
-                      : ""
-                }
+                defaultValue={eventEnd}
               />
             </ZuluLabel>
             <ZuluLabel>

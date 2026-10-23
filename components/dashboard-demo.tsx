@@ -317,13 +317,6 @@ export function DashboardDemo() {
                   .
                 </p>
               </div>
-              <ZuluButton
-                className="primary-button"
-                onClick={() => setDialog("Novo evento")}
-              >
-                <Plus size={17} />
-                Novo evento
-              </ZuluButton>
             </div>
             {notice && (
               <DashboardNotice message={notice} onClose={() => setNotice("")} />

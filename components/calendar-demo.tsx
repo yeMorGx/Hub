@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import { Button, Form, Input, Label } from "@heroui/react";
 import { LiveCalendar } from "./live-calendar";
 import { HubDialog } from "./hub-ui";
 import { createDemoBackend } from "@/lib/hub/demo-backend";
-import { dateAt, dayKey, mondayOf } from "@/lib/hub/dates";
-import { moveCalendarDate, type CalendarView } from "@/lib/hub/calendar";
+import { dateAt, dayKey, mondayOf, toLocalInput } from "@/lib/hub/dates";
+import { calendarDraft, moveCalendarDate, type CalendarView } from "@/lib/hub/calendar";
 import type { Row } from "@/lib/hub/types";
 export function CalendarDemo() {
   const [ready, setReady] = useState(false);
@@ -13,6 +14,9 @@ export function CalendarDemo() {
     [view, setView] = useState<CalendarView>("month");
   const [notice, setNotice] = useState(""),
     [event, setEvent] = useState<Row<"events"> | null>(null);
+  const [draft, setDraft] = useState<{ start: Date; end: Date } | null>(null);
+  const [createdEvents, setCreatedEvents] = useState<Row<"events">[]>([]);
+  const [formError, setFormError] = useState("");
   useEffect(() => {
     const now = new Date();
     setToday(now);
@@ -59,9 +63,10 @@ export function CalendarDemo() {
         ends_at: at(5, 2),
         kind: "event",
       },
+      ...createdEvents,
     ];
     return hub;
-  }, [today]);
+  }, [today, createdEvents]);
   const monday = mondayOf(date);
   return (
     <div className="calendar-demo live-app">
@@ -98,11 +103,11 @@ export function CalendarDemo() {
             setDate(moveCalendarDate(date, view, direction))
           }
           onToday={() => setDate(today)}
-          onNew={(day) =>
-            setNotice(
-              `Demonstração: novo evento em ${dayKey(day)}. Nenhum dado real será criado.`,
-            )
-          }
+          onNew={(day, start, end) => {
+            setFormError("");
+            setNotice(`Demonstração: novo evento em ${dayKey(day)}. Nenhum dado real será criado.`);
+            setDraft(calendarDraft(day, start, end));
+          }}
           onSelect={setEvent}
           onHomeOffice={() =>
             setNotice("Demonstração: a escala de home office não usa dados reais.")
@@ -111,6 +116,37 @@ export function CalendarDemo() {
         />
       ) : (
         <p role="status">Carregando agenda de demonstração…</p>
+      )}
+      {draft && (
+        <HubDialog title="Novo encontro" onClose={() => setDraft(null)}>
+          <Form className="dialog-form" onSubmit={(event) => {
+            event.preventDefault();
+            const values = new FormData(event.currentTarget);
+            const start = new Date(String(values.get("start"))), end = new Date(String(values.get("end")));
+            if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime()) || end <= start) {
+              setFormError("Escolha um término depois do início.");
+              return;
+            }
+            const title = String(values.get("title") ?? "").trim();
+            if (!title) { setFormError("Informe o título do encontro."); return; }
+            setCreatedEvents(previous => [...previous, {
+              ...hub.snapshot.events[0], id: crypto.randomUUID(), title,
+              starts_at: start.toISOString(), ends_at: end.toISOString(), kind: "meeting",
+            }]);
+            setDraft(null);
+            setNotice("Encontro criado apenas nesta demonstração. Recarregar restaura os exemplos.");
+          }}>
+            <p className="demo-note">Teste livremente. Estes eventos ficam só nesta demonstração.</p>
+            {formError && <p role="alert">{formError}</p>}
+            <Label htmlFor="demo-event-title">Título</Label>
+            <Input id="demo-event-title" name="title" required maxLength={200} autoFocus placeholder="Nome do encontro" />
+            <Label htmlFor="demo-event-start">Início</Label>
+            <Input id="demo-event-start" name="start" type="datetime-local" required defaultValue={toLocalInput(draft.start.toISOString())} />
+            <Label htmlFor="demo-event-end">Término</Label>
+            <Input id="demo-event-end" name="end" type="datetime-local" required defaultValue={toLocalInput(draft.end.toISOString())} />
+            <Button type="submit" className="primary-button">Criar encontro de teste</Button>
+          </Form>
+        </HubDialog>
       )}
       {event && (
         <HubDialog title={event.title} onClose={() => setEvent(null)}>

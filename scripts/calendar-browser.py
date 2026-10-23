@@ -34,6 +34,8 @@ with sync_playwright() as p:
   assert '00:00 – 02:00' in page.locator('.calendar-event').filter(has_text='Manutenção noturna').inner_text()
   page.get_by_role('button',name='Criar evento Sáb às 09:00',exact=True).click()
   assert '2026-10-24' in page.get_by_role('status').inner_text()
+  page.get_by_role('dialog',name='Novo encontro').wait_for()
+  page.get_by_role('button',name='Fechar',exact=True).click()
   page.get_by_role('button',name='Semana',exact=True).click()
   assert page.locator('.day-header').count()==7
   page.get_by_role('button',name=re.compile('Sáb')).first.click()
