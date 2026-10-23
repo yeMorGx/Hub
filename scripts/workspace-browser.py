@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright, expect
 BASE=os.environ.get('HUB_APP_URL','http://127.0.0.1:3001').rstrip('/')
 OUT=Path(os.environ.get('HUB_REVIEW_DIR','/tmp/zulu-workspace-qa'));OUT.mkdir(parents=True,exist_ok=True)
 with sync_playwright() as p:
- browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox'])
+ browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox'],proxy={'server':os.environ['HTTPS_PROXY']} if BASE.startswith('https:') and os.environ.get('HTTPS_PROXY') else None)
  for width,height in [(1440,1000),(390,844)]:
   context=browser.new_context(viewport={'width':width,'height':height},locale='pt-BR',timezone_id='America/Sao_Paulo',accept_downloads=True)
   page=context.new_page();errors=[];writes=[]

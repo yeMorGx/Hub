@@ -1,6 +1,6 @@
 # ZULU — entrega do workspace de 23/10/2026
 
-Escopo aprovado: [plano](zulu-workspace-plan.md). Autoridade visual atual: [DESIGN.md](../DESIGN.md), seção Workspace de 23/10/2026, e `workspace20261023` em `.impeccable/design.json`. Este registro descreve o estado da entrega; publicação web segue em andamento e não é declarada concluída sem confirmação da Vercel.
+Escopo aprovado: [plano](zulu-workspace-plan.md). Autoridade visual atual: [DESIGN.md](../DESIGN.md), seção Workspace de 23/10/2026, e `workspace20261023` em `.impeccable/design.json`. Web publicada em https://hub-one-azure.vercel.app, deployment `GFTFByvUfTCC5VLKavRfXpLV4Mbq` / `hub-f2mghnvm0-yemorgxs-projects.vercel.app`, com código do commit `f9bfa1a`.
 
 ## Implementação
 
@@ -17,7 +17,7 @@ Resultados informados pelo agente principal: **47 testes unitários, 32 cenário
 
 A migração `supabase/migrations/20261023120000_workspace_reports_avatars.sql` foi aplicada, conforme confirmação do agente principal. Ela estabelece autorização dos relatórios e políticas do bucket privado de avatares. Os testes SQL exercitam o contrato de permissões; não equivalem a um fluxo completo de usuário autenticado no browser.
 
-Revisão independente em `/tmp/zulu-workspace-review.md`: inspeção das 13 capturas em `/tmp/zulu-workspace-qa/`, PDF `/tmp/zulu-report-final-1.png` e `-2.png` e leitura dos contratos de código/SQL. O parecer inicial foi **fix**, por recorte vertical do mini expandido, já corrigido no CSS. A revisão também pediu recaptura estável do drawer e do tema escuro mobile: capturas durante animação/scroll não demonstram defeito de produto. A confirmação final do revisor está em andamento após a correção e novas evidências; o parecer inicial não deve ser descrito como aprovação final irrestrita.
+Revisão independente em `/tmp/zulu-workspace-review.md`: inspeção das 13 capturas em `/tmp/zulu-workspace-qa/`, PDF `/tmp/zulu-report-final-1.png` e `-2.png` e leitura dos contratos de código/SQL. O parecer inicial foi **fix**, por recorte vertical do mini expandido, já corrigido no CSS. A revisão também pediu recaptura estável do drawer e do tema escuro mobile: capturas durante animação/scroll não demonstram defeito de produto. A revisão final delimitada foi **ship**, após confirmar as linhas legíveis do mini e as capturas estáveis do drawer e tema escuro mobile; nenhum achado material permaneceu aberto. A aprovação nativa continua dependendo do CI Windows.
 
 ## Limites e distribuição
 
@@ -25,4 +25,4 @@ Fixtures públicas e IPC simulado não comprovam login/MFA reais, persistência 
 
 **Windows 0.1.6 aguarda CI**, compilação, smoke nativo, assinatura e confirmação do release. Transparência real da janela, redimensionamento, bandeja, autostart e atualização assinada dependem dessa evidência. Não há aprovação nativa deste pacote com base somente nas fixtures.
 
-A publicação web está em andamento sob responsabilidade do agente principal. Atualizar este registro com os identificadores e resultados confirmados dos serviços quando disponíveis; releases anteriores não comprovam a publicação deste pacote.
+Produção conferida: 32 testes públicos e QA Chromium em 1440px/390px passaram no endereço público, sem erros JavaScript ou gravações de negócio nas fixtures. CI Windows `39901877060` em andamento para o commit exato `f9bfa1a81fa32f3740466800f548254b91c6a892`. Atualizar a evidência nativa após conclusão.
