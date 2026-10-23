@@ -23,3 +23,7 @@ O usuário autorizou explicitamente **sempre publicar** as alterações concluí
 ## ZULU: grill-me e decisões de produto
 
 O usuário pediu usar `grill-me` como padrão. Ler `.agents/skills/grill-me/SKILL.md`; a versão instalada encaminha para `grilling`, ferramenta não disponível neste ambiente. Aplicar o método descrito pelo usuário: investigar o código antes de perguntar, fechar decisões relevantes uma por vez e não reabrir respostas já confirmadas. As decisões do pacote de 23/10/2026 estão em `docs/zulu-workspace-plan.md`. Quando o usuário manda implementar um plano fechado, prosseguir sem uma nova rodada de confirmações.
+
+## ZULU: pesquisa para fundamentar decisões
+
+Por preferência explícita do usuário, pesquisar referências externas por iniciativa própria quando isso ajudar a esclarecer decisões de produto, organização, governança, segurança ou implementação. Não limitar a discussão a hipóteses da conversa. Priorizar documentação oficial, padrões e fontes primárias; usar GitHub, fóruns e Reddit para experiências práticas e contrapontos, distinguindo relatos de evidências verificadas. Para legislação e privacidade, consultar textos oficiais e orientações da autoridade competente. Apresentar links e separar fatos verificados, recomendações e decisões ainda em aberto. Não enviar informações privadas, documentos internos, credenciais ou dados pessoais nas pesquisas. Não é necessário pedir autorização para pesquisas públicas pertinentes ao trabalho.
