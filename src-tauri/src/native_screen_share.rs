@@ -24,7 +24,7 @@ pub struct NativeShareState(Arc<Mutex<Option<Arc<AtomicBool>>>>);
 mod windows {
     use super::{NativeScreenSource, NativeShareState};
     use base64::{engine::general_purpose::STANDARD, Engine};
-    use image::{imageops::FilterType, DynamicImage, ImageFormat, RgbaImage};
+    use image::{DynamicImage, ImageFormat, RgbaImage};
     use livekit::{
         options::{TrackPublishOptions, VideoEncoding},
         prelude::{LocalTrack, LocalVideoTrack, Room, RoomEvent, RoomOptions, TrackSource},
@@ -221,44 +221,26 @@ mod windows {
             if width == 0 || height == 0 {
                 return Ok(());
             }
+            let captured_at = Instant::now();
             let mut buffer = frame.buffer()?;
-            let rgba = buffer.as_nopadding_buffer(&mut Vec::new()).to_vec();
 
             if let (Some(video_source), Some((output_width, output_height))) =
                 (&self.flags.video_source, self.flags.output_size)
             {
-                let Some(image) = RgbaImage::from_raw(width, height, rgba) else {
-                    return Ok(());
-                };
-                let image = if image.width() == output_width && image.height() == output_height {
-                    image
-                } else {
-                    image::imageops::resize(
-                        &image,
-                        output_width,
-                        output_height,
-                        FilterType::Triangle,
-                    )
-                };
-                let mut i420 = I420Buffer::new(output_width, output_height);
-                let (stride_y, stride_u, stride_v) = i420.strides();
-                let (plane_y, plane_u, plane_v) = i420.data_mut();
-                imgproc::colorcvt::rgba_to_i420(
-                    image.as_raw(),
-                    output_width * 4,
-                    plane_y,
-                    stride_y,
-                    plane_u,
-                    stride_u,
-                    plane_v,
-                    stride_v,
+                let stride = buffer.row_pitch();
+                let i420 = rgba_video_frame(
+                    buffer.as_raw_buffer(),
+                    stride,
+                    width,
+                    height,
                     output_width,
                     output_height,
-                    false,
                 );
                 video_source.capture_frame(&VideoFrame {
                     rotation: VideoRotation::VideoRotation0,
-                    timestamp_us: self.flags.start_time.elapsed().as_micros() as i64,
+                    timestamp_us: captured_at
+                        .duration_since(self.flags.start_time)
+                        .as_micros() as i64,
                     frame_metadata: None,
                     buffer: i420,
                 });
@@ -266,6 +248,8 @@ mod windows {
                     started.store(true, Ordering::Release);
                 }
             } else {
+                // Only thumbnails need an owned, tightly packed RGBA image.
+                let rgba = buffer.as_nopadding_buffer(&mut Vec::new()).to_vec();
                 let _ = self.flags.sender.try_send(CapturedFrame {
                     width,
                     height,
@@ -284,6 +268,33 @@ mod windows {
         }
     }
 
+    fn rgba_video_frame(
+        rgba: &[u8],
+        stride: u32,
+        width: u32,
+        height: u32,
+        output_width: u32,
+        output_height: u32,
+    ) -> I420Buffer {
+        let mut i420 = I420Buffer::new(width, height);
+        let (stride_y, stride_u, stride_v) = i420.strides();
+        let (plane_y, plane_u, plane_v) = i420.data_mut();
+        // WGC Rgba8 is R,G,B,A in memory. libyuv names formats by register
+        // order: ABGR means R,G,B,A on little-endian Windows. RGBAToI420
+        // would treat alpha as red, tinting even a black image red.
+        imgproc::colorcvt::abgr_to_i420(
+            rgba, stride, plane_y, stride_y, plane_u, stride_u, plane_v, stride_v, width, height,
+            false,
+        );
+        if width == output_width && height == output_height {
+            i420
+        } else {
+            // WebRTC/libyuv scales the smaller YUV planes with native SIMD;
+            // avoid a full RGBA copy and CPU image::resize on every frame.
+            i420.scale(output_width as i32, output_height as i32)
+        }
+    }
+
     fn capture_settings<T: TryInto<GraphicsCaptureItemType>>(
         item: T,
         flags: FrameHandlerFlags,
@@ -294,7 +305,7 @@ mod windows {
             CursorCaptureSettings::WithCursor,
             DrawBorderSettings::Default,
             SecondaryWindowSettings::Default,
-            MinimumUpdateIntervalSettings::Custom(Duration::from_millis(1000 / fps as u64)),
+            MinimumUpdateIntervalSettings::Custom(Duration::from_nanos(1_000_000_000 / fps as u64)),
             DirtyRegionSettings::Default,
             ColorFormat::Rgba8,
             flags,
@@ -568,6 +579,53 @@ mod windows {
         let _ = capture.stop();
         let _ = room.close().await;
         Ok(())
+    }
+    #[cfg(test)]
+    mod tests {
+        use super::rgba_video_frame;
+
+        #[test]
+        fn rgba_colors_do_not_use_alpha_as_red() {
+            // BT.601 limited-range reference values, tolerance for rounding.
+            for (pixel, expected) in [
+                ([0, 0, 0, 255], [16, 128, 128]),
+                ([255, 255, 255, 255], [235, 128, 128]),
+                ([255, 0, 0, 255], [82, 90, 240]),
+                ([0, 255, 0, 255], [144, 54, 34]),
+                ([0, 0, 255, 255], [41, 240, 110]),
+            ] {
+                let rgba = pixel.repeat(4);
+                let frame = rgba_video_frame(&rgba, 8, 2, 2, 2, 2);
+                let (y, u, v) = frame.data();
+                for (plane, value) in [(y, expected[0]), (u, expected[1]), (v, expected[2])] {
+                    assert!(plane.iter().all(|sample| sample.abs_diff(value) <= 1));
+                }
+            }
+        }
+
+        #[test]
+        fn padded_rows_and_yuv_downscale_preserve_color() {
+            // 3x3 white, with conspicuous padding at the end of every row.
+            let mut rgba = Vec::new();
+            for _ in 0..3 {
+                rgba.extend([255, 255, 255, 255].repeat(3));
+                rgba.extend([255, 0, 0, 255]);
+            }
+            let frame = rgba_video_frame(&rgba, 16, 3, 3, 2, 2);
+            assert_eq!((frame.width(), frame.height()), (2, 2));
+            let (y, u, v) = frame.data();
+            assert!(y.iter().all(|sample| sample.abs_diff(235) <= 1));
+            assert!(u.iter().chain(v).all(|sample| sample.abs_diff(128) <= 1));
+        }
+
+        #[test]
+        fn alpha_does_not_change_transmitted_rgb() {
+            let opaque = [0, 0, 255, 255].repeat(4);
+            let transparent = [0, 0, 255, 0].repeat(4);
+            let a = rgba_video_frame(&opaque, 8, 2, 2, 2, 2);
+            let b = rgba_video_frame(&transparent, 8, 2, 2, 2, 2);
+            assert_eq!(a.data(), b.data());
+        }
     }
 }
 

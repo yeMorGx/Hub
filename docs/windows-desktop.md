@@ -56,3 +56,12 @@ O token de curta duração é emitido após a validação de sessão MFA, associ
 ## Avisos de novas versões
 
 O instalador 0.1.2 adiciona consulta de versão e abertura controlada do download para [avisos de atualização dentro do app](desktop-updates.md). A migração de 0.1.1 para 0.1.2 precisa ser feita manualmente uma vez. A consulta só anuncia releases estáveis publicadas; rascunhos não disparam o aviso. A instalação permanece manual, sem assinatura e sem reinício automático.
+
+
+## Correção de vídeo 0.1.8
+
+A captura nativa Windows entregava bytes R,G,B,A, mas usava `RGBAToI420` do libyuv, cujo nome descreve a ordem em um registrador (A,B,G,R na memória little-endian). Isso fazia o alfa ser interpretado como vermelho. A conversão agora usa `ABGRToI420`, respeita o `row_pitch` do Windows e mantém o alfa fora das cores transmitidas. Referência: [formatos oficiais do libyuv](https://chromium.googlesource.com/libyuv/libyuv/+/HEAD/docs/formats.md#the-argb-fourcc).
+
+Para reduzir custo por quadro, a transmissão converte diretamente o buffer mapeado para I420, sem copiar/desempacotar RGBA. Quando necessário, redimensiona os planos YUV com o caminho nativo WebRTC/libyuv em vez de `image::resize` sobre quatro canais. Prévia PNG mantém o caminho de imagem existente. Os timestamps representam a captura antes do processamento; o intervalo de captura usa precisão de nanossegundos para 30/60 FPS. Os perfis e limites de bitrate permanecem existentes.
+
+Três testes Windows cobrem preto/branco/cores primárias, independência do alfa, padding de linha, dimensões ímpares e redução de resolução. Compilação, testes e distribuição são registrados após a execução do workflow. Fluidez e latência de uma chamada real ainda dependem de CPU, rede e validação no computador do usuário; os testes de pixels não medem FPS de ponta a ponta.
