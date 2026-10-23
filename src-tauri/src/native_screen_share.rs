@@ -583,6 +583,7 @@ mod windows {
     #[cfg(test)]
     mod tests {
         use super::rgba_video_frame;
+        use livekit::webrtc::video_frame::VideoBuffer;
 
         #[test]
         fn rgba_colors_do_not_use_alpha_as_red() {
