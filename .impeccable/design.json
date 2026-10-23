@@ -464,5 +464,15 @@
       "app/workspace-inset.css",
       "src-tauri/src/runtime.rs"
     ]
+  },
+  "organizationAdministration": {
+    "scope": "Organization administration, internal library and organization contacts; preserve existing dashboard and shell",
+    "identity": "Inherit ivory/deep-blue flat application tokens; no decorative borders or card shadows",
+    "components": "HeroUI v3 Tabs, Button, Input, Label, Checkbox, TextArea, Spinner; existing HeroUI-backed HubDialog and ZuluSelect",
+    "layout": "People master/detail and per-person permission matrix; mobile stacked with horizontal tab scrolling; library navigation/editor and explicit share dialog",
+    "motion": "Existing hover, press, tab, loading and dialog feedback; respect reduced motion",
+    "privacy": "No admin override for private DMs/documents; free job title never grants authority",
+    "documentation": "docs/organization-admin.md",
+    "review": "Bounded final ship; 1440/390 fixture captures and static contracts; not authenticated production validation"
   }
 }

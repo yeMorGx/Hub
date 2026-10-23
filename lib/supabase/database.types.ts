@@ -1359,6 +1359,9 @@ export type Database = {
       }
       team_members: {
         Row: {
+          is_team_admin?: boolean
+          permissions?: Json
+
           is_active: boolean
           joined_at: string
           role: Database["public"]["Enums"]["team_role"]
@@ -1367,6 +1370,9 @@ export type Database = {
           workspace_id: string
         }
         Insert: {
+          is_team_admin?: boolean
+          permissions?: Json
+
           is_active?: boolean
           joined_at?: string
           role?: Database["public"]["Enums"]["team_role"]
@@ -1375,6 +1381,9 @@ export type Database = {
           workspace_id: string
         }
         Update: {
+          is_team_admin?: boolean
+          permissions?: Json
+
           is_active?: boolean
           joined_at?: string
           role?: Database["public"]["Enums"]["team_role"]
@@ -1624,6 +1633,9 @@ export type Database = {
       }
       workspace_members: {
         Row: {
+          job_title?: string
+          can_approve?: boolean
+
           is_active: boolean
           joined_at: string
           role: Database["public"]["Enums"]["workspace_role"]
@@ -1631,6 +1643,9 @@ export type Database = {
           workspace_id: string
         }
         Insert: {
+          job_title?: string
+          can_approve?: boolean
+
           is_active?: boolean
           joined_at?: string
           role?: Database["public"]["Enums"]["workspace_role"]
@@ -1638,6 +1653,9 @@ export type Database = {
           workspace_id: string
         }
         Update: {
+          job_title?: string
+          can_approve?: boolean
+
           is_active?: boolean
           joined_at?: string
           role?: Database["public"]["Enums"]["workspace_role"]
@@ -1663,6 +1681,8 @@ export type Database = {
       }
       workspaces: {
         Row: {
+          owner_id?: string
+
           created_at: string
           created_by: string
           id: string
@@ -1670,6 +1690,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          owner_id?: string
+
           created_at?: string
           created_by: string
           id?: string
@@ -1677,6 +1699,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          owner_id?: string
+
           created_at?: string
           created_by?: string
           id?: string
@@ -1722,6 +1746,12 @@ export type Database = {
       }
     }
     Functions: {
+      organization_contacts: { Args: { p_workspace_id: string; p_other_user_id?: string }; Returns: Json };
+      organization_console: { Args: { p_workspace_id: string; p_command?: string; p_payload?: Json }; Returns: Json };
+      library_console: { Args: { p_workspace_id: string; p_command?: string; p_payload?: Json }; Returns: Json };
+      organization_permission: { Args: { p_team_id: string; p_capability: string }; Returns: boolean };
+      issue_organization_invite: { Args: { p_authorization_id: string; p_token_hash: string }; Returns: Json };
+
       report_work_balances: { Args: { p_team_id: string; p_from: string; p_to: string; p_user_id?: string }; Returns: { user_id: string; display_name: string; work_date: string; expected_minutes: number; actual_seconds: number; configured: boolean }[] };
       create_team_invitation: {
         Args: { p_team_id: string; p_email: string; p_role: Database["public"]["Enums"]["team_role"]; p_token_hash: string }

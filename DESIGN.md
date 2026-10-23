@@ -238,3 +238,8 @@ Botões têm cantos discretos (7px); molduras e painéis principais usam cantos 
 - **Don't** adicionar logos de clientes, depoimentos ou métricas de produtividade sem evidência fornecida.
 
 Revisão visual final: `ship` restrito às quatro capturas de `/site` e `/download`, em 1440px e 390px, em `.impeccable/review/marketing/`. A revisão visual não comprova fluxos autenticados, instalação desktop, acessibilidade completa ou integrações reais.
+
+
+## Surface: Administração da organização e biblioteca
+
+Herda a identidade plana marfim/azul do aplicativo. Lista e detalhe de pessoas, matriz individual de permissões, abas HeroUI e biblioteca com navegação/editor. No celular, empilhar lista e detalhe e manter abas com rolagem horizontal, sem criar overflow da página. Usar componentes oficiais HeroUI v3 e os adaptadores existentes HubDialog/ZuluSelect. Confirmar ações críticas, manter rascunhos durante polling e distinguir solicitação pendente de acesso concedido. Sem bordas decorativas nem sombras de cards; foco funcional preservado. Microinterações seguem os controles oficiais e movimento reduzido. Cargo visível não indica autoridade e conteúdo privado não ganha leitura por ser admin. Contratos e evidências em `docs/organization-admin.md`. Revisão final delimitada: `ship`, com fixtures em1440/390; não comprova fluxos autenticados reais.

@@ -73,4 +73,4 @@ export type LivePage =
   | "management"
   | "integrations"
   | "calls"
-  | "reports" | "notes" | "goals" | "clients" | "shifts" | "absences" | "dates" | "meetings" | "standups" | "notifications" | "settings";
+  | "organization" | "library" | "organization-chat" | "reports" | "notes" | "goals" | "clients" | "shifts" | "absences" | "dates" | "meetings" | "standups" | "notifications" | "settings";

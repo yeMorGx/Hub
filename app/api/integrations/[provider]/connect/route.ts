@@ -1,3 +1,4 @@
+import { hasOrganizationPermission } from "@/lib/organization/server";
 import { cookies } from "next/headers";
 import {
   isProvider,
@@ -42,6 +43,7 @@ export async function POST(
         { error: "Participação no time obrigatória." },
         403,
       );
+    if (!await hasOrganizationPermission(session.client,body.teamId,"integrations.write")) return integrationJson({error:"Integrações desativadas ou sem permissão."},403);
     const state = nonce(),
       verifier = nonce();
     const cookie = {

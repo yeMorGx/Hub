@@ -1,3 +1,4 @@
+import { hasOrganizationPermission } from "@/lib/organization/server";
 import { sameOrigin } from "@/lib/integrations/config";
 import {
   integrationJson,
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
       .single();
     if (channel.error || !channel.data || channel.data.archived_at)
       return integrationJson({ error: "Canal indisponível." }, 403);
+    if (!await hasOrganizationPermission(session.client,channel.data.team_id,"calls.view")) return integrationJson({error:"Chamadas desativadas ou sem permissão."},403);
     await enforceRoomAccess(
       session.client,
       channel.data.id,

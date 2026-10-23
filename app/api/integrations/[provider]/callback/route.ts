@@ -1,3 +1,4 @@
+import { hasOrganizationPermission } from "@/lib/organization/server";
 import { after } from "next/server";
 import {
   backgroundConfigured,
@@ -71,6 +72,7 @@ export async function GET(
       .eq("user_id", session.userId)
       .single();
     if (!member?.is_active) return done("error");
+    if (!await hasOrganizationPermission(session.client,state.teamId,"integrations.write")) return done("error");
     const token = await exchangeToken(provider, code, state.verifier);
     const { data: previous } = await session.client
       .from("calendar_connections")

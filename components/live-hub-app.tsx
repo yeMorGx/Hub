@@ -1,4 +1,10 @@
 "use client";
+import { OrganizationContacts } from "./organization-contacts";
+import { OrganizationAdmin } from "./organization-admin";
+import { OrganizationLibrary } from "./organization-library";
+import { OrganizationNotices } from "./organization-notices";
+import { useOrganization } from "@/lib/organization/use-organization";
+import { allowedPage } from "@/lib/organization/model";
 import { WorkspaceDrawer } from "./workspace-drawer";
 import { DashboardLoading, ZuluAlert, DashboardNotice, DashboardWorkspacePicker, DashboardUIProvider, ZuluForm, ZuluLabel, ZuluFieldset, ZuluLegend, ZuluButton, ZuluSelect, ZuluInput, ZuluTextArea, ZuluCheckboxField } from "./dashboard-ui";
 import { WorkspaceAreaTabs } from "./workspace-area-tabs";
@@ -164,6 +170,16 @@ export function LiveHubApp({ userId }: { userId: string }) {
     rangeEnd = range.end.toISOString();
   const hub = useHub(userId, rangeStart, rangeEnd, todayKey),
     data = hub.snapshot;
+  const organization = useOrganization(hub);
+  const canAdminister = Boolean(organization.authority && (organization.authority.owner || organization.authority.general_admin || organization.authority.team_admin || organization.authority.can_approve));
+  const isAllowed = (target: LivePage) => target === "organization" ? canAdminister : allowedPage(organization.authority, target, hub.teamId);
+  useEffect(() => { if (organization.authority && !isAllowed(page)) setPage("overview"); }, [organization.authority, page, hub.teamId]);
+  const modulePermission = (module: string, action: string) => {
+    const a=organization.authority;if(!a||a.features[module]===false)return false;
+    if(a.owner)return true;const permissions=a.permissions[hub.teamId]||{};
+    if(permissions[`${module}.view`]===false)return false;
+    return permissions[`${module}.${action}`] ?? (action==='manage' || module==='projects'&&action==='write' ? hub.canManage : true);
+  };
   const priorTeam = useRef("");
   const [modal, setModal] = useState<Modal>(null),
     [popover, setPopover] = useState(false),
@@ -320,6 +336,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
       data.attendees.some((a) => a.event_id === id && a.user_id === p.id),
     );
   function navigate(next: LivePage) {
+    if (!isAllowed(next)) { hub.notify("Esta função não está disponível para seu acesso.", true); return; }
     setMenuOpen(false);
     setPage(next === "management" ? "reports" : next === "collaboration" ? "notes" : next === "more" ? "settings" : next);
     setPopover(false);
@@ -715,8 +732,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
 
         </ZuluButton>
         <nav>
-          {workspaceAreas.filter(area => area.id !== "settings").map(area => (
-            <ZuluButton key={area.id} className={`rail-button ${currentArea.id === area.id ? "active" : ""}`} onClick={() => navigate(area.tabs[0][0])} aria-label={area.label} aria-current={currentArea.id === area.id ? "page" : undefined}>
+          {workspaceAreas.filter(area => area.id !== "settings" && area.tabs.some(([id]) => isAllowed(id))).map(area => (
+            <ZuluButton key={area.id} className={`rail-button ${currentArea.id === area.id ? "active" : ""}`} onClick={() => navigate(area.tabs.find(([id]) => isAllowed(id))![0])} aria-label={area.label} aria-current={currentArea.id === area.id ? "page" : undefined}>
               <DashboardNavIcon name={area.icon} />
               {area.id === "conversations" && totalUnread > 0 && <span className="nav-unread" aria-label={`${totalUnread} mensagens não lidas`} />}
             </ZuluButton>
@@ -724,7 +741,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
         </nav>
         <div className="rail-bottom"><ZuluButton className={`rail-button ${currentArea.id === "settings" ? "active" : ""}`} aria-label="Configurações" onClick={() => navigate("settings")}><DashboardNavIcon name="settings" /></ZuluButton></div>
       </aside>
-<WorkspaceDrawer open={menuOpen} onOpenChange={setMenuOpen} onPage={navigate} />      <DesktopBridge hub={hub} />
+<WorkspaceDrawer isAllowed={isAllowed} open={menuOpen} onOpenChange={setMenuOpen} onPage={navigate} />      <DesktopBridge hub={hub} />
       <div className="app-content">
         <DesktopChrome><header className="topbar"><ZuluButton className="mobile-navigation-toggle" aria-label="Abrir navegação" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><SquaresFour size={21} /></ZuluButton>
           <div className="workspace-wrap">
@@ -762,7 +779,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
           </div>
         </header></DesktopChrome>
         <main id="main-content" className={`main-content ${page === "overview" ? "today-page" : ""}`}>
-          <WorkspaceAreaTabs page={page} onPage={navigate} />
+          <WorkspaceAreaTabs page={page} onPage={navigate} isAllowed={isAllowed} />
+          {organization.error&&<div className="org-notice-banner" role="alert"><p>{organization.error}</p><ZuluButton onClick={()=>void organization.refresh()}>Conferir acesso novamente</ZuluButton></div>}
+          <OrganizationNotices hub={hub} authority={organization.authority} command={organization.command} />
           <div className="page-heading">
             <div>
               <h1>
@@ -887,6 +906,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   <div className="dashboard-main">
                     {page === "overview" && (
                       <TodayOverview
+                        showHours={isAllowed("hours")} showCalendar={isAllowed("calendar")}
                         key={hub.teamId}
                         timer={{
                           state: activeTimer
@@ -921,7 +941,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           ...data.tasks.filter(task => !task.archived_at && task.status !== "done" && (!task.project_id || data.projects.some(project => project.id === task.project_id))).slice(0, 3).map(task => ({id: task.id, description: task.title, projectId: task.project_id ?? "", kind: "task" as const})),
                           ...recentWork.map(entry => ({id: entry.id, description: entry.description, projectId: entry.project_id ?? "", kind: "recent" as const})),
                         ]}
-                        onCreateProject={hub.canManage ? async name => {
+                        onCreateProject={modulePermission("projects","write") ? async name => {
                           const result = await hub.mutate(() => hub.rpc("save_project", {
                             p_team_id: hub.teamId, p_name: name, p_description: "",
                           }), "Projeto criado.");
@@ -946,7 +966,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         onRetry={() => void hub.refreshTeam()}
                       />
                     )}
-                    <LiveCalendar
+                    {isAllowed("calendar") && <LiveCalendar
                       hub={hub}
                       monday={monday}
                       date={selectedDate}
@@ -970,10 +990,11 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       }}
                       full={page === "calendar"}
                       compact={page === "overview"}
-                    />
+                    />}
                   </div>
                   {page === "overview" ? (
                     <TodayContext
+                      showCalendar={isAllowed("calendar")} showPeople={isAllowed("people")} showChat={isAllowed("chat")} showHours={isAllowed("hours")}
                       events={todayEvents.filter(
                         (event) => new Date(event.ends_at).getTime() > now,
                       )}
@@ -1155,17 +1176,20 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   )}
                 </div>
               )}
+              {page === "organization-chat" && isAllowed("organization-chat") && <OrganizationContacts key={hub.workspace?.id} hub={hub} canCall={isAllowed("calls")} />}
+              {page === "organization" && organization.authority && canAdminister && <OrganizationAdmin key={hub.workspace?.id} hub={hub} authority={organization.authority} command={organization.command} />}
+              {page === "library" && isAllowed("library") && <OrganizationLibrary key={hub.workspace?.id} hub={hub} />}
               {page === "calls" && <LiveCalls key={hub.teamId} hub={hub} />}
               {page === "integrations" && (
                 <LiveIntegrations key={hub.teamId} hub={hub} />
               )}
-              {(["goals", "clients", "shifts", "absences", "dates"] as string[]).includes(page) && <LiveManagement key={`${hub.teamId}:${page}`} hub={hub} initialTab={page as "goals" | "clients" | "shifts" | "absences" | "dates"} embedded />}
-              {page === "reports" && <HoursReport key={hub.teamId} hub={hub} />}
-              {page === "settings" && <WorkspaceSettings hub={hub} onProfile={() => openModal("profile")} onMembers={() => navigate("people")} onIntegrations={() => navigate("integrations")} onSignOut={signOut} />}
+              {(["goals", "clients", "shifts", "absences", "dates"] as string[]).includes(page) && <LiveManagement key={`${hub.teamId}:${page}`} hub={{...hub,canManage:modulePermission(page==="goals"?"hours":"management","manage")}} initialTab={page as "goals" | "clients" | "shifts" | "absences" | "dates"} embedded />}
+              {page === "reports" && <HoursReport key={hub.teamId} hub={{...hub,isAdmin:hub.isAdmin || Boolean(organization.authority?.permissions[hub.teamId]?.["reports.manage"])}} />}
+              {page === "settings" && <WorkspaceSettings hub={hub} organization={organization} onProfile={() => openModal("profile")} onMembers={() => navigate("organization")} onIntegrations={() => navigate("integrations")} onSignOut={signOut} />}
               {(["notes", "standups", "meetings", "notifications"] as string[]).includes(page) && (
                 <LiveCollaboration
                   key={`${hub.teamId}:${page}`}
-                  hub={hub}
+                  hub={{...hub,canManage:modulePermission(page==="standups"?"checkins":"documents","manage")}}
                   initialTab={page as "notes" | "standups" | "meetings" | "notifications"} embedded
                   onOpenChannel={(id) => {
                     setChannelId(id);
@@ -1560,9 +1584,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                             )}
                           </h2>
                           <p>
-                            {person.role === "leader"
-                              ? "Líder do time"
-                              : "Membro do time"}
+                            {organization.authority?.job_titles?.[person.id] || ""}
                             {person.timer_running ? " · Timer ativo" : ""}
                           </p>
                           <div className="person-work">
@@ -2239,11 +2261,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
               <span>
                 <strong>{currentName}</strong>
                 <small>
-                  {hub.isAdmin
-                    ? "Administrador"
-                    : hub.canManage
-                      ? "Líder"
-                      : "Membro"}
+                  {organization.authority?.job_titles?.[userId] || ""}
                 </small>
               </span>
             </div>

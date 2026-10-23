@@ -1,3 +1,4 @@
+import { hasOrganizationPermission } from "@/lib/organization/server";
 import { enforceRoomAccess } from "@/lib/livekit/access";
 import { AccessToken, TrackSource } from "livekit-server-sdk";
 import { sameOrigin } from "@/lib/integrations/config";
@@ -59,6 +60,7 @@ export async function POST(request: Request) {
         { error: "Você precisa participar deste canal." },
         403,
       );
+    if (!await hasOrganizationPermission(session.client,channel.team_id,"calls.write")) return integrationJson({error:"Chamadas desativadas ou sem permissão."},403);
     await enforceRoomAccess(session.client, channel.id, channel.team_id);
     const token = new AccessToken(key, secret, {
       identity: nativeScreenShare

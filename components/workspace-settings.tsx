@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Button, Tabs, Label, Select, ListBox, Checkbox } from "@heroui/react";
+import { HubDialog } from "./hub-ui";
+import type { Authority } from "@/lib/organization/model";
+import type { OrgCommand } from "./organization-admin";
 import { UserCircle, Palette, Desktop, Buildings, ArrowUpRight } from "@phosphor-icons/react";
 import type { HubController } from "@/lib/hub/use-hub";
 import { PushSettings } from "./push-settings";
@@ -8,10 +11,12 @@ import { OfflineSettings } from "./offline-settings";
 import { InstallApp } from "./pwa";
 import { desktopRuntime, isDesktopRuntime, type RuntimeState } from "@/lib/desktop/runtime";
 
-export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, onSignOut }: {
-  hub: HubController; onProfile: () => void; onMembers: () => void; onIntegrations: () => void; onSignOut: () => void;
+export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, onSignOut, organization }: {
+  hub: HubController; onProfile: () => void; onMembers: () => void; onIntegrations: () => void; onSignOut: () => void; organization?: { authority: Authority | null; command: OrgCommand };
 }) {
   const [narrow, setNarrow] = useState(false);
+  const [leaveOpen,setLeaveOpen]=useState(false);
+  const canManageOrganization=hub.isAdmin||Boolean(organization?.authority?.team_admin||organization?.authority?.can_approve);
   const [theme, setTheme] = useState("light"), [message, setMessage] = useState(""), [busy, setBusy] = useState(false);
   const [runtime, setRuntime] = useState<RuntimeState | null>(null);
   useEffect(() => {
@@ -31,7 +36,7 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
         <Tabs.Tab id="account"><UserCircle size={20} />Conta<Tabs.Indicator /></Tabs.Tab>
         <Tabs.Tab id="preferences"><Palette size={20} />Preferências<Tabs.Indicator /></Tabs.Tab>
         <Tabs.Tab id="desktop"><Desktop size={20} />Desktop<Tabs.Indicator /></Tabs.Tab>
-        {hub.isAdmin && <Tabs.Tab id="organization"><Buildings size={20} />Organização<Tabs.Indicator /></Tabs.Tab>}
+        {canManageOrganization && <Tabs.Tab id="organization"><Buildings size={20} />Organização<Tabs.Indicator /></Tabs.Tab>}
       </Tabs.List></Tabs.ListContainer>
       <Tabs.Panel id="account" className="settings-panel">
         <h2>Sua conta</h2><p>Seu perfil acompanha você em todos os times.</p>
@@ -44,6 +49,7 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
             if (result.error) throw result.error; setMessage("Enviamos um link para alterar sua senha.");
           } catch { setMessage("Não foi possível enviar o link. Aguarde e tente novamente."); } finally { setBusy(false); }
         }}>Alterar senha</Button></div>
+        {organization&&<div className="settings-row"><div><strong>Sair da organização</strong><p>{organization.authority?.owner?"Para sair, transfira a coroa e aguarde o aceite do sucessor.":"Você perderá os acessos aos times. A autoria dos seus documentos será preservada."}</p></div><Button variant="danger-soft" onPress={()=>organization.authority?.owner?onMembers():setLeaveOpen(true)}>{organization.authority?.owner?"Transferir coroa":"Sair da organização"}</Button></div>}
         <div className="settings-row"><div><strong>Encerrar sessão</strong><p>Saia da sua conta neste dispositivo.</p></div><Button variant="danger-soft" onPress={onSignOut}>Sair da conta</Button></div>
       </Tabs.Panel>
       <Tabs.Panel id="preferences" className="settings-panel">
@@ -65,12 +71,13 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
           <Button variant="danger-soft" isDisabled={busy} onPress={() => void runtimeAction("quit")}>Encerrar ZULU</Button>
         </> : <div className="settings-row"><p>Estas opções ficam disponíveis no aplicativo para Windows.</p><a href="/download">Baixar aplicativo <ArrowUpRight size={16} /></a></div>}
       </Tabs.Panel>
-      {hub.isAdmin && <Tabs.Panel id="organization" className="settings-panel">
+      {canManageOrganization && <Tabs.Panel id="organization" className="settings-panel">
         <h2>{hub.workspace?.name ?? "Sua organização"}</h2><p>Administre as conexões e os acessos do seu time.</p>
         <div className="settings-row"><div><strong>Pessoas e permissões</strong><p>Convites, papéis e acesso ao time.</p></div><Button variant="secondary" onPress={onMembers}>Gerenciar pessoas</Button></div>
         <div className="settings-row"><div><strong>Integrações e auditoria</strong><p>Calendários, automações e histórico de alterações.</p></div><Button variant="secondary" onPress={onIntegrations}>Abrir integrações</Button></div>
       </Tabs.Panel>}
     </Tabs>
+    {leaveOpen&&organization&&<HubDialog title="Sair da organização" onClose={()=>{if(!busy)setLeaveOpen(false);}}><div className="org-confirm"><p>Você perderá o acesso aos times desta organização. Seus documentos permanecerão com sua autoria e passarão à responsabilidade da administração.</p><Button variant="danger" isDisabled={busy} onPress={async()=>{setBusy(true);try{await organization.command('leave');setLeaveOpen(false);await hub.refreshAll();}catch{setMessage('Não foi possível sair. Confira sua conexão e tente novamente.');}finally{setBusy(false);}}}>Confirmar saída</Button></div></HubDialog>}
     {message && <p className="inline-notice" role="status">{message}</p>}
   </section>;
 }

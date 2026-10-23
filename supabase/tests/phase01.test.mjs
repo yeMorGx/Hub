@@ -205,7 +205,8 @@ scenario('último admin não pode ser removido ou rebaixado', async () => {
   await sqlError('select public.set_workspace_member($1,$2,$3)', [ids.workspace, users.admin, 'member'], '23514');
   await sqlError('select public.set_workspace_member($1,$2,$3,$4)', [ids.workspace, users.admin, 'admin', false], '23514');
   await rpc('set_workspace_member', [ids.workspace, users.bob, 'admin']);
-  await rpc('set_workspace_member', [ids.workspace, users.admin, 'member']);
+  await sqlError('select public.set_workspace_member($1,$2,$3)', [ids.workspace, users.admin, 'member'], '23514');
+  await login(users.bob);
   await sqlError('select public.set_workspace_member($1,$2,$3)', [ids.workspace, users.alice, 'admin'], '42501');
 });
 
@@ -666,11 +667,11 @@ scenario('Kanban: liderança participante altera cards de outros autores', async
   assert.ok((await taskRow(id)).archived_at);
 });
 
-scenario('Kanban: admin fora do time consulta, mas não cria, edita ou inicia horas', async () => {
+scenario('Kanban: admin fora do time não lê nem altera tarefas', async () => {
   const id = await taskFixture();
   await login(users.admin);
   await rpc('set_team_member', [ids.red, users.admin, 'member', false]);
-  assert.equal(await count('select count(*) from public.tasks where id=$1', [id]), 1);
+  assert.equal(await count('select count(*) from public.tasks where id=$1', [id]), 0);
   await sqlError('select public.save_task($1,$2)', [ids.red, 'Admin sem participação'], '42501');
   await sqlError('select public.move_task($1,$2,$3)', [id, 'done', 1], '42501');
   await sqlError('select public.archive_task($1,$2)', [id, 1], '42501');
@@ -1151,7 +1152,9 @@ scenario('Convites: revogação, expiração e perda da administração do emiss
  await sqlError('select public.accept_team_invitation($1)',[inviteToken(1)],'22023');
  await db.exec('reset role');
  await query("update private.team_invitations set expires_at=clock_timestamp()+interval '1 day' where id=$1",[invitation.id]);
+ await query('update public.workspaces set owner_id=$1 where id=$2',[users.bob,ids.workspace]);
  await query("update public.workspace_members set role='member' where workspace_id=$1 and user_id=$2",[ids.workspace,users.admin]);
+ await query('update public.team_members set is_team_admin=false where workspace_id=$1 and user_id=$2',[ids.workspace,users.admin]);
  await login(users.outsider);
  await sqlError('select public.accept_team_invitation($1)',[inviteToken(1)],'22023');
 });
@@ -1187,11 +1190,12 @@ scenario('Gestão de membros: mudanças são atômicas, protegem último admin e
  await sqlError('select public.manage_team_access($1,$2,$3,$4,$5)',[ids.red,users.admin,'member','member',false],'23514');
  assert.equal(await scalar('select is_active from public.team_members where team_id=$1 and user_id=$2',[ids.red,users.admin]),true);
  await rpc('manage_team_access',[ids.red,users.alice,'admin','leader',true]);
- await rpc('manage_team_access',[ids.red,users.admin,'member','member',true]);
+ await sqlError('select public.manage_team_access($1,$2,$3,$4,$5)',[ids.red,users.admin,'member','member',true],'23514');
+ await login(users.alice);
  await sqlError('select public.manage_team_access($1,$2,$3,$4,$5)',[ids.red,users.bob,'admin','leader',true],'42501');
  await login(users.bob);
  await rpc('start_timer',[ids.red]);
- await login(users.alice);
+ await login(users.admin);
  await rpc('manage_team_access',[ids.red,users.bob,'member','member',false]);
  await db.exec('reset role');
  assert.equal(await count('select count(*) from public.time_entries where team_id=$1 and user_id=$2 and ended_at is null',[ids.red,users.bob]),0);
@@ -1344,4 +1348,125 @@ scenario('Home office: aplica a escala do PDF, pausa feriados e aceita trocas co
    assert.equal(await count("select count(*) from public.notifications where user_id=$1 and kind='home_office' and dedupe_key like $2",[todayAssignment,`home_office:${ids.red}:${todayAssignment}:${localDate}`]),1,'scheduled reminders are idempotent');
   }
  }
+});
+
+const org = (command,payload={},workspace=ids.workspace) => rpc('organization_console',[workspace,command,payload]);
+const library = (command,payload={},workspace=ids.workspace) => rpc('library_console',[workspace,command,payload]);
+const requestChange=(action,data,reason='Ajuste necessário')=>org('request',{action,data,reason});
+async function generalAdmin(user='leader'){await login(users.admin);await rpc('set_workspace_member',[ids.workspace,users[user],'admin']);await login(users[user]);}
+async function newLibrary(){await login(users.admin);return (await library('create',{kind:'library',title:'Gestão privada'})).id;}
+async function newDocument(parent){return (await library('create',{kind:'document',parent_id:parent,title:'Plano reservado',body:'# Plano\nConteúdo interno'})).id;}
+scenario('Governança: propriedade inicial, capacidades e estado não vazam a membros ou tenants',async()=>{
+ await login(users.admin);assert.equal((await org('capabilities')).owner,true);assert.equal((await org('state')).workspace.owner_id,users.admin);
+ await login(users.alice);assert.equal((await org('capabilities')).general_admin,false);await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'state',{}],'42501');
+ await login(users.outsider);await sqlError('select public.organization_console($1)',[ids.workspace],'42501');
+ await login(users.admin,'aal1');await sqlError('select public.organization_console($1)',[ids.workspace],'42501');
+});
+scenario('Governança: promoção só após voto independente e execução é única',async()=>{
+ await generalAdmin();const r=await requestChange('workspace_admin',{user_id:users.bob,enabled:true});assert.equal(r.pending,true);let state=await org('state');assert.equal(state.members.find(m=>m.user_id===users.bob).role,'member');
+ await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'decide',{id:r.request_id,decision:'approve'}],'42501');
+ await login(users.admin);await org('decide',{id:r.request_id,decision:'approve'});state=await org('state');assert.equal(state.requests.find(q=>q.id===r.request_id).status,'executed');assert.equal(state.members.find(m=>m.user_id===users.bob).role,'admin');
+ await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'decide',{id:r.request_id,decision:'approve'}],'22023');
+});
+scenario('Governança: admin não usa RPC antiga para elevar/remover nem pode atacar o dono',async()=>{
+ await generalAdmin();await sqlError('select public.set_workspace_member($1,$2,$3)',[ids.workspace,users.bob,'admin'],'42501');
+ for(const action of ['member_suspend','member_remove','workspace_admin'])await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'request',{action,data:{user_id:users.admin,enabled:false},reason:'Tentativa inválida'}],'23514');
+});
+scenario('Governança: política múltipla exige quórum e pessoa obrigatória',async()=>{
+ await login(users.admin);await org('approver',{user_id:users.bob,enabled:true});await org('policy',{action:'feature',approvers:[users.admin,users.bob],required_approvers:[users.admin],quorum:2,expires_days:7});
+ await generalAdmin();const r=await requestChange('feature',{feature:'calls',enabled:false});await login(users.bob);await org('decide',{id:r.request_id,decision:'approve'});assert.notEqual((await org('capabilities')).features.calls,false);
+ await login(users.admin);await org('decide',{id:r.request_id,decision:'approve'});assert.equal((await org('capabilities')).features.calls,false);
+ assert.equal(await rpc('organization_permission',[ids.red,'calls.write']),false);
+});
+scenario('Governança: uma rejeição encerra, exige justificativa e não executa',async()=>{
+ await generalAdmin();const r=await requestChange('feature',{feature:'calls',enabled:false});await login(users.admin);
+ await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'decide',{id:r.request_id,decision:'reject',reason:''}],'22023');
+ await org('decide',{id:r.request_id,decision:'reject',reason:'Mudança não autorizada'});assert.equal((await org('state')).requests.find(q=>q.id===r.request_id).status,'rejected');assert.notEqual((await org('capabilities')).features.calls,false);
+});
+scenario('Governança: cancelar mantém votos e avisa aprovadores; expiração não executa',async()=>{
+ await generalAdmin();let r=await requestChange('feature',{feature:'calls',enabled:false});await org('decide',{id:r.request_id,decision:'cancel'});assert.equal((await org('state')).requests.find(q=>q.id===r.request_id).status,'cancelled');
+ r=await requestChange('feature',{feature:'calls',enabled:false});await db.exec('reset role');await query("update public.org_requests set expires_at=clock_timestamp()-interval '1 second' where id=$1",[r.request_id]);await login(users.admin);assert.equal((await org('decide',{id:r.request_id,decision:'approve'})).expired,true);assert.notEqual((await org('capabilities')).features.calls,false);
+});
+scenario('Governança: mudança de política não altera snapshot do pedido',async()=>{
+ await generalAdmin();const r=await requestChange('feature',{feature:'calls',enabled:false});await login(users.admin);await org('approver',{user_id:users.bob,enabled:true});await org('policy',{action:'feature',approvers:[users.bob],required_approvers:[],quorum:1,expires_days:1});const q=(await org('state')).requests.find(q=>q.id===r.request_id);assert.deepEqual(q.approvers,[users.admin]);
+});
+scenario('Governança: perda de autoridade do solicitante impede execução e preserva voto',async()=>{
+ await generalAdmin();const r=await requestChange('feature',{feature:'calls',enabled:false});await login(users.admin);await rpc('set_workspace_member',[ids.workspace,users.leader,'member']);await org('decide',{id:r.request_id,decision:'approve'});assert.equal((await org('state')).requests.find(q=>q.id===r.request_id).status,'failed');assert.notEqual((await org('capabilities')).features.calls,false);
+});
+scenario('Governança: dono executa sem quórum, mas pode optar por consulta ao grupo',async()=>{
+ await login(users.admin);await org('approver',{user_id:users.bob,enabled:true});await org('policy',{action:'feature',approvers:[users.bob],required_approvers:[users.bob],quorum:1,expires_days:7});await requestChange('feature',{feature:'calls',enabled:false});assert.equal((await org('capabilities')).features.calls,false);
+ const q=await org('request',{action:'feature',data:{feature:'calls',enabled:true},reason:'Consultar o grupo',submit_for_approval:true});assert.equal(q.pending,true);assert.equal((await org('capabilities')).features.calls,false);await login(users.bob);await org('decide',{id:q.request_id,decision:'approve'});assert.equal((await org('capabilities')).features.calls,true);
+});
+scenario('Governança: políticas impossíveis e aprovadores não autorizados são rejeitados',async()=>{
+ await login(users.admin);for(const payload of [{action:'feature',approvers:[users.admin],quorum:2,expires_days:7},{action:'feature',approvers:[users.alice],quorum:1,expires_days:7}])await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'policy',payload],'22023');
+ await login(users.leader);await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'approver',{user_id:users.leader,enabled:true}],'42501');
+});
+scenario('Governança: permissões individuais bloqueiam leitura e RPC sem alterar colega',async()=>{
+ await login(users.admin);await requestChange('member_permissions',{team_id:ids.red,user_id:users.alice,job_title:'SOC Júnior',permissions:{'tasks.view':false,'tasks.write':false}});await login(users.alice);assert.equal(await count('select count(*) from public.tasks where team_id=$1',[ids.red]),0);await sqlError('select public.save_task($1,$2)',[ids.red,'Bloqueado'],'42501');assert.equal(await rpc('organization_permission',[ids.red,'tasks.write']),false);await login(users.bob);assert.equal(await rpc('organization_permission',[ids.red,'tasks.write']),true);
+});
+scenario('Governança: admin do time ajusta membros, não a si mesmo ou outro time',async()=>{
+ await login(users.leader);await requestChange('member_permissions',{team_id:ids.red,user_id:users.bob,job_title:'Analista',permissions:{'tasks.write':false}});
+ await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'request',{action:'member_permissions',data:{team_id:ids.red,user_id:users.leader,permissions:{}},reason:'Elevar acesso'}],'42501');
+ await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'request',{action:'member_permissions',data:{team_id:ids.blue,user_id:users.alice,permissions:{}},reason:'Outro time'}],'42501');
+});
+scenario('Governança: inclusão adicional não libera time antes da aprovação',async()=>{
+ await generalAdmin();const q=await requestChange('team_member',{team_id:ids.blue,user_id:users.bob,permissions:{'tasks.view':true}});await login(users.bob);assert.equal(await count('select count(*) from public.projects where team_id=$1',[ids.blue]),0);await login(users.admin);await org('decide',{id:q.request_id,decision:'approve'});await login(users.bob);assert.equal(await count('select count(*) from public.projects where team_id=$1',[ids.blue]),1);
+});
+scenario('Governança: coroa requer aceite; transferência e saída preservam dono único',async()=>{
+ await login(users.admin);const t=await org('transfer',{user_id:users.bob,leave_after:true});assert.equal((await org('state')).workspace.owner_id,users.admin);await sqlError('select public.organization_console($1,$2,$3)',[ids.workspace,'leave',{}],'23514');await login(users.bob);await org('transfer_decide',{id:t.id,accept:true});assert.equal((await org('capabilities')).owner,true);await login(users.admin);await sqlError('select public.organization_console($1)',[ids.workspace],'42501');
+});
+scenario('Governança: recusa de transferência mantém propriedade e saída pendente',async()=>{
+ await login(users.admin);const t=await org('transfer',{user_id:users.bob,leave_after:true});await login(users.bob);await org('transfer_decide',{id:t.id,accept:false});await login(users.admin);assert.equal((await org('capabilities')).owner,true);
+});
+scenario('Biblioteca: admin não lê documento privado alheio nem descobre título',async()=>{
+ await login(users.leader);const folder=(await library('create',{kind:'library',team_id:ids.red,title:'Segredo SOC'})).id;const doc=await newDocument(folder);await login(users.admin);assert.equal((await library('list')).nodes.some(n=>n.id===doc),false);await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'read',{id:doc}],'42501');
+});
+scenario('Biblioteca: compartilhar item não abre pai/irmãos nem permite compartilhar sem autorização',async()=>{
+ const root=await newLibrary(),a=await newDocument(root),b=await newDocument(root);await library('share',{id:a,user_id:users.bob,permissions:['read']});await login(users.bob);assert.equal((await library('read',{id:a})).body.includes('Conteúdo'),true);assert.equal((await library('list')).nodes.some(n=>n.id===root||n.id===b),false);const q=await library('share',{id:a,user_id:users.alice,permissions:['read']});assert.equal(q.pending,true);await login(users.alice);await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'read',{id:a}],'42501');await login(users.admin);await library('share_decide',{id:a,request_id:q.request_id,approve:true});await login(users.alice);assert.equal((await library('read',{id:a})).id,a);
+});
+scenario('Biblioteca: sensível exige aprovação por compartilhamento e somente responsável remove classificação',async()=>{
+ const root=await newLibrary(),doc=await newDocument(root);await library('share',{id:doc,user_id:users.bob,permissions:['read','share','write']});await library('sensitivity',{id:doc,sensitive:true});await login(users.bob);const q=await library('share',{id:doc,user_id:users.alice,permissions:['read']});assert.equal(q.pending,true);await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'sensitivity',{id:doc,sensitive:false}],'42501');await login(users.alice);await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'read',{id:doc}],'42501');await login(users.admin);await library('share_decide',{id:doc,request_id:q.request_id,approve:true});await login(users.alice);assert.equal((await library('read',{id:doc})).id,doc);
+});
+scenario('Biblioteca: nova regra no pai não abre documento sensível; revogação corta leitura',async()=>{
+ const root=await newLibrary(),doc=await newDocument(root);await library('sensitivity',{id:doc,sensitive:true});await library('share',{id:root,user_id:users.bob,permissions:['read']});await login(users.bob);await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'read',{id:doc}],'42501');await login(users.admin);const grants=await library('grants',{id:root});await library('revoke',{id:root,grant_id:grants.find(g=>g.user_id===users.bob).id});await login(users.bob);await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'read',{id:root}],'42501');
+});
+scenario('Biblioteca: download e edição separados de leitura; versão impede sobrescrita',async()=>{
+ const root=await newLibrary(),doc=await newDocument(root);await library('share',{id:doc,user_id:users.bob,permissions:['read']});await login(users.bob);await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'download',{id:doc}],'42501');await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'save',{id:doc,version:1,title:'Ataque',body:'x'}],'42501');await login(users.admin);await library('save',{id:doc,version:1,title:'Atualizado',body:'OK'});await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'save',{id:doc,version:1,title:'Antigo',body:'x'}],'40001');
+});
+scenario('Biblioteca: saída preserva autoria e transfere responsabilidade ao admin do time',async()=>{
+ await login(users.leader);await requestChange('member_permissions',{team_id:ids.red,user_id:users.bob,permissions:{}});const root=(await library('create',{kind:'library',team_id:ids.red,title:'Time'})).id;await library('share',{id:root,user_id:users.bob,permissions:['read','write']});await login(users.bob);const doc=await newDocument(root);await org('leave');await login(users.leader);const item=await library('read',{id:doc});assert.equal(item.created_by,users.bob);assert.equal(item.responsible_id,users.admin);assert.equal((await org('capabilities')).notices.some(n=>n.message.includes('responsável')),false);await login(users.admin);assert.equal((await org('capabilities')).notices.some(n=>n.message.includes('responsável')),true);
+});
+scenario('Biblioteca: outro tenant, AAL1 e gravação direta não burlam ACL',async()=>{
+ const root=await newLibrary();await login(users.outsider);await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'read',{id:root}],'42501');await login(users.admin,'aal1');await sqlError('select public.library_console($1)',[ids.workspace],'42501');await login(users.admin);await sqlError('update public.library_nodes set sensitive=false where id=$1',[root],'42501');
+});
+scenario('Governança: convites configurados preservam cargo/permissões sem conceder funções ocultas',async()=>{
+ await login(users.admin);const a=await requestChange('invite',{team_id:ids.red,email:'outsider@example.test',job_title:'SOC Pleno',teams:[{team_id:ids.red,is_team_admin:false,permissions:{'tasks.view':true,'tasks.write':false}}]});await rpc('issue_organization_invite',[a.authorization_id,inviteHash(4)]);await login(users.outsider);await rpc('accept_team_invitation',[inviteToken(4)]);const cap=await org('capabilities');assert.equal(cap.general_admin,false);assert.equal(cap.permissions[ids.red]['tasks.write'],false);assert.equal(await rpc('organization_permission',[ids.red,'tasks.write']),false);
+});
+scenario('Contatos: DM entre times não libera dados nem concede acesso a outro time',async()=>{
+ await login(users.bob);const d=await rpc('organization_contacts',[ids.workspace,users.blueLeader]);await rpc('send_message',[d.channel_id,randomUUID(),'Entre times']);assert.equal(await count('select count(*) from public.projects where team_id=$1',[ids.blue]),0);assert.equal(await count('select count(*) from public.teams where id=$1',[d.team_id]),0);await login(users.blueLeader);assert.equal(await count('select count(*) from public.messages where channel_id=$1',[d.channel_id]),1);await login(users.admin);assert.equal(await count('select count(*) from public.messages where channel_id=$1',[d.channel_id]),0);
+});
+scenario('Governança: gerenciar módulo exige aprovação e não concede administração geral',async()=>{
+ await generalAdmin();const r=await requestChange('member_permissions',{team_id:ids.red,user_id:users.bob,permissions:{'tasks.manage':true,'tasks.write':true,'tasks.view':true}});assert.equal(r.pending,true);await login(users.admin);await org('decide',{id:r.request_id,decision:'approve'});await login(users.bob);assert.equal((await org('capabilities')).general_admin,false);assert.equal(await rpc('organization_permission',[ids.red,'tasks.manage']),true);assert.equal(await rpc('organization_permission',[ids.red,'projects.write']),false);
+});
+scenario('Governança: convite com administração de módulo exige aprovação e RPC antiga não contorna',async()=>{
+ await generalAdmin();await sqlError('select public.create_team_invitation($1,$2,$3,$4)',[ids.red,'outsider@example.test','member',inviteHash(6)],'42501');const r=await requestChange('invite',{team_id:ids.red,email:'outsider@example.test',teams:[{team_id:ids.red,is_team_admin:false,permissions:{'tasks.manage':true}}]});assert.equal(r.pending,true);assert.equal((await org('state')).invite_authorizations.length,0);
+});
+scenario('Governança: funções desativadas bloqueiam RPCs e mantêm dados; timer ainda pode encerrar',async()=>{
+ await login(users.bob);const timer=await rpc('start_timer',[ids.red]);await login(users.admin);await requestChange('feature',{feature:'hours',enabled:false});await login(users.bob);await sqlError('select public.start_timer($1)',[ids.red],'42501');await rpc('stop_timer',[timer]);assert.equal(await count('select count(*) from public.time_entries'),0);await login(users.admin);await requestChange('feature',{feature:'hours',enabled:true});assert.ok(await count('select count(*) from public.time_entries')>0);
+});
+scenario('Governança: reativar não restaura times silenciosamente e pausa não bloqueia outro tenant',async()=>{
+ await login(users.alice);await rpc('start_timer',[ids.red]);await rpc('pause_timer',[]);await login(users.admin);await requestChange('member_suspend',{user_id:users.alice});await requestChange('member_restore',{user_id:users.alice});await db.exec('reset role');assert.equal(await count('select count(*) from public.paused_timers where user_id=$1',[users.alice]),0);assert.equal(await count('select count(*) from public.team_members where user_id=$1 and workspace_id=$2 and is_active',[users.alice,ids.workspace]),0);
+});
+scenario('Biblioteca: biblioteca geral alcança membros sem abrir documentos sensíveis',async()=>{
+ const root=await newLibrary(),doc=await newDocument(root);await library('sensitivity',{id:doc,sensitive:true});await library('publish_org',{id:root,permissions:['read']});await login(users.bob);assert.equal((await library('read',{id:root})).id,root);await sqlError('select public.library_console($1,$2,$3)',[ids.workspace,'read',{id:doc}],'42501');
+});
+scenario('Biblioteca: arquivos privados respeitam download e prefixo de documento',async()=>{
+ const root=await newLibrary(),doc=await newDocument(root);await query("insert into storage.objects(bucket_id,name) values('organization-library',$1)",[`${doc}/anexo`]);await library('file',{id:doc,path:`${doc}/anexo`,filename:'anexo.txt',version:1});await library('share',{id:doc,user_id:users.bob,permissions:['read']});await login(users.bob);assert.equal(await count("select count(*) from storage.objects where bucket_id='organization-library'"),0);await sqlError("insert into storage.objects(bucket_id,name) values('organization-library',$1)",[`${doc}/ataque`],'42501');await login(users.admin);await library('share',{id:doc,user_id:users.bob,permissions:['read','download']});await login(users.bob);assert.equal(await count("select count(*) from storage.objects where bucket_id='organization-library'"),1);
+});
+scenario('Governança: consultas de capacidade desconhecida não concedem direito',async()=>{await login(users.bob);assert.equal(await rpc('organization_permission',[ids.red,'owner.delete']),false);});
+scenario('Governança: dono participa do grupo voluntário sem ignorar quórum',async()=>{
+ await login(users.admin);await org('approver',{user_id:users.bob,enabled:true});await org('policy',{action:'feature',approvers:[users.admin,users.bob],required_approvers:[users.admin,users.bob],quorum:2,expires_days:7});
+ const r=await org('request',{action:'feature',data:{feature:'calls',enabled:false},reason:'Decisão conjunta dos fundadores',submit_for_approval:true});
+ await org('decide',{id:r.request_id,decision:'approve'});assert.notEqual((await org('capabilities')).features.calls,false);
+ await login(users.bob);await org('decide',{id:r.request_id,decision:'approve'});assert.equal((await org('capabilities')).features.calls,false);
 });

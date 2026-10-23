@@ -8,6 +8,7 @@ import "./desktop.css";
 import "./zulu-workspace.css";
 import "./calendar-interactions.css";
 import "./workspace-inset.css";
+import "./organization-admin.css";
 import { WorkspaceTheme } from "@/components/workspace-settings";
 import { ServiceWorkerRegistration } from "@/components/pwa";
 import { DesktopUpdate } from "@/components/desktop-update";

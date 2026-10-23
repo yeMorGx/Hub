@@ -246,3 +246,13 @@ test("marketing publica apenas as páginas públicas no sitemap e serve imagem s
   assert.equal(image.status,200);
   assert.match(image.headers.get("content-type") || "", /image\/png/);
 });
+
+test('administração: convite configurado exige origem e MFA',async()=>{
+ const response=await fetch(new URL('/api/organization/invite',base),{method:'POST',headers:{Origin:allowedOrigin,'Content-Type':'application/json'},body:JSON.stringify({authorizationId:'00000000-0000-0000-0000-000000000000'})});assert.equal(response.status,401);assert.match(response.headers.get('cache-control')||'',/no-store/);
+});
+test('administração: origem externa não emite convite',async()=>{
+ const response=await fetch(new URL('/api/organization/invite',base),{method:'POST',headers:{Origin:'https://example.invalid','Content-Type':'application/json'},body:'{}'});assert.equal(response.status,403);
+});
+test('biblioteca: download sem sessão não revela arquivo nem URL assinada',async()=>{
+ const response=await request('/api/library/download?workspace=00000000-0000-0000-0000-000000000000&id=00000000-0000-0000-0000-000000000000');assert.equal(response.status,401);assert.match(response.headers.get('cache-control')||'',/no-store/);const body=await response.json();assert.equal(body.url,undefined);
+});

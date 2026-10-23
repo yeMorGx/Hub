@@ -1,3 +1,4 @@
+import { hasOrganizationPermission } from "@/lib/organization/server";
 import {
   isProvider,
   providerConfig,
@@ -40,6 +41,8 @@ export async function POST(
         { error: "Escolha um período de até um ano." },
         400,
       );
+    const connection=await session.client.from("calendar_connections").select("team_id").eq("id",body.connectionId).single();
+    if(connection.error||!connection.data||!await hasOrganizationPermission(session.client,connection.data.team_id,"integrations.write"))return integrationJson({error:"Integração indisponível para seu acesso."},403);
     const resolutions: Record<string, "hub" | "external"> = {};
     for (const [key, value] of Object.entries(body.resolutions || {}).slice(
       0,

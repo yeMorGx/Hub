@@ -49,6 +49,7 @@ export type ActivityInput = {
   taskId?: string;
 };
 export type TodayOverviewProps = {
+  showHours?: boolean; showCalendar?: boolean;
   timer: {
     state: "idle" | "running" | "lunch";
     elapsed: number;
@@ -156,7 +157,7 @@ export function TodayOverview(props: TodayOverviewProps) {
         : "Pronto para começar";
   return (
     <>
-      <section
+      {props.showHours !== false && <section
         className={`today-workspace timer-${timer.state}`}
         aria-label="Timer e jornada"
       >
@@ -414,8 +415,8 @@ export function TodayOverview(props: TodayOverviewProps) {
             </div>
           )}
         </Card>
-      </section>
-      <Card
+      </section>}
+      {props.showCalendar !== false && <Card
         role="region"
         className="today-home-office"
         aria-label="Resumo de home office"
@@ -494,12 +495,13 @@ export function TodayOverview(props: TodayOverviewProps) {
           Ver escala
           <ArrowUpRight size={15} />
         </ZuluButton>
-      </Card>
+      </Card>}
     </>
   );
 }
 
 export type TodayContextProps = {
+  showCalendar?: boolean; showPeople?: boolean; showChat?: boolean; showHours?: boolean;
   events: Row<"events">[];
   people: Person[];
   presence: "connecting" | "live" | "unavailable";
@@ -544,7 +546,7 @@ export function TodayContext(props: TodayContextProps) {
       className="today-context"
       aria-label="Seu time e próximos compromissos"
     >
-      <Card className="today-meetings-card">
+      {props.showCalendar !== false && <Card className="today-meetings-card">
         <Card.Header className="today-section-heading">
           <Card.Title>Encontros de hoje</Card.Title>
           <CalendarDots size={18} />
@@ -592,8 +594,8 @@ export function TodayContext(props: TodayContextProps) {
           Abrir calendário
           <ArrowRight size={15} />
         </ZuluButton>
-      </Card>
-      <Card className="today-people-card">
+      </Card>}
+      {props.showPeople !== false && <Card className="today-people-card">
         <Card.Header className="today-section-heading">
           <Card.Title>Por aqui agora</Card.Title>
           <span className="today-online">
@@ -690,8 +692,8 @@ export function TodayContext(props: TodayContextProps) {
           Ver todo o time
           <ArrowRight size={15} />
         </ZuluButton>
-      </Card>
-      {props.recent.length > 0 && (
+      </Card>}
+      {props.showHours !== false && props.recent.length > 0 && (
         <Card className="today-recent-card">
           <Card.Header className="today-section-heading">
             <Card.Title>Retomar atividade</Card.Title>
@@ -717,7 +719,7 @@ export function TodayContext(props: TodayContextProps) {
           </div>
         </Card>
       )}
-      <ZuluButton className="today-chat" onClick={props.onChat}>
+      {props.showChat !== false && <ZuluButton className="today-chat" onClick={props.onChat}>
         <ChatCircleText size={21} />
         <span>
           <strong>Conversas do time</strong>
@@ -728,7 +730,7 @@ export function TodayContext(props: TodayContextProps) {
           </small>
         </span>
         <ArrowUpRight size={17} />
-      </ZuluButton>
+      </ZuluButton>}
     </aside>
   );
 }

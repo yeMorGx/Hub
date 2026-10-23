@@ -333,9 +333,9 @@ export function useHub(
           ).values(),
         ].sort((a, b) => a.starts_at.localeCompare(b.starts_at)),
         unreadRows = rows(unread);
-      const homeOfficeRows = rows(homeOfficePage);
+      const homeOfficeRows = homeOfficePage.error?.code === "42501" ? [] : rows(homeOfficePage);
       const workScheduleRows = rows(workSchedulePage);
-      const workBalanceRows = rows(workBalancePage);
+      const workBalanceRows = workBalancePage.error?.code === "42501" ? [] : rows(workBalancePage);
       const pausedTimerRows = rows(pausedTimerPage);
       const userIds = [
         ...new Set([userId, ...memberRows.map((m) => m.user_id)]),
@@ -767,7 +767,7 @@ export function useHub(
     currentTeam,
     workspace,
     isAdmin: workspaceRole === "admin",
-    canManage: workspaceRole === "admin" || ownMembership?.role === "leader",
+    canManage: workspaceRole === "admin" || (ownMembership?.is_team_admin ?? ownMembership?.role === "leader"),
     canParticipate: Boolean(ownMembership),
     busy,
     notice,
