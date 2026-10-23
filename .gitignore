@@ -14,3 +14,15 @@ src-tauri/gen/
 
 # Python browser-check helpers
 __pycache__/
+
+# Local copies from vercel-labs/agent-skills have no declared upstream license.
+# Keep them available in this workspace without redistributing them in the repo.
+.agents/skills/deploy-to-vercel/
+.agents/skills/vercel-cli-with-tokens/
+.agents/skills/vercel-composition-patterns/
+.agents/skills/vercel-optimize/
+.agents/skills/vercel-react-best-practices/
+.agents/skills/vercel-react-native-skills/
+.agents/skills/vercel-react-view-transitions/
+.agents/skills/web-design-guidelines/
+.agents/skills/writing-guidelines/
