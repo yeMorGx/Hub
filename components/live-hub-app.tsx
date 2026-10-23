@@ -208,6 +208,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [atBottom, setAtBottom] = useState(true),
     [showChannelList, setShowChannelList] = useState(true);
+  const [channelQuery, setChannelQuery] = useState("");
+  useEffect(() => setChannelQuery(""), [hub.teamId]);
   const chatEnd = useRef<HTMLDivElement>(null),
     messagesArea = useRef<HTMLDivElement>(null),
     retryMessage = useRef<{ key: string; id: string } | null>(null),
@@ -767,6 +769,11 @@ export function LiveHubApp({ userId }: { userId: string }) {
             </ZuluButton>
             <NotificationBell
               hub={hub}
+              onOpenChannel={id => {
+                navigate("chat");
+                setChannelId(id);
+                setShowChannelList(false);
+              }}
               onOpen={() => {
                 setCollaborationInitialTab("notifications");
                 navigate("notifications");
@@ -1195,9 +1202,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   hub={{...hub,canManage:modulePermission(page==="standups"?"checkins":"documents","manage")}}
                   initialTab={page as "notes" | "standups" | "meetings" | "notifications"} embedded
                   onOpenChannel={(id) => {
+                    navigate("chat");
                     setChannelId(id);
                     setShowChannelList(false);
-                    navigate("chat");
                   }}
                 />
               )}
@@ -1671,9 +1678,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         <ChatCircleText size={21} />
                       )}
                     </div>
+                    <ZuluInput aria-label="Buscar conversas" className="channel-search" placeholder="Buscar conversa…" value={channelQuery} onChange={e => setChannelQuery(e.target.value)} />
                     <p className="list-label">Canais do time</p>
                     {data.channels
-                      .filter((c) => c.kind !== "dm")
+                      .filter((c) => c.kind !== "dm" && channelName(c).toLocaleLowerCase("pt-BR").includes(channelQuery.toLocaleLowerCase("pt-BR")))
                       .map((c) => (
                         <ZuluButton
                           className={`channel-button ${channelId === c.id ? "selected" : ""}`}
@@ -1707,7 +1715,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     )}
                     <p className="list-label dm-label">Mensagens diretas</p>
                     {data.channels
-                      .filter((c) => c.kind === "dm")
+                      .filter((c) => c.kind === "dm" && channelName(c).toLocaleLowerCase("pt-BR").includes(channelQuery.toLocaleLowerCase("pt-BR")))
                       .map((c) => (
                         <ZuluButton
                           key={c.id}
@@ -1734,6 +1742,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                           )}
                         </ZuluButton>
                       ))}
+                    {channelQuery && !data.channels.some(c => channelName(c).toLocaleLowerCase("pt-BR").includes(channelQuery.toLocaleLowerCase("pt-BR"))) && <p className="channel-empty-note" role="status">Nenhuma conversa encontrada.</p>}
                     <ZuluButton
                       className="text-button start-dm"
                       onClick={() => {

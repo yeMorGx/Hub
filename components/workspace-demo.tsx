@@ -1,4 +1,6 @@
 "use client";
+import { NotificationBell } from "./notification-bell";
+import { WorkspaceChatPreview } from "./workspace-chat-preview";
 import { OrganizationPreview } from "./organization-preview";
 import { WorkspaceDrawer } from "./workspace-drawer";
 import { useEffect, useMemo, useState } from "react";
@@ -56,7 +58,7 @@ export function WorkspaceDemo() {
   return <DashboardUIProvider enabled><div className="app-shell live-app workspace-inset" data-menu-open={menu}>
     
     <aside className="rail" aria-label="Navegação principal"><ZuluButton className="brand" aria-label="ZULU — início" onClick={() => go("overview")}><BrandMark size={44} /></ZuluButton><nav>{workspaceAreas.filter(a => a.id !== "settings").map(a => <ZuluButton key={a.id} className={`rail-button ${area.id === a.id ? "active" : ""}`} aria-label={a.label} onClick={() => go(a.tabs[0][0])}><DashboardNavIcon name={a.icon} /></ZuluButton>)}</nav><div className="rail-bottom"><ZuluButton className="rail-button" aria-label="Configurações" onClick={() => go("settings")}><DashboardNavIcon name="settings" /></ZuluButton></div></aside>
-<WorkspaceDrawer open={menu} onOpenChange={setMenu} onPage={go} />    <div className="app-content"><header className="topbar"><ZuluButton className="mobile-navigation-toggle" aria-label="Abrir navegação" aria-expanded={menu} onClick={() => setMenu(!menu)}><SquaresFour size={21} /></ZuluButton><DashboardWorkspacePicker workspace="Forma" teamId="demo" teams={[{ id: "demo", label: "Estúdio", organization: "Forma" }]} role={hub.isAdmin ? "Administrador" : role === "leader" ? "Líder" : "Membro"} canManage={hub.isAdmin} onTeam={() => {}} onNewTeam={() => setDialog("Criar time")} /><div className="topbar-right"><ZuluButton className="icon-button" aria-label="Buscar no ZULU" onClick={() => setDialog("Busca demonstrativa")}><MagnifyingGlass size={20} /></ZuluButton><ZuluButton className="icon-button" aria-label="Notificações" onClick={() => go("notifications")}><Bell size={20} /></ZuluButton><ZuluButton className="top-avatar" aria-label="Meu perfil" onClick={() => setDialog("Perfil demonstrativo")}><PersonAvatar name="Marina Costa" id="demo" /></ZuluButton></div></header>
+<WorkspaceDrawer open={menu} onOpenChange={setMenu} onPage={go} />    <div className="app-content"><header className="topbar"><ZuluButton className="mobile-navigation-toggle" aria-label="Abrir navegação" aria-expanded={menu} onClick={() => setMenu(!menu)}><SquaresFour size={21} /></ZuluButton><DashboardWorkspacePicker workspace="Forma" teamId="demo" teams={[{ id: "demo", label: "Estúdio", organization: "Forma" }]} role={hub.isAdmin ? "Administrador" : role === "leader" ? "Líder" : "Membro"} canManage={hub.isAdmin} onTeam={() => {}} onNewTeam={() => setDialog("Criar time")} /><div className="topbar-right"><ZuluButton className="icon-button" aria-label="Buscar no ZULU" onClick={() => setDialog("Busca demonstrativa")}><MagnifyingGlass size={20} /></ZuluButton><NotificationBell hub={hub} onOpen={() => go("notifications")} onOpenChannel={() => go("chat")} /><ZuluButton className="top-avatar" aria-label="Meu perfil" onClick={() => setDialog("Perfil demonstrativo")}><PersonAvatar name="Marina Costa" id="demo" /></ZuluButton></div></header>
       <main className="main-content" id="main-content"><WorkspaceAreaTabs page={page} onPage={go} /><div className="page-heading"><div><h1>{area.label}</h1><p>Demonstração · dados fictícios, sem acesso ao seu time.</p></div></div>
         {(page === "organization" || page === "library") && <OrganizationPreview hub={hub} library={page === "library"} />}
         {page === "reports" && <HoursReport key={role} hub={hub} />}
@@ -67,7 +69,7 @@ export function WorkspaceDemo() {
         {page === "board" && <BoardDemo embedded />}
         {page === "people" && <section className="people-grid">{hub.snapshot.people.map(person => <div className="panel" key={person.id}><PersonAvatar name={person.display_name} id={person.id} /><h2>{person.display_name}</h2><p>{person.role === "leader" ? "Líder" : "Membro"}</p></div>)}</section>}
         {page === "calls" && <LiveCalls hub={hub} />}
-        {page === "chat" && <a className="primary-button" href="/demo/operations">Abrir conversas de demonstração</a>}
+        {page === "chat" && <WorkspaceChatPreview hub={hub} />}
         {page === "hours" && <a className="primary-button" href="/demo/dashboard">Experimentar o timer de demonstração</a>}
       </main>
     </div>{dialog && <HubDialog title={dialog} onClose={() => setDialog("")}><p>Esta é uma demonstração pública com dados fictícios.</p></HubDialog>}

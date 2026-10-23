@@ -243,3 +243,7 @@ Revisão visual final: `ship` restrito às quatro capturas de `/site` e `/downlo
 ## Surface: Administração da organização e biblioteca
 
 Herda a identidade plana marfim/azul do aplicativo. Lista e detalhe de pessoas, matriz individual de permissões, abas HeroUI e biblioteca com navegação/editor. No celular, empilhar lista e detalhe e manter abas com rolagem horizontal, sem criar overflow da página. Usar componentes oficiais HeroUI v3 e os adaptadores existentes HubDialog/ZuluSelect. Confirmar ações críticas, manter rascunhos durante polling e distinguir solicitação pendente de acesso concedido. Sem bordas decorativas nem sombras de cards; foco funcional preservado. Microinterações seguem os controles oficiais e movimento reduzido. Cargo visível não indica autoridade e conteúdo privado não ganha leitura por ser admin. Contratos e evidências em `docs/organization-admin.md`. Revisão final delimitada: `ship`, com fixtures em1440/390; não comprova fluxos autenticados reais.
+
+## Conversas, notificações e agenda — referências de 23/10/2026
+
+O pedido atual incorpora quatro referências Dribbble em chat, central de notificações, navegação compacta e calendário completo. Bolhas distinguem autoria, o sino abre inbox HeroUI com filtros de leitura, a rail destaca a área atual e a agenda destaca mês/data com eventos pastel. Preservar a identidade clara, a moldura contínua e o dashboard Bento. Fontes, contratos e limites em [collaboration-design.md](docs/collaboration-design.md).

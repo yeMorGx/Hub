@@ -303,7 +303,12 @@ export function createDemoBackend() {
         };
       if (name === "absence_schedule" || name === "search_channel_messages")
         return { data: [], error: null };
-      if (name === "refresh_my_reminders" || name === "mark_notification_read")
+      if (name === "mark_notification_read") {
+        const notification = data.notifications.find(n => n.id === args.p_notification_id);
+        if (notification) notification.read_at = new Date().toISOString();
+        return { data: null, error: null };
+      }
+      if (name === "refresh_my_reminders")
         return { data: null, error: null };
       return {
         data: null,

@@ -86,13 +86,19 @@ export function useCollaboration(
       if (!document.hidden) void refresh();
     }, 20000);
     const focus = () => void refresh();
+    const changed = (event: Event) => {
+      const detail = (event as CustomEvent).detail;
+      if (detail?.teamId === teamId && detail.origin === "bell") void refresh();
+    };
+    window.addEventListener("zulu:notifications-read", changed);
     window.addEventListener("focus", focus);
     return () => {
       serial.current++;
       clearInterval(poll);
       window.removeEventListener("focus", focus);
+      window.removeEventListener("zulu:notifications-read", changed);
     };
-  }, [refresh]);
+  }, [refresh, teamId]);
   return {
     data: data?.teamId === teamId ? data : null,
     error,

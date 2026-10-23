@@ -1,4 +1,5 @@
 "use client";
+import { NotificationFeed } from "./notification-feed";
 import { ZuluForm } from "./dashboard-ui";
 import { ZuluButton, ZuluLabel, ZuluInput, ZuluTextArea, ZuluSelect } from "./dashboard-ui";
 import { useState, type FormEvent } from "react";
@@ -535,82 +536,13 @@ export function LiveCollaboration({
             </>
           )}
           {tab === "notifications" && (
-            <>
-              <div className="workspace-section-heading">
-                <div>
-                  <h2>Seu contexto, em dia</h2>
-                  <p>Mensagens diretas, menções e avisos dos seus times.</p>
-                </div>
-              </div>
-              {data.notifications.length ? (
-                <div className="document-list">
-                  {data.notifications.map((n) => (
-                    <article
-                      className={`notification-row ${n.read_at ? "" : "unread"}`}
-                      key={n.id}
-                    >
-                      <Bell size={20} />
-                      <div>
-                        <strong>
-                          {n.kind === "message"
-                            ? "Você recebeu uma mensagem direta"
-                            : n.kind === "mention"
-                              ? "Você foi mencionado em uma conversa"
-                              : n.kind === "meeting"
-                                ? "Uma reunião está próxima"
-                                : n.kind === "home_office"
-                                  ? "Hoje é seu dia de home office"
-                                  : n.kind === "home_office_swap"
-                                    ? n.dedupe_key.startsWith("home_office_swap_result:")
-                                      ? "Seu pedido de troca de home office foi respondido"
-                                      : "Pedido de troca de home office"
-                                    : "Novo aviso do time"}
-                        </strong>
-                        <small>
-                          {new Date(n.created_at).toLocaleString("pt-BR")}
-                        </small>
-                      </div>
-                      {n.channel_id && (
-                        <ZuluButton
-                          className="outline-button"
-                          onClick={() => {
-                            onOpenChannel(n.channel_id!);
-                            void hub
-                              .rpc("mark_notification_read", {
-                                p_notification_id: n.id,
-                              })
-                              .then(() => store.refresh());
-                          }}
-                        >
-                          Abrir conversa
-                        </ZuluButton>
-                      )}
-                      {!n.read_at && (
-                        <ZuluButton
-                          className="icon-button"
-                          aria-label="Marcar como lida"
-                          onClick={() =>
-                            void hub
-                              .rpc("mark_notification_read", {
-                                p_notification_id: n.id,
-                              })
-                              .then(() => store.refresh())
-                          }
-                        >
-                          <Check size={18} />
-                        </ZuluButton>
-                      )}
-                    </article>
-                  ))}
-                </div>
-              ) : (
-                <EmptyState
-                  icon={<Bell size={36} />}
-                  title="Tudo em dia"
-                  description="Quando alguém mencionar você, o aviso aparece aqui."
-                />
-              )}
-            </>
+            <NotificationFeed notifications={data.notifications}
+              onOpenChannel={onOpenChannel}
+              onRead={async id => {
+                await hub.rpc("mark_notification_read", { p_notification_id: id });
+                await store.refresh();
+                window.dispatchEvent(new CustomEvent("zulu:notifications-read", { detail: { teamId: hub.teamId, origin: "page" } }));
+              }} />
           )}
         </>
       )}

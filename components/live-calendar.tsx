@@ -1,6 +1,5 @@
 "use client";
-import { ZuluLabel } from "./dashboard-ui";
-import { ZuluButton, ZuluSelect } from "./dashboard-ui";
+import { ZuluButton } from "./dashboard-ui";
 import { Card, Dropdown, Label, ToggleButtonGroup, ToggleButton } from "@heroui/react";
 import { DashboardDatePicker } from "./dashboard-ui";
 import { useState } from "react";
@@ -156,8 +155,8 @@ export function LiveCalendar({
     >
       <div className="section-heading calendar-heading">
         <div className="heading-with-count">
-          <h2>{full ? "Agenda do time" : view === "week" ? "Sua semana" : "Sua agenda"}</h2>
-          {compact ? (
+          {full && <span className="calendar-date-tile" aria-hidden="true"><small>{date.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "")}</small><strong>{date.getDate()}</strong></span>}
+          <h2>{full ? date.toLocaleDateString("pt-BR", { month: "long", year: "numeric" }) : view === "week" ? "Sua semana" : "Sua agenda"}</h2>
             <Dropdown isOpen={filterOpen} onOpenChange={setFilterOpen}>
               <ZuluButton className={`filter-button ${filter !== "all" ? "filter-active" : ""}`}><FunnelSimple size={14} />Filtrar</ZuluButton>
               <Dropdown.Popover className="zulu-overlay zulu-filter" placement="bottom start">
@@ -168,34 +167,6 @@ export function LiveCalendar({
                   </Dropdown.Menu>
               </Dropdown.Popover>
             </Dropdown>
-          ) : (<>
-          <ZuluButton
-            className={`filter-button ${filter !== "all" ? "filter-active" : ""}`}
-            aria-expanded={filterOpen}
-            onClick={() => setFilterOpen(!filterOpen)}
-          >
-            <FunnelSimple size={14} />
-            Filtrar
-          </ZuluButton>
-          {filterOpen && (
-            <div className="filter-popover">
-              <ZuluLabel htmlFor="event-filter">Tipo de evento</ZuluLabel>
-              <ZuluSelect
-                id="event-filter" aria-label="Tipo de evento"
-                value={filter}
-                onValueChange={(value) => {
-                  setFilter(value);
-                  setFilterOpen(false);
-                }}
-              >
-                <option value="all">Todos os eventos</option>
-                <option value="meeting">Reuniões</option>
-                <option value="event">Eventos</option>
-                <option value="home_office">Home office</option>
-              </ZuluSelect>
-            </div>
-          )}
-          </>)}
         </div>
         <div className="calendar-actions">
           {(hub.canParticipate || hub.canManage) && (
@@ -216,35 +187,9 @@ export function LiveCalendar({
               Escala
             </ZuluButton>
           )}
-          {compact ? (
             <ToggleButtonGroup className="zulu-view-switch" aria-label="Visualização da agenda" selectionMode="single" disallowEmptySelection selectedKeys={[view]} onSelectionChange={(keys) => { const key = [...keys][0]; if (key) onView(String(key) as CalendarView); }}>
               <ToggleButton id="month">Mês</ToggleButton><ToggleButton id="week">Semana</ToggleButton><ToggleButton id="day">Dia</ToggleButton>
             </ToggleButtonGroup>
-          ) : (
-          <div className="segmented" aria-label="Visualização da agenda">
-            <ZuluButton
-              className={view === "month" ? "selected" : ""}
-              aria-pressed={view === "month"}
-              onClick={() => onView("month")}
-            >
-              Mês
-            </ZuluButton>
-            <ZuluButton
-              className={view === "week" ? "selected" : ""}
-              aria-pressed={view === "week"}
-              onClick={() => onView("week")}
-            >
-              Semana
-            </ZuluButton>
-            <ZuluButton
-              className={view === "day" ? "selected" : ""}
-              aria-pressed={view === "day"}
-              onClick={() => onView("day")}
-            >
-              Dia
-            </ZuluButton>
-          </div>
-          )}
           {hub.canParticipate && (
             <ZuluButton
               className="icon-button add-calendar"
@@ -529,7 +474,7 @@ export function LiveCalendar({
                           {hourLabel(start)} – {hourLabel(end)}
                         </span>
                         <strong>{event.title}</strong>
-                        {!compact && end - start >= 1 && (
+                        {!compact && end - start >= 1.5 && (
                           <span className="event-project">
                             {event.kind === "meeting" ? "Reunião" : "Evento"}
                           </span>

@@ -3,7 +3,7 @@ import { ZuluForm } from "./dashboard-ui";
 import { ZuluButton, ZuluLabel, ZuluInput, ZuluTextArea, ZuluSelect, ZuluCheckboxField } from "./dashboard-ui";
 import { saveConversation, vaultUnlocked } from "@/public/offline-vault.js";
 import { parseChatCommand } from "@/lib/hub/commands";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ArrowDown,
   ArrowLeft,
@@ -588,6 +588,7 @@ export function AdvancedConversation({
           className={
             mode === "conversation" ? "text-button selected" : "text-button"
           }
+          aria-pressed={mode === "conversation"}
           onClick={() => {
             setMode("conversation");
             setRoot(null);
@@ -598,6 +599,7 @@ export function AdvancedConversation({
         </ZuluButton>
         <ZuluButton
           className={mode === "pins" ? "text-button selected" : "text-button"}
+          aria-pressed={mode === "pins"}
           onClick={() => {
             setMode("pins");
             setRoot(null);
@@ -608,6 +610,7 @@ export function AdvancedConversation({
         </ZuluButton>
         <ZuluButton
           className={mode === "search" ? "text-button selected" : "text-button"}
+          aria-pressed={mode === "search"}
           onClick={() => {
             setMode("search");
             setRoot(null);
@@ -712,7 +715,12 @@ export function AdvancedConversation({
             {channel.error}
           </p>
         ) : shown.length ? (
-          shown.map(card)
+          shown.map((message, index) => {
+            const date = new Date(message.created_at);
+            const previous = shown[index - 1];
+            const newDay = !previous || new Date(previous.created_at).toLocaleDateString("pt-BR") !== date.toLocaleDateString("pt-BR");
+            return <Fragment key={message.id}>{newDay && <div className="conversation-day"><time dateTime={message.created_at}>{date.toLocaleDateString("pt-BR", { day: "numeric", month: "long" })}</time></div>}{card(message)}</Fragment>;
+          })
         ) : (
           <div className="conversation-empty">
             <ChatCircleText size={30} />
