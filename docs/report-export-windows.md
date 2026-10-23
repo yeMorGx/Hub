@@ -1,0 +1,19 @@
+# Exportação de horas no Windows — 0.1.7
+
+## Problema e correção
+
+O relatório usava download por Blob/âncora do navegador também dentro do aplicativo Windows. Não havia integração de salvamento nem confirmação do resultado no runtime desktop. O navegador passou na reprodução de download; o usuário confirmou que a falha silenciosa acontecia no aplicativo instalado.
+
+PDF e CSV do relatório agora passam os bytes gerados para `save_report_export`. O comando nativo abre **Salvar relatório**, permite escolher destino/sobrescrita, grava somente após a escolha e informa sucesso ou cancelamento. A página não fornece um caminho de disco. O comando aceita somente a janela principal no domínio HTTPS de produção, arquivos `zulu-*` PDF/CSV de até 32 MB, cabeçalho PDF ou CSV UTF-8. Não envia dados do relatório para outro serviço.
+
+O navegador continua baixando o arquivo e informa que o download foi solicitado. Aplicativos antigos que não possuem o comando recebem orientação de atualização. Cancelamento não é apresentado como sucesso; falhas de gravação deixam o botão disponível para tentar novamente.
+
+## QA
+
+- Build Next.js e 51 testes unitários aprovados, incluindo bytes entregues à ponte, cancelamento, falha de escrita, versão antiga e integridade CSV.
+- Validador Rust: PDF/CSV aceitos, nomes/caminhos/tipos/tamanhos inválidos rejeitados.
+- Chromium em 1440/390: download real do PDF no navegador e ponte nativa simulada para sucesso, cancelamento CSV, falha e versão antiga. Sem erros JavaScript.
+- Regressão em 1440/390: dashboard, relatório, PDF, permissões de membro, configurações e temas.
+- Workflow Windows inclui compilação/assinatura, testes Rust e integração do diálogo real por WebView CDP local + automação Windows: salvar CSV fictício, conferir bytes e cancelar uma segunda exportação. Nenhuma conta criada ou dado real utilizado.
+
+Os resultados finais do workflow e da publicação devem ser registrados após a execução; a ponte simulada no Chromium não comprova o diálogo do Windows.
