@@ -18,6 +18,8 @@ test("mini timer conta segmento e tempo anterior, mantém almoço estático e re
     elapsedSeconds: 0,
     canControl: false,
     busy: false,
+    description: "",
+    project: "",
   });
   h.snapshot.entries = [
     {
@@ -33,6 +35,8 @@ test("mini timer conta segmento e tempo anterior, mantém almoço estático e re
     elapsedSeconds: 2400,
     canControl: true,
     busy: false,
+    description: "",
+    project: "",
   });
   assert.equal(timerSnapshot({ ...h, teamId: "other" }, now).canControl, false);
   assert.equal(timerSnapshot({ ...h, userId: "other" }, now).phase, "idle");

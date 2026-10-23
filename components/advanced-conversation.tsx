@@ -961,9 +961,7 @@ function MessageFile({
           <DownloadSimple size={18} />
         </button>
       </div>
-      {url && item.mime_type.startsWith("image/") && (
-        <img src={url} alt={item.filename} />
-      )}
+      {url && item.mime_type.startsWith("image/") && <><img src={url} alt={item.filename} loading="lazy" /><a href={url} download={item.filename} className="attachment-save">Baixar imagem</a></>}
       {url && item.mime_type.startsWith("audio/") && (
         <audio controls src={url} preload="none" />
       )}

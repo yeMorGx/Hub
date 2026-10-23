@@ -23,6 +23,10 @@ pub struct TimerInput {
     elapsed_seconds: u64,
     can_control: bool,
     busy: bool,
+    #[serde(default)]
+    description: String,
+    #[serde(default)]
+    project: String,
 }
 struct TimerCache {
     input: TimerInput,
@@ -41,6 +45,7 @@ pub struct DesktopRuntime {
     error: Mutex<Option<String>>,
     timer: Mutex<TimerCache>,
     pub background: AtomicBool,
+    compact: AtomicBool,
 }
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -51,6 +56,9 @@ pub struct TimerView {
     can_control: bool,
     busy: bool,
     sampled_at: u64,
+    description: String,
+    project: String,
+    compact: bool,
 }
 #[derive(Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -79,6 +87,8 @@ pub enum MiniAction {
     Hide,
     OpenMain,
     Drag,
+    Compact,
+    Expand,
 }
 
 pub fn smoke_webview_diagnostic(message: &str) {
@@ -128,6 +138,9 @@ fn view(state: &DesktopRuntime) -> Result<TimerView, String> {
             .clone(),
         phase: timer.input.phase,
         elapsed_seconds: elapsed,
+        description: timer.input.description.clone(),
+        project: timer.input.project.clone(),
+        compact: state.compact.load(Ordering::SeqCst),
         can_control: timer.input.can_control,
         busy: timer.input.busy,
         sampled_at: SystemTime::now()
@@ -154,7 +167,10 @@ pub fn desktop_timer_sync(
     timer: TimerInput,
 ) -> Result<(), String> {
     trusted(&window, "main")?;
-    if timer.elapsed_seconds > 315_576_000 {
+    if timer.elapsed_seconds > 315_576_000
+        || timer.description.chars().count() > 200
+        || timer.project.chars().count() > 120
+    {
         return Err("Duração inválida.".into());
     }
     *state.timer.lock().map_err(|_| "Timer indisponível.")? = TimerCache {
@@ -265,6 +281,16 @@ pub fn desktop_mini(
             .hide()
             .map_err(|_| "Não foi possível ocultar o mini timer.")?,
         MiniAction::OpenMain => super::show_main_window(&app),
+        MiniAction::Compact | MiniAction::Expand => {
+            let compact = matches!(action, MiniAction::Compact);
+            window
+                .set_size(tauri::LogicalSize::new(
+                    if compact { 244.0 } else { 392.0 },
+                    if compact { 64.0 } else { 88.0 },
+                ))
+                .map_err(|_| "Não foi possível ajustar o mini timer.")?;
+            state.compact.store(compact, Ordering::SeqCst);
+        }
         MiniAction::Drag => window
             .start_dragging()
             .map_err(|_| "Não foi possível mover o mini timer.")?,

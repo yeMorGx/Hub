@@ -231,6 +231,17 @@ try {
   $focusedPaint.Dispose(); $miniCapture.Dispose()
   $miniCloseCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Ocultar mini timer')
   Wait-Until { $null -ne $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition) } 45
+  $compactCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Diminuir mini timer')
+  Wait-Until { $null -ne $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $compactCondition) } 30
+  Invoke-HubElement ($miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $compactCondition)) $miniHandle
+  $miniExpandedWidth = $miniBounds[2] - $miniBounds[0]
+  Wait-Until { $rect = [HubNativeWindow]::Bounds($miniHandle); ($rect[2] - $rect[0]) -lt $miniExpandedWidth } 15
+  $expandCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, 'Expandir mini timer')
+  Wait-Until { $null -ne $miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $expandCondition) } 15
+  Wait-Until { ($miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $expandCondition)).Current.IsEnabled } 15
+  Invoke-HubElement ($miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $expandCondition)) $miniHandle
+  Wait-Until { $rect = [HubNativeWindow]::Bounds($miniHandle); ($rect[2] - $rect[0]) -ge $miniExpandedWidth } 15
+  $report.miniResize = $true
   $report.miniWindow = $true
   $currentStage = 'capture desktop with mini timer'
   Add-Type -AssemblyName System.Drawing

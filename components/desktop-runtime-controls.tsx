@@ -12,11 +12,19 @@ import {
   isDesktopRuntime,
   type RuntimeState,
 } from "@/lib/desktop/runtime";
-export function DesktopRuntimeControls() {
+export function DesktopRuntimeControls({ fallbackOnly = false }: { fallbackOnly?: boolean }) {
+  const [chromePresent, setChromePresent] = useState(false);
   const [state, setState] = useState<RuntimeState | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const update = () => setChromePresent(Boolean(document.documentElement.dataset.desktopAppChrome));
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-desktop-app-chrome"] });
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => {
     if (!isDesktopRuntime() || window.location.pathname === "/desktop/timer")
       return;
@@ -30,7 +38,7 @@ export function DesktopRuntimeControls() {
       disposed = true;
     };
   }, []);
-  if (!state) return null;
+  if (!state || (fallbackOnly && chromePresent)) return null;
   const change = async (
     action: Parameters<typeof desktopRuntime>[0],
     enabled?: boolean,

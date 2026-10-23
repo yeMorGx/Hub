@@ -44,12 +44,13 @@ function hours(seconds: number) {
     }) + " h"
   );
 }
-export function LiveManagement({ hub }: { hub: HubController }) {
+export type ManagementTab = "reports" | "goals" | "shifts" | "absences" | "dates" | "clients";
+export function LiveManagement({ hub, initialTab = "reports", embedded = false }: { hub: HubController; initialTab?: ManagementTab; embedded?: boolean }) {
   const today = dayKey(new Date()),
     month = today.slice(0, 7) + "-01";
   const [tab, setTab] = useState<
       "reports" | "goals" | "shifts" | "absences" | "dates" | "clients"
-    >("reports"),
+    >(initialTab),
     [from, setFrom] = useState(month),
     [to, setTo] = useState(today),
     [userId, setUserId] = useState(""),
@@ -194,7 +195,7 @@ export function LiveManagement({ hub }: { hub: HubController }) {
   }, {});
   return (
     <section className="management-workspace">
-      <nav className="workspace-tabs" aria-label="Gestão">
+      <nav className="workspace-tabs" aria-label="Gestão" hidden={embedded}>
         {(
           [
             { id: "reports", label: "Relatórios", icon: ChartBar },

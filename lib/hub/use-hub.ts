@@ -674,7 +674,7 @@ export function useHub(
         )
       : undefined;
   const ownActivity = ownActiveTimer
-    ? (ownActiveTimer.description.trim() || "Trabalhando agora").slice(0, 200)
+    ? [ownActiveTimer.description.trim() || "Trabalhando agora", snapshot?.projects.find(project => project.id === ownActiveTimer.project_id)?.name].filter(Boolean).join(" · ").slice(0, 200)
     : "";
   activityRef.current = ownActivity;
   useEffect(() => {

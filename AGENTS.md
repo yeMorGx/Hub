@@ -19,3 +19,7 @@ Toda interface nova ou retrabalhada deve incluir microinterações e microanima�
 ## ZULU: publicar ao concluir
 
 O usuário autorizou explicitamente **sempre publicar** as alterações concluídas. Depois das verificações aplicáveis, enviar os commits ao repositório e publicar a aplicação em produção na Vercel, conferindo o resultado no endereço público. Mudanças nativas do desktop também exigem o fluxo de release e atualização correspondente. Não pedir novamente autorização para essas publicações; comunicar bloqueios concretos e não declarar publicado sem confirmação do serviço. Uma instrução posterior do usuário para não publicar prevalece.
+
+## ZULU: grill-me e decisões de produto
+
+O usuário pediu usar `grill-me` como padrão. Ler `.agents/skills/grill-me/SKILL.md`; a versão instalada encaminha para `grilling`, ferramenta não disponível neste ambiente. Aplicar o método descrito pelo usuário: investigar o código antes de perguntar, fechar decisões relevantes uma por vez e não reabrir respostas já confirmadas. As decisões do pacote de 23/10/2026 estão em `docs/zulu-workspace-plan.md`. Quando o usuário manda implementar um plano fechado, prosseguir sem uma nova rodada de confirmações.

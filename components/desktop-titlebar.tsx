@@ -142,7 +142,7 @@ export function DesktopTitlebar() {
       }}
     >
       <div className="desktop-titlebar-drag">
-        <BrandMark size={24} />
+
 
         {unread && (
           <span
@@ -154,7 +154,8 @@ export function DesktopTitlebar() {
         )}
       </div>
       <div id="desktop-titlebar-content" />
-      <DesktopRuntimeControls />
+      <DesktopRuntimeControls fallbackOnly />
+
       <div
         className="desktop-window-controls"
         role="group"

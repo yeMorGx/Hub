@@ -1722,6 +1722,7 @@ export type Database = {
       }
     }
     Functions: {
+      report_work_balances: { Args: { p_team_id: string; p_from: string; p_to: string; p_user_id?: string }; Returns: { user_id: string; display_name: string; work_date: string; expected_minutes: number; actual_seconds: number; configured: boolean }[] };
       create_team_invitation: {
         Args: { p_team_id: string; p_email: string; p_role: Database["public"]["Enums"]["team_role"]; p_token_hash: string }
         Returns: Json

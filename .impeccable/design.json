@@ -356,5 +356,113 @@
     "surfaces": "Ivory page background, white content, blue-gray field fill, navy actions and text, no decorative card or shell borders; preserve useful structure and visible focus.",
     "motion": "Short HeroUI state feedback; respect prefers-reduced-motion.",
     "source": "app/zulu-workspace.css"
+  },
+  "workspace20261023": {
+    "authority": "docs/zulu-workspace-plan.md; DESIGN.md#workspace-de-23102026--autoridade-atual",
+    "precedence": "Latest authority for authenticated app and demo; supersedes conflicting historical floating rail/bottom dock, titlebar logo, Today journey and single-size mini descriptions and earlier review/release evidence.",
+    "mode": "operate",
+    "areas": {
+      "Hoje": [
+        "Hoje"
+      ],
+      "Trabalho": [
+        "Tarefas",
+        "Horas",
+        "Relatórios",
+        "Documentos",
+        "Metas",
+        "Clientes"
+      ],
+      "Conversas": [
+        "Mensagens",
+        "Chamadas",
+        "Notificações"
+      ],
+      "Agenda": [
+        "Calendário e home office",
+        "Plantões",
+        "Ausências",
+        "Datas do time",
+        "Pautas e atas"
+      ],
+      "Equipe": [
+        "Pessoas",
+        "Check-ins"
+      ],
+      "Configurações": [
+        "Preferências",
+        "Integrações"
+      ]
+    },
+    "shell": {
+      "desktopRail": "80px fixed icon rail, HeroUI hover/focus tooltips",
+      "frame": "Continuous L joining rail and header, no decorative divider, border or shadow",
+      "invertedCorner": "26px pseudo-element at internal top-left; other content corners 24px",
+      "header": "64px web, 48px native; team, search, notifications, profile, native controls; update only when available",
+      "mobile": "HeroUI Drawer at <=760px; 60px header, no inverted corner, 16px content radius"
+    },
+    "teamPicker": "HeroUI selection check, hierarchical team/organization, separate creation; team switch resets to Today and clears prior selection/search/drafts",
+    "settings": [
+      "Account and security",
+      "Light/dark device preference",
+      "Notifications/offline/PWA",
+      "Desktop runtime",
+      "Organization for administrators"
+    ],
+    "today": {
+      "journey": "Removed from Today; work balances and hour goals remain in Trabalho > Horas",
+      "retained": [
+        "Bento Grid",
+        "original Prism/Lava timer",
+        "home-office photo"
+      ],
+      "signature": "Original Spell Signature on first name only, once per user per tab/opening session; sessionStorage prevents navigation/reload replay; static with reduced motion",
+      "people": "Activity and project text, numeric unread DM badge opens person conversation"
+    },
+    "mini": {
+      "compact": "244x64: time, lunch, expand",
+      "expanded": "392x88: activity/project, stop, compact/hide",
+      "surface": "Fully rounded capsule, transparent native window without external rectangle",
+      "finishFix": "Automatic clock height and non-shrinking text lines correct vertical clipping",
+      "nativeLimit": "Windows 0.1.6 compile/smoke/signing/release pending CI"
+    },
+    "tokens": {
+      "light": {
+        "frame": "#eeede8",
+        "content": "#f8f9fc"
+      },
+      "dark": {
+        "frame": "#171b24",
+        "content": "#10151e",
+        "surface": "#1c2431",
+        "field": "#273245",
+        "text": "#e9edf7",
+        "muted": "#aab8d0",
+        "accent": "#9dbaff"
+      }
+    },
+    "reports": "Detailed paginated PDF, identification, period, people, hours/projects/activities and charts; no monetary values. Workspace admin may export collective team report separated by person; leader/member own records only. Server RPC enforces MFA/team access/role.",
+    "avatars": "Private zulu-avatars bucket; owner upload/delete; MFA and active shared-workspace membership or self for reads; centered WebP; signed URLs 300 seconds with refresh.",
+    "chatImages": "Private Storage limited to channel/DM membership, view/download; downloaded copies cannot be revoked.",
+    "delivery": {
+      "document": "docs/zulu-workspace-delivery.md",
+      "unitPassed": 47,
+      "sqlScenariosPassed": 99,
+      "migration": "20261023120000_workspace_reports_avatars.sql applied",
+      "webPublication": "In progress; service confirmation required",
+      "windows": "0.1.6 pending CI",
+      "limits": "Browser fixtures and simulated IPC do not validate real authentication, private Storage, email, native transparency, tray, autostart or signed update.",
+      "publicScenariosPassed": 32
+    },
+    "sources": [
+      "lib/hub/navigation.ts",
+      "components/workspace-drawer.tsx",
+      "components/workspace-settings.tsx",
+      "components/opening-greeting.tsx",
+      "components/profile-avatar.tsx",
+      "components/hours-report.tsx",
+      "app/workspace-inset.css",
+      "src-tauri/src/runtime.rs"
+    ]
   }
 }

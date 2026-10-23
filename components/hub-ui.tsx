@@ -4,6 +4,7 @@ import { X, ArrowRight } from "@phosphor-icons/react";
 import { Avatar, AvatarGroup } from "@heroui/react";
 import { DashboardDialog, useDashboardUI, ZuluButton } from "./dashboard-ui";
 import type { Person } from "@/lib/hub/types";
+import { useProfileAvatar } from "./profile-avatar";
 export function PersonAvatar({
   name,
   id = "",
@@ -16,6 +17,7 @@ export function PersonAvatar({
   presence?: string;
 }) {
   const hero = useDashboardUI();
+  const image = useProfileAvatar(id);
   const colors = ["sand", "rose", "blue", "green", "purple", "orange"];
   const color =
     colors[
@@ -23,6 +25,7 @@ export function PersonAvatar({
     ];
   if (hero) return (
     <Avatar className={`avatar avatar-${size} avatar-${color}`} aria-label={name} title={name} size={size === "small" ? "sm" : size === "large" ? "lg" : "md"}>
+      {image && <Avatar.Image src={image} alt={name} />}
       <Avatar.Fallback>{name.trim().split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase()}</Avatar.Fallback>
       {presence && <i className={`presence ${presence}`} />}
     </Avatar>
@@ -33,7 +36,7 @@ export function PersonAvatar({
       title={name}
       aria-label={name}
     >
-      {name
+      {image ? <img src={image} alt="" className="avatar-photo" /> : name
         .trim()
         .split(/\s+/)
         .map((part) => part[0])

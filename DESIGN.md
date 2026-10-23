@@ -42,6 +42,41 @@ A title bar no Windows passa a 48px e recebe o mesmo cabeçalho de workspace/tim
 
 O seletor de atividade recebe **liquid glass** por escolha explícita do usuário: translucidez e blur sobre Prism/Lava, texto claro, campos escuros e foco legível. Essa escolha substitui o branco sólido somente nesse seletor. O mini timer nativo usa cápsula totalmente arredondada (raio 999px), sem borda/sombra, com o mesmo fundo original e controles HeroUI compactos. Detalhes funcionais em [desktop runtime](docs/desktop-runtime.md).
 
+## Workspace de 23/10/2026 — autoridade atual
+
+O pacote aprovado em [zulu-workspace-plan.md](docs/zulu-workspace-plan.md) é a autoridade mais recente para o shell autenticado e sua demonstração. Esta seção substitui as descrições históricas abaixo quando conflitarem: sidebar flutuante com inset, dock inferior mobile, logo na titlebar, card Sua jornada em Hoje e mini timer de tamanho único. Os registros anteriores de revisão e release continuam como histórico, sem validar automaticamente este pacote. A identidade pública de `/site` e `/download` mantém sua autoridade independente.
+
+### Estrutura e navegação
+
+A rail fixa de 80px permanece compacta, com ícones e tooltips HeroUI no hover/foco. Ela e o header formam uma moldura L contínua, sem divisória, borda ou sombra decorativa. O conteúdo encaixa na moldura: canto interno superior esquerdo invertido por pseudo-elemento de 26px, outros cantos de 24px. Header web de 64px e titlebar nativa de 48px. Até 760px, um drawer oficial HeroUI substitui a rail; o header tem 60px, o canto invertido desaparece e o conteúdo usa raio de 16px.
+
+| Área | Destinos |
+| --- | --- |
+| Hoje | Visão diária |
+| Trabalho | Tarefas, Horas, Relatórios, Documentos, Metas, Clientes |
+| Conversas | Mensagens (canais e DMs), Chamadas, Notificações |
+| Agenda | Calendário e home office, Plantões, Ausências, Datas do time, Pautas e atas |
+| Equipe | Pessoas, Check-ins |
+| Configurações | Preferências e Integrações; Conta, Preferências, Desktop e Organização conforme permissões |
+
+O header/titlebar contém seletor de time, busca, notificações e perfil, além dos controles nativos no desktop. Não inclui logo, breadcrumb ou ações redundantes. Atualização aparece somente quando disponível. O seletor HeroUI mostra check da seleção, nome de time e organização hierarquizados e criação separada. Trocar time volta a Hoje e limpa busca, canal, evento, rascunho, projeto e seleção anterior. Sair fica no perfil/conta. Configurações reúne conta e segurança, tema claro/escuro, notificações/offline/PWA, opções desktop e organização para administrador.
+
+### Hoje e mini timer
+
+Hoje preserva Bento Grid, timer original Prism/Lava e fotografia de home office. **Sua jornada foi removida de Hoje**; saldos e metas de horas ficam em Trabalho > Horas. A saudação aplica Signature original da Spell somente ao primeiro nome, uma vez por usuário na sessão da aba/abertura: navegação e reload não repetem a animação; movimento reduzido mantém apresentação estática. Pessoas ativas mostram atividade e projeto como texto; badge numérico de DMs não lidas abre a conversa da pessoa.
+
+O mini é uma cápsula arredondada sobre janela transparente, sem retângulo externo. Modo compacto de 244×64: tempo e almoço, com ação de expandir. Modo expandido de 392×88: atividade, projeto e encerrar, além dos controles de recolher/ocultar. O protocolo redimensiona a janela nativa; o recorte vertical encontrado na revisão foi corrigido permitindo altura automática e impedindo compressão das linhas. A prova de transparência e redimensionamento reais no Windows depende do CI/smoke nativo da versão 0.1.6.
+
+### Tokens e dados privados
+
+A identidade Inter/marfim/azul permanece. Neste shell, os overrides atuais são `--frame: #eeede8` e `--workspace-content: #f8f9fc`; no escuro, frame `#171b24`, conteúdo/fundo `#10151e`, superfície `#1c2431`, campos `#273245`, texto `#e9edf7`, secundário `#aab8d0` e destaque `#9dbaff`. Foco visível, teclado/toque e movimento reduzido continuam obrigatórios. Fonte de implementação: `app/workspace-inset.css`.
+
+Relatórios PDF não incluem valores monetários. Incluem período, identificação, pessoas, horas por projeto/atividade, gráficos, detalhes e paginação. Administrador do workspace pode exportar o time separado por pessoa; líder e membro consultam somente registros próprios. MFA, acesso ao time e autorização são impostos pelas RPCs SQL, além da interface.
+
+Avatares usam bucket privado `zulu-avatars`, recorte central WebP e URLs assinadas de cinco minutos, renovadas em foco/visibilidade e periodicamente. Leitura exige MFA e vínculo ativo com o workspace do perfil (ou o próprio perfil); upload e exclusão pertencem ao dono. Imagens de chat usam Storage privado, visualização e download limitados a membros do canal/DM. Cópias baixadas não têm revogação prometida.
+
+Evidência e limites desta entrega: [zulu-workspace-delivery.md](docs/zulu-workspace-delivery.md). Contagens anteriores de testes e revisões abaixo são históricas.
+
 ## Tokens implementados
 
 | Token CSS | Valor | Uso |

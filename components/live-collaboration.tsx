@@ -21,10 +21,12 @@ export function LiveCollaboration({
   hub,
   onOpenChannel,
   initialTab = "notes",
+  embedded = false,
 }: {
   hub: HubController;
   onOpenChannel: (id: string) => void;
-  initialTab?: "notes" | "notifications";
+  initialTab?: "notes" | "standups" | "meetings" | "notifications";
+  embedded?: boolean;
 }) {
   const store = useCollaboration(hub.teamId, true, hub.client);
   const [tab, setTab] = useState<
@@ -70,7 +72,7 @@ export function LiveCollaboration({
   const meeting = data?.meetings.find((m) => m.event_id === eventId);
   return (
     <section className="collaboration-workspace">
-      <nav className="workspace-tabs" aria-label="Colaboração">
+      <nav className="workspace-tabs" aria-label="Colaboração" hidden={embedded}>
         {(
           [
             { id: "notes", label: "Documentos", icon: BookOpenText },

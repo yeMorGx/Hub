@@ -1,5 +1,12 @@
 "use client";
+import { WorkspaceDrawer } from "./workspace-drawer";
 import { DashboardLoading, ZuluAlert, DashboardNotice, DashboardWorkspacePicker, DashboardUIProvider, ZuluForm, ZuluLabel, ZuluFieldset, ZuluLegend, ZuluButton, ZuluSelect, ZuluInput, ZuluTextArea, ZuluCheckboxField } from "./dashboard-ui";
+import { WorkspaceAreaTabs } from "./workspace-area-tabs";
+import { workspaceArea, workspaceAreas, pageTitles } from "@/lib/hub/navigation";
+import { OpeningGreeting } from "./opening-greeting";
+import { WorkspaceSettings } from "./workspace-settings";
+import { HoursReport } from "./hours-report";
+import { AvatarProvider, AvatarUpload } from "./profile-avatar";
 import { DashboardNavIcon } from "./dashboard-nav-icon";
 import { BrandMark } from "./brand";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
@@ -126,7 +133,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("inbox") === "1") {
       setCollaborationInitialTab("notifications");
-      setPage("collaboration");
+      setPage("notifications");
     }
     if (new URLSearchParams(window.location.search).get("integrations") === "1")
       setPage("integrations");
@@ -157,6 +164,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
     rangeEnd = range.end.toISOString();
   const hub = useHub(userId, rangeStart, rangeEnd, todayKey),
     data = hub.snapshot;
+  const priorTeam = useRef("");
   const [modal, setModal] = useState<Modal>(null),
     [popover, setPopover] = useState(false),
     [formError, setFormError] = useState("");
@@ -178,6 +186,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
   const [homeOfficeOpen, setHomeOfficeOpen] = useState(false),
     [homeOfficeFocusWeek, setHomeOfficeFocusWeek] = useState("");
   const [workScheduleOpen, setWorkScheduleOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [atBottom, setAtBottom] = useState(true),
     [showChannelList, setShowChannelList] = useState(true);
   const chatEnd = useRef<HTMLDivElement>(null),
@@ -194,6 +203,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
     hub.refreshTeam,
   );
   useEffect(() => {
+    if (priorTeam.current && priorTeam.current !== hub.teamId) {
+      setPage("overview"); setCalendarDate(todayKey); setHomeOfficeOpen(false); setWorkScheduleOpen(false); setMenuOpen(false);
+    }
+    priorTeam.current = hub.teamId;
     setChannelId("");
     setDraft("");
     setProjectId("");
@@ -307,7 +320,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
       data.attendees.some((a) => a.event_id === id && a.user_id === p.id),
     );
   function navigate(next: LivePage) {
-    setPage(next);
+    setMenuOpen(false);
+    setPage(next === "management" ? "reports" : next === "collaboration" ? "notes" : next === "more" ? "settings" : next);
     setPopover(false);
     setSearch("");
     if (next === "chat") setShowChannelList(true);
@@ -655,7 +669,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
         {Notice}
       </>
     );
-  const currentPage = navigation.find((item) => item.id === page)!;
+  const currentArea = workspaceArea(page);
+  const currentPage = { label: pageTitles[page] ?? navigation.find(item => item.id === page)?.label ?? "ZULU" };
   const recentWork = entries
     .filter(
       (entry) =>
@@ -683,11 +698,13 @@ export function LiveHubApp({ userId }: { userId: string }) {
       : null;
   const profileBody = data.people.find((p) => p.id === userId)?.body ?? "";
   return (
-    <DashboardUIProvider enabled={page === "overview"}>
-    <div className={`app-shell live-app ${page === "overview" ? "dashboard-redesign" : ""}`}>
+    <DashboardUIProvider enabled>
+    <AvatarProvider hub={hub}>
+    <div className={`app-shell live-app workspace-inset ${page === "overview" ? "dashboard-redesign" : ""}`} data-menu-open={menuOpen}>
       <a className="skip-link" href="#main-content">
         Pular para o conteúdo
       </a>
+
       <aside className="rail" aria-label="Navegação principal">
         <ZuluButton
           className="brand"
@@ -697,118 +714,27 @@ export function LiveHubApp({ userId }: { userId: string }) {
           <BrandMark size={44} />
 
         </ZuluButton>
-        <div className="rail-divider" />
         <nav>
-          {navigation.map((item) => (
-            <ZuluButton
-              key={item.id}
-              className={`rail-button ${page === item.id ? "active" : ""} ${["hours", "people", "collaboration", "management", "integrations", "calls"].includes(item.id) ? "nav-secondary" : ""} ${item.id === "more" ? "mobile-more-button" : ""}`}
-              onClick={() => navigate(item.id)}
-              aria-label={item.label}
-              aria-current={page === item.id ? "page" : undefined}
-            >
-              <DashboardNavIcon name={item.id} />
-              <span className="nav-tooltip">{item.label}</span>
-              {item.id === "chat" && totalUnread > 0 && (
-                <span
-                  className="nav-unread"
-                  aria-label={`${totalUnread} mensagens não lidas`}
-                />
-              )}
+          {workspaceAreas.filter(area => area.id !== "settings").map(area => (
+            <ZuluButton key={area.id} className={`rail-button ${currentArea.id === area.id ? "active" : ""}`} onClick={() => navigate(area.tabs[0][0])} aria-label={area.label} aria-current={currentArea.id === area.id ? "page" : undefined}>
+              <DashboardNavIcon name={area.icon} />
+              {area.id === "conversations" && totalUnread > 0 && <span className="nav-unread" aria-label={`${totalUnread} mensagens não lidas`} />}
             </ZuluButton>
           ))}
         </nav>
-        <div className="rail-bottom">
-          <ZuluButton
-            className="rail-button"
-            aria-label="Preferências e perfil"
-            onClick={() => openModal("profile")}
-          >
-            <DashboardNavIcon name="settings" />
-            <span className="nav-tooltip">Preferências</span>
-          </ZuluButton>
-
-        </div>
+        <div className="rail-bottom"><ZuluButton className={`rail-button ${currentArea.id === "settings" ? "active" : ""}`} aria-label="Configurações" onClick={() => navigate("settings")}><DashboardNavIcon name="settings" /></ZuluButton></div>
       </aside>
-      <DesktopBridge hub={hub} />
+<WorkspaceDrawer open={menuOpen} onOpenChange={setMenuOpen} onPage={navigate} />      <DesktopBridge hub={hub} />
       <div className="app-content">
-        <DesktopChrome><header className="topbar">
+        <DesktopChrome><header className="topbar"><ZuluButton className="mobile-navigation-toggle" aria-label="Abrir navegação" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><SquaresFour size={21} /></ZuluButton>
           <div className="workspace-wrap">
-            {page === "overview" ? <DashboardWorkspacePicker
-              workspace={hub.workspace?.name ?? "Meu workspace"} teamId={hub.teamId}
-              teams={hub.bootstrap.teams.map((team) => ({ id: team.id, label: `${hub.bootstrap!.workspaces.find((workspace) => workspace.id === team.workspace_id)?.name ?? ""} · ${team.name}` }))}
+            <DashboardWorkspacePicker workspace={hub.workspace?.name ?? "Meu workspace"} teamId={hub.teamId}
+              teams={hub.bootstrap.teams.map(team => ({ id: team.id, label: team.name, organization: hub.bootstrap!.workspaces.find(workspace => workspace.id === team.workspace_id)?.name ?? "" }))}
               role={hub.isAdmin ? "Administrador" : hub.canManage ? "Líder" : "Membro"} canManage={hub.isAdmin}
-              onTeam={hub.setTeamId} onNewTeam={() => openModal("team")}
+              onTeam={id => { if (id === hub.teamId) return; hub.setTeamId(id); setPage("overview"); setSearch(""); setChannelId(""); setEventId(""); setEditingEvent(null); setModal(null); setDraft(""); setProjectId(""); setCalendarDate(todayKey); }} onNewTeam={() => openModal("team")}
               onSignOut={() => void signOut()}
-            /> : (<>
-
-            <ZuluButton
-              className="workspace-button"
-              aria-expanded={popover}
-              onClick={() => setPopover(!popover)}
-            >
-              <span className="workspace-icon">
-                <SquaresFour weight="fill" size={18} />
-              </span>
-              <strong>{hub.workspace?.name ?? "Meu workspace"}</strong>
-              <CaretDown size={13} />
-            </ZuluButton>
-            {popover && (
-              <div className="popover workspace-popover">
-                <span className="popover-label">Seu workspace e time</span>
-                <ZuluLabel className="live-workspace-label" htmlFor="team-picker">
-                  Time ativo
-                  <ZuluSelect
-                    id="team-picker"
-                    value={hub.teamId}
-                    onValueChange={(value) => {
-                      hub.setTeamId(value);
-                      setPopover(false);
-                    }}
-                  >
-                    {hub.bootstrap.workspaces.map((workspace) => (
-                      <optgroup key={workspace.id} label={workspace.name}>
-                        {hub
-                          .bootstrap!.teams.filter(
-                            (t) => t.workspace_id === workspace.id,
-                          )
-                          .map((team) => (
-                            <option key={team.id} value={team.id}>
-                              {team.name}
-                            </option>
-                          ))}
-                      </optgroup>
-                    ))}
-                  </ZuluSelect>
-                </ZuluLabel>
-                <span className="workspace-role">
-                  <ShieldCheck size={14} />
-                  {hub.isAdmin
-                    ? "Administrador"
-                    : hub.canManage
-                      ? "Líder"
-                      : "Membro"}
-                </span>
-                {hub.isAdmin && (
-                  <ZuluButton
-                    className="text-button"
-                    onClick={() => openModal("team")}
-                  >
-                    Criar time <Plus size={14} />
-                  </ZuluButton>
-                )}
-                <ZuluButton
-                  className="text-button workspace-signout"
-                  onClick={signOut}
-                >
-                  Sair da conta <SignOut size={14} />
-                </ZuluButton>
-              </div>
-            )}
-            </>)}
+            />
           </div>
-          <span className="breadcrumb-divider">/</span>
-          <span className="breadcrumb">{currentPage.label}</span>
           <div className="topbar-right">
             <ZuluButton
               className="search-button"
@@ -817,23 +743,13 @@ export function LiveHubApp({ userId }: { userId: string }) {
             >
               <MagnifyingGlass size={17} />
               <span>Buscar</span>
-              <kbd>
-                <Command size={11} />K
-              </kbd>
-            </ZuluButton>
-            <ZuluButton
-              className="icon-button"
-              aria-label="Atualizar dados"
-              disabled={hub.busy || hub.teamLoading}
-              onClick={() => void hub.refreshAll()}
-            >
-              <ArrowClockwise size={20} />
+
             </ZuluButton>
             <NotificationBell
               hub={hub}
               onOpen={() => {
                 setCollaborationInitialTab("notifications");
-                navigate("collaboration");
+                navigate("notifications");
               }}
             />
             <ZuluButton
@@ -846,10 +762,11 @@ export function LiveHubApp({ userId }: { userId: string }) {
           </div>
         </header></DesktopChrome>
         <main id="main-content" className={`main-content ${page === "overview" ? "today-page" : ""}`}>
+          <WorkspaceAreaTabs page={page} onPage={navigate} />
           <div className="page-heading">
             <div>
               <h1>
-                {page === "overview" ? `Olá, ${currentName.split(" ")[0]}` : currentPage.label}
+                {page === "overview" ? <OpeningGreeting name={currentName.split(" ")[0]} userId={userId} /> : currentArea.label}
                 <span className="heading-period">.</span>
               </h1>
               <p>
@@ -1065,9 +982,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       online={hub.onlinePeople}
                       unread={totalUnread}
                       currentUserId={userId}
-                      currentActivity={timerSession?.team_id === hub.teamId ? (pausedTimer ? `Almoço · ${timerSession.description}` : timerSession.description || "Trabalhando agora") : ""}
+                      currentActivity={timerSession?.team_id === hub.teamId ? [pausedTimer ? `Almoço · ${timerSession.description}` : timerSession.description || "Trabalhando agora", data.projects.find(project => project.id === timerSession.project_id)?.name].filter(Boolean).join(" · ") : ""}
                       activities={hub.onlineActivities}
                       inbox={data.inbox}
+                      unreadByPerson={Object.fromEntries(data.channels.filter(channel => channel.kind === "dm" && !channel.archived_at && (channel.dm_user_low === userId || channel.dm_user_high === userId) && data.channelMemberships.some(member => member.channel_id === channel.id && member.user_id === userId)).map(channel => [channel.dm_user_low === userId ? channel.dm_user_high! : channel.dm_user_low!, data.unread[channel.id] ?? 0]))}
                       inboxError={data.inboxError}
                       onMessage={id => {setChannelId(id);navigate("chat");setShowChannelList(false);}}
                       recent={recentWork.map((entry) => ({
@@ -1241,14 +1159,14 @@ export function LiveHubApp({ userId }: { userId: string }) {
               {page === "integrations" && (
                 <LiveIntegrations key={hub.teamId} hub={hub} />
               )}
-              {page === "management" && (
-                <LiveManagement key={hub.teamId} hub={hub} />
-              )}
-              {page === "collaboration" && (
+              {(["goals", "clients", "shifts", "absences", "dates"] as string[]).includes(page) && <LiveManagement key={`${hub.teamId}:${page}`} hub={hub} initialTab={page as "goals" | "clients" | "shifts" | "absences" | "dates"} embedded />}
+              {page === "reports" && <HoursReport key={hub.teamId} hub={hub} />}
+              {page === "settings" && <WorkspaceSettings hub={hub} onProfile={() => openModal("profile")} onMembers={() => navigate("people")} onIntegrations={() => navigate("integrations")} onSignOut={signOut} />}
+              {(["notes", "standups", "meetings", "notifications"] as string[]).includes(page) && (
                 <LiveCollaboration
-                  key={`${hub.teamId}:${collaborationInitialTab}`}
+                  key={`${hub.teamId}:${page}`}
                   hub={hub}
-                  initialTab={collaborationInitialTab}
+                  initialTab={page as "notes" | "standups" | "meetings" | "notifications"} embedded
                   onOpenChannel={(id) => {
                     setChannelId(id);
                     setShowChannelList(false);
@@ -2329,6 +2247,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 </small>
               </span>
             </div>
+            <AvatarUpload hub={hub} />
             <ZuluLabel>
               Como podemos chamar você?
               <ZuluInput
@@ -2381,9 +2300,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
               </ZuluButton>
             </div>
           </ZuluForm>
-          <InstallApp />
-          <OfflineSettings userId={userId} />
-          <PushSettings hub={hub} />
+          <ZuluButton className="outline-button" onClick={() => { setModal(null); navigate("settings"); }}>Abrir configurações</ZuluButton>
           <div className="profile-account-actions">
             <ZuluLabel>
               Seu identificador<code>{userId}</code>
@@ -2809,6 +2726,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
         </HubDialog>
       )}
     </div>
+    </AvatarProvider>
     </DashboardUIProvider>
   );
 }

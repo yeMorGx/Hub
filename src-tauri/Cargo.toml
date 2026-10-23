@@ -1,6 +1,6 @@
 [package]
 name = "hub-desktop"
-version = "0.1.5"
+version = "0.1.6"
 description = "Hub — seu time, conectado"
 authors = ["Hub"]
 edition = "2021"

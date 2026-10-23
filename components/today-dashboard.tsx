@@ -414,108 +414,6 @@ export function TodayOverview(props: TodayOverviewProps) {
             </div>
           )}
         </Card>
-        <Card className="today-journey">
-          <Card.Header className="today-section-heading">
-            <Card.Title>Sua jornada</Card.Title>
-            <ZuluButton
-              className="today-link"
-              onClick={props.onHours}
-              aria-label="Ver detalhes da jornada"
-            >
-              <ArrowUpRight size={18} />
-            </ZuluButton>
-          </Card.Header>
-          <div className="today-journey-metrics">
-            <div className="today-hours">
-              <span>Trabalhadas hoje</span>
-              <strong>{shortDuration(today.actualSeconds)}</strong>
-              <small>
-                {configured
-                  ? `de ${shortDuration(today.expectedMinutes * 60)} previstas`
-                  : "Jornada ainda não configurada"}
-              </small>
-            </div>
-            {configured && (
-              <dl className="today-balances">
-                {[
-                  { label: "Saldo da semana", value: week },
-                  { label: "Saldo do mês", value: month },
-                ].map(({ label, value }) => (
-                  <div key={label}>
-                    <dt>{label}</dt>
-                    <dd
-                      className={
-                        value.balanceMinutes > 0
-                          ? "positive"
-                          : value.balanceMinutes < 0
-                            ? "negative"
-                            : ""
-                      }
-                    >
-                      {value.balanceMinutes === 0
-                        ? "Em dia"
-                        : shortDuration(Math.abs(value.balanceMinutes) * 60)}
-                      {value.balanceMinutes !== 0 && (
-                        <span className="today-balance-caption">
-                          {balanceCaption(value.balanceMinutes)}
-                        </span>
-                      )}
-                    </dd>
-                    <small>
-                      {shortDuration(value.actualSeconds)} feitas ·{" "}
-                      {shortDuration(value.expectedMinutes * 60)} previstas até
-                      hoje
-                    </small>
-                  </div>
-                ))}
-              </dl>
-            )}
-          </div>
-          {configured ? (
-            <>
-              {today.expectedMinutes > 0 && (
-                <ProgressBar
-                  className="today-progress"
-                  value={progress}
-                  aria-label="Jornada de hoje"
-                  aria-valuetext={`${shortDuration(today.actualSeconds)} de ${shortDuration(today.expectedMinutes * 60)}`}
-                >
-                  <ProgressBar.Track>
-                    <ProgressBar.Fill />
-                  </ProgressBar.Track>
-                </ProgressBar>
-              )}
-              <p className="today-balance-basis">
-                Os saldos incluem a meta de hoje, mesmo com o dia em andamento.
-              </p>
-              <p className="today-hours-note">
-                {today.expectedMinutes === 0
-                  ? "Sem jornada prevista para hoje."
-                  : remaining > 0
-                    ? `Faltam ${shortDuration(remaining)} para completar o dia.`
-                    : "Jornada de hoje cumprida."}
-              </p>
-              <ZuluButton
-                className="today-link today-schedule-link"
-                onClick={props.onSchedule}
-              >
-                Meta do mês: {shortDuration(props.monthTargetMinutes * 60)}
-                <ArrowUpRight size={13} />
-              </ZuluButton>
-            </>
-          ) : (
-            <div className="today-schedule-empty">
-              <p>
-                Defina seus dias e horários para acompanhar metas e banco de
-                horas.
-              </p>
-              <ZuluButton className="today-link" onClick={props.onSchedule}>
-                Configurar minha jornada
-                <ArrowRight size={15} />
-              </ZuluButton>
-            </div>
-          )}
-        </Card>
       </section>
       <Card
         role="region"
@@ -611,6 +509,7 @@ export type TodayContextProps = {
   currentActivity: string;
   activities: Record<string, string>;
   inbox: InboxPreview[];
+  unreadByPerson?: Record<string, number>;
   inboxError: boolean;
   onMessage: (channelId: string) => void;
   recent: { id: string; description: string; project: string }[];
@@ -736,6 +635,10 @@ export function TodayContext(props: TodayContextProps) {
                         : person.body || statuses[status] || statuses.unknown}
                   </small>
                 </span>
+                {person.id !== props.currentUserId && (() => {
+                  const unread = props.unreadByPerson?.[person.id] ?? props.inbox.find(item => item.personId === person.id)?.unread ?? 0;
+                  return unread > 0 ? <span className="person-unread-badge" aria-label={`${unread} mensagens não lidas`}>{unread > 99 ? "99+" : unread}</span> : null;
+                })()}
               </ZuluButton>
             );
           })}

@@ -13,6 +13,9 @@ export type MiniState = {
   canControl: boolean;
   busy: boolean;
   sampledAt: number;
+  description?: string;
+  project?: string;
+  compact?: boolean;
 };
 export type MiniAction = "pause" | "resume" | "stop";
 export function isDesktopRuntime() {
@@ -45,6 +48,8 @@ export function timerSnapshot(
       Math.max(0, Math.floor((now - Date.parse(active.started_at)) / 1000))
     : Number(paused?.accumulated_seconds ?? 0);
   return {
+    description: session?.team_id === hub.teamId ? Array.from(session.description || "").slice(0, 200).join("") : "",
+    project: session?.team_id === hub.teamId ? Array.from(hub.snapshot.projects.find(project => project.id === session.project_id)?.name || "").slice(0, 120).join("") : "",
     phase: active
       ? ("running" as const)
       : paused

@@ -7,6 +7,8 @@ import {
   X,
   DotsSixVertical,
   ArrowUpRight,
+  ArrowsInSimple,
+  ArrowsOutSimple,
 } from "@phosphor-icons/react";
 import { DashboardUIProvider, ZuluButton } from "./dashboard-ui";
 import AnimatedGradient from "./animated-gradient";
@@ -81,7 +83,7 @@ export function DesktopMiniTimer() {
   return (
     <DashboardUIProvider enabled>
       <main
-        className={`desktop-mini-page ${timer?.phase === "running" ? "mini-running" : ""}`}
+        className={`desktop-mini-page ${timer?.compact ? "mini-compact" : "mini-expanded"} ${timer?.phase === "running" ? "mini-running" : ""}`}
       >
         <section className="mini-capsule" aria-label="Mini timer do ZULU">
           <div className="mini-gradient" aria-hidden="true">
@@ -112,14 +114,9 @@ export function DesktopMiniTimer() {
             <span role="timer" aria-label="Tempo da atividade">
               {clock(timer?.elapsedSeconds ?? 0)}
             </span>
-            <small>
-              {timer
-                ? timer.phase === "running"
-                  ? "Em foco"
-                  : timer.phase === "lunch"
-                    ? "Almoço"
-                    : "Sem atividade"
-                : "Abra pelo ZULU"}
+            <small title={[timer?.description, timer?.project].filter(Boolean).join(" · ")}>
+              <span>{timer ? timer.phase === "running" ? timer.description || "Em foco" : timer.phase === "lunch" ? "Almoço" : "Sem atividade" : "Abra pelo ZULU"}</span>
+              {timer?.project && timer.phase !== "idle" && <span>{timer.project}</span>}
             </small>
           </ZuluButton>
           <ZuluButton
@@ -145,7 +142,7 @@ export function DesktopMiniTimer() {
               <Coffee size={19} />
             )}
           </ZuluButton>
-          <ZuluButton
+          {!timer?.compact && <ZuluButton
             className="mini-action"
             aria-label="Encerrar e salvar"
             disabled={
@@ -157,7 +154,10 @@ export function DesktopMiniTimer() {
             onClick={() => void act("stop")}
           >
             <Stop size={15} weight="fill" />
-          </ZuluButton>
+          </ZuluButton>}
+          {typeof timer?.compact === "boolean" && <ZuluButton className="mini-dismiss" disabled={pending} aria-label={timer?.compact ? "Expandir mini timer" : "Diminuir mini timer"} onClick={() => void act(timer?.compact ? "expand" : "compact")}>
+            {timer?.compact ? <ArrowsOutSimple size={14} /> : <ArrowsInSimple size={14} />}
+          </ZuluButton>}
           <ZuluButton
             className="mini-dismiss"
             aria-label="Ocultar mini timer"

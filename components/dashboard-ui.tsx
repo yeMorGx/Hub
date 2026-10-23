@@ -22,6 +22,7 @@ import {
 } from "react";
 import {
   Button,
+  Dropdown,
   Input,
   TextArea,
   Select,
@@ -520,88 +521,29 @@ export function DashboardNotice({
   );
 }
 
-export function DashboardWorkspacePicker({
-  workspace,
-  teamId,
-  teams,
-  role,
-  canManage,
-  onTeam,
-  onNewTeam,
-  onSignOut,
-}: {
-  workspace: string;
-  teamId: string;
-  teams: { id: string; label: string }[];
-  role: string;
-  canManage: boolean;
-  onTeam: (id: string) => void;
-  onNewTeam: () => void;
-  onSignOut: () => void;
+export function DashboardWorkspacePicker({ workspace, teamId, teams, role, canManage, onTeam, onNewTeam }: {
+  workspace: string; teamId: string; teams: { id: string; label: string; organization?: string }[]; role: string; canManage: boolean;
+  onTeam: (id: string) => void; onNewTeam: () => void; onSignOut?: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  return (
-    <Popover isOpen={open} onOpenChange={setOpen}>
-      <Button className="workspace-button" variant="tertiary">
-        <span className="workspace-icon">
-          <SquaresFour weight="fill" size={18} />
-        </span>
-        <strong>{workspace}</strong>
-        <CaretDown size={13} />
-      </Button>
-      <Popover.Content
-        className="zulu-overlay zulu-workspace"
-        placement="bottom start"
-      >
-        <Popover.Dialog aria-label="Seu workspace e time">
-          <Label>Time ativo</Label>
-          <Select
-            aria-label="Time ativo"
-            value={teamId}
-            onChange={(key) => {
-              onTeam(String(key));
-              setOpen(false);
-            }}
-            variant="secondary"
-          >
-            <Select.Trigger>
-              <Select.Value>{({ selectedText }) => selectedText}</Select.Value>
-              <Select.Indicator />
-            </Select.Trigger>
-            <Select.Popover className="zulu-overlay">
-              <ListBox>
-                {teams.map((team) => (
-                  <ListBox.Item
-                    key={team.id}
-                    id={team.id}
-                    textValue={team.label}
-                  >
-                    <Label>{team.label}</Label>
-                    <ListBox.ItemIndicator />
-                  </ListBox.Item>
-                ))}
-              </ListBox>
-            </Select.Popover>
-          </Select>
-          <p className="workspace-role">{role}</p>
-          {canManage && (
-            <Button
-              variant="tertiary"
-              onPress={() => {
-                setOpen(false);
-                onNewTeam();
-              }}
-            >
-              Criar time
-            </Button>
-          )}
-          <Button variant="danger-soft" onPress={onSignOut}>
-            Sair da conta
-          </Button>
-        </Popover.Dialog>
-      </Popover.Content>
-    </Popover>
-  );
+  const current = teams.find(team => team.id === teamId);
+  return <Dropdown isOpen={open} onOpenChange={setOpen}>
+    <Button className="workspace-button" variant="tertiary" aria-label={`Trocar time: ${current?.label ?? workspace}`}>
+      <span className="workspace-icon"><SquaresFour weight="fill" size={18} /></span>
+      <strong>{current?.label ?? workspace}</strong><CaretDown size={13} />
+    </Button>
+    <Dropdown.Popover className="zulu-overlay zulu-workspace workspace-team-menu" placement="bottom start">
+      <div className="workspace-menu-heading"><strong>Seus times</strong><small>{role}</small></div>
+      <Dropdown.Menu aria-label="Trocar time" selectionMode="single" selectedKeys={[teamId]} onAction={key => { setOpen(false); if (key === "new-team") onNewTeam(); else onTeam(String(key)); }}>
+        {teams.map(team => <Dropdown.Item key={team.id} id={team.id} textValue={team.label} className="workspace-team-option">
+          <span className="workspace-team-symbol" aria-hidden="true">{team.label.slice(0, 2).toUpperCase()}</span>
+          <span className="workspace-team-copy"><Label>{team.label}</Label><small>{team.organization || workspace}</small></span>
+          <Dropdown.ItemIndicator />
+        </Dropdown.Item>)}
+        {canManage && <Dropdown.Item id="new-team" textValue="Criar time" className="workspace-new-team"><Plus size={17} /><Label>Criar time</Label></Dropdown.Item>}
+      </Dropdown.Menu>
+    </Dropdown.Popover>
+  </Dropdown>;
 }
 
 export function ZuluAlert({

@@ -1,13 +1,16 @@
 "use client";
+import { WorkspaceDrawer } from "./workspace-drawer";
 import {
   DashboardLoading,
   DashboardNotice,
   DashboardUIProvider,
+  DashboardWorkspacePicker,
   ZuluLabel,
   ZuluButton,
   ZuluSelect,
 } from "./dashboard-ui";
 import { Link, Spinner, Tooltip } from "@heroui/react";
+import { OpeningGreeting } from "./opening-greeting";
 import { DesktopChrome } from "./desktop-chrome";
 import { DashboardNavIcon } from "./dashboard-nav-icon";
 import { BrandMark } from "./brand";
@@ -33,6 +36,8 @@ import { moveCalendarDate, type CalendarView } from "@/lib/hub/calendar";
 import type { HomeOfficeEntry, Row } from "@/lib/hub/types";
 
 export function DashboardDemo() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [demoTeamId, setDemoTeamId] = useState("studio");
   const [ready, setReady] = useState(false);
   const [today, setToday] = useState(new Date("2026-10-21T12:00:00"));
   const [date, setDate] = useState(today);
@@ -193,23 +198,22 @@ export function DashboardDemo() {
     setNotice("");
   }
   const demoNav = [
-    { label: "Hoje", icon: SquaresFour, href: "/demo/dashboard" },
-    { label: "Calendário", icon: CalendarDots, href: "/demo/calendar" },
-    { label: "Tarefas", icon: Columns, href: "/demo/kanban" },
-    { label: "Conversas", icon: ChatCircleText, href: "/demo/operations" },
-    { label: "Minhas horas", icon: Timer, href: "/demo" },
-    { label: "Pessoas", icon: UsersThree, href: "/demo" },
-    { label: "Mais", icon: DotsThree, href: "/demo/operations" },
+    { label: "Hoje", name: "overview", href: "/demo/dashboard" },
+    { label: "Trabalho", name: "board", href: "/demo/workspace?page=board" },
+    { label: "Conversas", name: "chat", href: "/demo/workspace?page=chat" },
+    { label: "Agenda", name: "calendar", href: "/demo/workspace?page=calendar" },
+    { label: "Equipe", name: "people", href: "/demo/workspace?page=people" },
   ];
   const actual = scenario === "empty" ? 0 : 10800 + elapsed;
   const configured = scenario !== "unconfigured";
   if (!ready) return <DashboardLoading />;
   return (
     <DashboardUIProvider enabled={true}>
-      <div className="app-shell live-app dashboard-redesign">
+      <div className="app-shell live-app dashboard-redesign workspace-inset" data-menu-open={menuOpen}>
         <a className="skip-link" href="#main-content">
           Pular para o conteúdo
         </a>
+
         <aside className="rail" aria-label="Navegação da demonstração">
           <a
             className="brand"
@@ -232,19 +236,7 @@ export function DashboardDemo() {
                   aria-current={i === 0 ? "page" : undefined}
                 />}
               >
-                <DashboardNavIcon
-                  name={
-                    [
-                      "overview",
-                      "calendar",
-                      "board",
-                      "chat",
-                      "hours",
-                      "people",
-                      "more",
-                    ][i]
-                  }
-                />
+                <DashboardNavIcon name={item.name} />
                 <span className="nav-tooltip">{item.label}</span>
               </Tooltip.Trigger>
               <Tooltip.Content className="zulu-tooltip" placement="right">{item.label}</Tooltip.Content>
@@ -255,23 +247,17 @@ export function DashboardDemo() {
             <ZuluButton
               className="rail-button"
               aria-label="Preferências"
-              onClick={() => setDialog("Preferências da demonstração")}
+              onClick={() => { location.href = "/demo/workspace?page=settings"; }}
             >
               <DashboardNavIcon name="settings" />
             </ZuluButton>
           </div>
         </aside>
-        <div className="app-content">
+<WorkspaceDrawer open={menuOpen} onOpenChange={setMenuOpen} onPage={next => { location.href = next === "overview" ? "/demo/dashboard" : `/demo/workspace?page=${next}`; }} />        <div className="app-content">
           <DesktopChrome>
             <header className="topbar">
-              <div className="workspace-button">
-                <span className="workspace-icon">
-                  <SquaresFour size={18} weight="fill" />
-                </span>
-                <strong>Estúdio</strong>
-              </div>
-              <span className="breadcrumb-divider">/</span>
-              <span className="breadcrumb">Hoje</span>
+              <ZuluButton className="mobile-navigation-toggle" aria-label="Abrir navegação" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><SquaresFour size={21} /></ZuluButton>
+              <DashboardWorkspacePicker workspace="Forma" teamId={demoTeamId} teams={[{id:"studio",label:"Estúdio",organization:"Forma"},{id:"product",label:"Produto",organization:"Forma"}]} role="Administrador" canManage onTeam={id => { setDemoTeamId(id); setNotice("Time alterado apenas na demonstração."); }} onNewTeam={() => setDialog("Criar time")} />
               <div className="topbar-right">
                 <div className="today-demo-controls">
                   {" "}
@@ -302,7 +288,7 @@ export function DashboardDemo() {
             <div className="page-heading">
               <div>
                 <h1>
-                  Olá, Rafa<span className="heading-period">.</span>
+                  <OpeningGreeting name="Rafa" userId="demo-user" />
                 </h1>
                 <p>
                   <span className="today-demo-disclosure">
@@ -456,7 +442,7 @@ export function DashboardDemo() {
                     ? ""
                     : timer === "lunch"
                       ? `Almoço · ${activity}`
-                      : activity
+                      : [activity, activityProject].filter(Boolean).join(" · ")
                 }
                 activities={{}}
                 inbox={

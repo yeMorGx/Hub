@@ -899,8 +899,30 @@ scenario('Gestão: relatórios respeitam papel, cliente e corte nas fronteiras d
  await login(users.alice);const own=(await query('select * from public.report_time_entries($1,$2,$3,$4,$5,$6)',[ids.red,'2020-01-01T08:30Z','2020-01-01T09:00Z',null,null,client])).rows;
  assert.equal(own.length,1);assert.equal(Number(own[0].duration_seconds),1800);assert.equal(own[0].user_id,users.alice);
  await sqlError('select * from public.report_time_entries($1,$2,$3,$4)',[ids.red,'2020-01-01','2020-01-02',users.bob],'42501');
- await login(users.leader);assert.equal(await count('select count(*) from public.report_time_entries($1,$2,$3)',[ids.red,'2020-01-01','2020-01-02']),3);
+ await login(users.leader);const leaderRows=(await query('select * from public.report_time_entries($1,$2,$3)',[ids.red,'2020-01-01','2020-01-02'])).rows;
+ assert.equal(leaderRows.length,1);assert.ok(leaderRows.every(row=>row.user_id===users.leader));
+ await sqlError('select * from public.report_time_entries($1,$2,$3,$4)',[ids.red,'2020-01-01','2020-01-02',users.alice],'42501');
+ await login(users.admin);assert.equal(await count('select count(*) from public.report_time_entries($1,$2,$3)',[ids.red,'2020-01-01','2020-01-02']),3);
  await login(users.outsider);await sqlError('select * from public.report_time_entries($1,$2,$3)',[ids.red,'2020-01-01','2020-01-02'],'42501');
+});
+scenario('Relatório financeiro: jornada coletiva só para admin, líderes e membros limitados ao próprio usuário',async()=>{
+ for(const user of [users.alice,users.leader]) {
+  await login(user);const own=(await query('select * from public.report_work_balances($1,$2,$3)',[ids.red,'2026-10-19','2026-10-23'])).rows;
+  assert.ok(own.length>0);assert.ok(own.every(row=>row.user_id===user));
+  await sqlError('select * from public.report_work_balances($1,$2,$3,$4)',[ids.red,'2026-10-19','2026-10-23',users.bob],'42501');
+ }
+ await login(users.admin);assert.ok(await count('select count(distinct user_id) from public.report_work_balances($1,$2,$3)',[ids.red,'2026-10-19','2026-10-23'])>1);
+ await login(users.outsider);await sqlError('select * from public.report_work_balances($1,$2,$3)',[ids.red,'2026-10-19','2026-10-23'],'42501');
+ await login(users.alice,'aal1');await sqlError('select * from public.report_work_balances($1,$2,$3)',[ids.red,'2026-10-19','2026-10-23'],'42501');
+});
+scenario('Fotos: bucket privado, escrita própria e leitura limitada à organização compartilhada com MFA',async()=>{
+ const path=users.alice+'/'+randomUUID()+'.webp';
+ await login(users.alice);await query("insert into storage.objects(bucket_id,name) values('zulu-avatars',$1)",[path]);
+ await query('update public.profiles set avatar_url=$1 where id=$2',[path,users.alice]);
+ await login(users.bob);assert.equal(await count("select count(*) from storage.objects where bucket_id='zulu-avatars' and name=$1",[path]),1);
+ await sqlError("insert into storage.objects(bucket_id,name) values('zulu-avatars',$1)",[users.alice+'/'+randomUUID()+'.webp'],'42501');
+ await login(users.outsider);assert.equal(await count("select count(*) from storage.objects where bucket_id='zulu-avatars' and name=$1",[path]),0);
+ await login(users.bob,'aal1');assert.equal(await count("select count(*) from storage.objects where bucket_id='zulu-avatars' and name=$1",[path]),0);
 });
 scenario('Gestão: metas são próprias ou da liderança e não revelam metas de colegas',async()=>{
  await login(users.alice);await rpc('set_time_goal',[ids.red,users.alice,2400,120]);
