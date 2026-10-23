@@ -2,6 +2,7 @@
 use tauri::{Emitter, Manager};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 mod desktop_update;
+mod export;
 mod native_screen_share;
 mod runtime;
 mod titlebar;
@@ -57,6 +58,7 @@ fn main() {
         .manage(runtime::DesktopRuntime::default())
         .invoke_handler(tauri::generate_handler![
             open_desktop_update,
+            export::save_report_export,
             runtime::desktop_runtime,
             runtime::desktop_timer_sync,
             runtime::desktop_timer_feedback,

@@ -7,19 +7,28 @@ import type { ReportRow } from "@/lib/hub/use-management";
 import { dayKey } from "@/lib/hub/dates";
 import { reportDuration, reportGroups, reportPeople, type HoursReportData, type ReportBalance } from "@/lib/hub/hour-report";
 import { downloadHoursPdf } from "@/lib/hub/hour-report-pdf";
-import { downloadCsv } from "@/lib/hub/exports";
+import { csvBlob } from "@/lib/hub/exports";
+import { saveReportFile, type ExportOutcome } from "@/lib/desktop/report-export";
 import { ZuluButton, ZuluForm, ZuluInput, ZuluLabel, ZuluSelect } from "./dashboard-ui";
 export function HoursReport({ hub }: { hub: HubController }) {
   const today = dayKey(new Date());
   const [from, setFrom] = useState(today.slice(0, 7) + "-01"), [to, setTo] = useState(today);
   const [user, setUser] = useState(hub.isAdmin ? "" : hub.userId), [project, setProject] = useState("");
   const [report, setReport] = useState<HoursReportData | null>(null), [busy, setBusy] = useState(false), [exporting, setExporting] = useState(false), [error, setError] = useState("");
+  const [exportNotice, setExportNotice] = useState("");
   const serial = useRef(0);
-  useEffect(() => { serial.current++; setReport(null); setBusy(false); setError(""); }, [from, to, user, project, hub.teamId, hub.isAdmin]);
+  async function exportFile(save: () => Promise<ExportOutcome>) {
+    if (exporting) return;
+    setExporting(true); setError(""); setExportNotice("");
+    try { const outcome = await save(); setExportNotice(outcome === "saved" ? "Relatório salvo." : outcome === "downloaded" ? "Download solicitado. Confira os downloads." : "Exportação cancelada."); }
+    catch (error) { setError(error instanceof Error ? error.message : "Não foi possível salvar o relatório."); }
+    finally { setExporting(false); }
+  }
+  useEffect(() => { serial.current++; setReport(null); setBusy(false); setError(""); setExportNotice(""); }, [from, to, user, project, hub.teamId, hub.isAdmin]);
   useEffect(() => () => { serial.current++; }, []);
   async function generate() {
     const generation = ++serial.current;
-    setBusy(true); setReport(null); setError("");
+    setBusy(true); setReport(null); setError(""); setExportNotice("");
     try {
       const start = new Date(from + "T00:00:00"), end = new Date(to + "T00:00:00"); end.setDate(end.getDate() + 1);
       if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime()) || end <= start || end.getTime() - start.getTime() > 367 * 86400000) throw Error("Selecione um período de até um ano.");
@@ -56,11 +65,12 @@ export function HoursReport({ hub }: { hub: HubController }) {
       <ZuluButton type="submit" className="primary-button" disabled={busy}>{busy ? <><Spinner size="sm" />Consultando…</> : "Gerar relatório"}</ZuluButton>
     </ZuluForm>
     {error && <p role="alert" className="form-error">{error}</p>}
+    {exportNotice && <p role="status">{exportNotice}</p>}
     {!report && !busy && !error && <div className="report-empty"><ChartBar size={34} /><h3>Escolha um período</h3><p>Veja os projetos e atividades antes de baixar o relatório.</p></div>}
     {report && <>
       <div className="report-summary"><div><span>Horas registradas</span><strong>{reportDuration(total)}</strong><small>{report.rows.length} registros encerrados · almoço e timer ativo excluídos</small></div>
-        <div className="report-export"><ZuluButton className="primary-button" disabled={(!report.rows.length && !report.balances.length) || exporting} onClick={async () => { setExporting(true); setError(""); try { await downloadHoursPdf(report); } catch { setError("Não foi possível criar o PDF. Tente novamente."); } finally { setExporting(false); } }}><DownloadSimple size={17} />{exporting ? "Preparando PDF…" : "Baixar PDF"}</ZuluButton>
-          <ZuluButton className="outline-button" disabled={!report.rows.length} onClick={() => downloadCsv(`zulu-horas-${from}-${to}.csv`, ["Pessoa", "Projeto", "Cliente", "Atividade", "Início", "Término", "Segundos"], report.rows.map(row => [row.display_name, row.project_name, row.client_name, row.description, row.started_at, row.ended_at, row.duration_seconds]))}>CSV</ZuluButton></div>
+        <div className="report-export"><ZuluButton className="primary-button" disabled={(!report.rows.length && !report.balances.length) || exporting} onClick={() => void exportFile(() => downloadHoursPdf(report))}><DownloadSimple size={17} />{exporting ? "Preparando PDF…" : "Baixar PDF"}</ZuluButton>
+          <ZuluButton className="outline-button" disabled={!report.rows.length || exporting} onClick={() => void exportFile(() => saveReportFile(`zulu-horas-${from}-${to}.csv`, csvBlob(["Pessoa", "Projeto", "Cliente", "Atividade", "Início", "Término", "Segundos"], report.rows.map(row => [row.display_name, row.project_name, row.client_name, row.description, row.started_at, row.ended_at, row.duration_seconds]))))}>CSV</ZuluButton></div>
       </div>
       <Card className="report-chart"><Card.Header><Card.Title>Horas por projeto</Card.Title></Card.Header><Card.Content>
         {groups.length ? groups.map(group => <div className="report-bar-row" key={group.id}><span>{group.label}</span><div className="report-bar-track"><span style={{ width: `${Math.max(1, group.seconds / Math.max(1, total) * 100)}%` }} /></div><strong>{reportDuration(group.seconds)}</strong></div>) : <p>Nenhum registro encerrado nesse período.</p>}

@@ -1,5 +1,4 @@
-export function downloadCsv(
-  filename: string,
+export function csvBlob(
   columns: string[],
   rows: (string | number | null | undefined)[][],
 ) {
@@ -11,9 +10,10 @@ export function downloadCsv(
   const content =
     "\uFEFF" +
     [columns, ...rows].map((row) => row.map(cell).join(";")).join("\r\n");
-  const url = URL.createObjectURL(
-    new Blob([content], { type: "text/csv;charset=utf-8" }),
-  );
+  return new Blob([content], { type: "text/csv;charset=utf-8" });
+}
+export function downloadCsv(filename: string, columns: string[], rows: (string | number | null | undefined)[][]) {
+  const url = URL.createObjectURL(csvBlob(columns, rows));
   const link = document.createElement("a");
   link.href = url;
   link.download = filename;

@@ -23,3 +23,27 @@ test("detailed PDF paginates long activities, retains every record and separates
   for (const index of [0, 44, 45, 89]) assert.ok(output.includes(`Atividade ${index}`));
   assert.ok(output.includes("Alice")); assert.ok(output.includes("Bruno"));
 });
+
+test("Windows export hands the actual file bytes to the native save dialog", async () => {
+  const { saveReportFile } = await import('../lib/desktop/report-export');
+  const bytes = new Uint8Array([37,80,68,70,45,49,46,52]);
+  let calls = 0;
+  const outcome = await saveReportFile('zulu-horas.pdf', new Blob([bytes]), async (name, received) => {
+    calls++; assert.equal(name, 'zulu-horas.pdf'); assert.deepEqual(received, Array.from(bytes)); return {saved:true};
+  });
+  assert.equal(calls,1); assert.equal(outcome,'saved');
+});
+test("canceling the Windows save dialog never reports success", async () => {
+  const { saveReportFile } = await import('../lib/desktop/report-export');
+  assert.equal(await saveReportFile('zulu-horas.pdf',new Blob(['%PDF-1.4']),async()=>({saved:false})),'cancelled');
+});
+test("old desktop and write failures produce useful export errors", async () => {
+  const { saveReportFile } = await import('../lib/desktop/report-export');
+  await assert.rejects(saveReportFile('zulu-horas.pdf',new Blob(['%PDF-1.4']),async()=>{throw 'Command save_report_export not found';}),/Atualize o aplicativo/);
+  await assert.rejects(saveReportFile('zulu-horas.pdf',new Blob(['%PDF-1.4']),async()=>{throw 'access denied';}),/Confira a pasta/);
+});
+test("CSV export retains accents, quoting and formula protection", async () => {
+  const { csvBlob } = await import('../lib/hub/exports');
+  const text=await csvBlob(['Pessoa','Atividade'],[['João','Revisão; "produto"'],['Ana','=1+1']]).text();
+  assert.ok(text.includes('João'));assert.ok(text.includes('"Revisão; ""produto"""'));assert.ok(text.includes("'=1+1"));
+});

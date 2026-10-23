@@ -35,7 +35,7 @@ if (reports.length !== 1 || installers.length !== 1 || signatures.length !== 1) 
 const signature = readFileSync(signatures[0], "utf8").trim();
 if (signature.length > 8192 || !/^[A-Za-z0-9+/=]+$/.test(signature)) throw new Error("Invalid updater signature.");
 const report = JSON.parse(readFileSync(reports[0], "utf8").replace(/^\uFEFF/, ""));
-for (const key of ["installed", "windowOpened", "loginPageLoaded", "customTitlebar", "maximizeRestored", "minimizeControl", "singleInstance", "shortcutRestoredWindow", "backgroundTray", "autostartToggle", "miniWindow", "miniTopmost", "miniResize", "hiddenStartup", "uninstalled"]) if (report[key] !== true) throw new Error(`Native check missing: ${key}`);
+for (const key of ["installed", "windowOpened", "loginPageLoaded", "customTitlebar", "maximizeRestored", "minimizeControl", "singleInstance", "shortcutRestoredWindow", "backgroundTray", "autostartToggle", "miniWindow", "miniTopmost", "miniResize", "hiddenStartup", "nativeExportSaved", "nativeExportCancelled", "uninstalled"]) if (report[key] !== true) throw new Error(`Native check missing: ${key}`);
 const hash = createHash("sha256").update(readFileSync(installers[0])).digest("hex");
 if (hash !== report.sha256 || report.installer !== expectedName || report.signature !== "NotSigned") throw new Error("Unexpected installer identity, hash or signing state.");
 mkdirSync("desktop-release-assets", { recursive: true });

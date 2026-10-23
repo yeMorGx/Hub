@@ -1,4 +1,5 @@
 import { reportDays, reportDuration, reportGroups, reportPeople, type HoursReportData } from "./hour-report";
+import { saveReportFile } from "../desktop/report-export";
 export async function createHoursPdf(data: HoursReportData) {
   const [{ jsPDF }, { default: autoTable }] = await Promise.all([import("jspdf"), import("jspdf-autotable")]);
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", putOnlyUsedFonts: true });
@@ -98,5 +99,5 @@ export async function createHoursPdf(data: HoursReportData) {
 }
 export async function downloadHoursPdf(data: HoursReportData) {
   const pdf = await createHoursPdf(data);
-  pdf.save(`zulu-horas-${data.from}-${data.to}.pdf`);
+  return saveReportFile(`zulu-horas-${data.from}-${data.to}.pdf`, pdf.output("blob"));
 }
