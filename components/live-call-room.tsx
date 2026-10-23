@@ -7,6 +7,11 @@ import {
   VideoConference,
 } from "@livekit/components-react";
 import { Room, RoomEvent } from "livekit-client";
+import {
+  shareProfiles,
+  screenSharePublishOptions,
+  type ShareProfile,
+} from "@/lib/calls/screen-share";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import {
@@ -20,7 +25,6 @@ import { HubDialog } from "@/components/hub-ui";
 import "@livekit/components-styles";
 
 type ShareSource = "window" | "monitor";
-type ShareProfile = "balanced" | "smooth" | "sharp";
 
 type NativeScreenSource = {
   sourceId: string;
@@ -31,48 +35,6 @@ type NativeScreenSource = {
   height: number;
   primary: boolean;
 };
-
-const shareProfiles = {
-  balanced: {
-    label: "Equilibrada",
-    details: "1080p · 30 FPS",
-    width: 1920,
-    height: 1080,
-    frameRate: 30,
-    maxBitrate: 4_500_000,
-    contentHint: "detail" as const,
-    degradationPreference: "maintain-resolution" as const,
-  },
-  smooth: {
-    label: "Fluida",
-    details: "1080p · 60 FPS",
-    width: 1920,
-    height: 1080,
-    frameRate: 60,
-    maxBitrate: 7_000_000,
-    contentHint: "motion" as const,
-    degradationPreference: "maintain-framerate" as const,
-  },
-  sharp: {
-    label: "Mais nítida",
-    details: "1440p · 60 FPS",
-    width: 2560,
-    height: 1440,
-    frameRate: 60,
-    maxBitrate: 10_000_000,
-    contentHint: "detail" as const,
-    degradationPreference: "maintain-resolution" as const,
-  },
-} satisfies Record<ShareProfile, {
-  label: string;
-  details: string;
-  width: number;
-  height: number;
-  frameRate: number;
-  maxBitrate: number;
-  contentHint: "detail" | "motion";
-  degradationPreference: "maintain-resolution" | "maintain-framerate";
-}>;
 
 function ScreenShareControl({
   room,
@@ -238,13 +200,7 @@ function ScreenShareControl({
             contentHint: selected.contentHint,
             ...(isDesktopApp ? { selfBrowserSurface: "exclude" as const } : {}),
           },
-          {
-            screenShareEncoding: {
-              maxBitrate: selected.maxBitrate,
-              maxFramerate: selected.frameRate,
-            },
-            degradationPreference: selected.degradationPreference,
-          },
+          screenSharePublishOptions(profile),
         );
       }
     } catch (cause) {

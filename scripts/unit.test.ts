@@ -1,3 +1,4 @@
+import { shareProfiles, screenSharePublishOptions } from "../lib/calls/screen-share";
 import { test, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { parseChatCommand } from "../lib/hub/commands";
@@ -551,4 +552,18 @@ test("desktop endpoint trata ausência de release e falhas sem expor dados inter
   assert.equal(JSON.stringify(await response.json()).includes("private upstream"),false);
   globalThis.fetch = async () => Response.json({draft:true,tag_name:"desktop-v0.1.3"});
   assert.deepEqual(await (await desktopUpdate()).json(), {release:null});
+});
+
+
+test("compartilhamento não publica a camada reduzida de 3 FPS", () => {
+  for (const profile of ["balanced", "smooth", "sharp"] as const) {
+    const options = screenSharePublishOptions(profile);
+    assert.equal(options.simulcast, false);
+    assert.equal(options.screenShareEncoding?.maxFramerate, shareProfiles[profile].frameRate);
+    assert.equal(options.screenShareEncoding?.maxBitrate, shareProfiles[profile].maxBitrate);
+    assert.equal(options.degradationPreference, shareProfiles[profile].degradationPreference);
+  }
+  assert.equal(shareProfiles.sharp.height, 1440);
+  assert.equal(shareProfiles.sharp.frameRate, 60);
+  assert.equal(shareProfiles.sharp.maxBitrate, 20_000_000);
 });

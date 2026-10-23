@@ -26,7 +26,7 @@ mod windows {
     use base64::{engine::general_purpose::STANDARD, Engine};
     use image::{DynamicImage, ImageFormat, RgbaImage};
     use livekit::{
-        options::{TrackPublishOptions, VideoEncoding},
+        options::{DegradationPreference, TrackPublishOptions, VideoEncoding},
         prelude::{LocalTrack, LocalVideoTrack, Room, RoomEvent, RoomOptions, TrackSource},
         webrtc::{
             video_frame::{I420Buffer, VideoFrame, VideoRotation},
@@ -463,6 +463,43 @@ mod windows {
         }
     }
 
+    fn screen_share_profile(quality: &str) -> (u32, u32, u32, TrackPublishOptions) {
+        let (width, height, fps, bitrate, degradation) = match quality {
+            "smooth" => (
+                1920,
+                1080,
+                60,
+                12_000_000,
+                DegradationPreference::MaintainFramerate,
+            ),
+            "sharp" => (
+                2560,
+                1440,
+                60,
+                20_000_000,
+                DegradationPreference::MaintainResolution,
+            ),
+            _ => (1920, 1080, 30, 6_000_000, DegradationPreference::Balanced),
+        };
+        (
+            width,
+            height,
+            fps,
+            TrackPublishOptions {
+                source: TrackSource::Screenshare,
+                // The SDK's default second screen layer runs at only 3 FPS.
+                // One stream avoids selecting it and avoids a second encoder.
+                simulcast: false,
+                video_encoding: Some(VideoEncoding {
+                    max_bitrate: bitrate,
+                    max_framerate: fps as f64,
+                }),
+                degradation_preference: Some(degradation),
+                ..Default::default()
+            },
+        )
+    }
+
     async fn run_native_share(
         url: String,
         token: String,
@@ -473,11 +510,7 @@ mod windows {
     ) -> Result<(), String> {
         let target = resolve_target(&source_id)?;
         let (source_width, source_height) = target.dimensions()?;
-        let (max_width, max_height, fps, max_bitrate) = match quality.as_str() {
-            "smooth" => (1920u32, 1080u32, 60u32, 8_000_000u64),
-            "sharp" => (2560u32, 1440u32, 60u32, 12_000_000u64),
-            _ => (1920u32, 1080u32, 30u32, 5_000_000u64),
-        };
+        let (max_width, max_height, fps, publish_options) = screen_share_profile(&quality);
         let scale = (max_width as f64 / source_width.max(2) as f64)
             .min(max_height as f64 / source_height.max(2) as f64)
             .min(1.0);
@@ -502,17 +535,7 @@ mod windows {
         );
         let publish = room
             .local_participant()
-            .publish_track(
-                LocalTrack::Video(track),
-                TrackPublishOptions {
-                    source: TrackSource::Screenshare,
-                    video_encoding: Some(VideoEncoding {
-                        max_bitrate,
-                        max_framerate: fps as f64,
-                    }),
-                    ..Default::default()
-                },
-            )
+            .publish_track(LocalTrack::Video(track), publish_options)
             .await;
         if publish.is_err() {
             let _ = room.close().await;
@@ -582,8 +605,49 @@ mod windows {
     }
     #[cfg(test)]
     mod tests {
-        use super::rgba_video_frame;
+        use super::{rgba_video_frame, screen_share_profile};
+        use livekit::options::{compute_video_encodings, DegradationPreference};
         use livekit::webrtc::video_frame::VideoBuffer;
+
+        #[test]
+        fn screen_profiles_publish_one_stream_at_the_selected_frame_rate() {
+            for (name, width, height, fps, bitrate, degradation) in [
+                (
+                    "balanced",
+                    1920,
+                    1080,
+                    30,
+                    6_000_000,
+                    DegradationPreference::Balanced,
+                ),
+                (
+                    "smooth",
+                    1920,
+                    1080,
+                    60,
+                    12_000_000,
+                    DegradationPreference::MaintainFramerate,
+                ),
+                (
+                    "sharp",
+                    2560,
+                    1440,
+                    60,
+                    20_000_000,
+                    DegradationPreference::MaintainResolution,
+                ),
+            ] {
+                let (w, h, rate, options) = screen_share_profile(name);
+                assert_eq!((w, h, rate), (width, height, fps));
+                assert!(!options.simulcast);
+                assert_eq!(options.degradation_preference, Some(degradation));
+                // Exercise the SDK's actual RTP layer calculation, not just flags.
+                let encodings = compute_video_encodings(w, h, &options);
+                assert_eq!(encodings.len(), 1);
+                assert_eq!(encodings[0].max_framerate, Some(fps as f64));
+                assert_eq!(encodings[0].max_bitrate, Some(bitrate));
+            }
+        }
 
         #[test]
         fn rgba_colors_do_not_use_alpha_as_red() {
