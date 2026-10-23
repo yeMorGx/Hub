@@ -11,7 +11,7 @@ export const shareProfiles = {
     frameRate: 30,
     maxBitrate: 6_000_000,
     contentHint: "detail" as const,
-    degradationPreference: "maintain-resolution" as const,
+    degradationPreference: "balanced" as const,
   },
   smooth: {
     label: "Fluida",
@@ -41,7 +41,7 @@ export const shareProfiles = {
   frameRate: number;
   maxBitrate: number;
   contentHint: "detail" | "motion";
-  degradationPreference: "maintain-resolution" | "maintain-framerate";
+  degradationPreference: "balanced" | "maintain-resolution" | "maintain-framerate";
 }>;
 
 
