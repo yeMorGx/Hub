@@ -4,9 +4,6 @@ import {
   AnimatePresence,
   MotionConfig,
   motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
 } from "motion/react";
 import { I18nProvider } from "react-aria-components";
 import { usePathname } from "next/navigation";
@@ -308,57 +305,6 @@ function RouteFrame({ children }: { children: ReactNode }) {
   );
 }
 
-function CursorFollower() {
-  const reduceMotion = useReducedMotion();
-  const [enabled, setEnabled] = useState(false);
-  const [interactive, setInteractive] = useState(false);
-  const x = useMotionValue(-100);
-  const y = useMotionValue(-100);
-  const springX = useSpring(x, { stiffness: 740, damping: 48, mass: 0.22 });
-  const springY = useSpring(y, { stiffness: 740, damping: 48, mass: 0.22 });
-
-  useEffect(() => {
-    const canUseCursor =
-      !reduceMotion &&
-      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
-      navigator.maxTouchPoints === 0;
-    if (!canUseCursor) return;
-    document.body.classList.add("has-motion-cursor");
-    setEnabled(true);
-    let lastInteractive = false;
-    const move = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse") return;
-      x.set(event.clientX);
-      y.set(event.clientY);
-      const target = event.target instanceof Element
-        ? event.target.closest("a[href], button:not(:disabled), [role='button'], [data-motion-tilt]")
-        : null;
-      const nextInteractive = Boolean(target);
-      if (lastInteractive !== nextInteractive) {
-        lastInteractive = nextInteractive;
-        setInteractive(nextInteractive);
-      }
-    };
-    const leave = () => setInteractive(false);
-    window.addEventListener("pointermove", move, { passive: true });
-    window.addEventListener("blur", leave);
-    return () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("blur", leave);
-      document.body.classList.remove("has-motion-cursor");
-    };
-  }, [reduceMotion, x, y]);
-
-  if (!enabled || reduceMotion) return null;
-  return (
-    <motion.span
-      aria-hidden="true"
-      className={`motion-cursor${interactive ? " is-interactive" : ""}`}
-      style={{ x: springX, y: springY }}
-    />
-  );
-}
-
 export function MotionProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   return (
@@ -366,7 +312,6 @@ export function MotionProvider({ children }: { children: ReactNode }) {
       <AnimatePresence initial={false} mode="wait">
         <RouteFrame key={pathname}>{children}</RouteFrame>
       </AnimatePresence>
-      <CursorFollower />
     </MotionConfig></I18nProvider>
   );
 }

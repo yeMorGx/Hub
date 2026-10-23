@@ -1,13 +1,15 @@
 /* Approved workspace frame: the rail and top bar are one continuous surface. */
 .live-app.workspace-inset {
-  --frame: #eeede8;
+  --frame: #08090b;
+  --chrome-foreground: #f4f4f5;
+  --chrome-muted: #a1a1aa;
   --workspace-content: #f8f9fc;
   --shell-top: 64px;
   --shell-rail: 80px;
   color: var(--text);
   background: var(--frame);
 }
-body:has(.workspace-inset) { background: #eeede8; padding-top: 0; }
+body:has(.workspace-inset) { background: #08090b; padding-top: 0; }
 .live-app.workspace-inset .rail {
   inset: 0 auto 0 0; width: var(--shell-rail); height: 100dvh; padding: 14px 10px;
   background: var(--frame); border: 0; border-radius: 0; box-shadow: none; gap: 18px; align-items: center; z-index: 100;
@@ -95,7 +97,7 @@ body:has(.workspace-inset) { background: #eeede8; padding-top: 0; }
 .attachment-save { display: inline-block; margin: 8px 0; text-underline-offset: 3px; }
 html[data-desktop-app-chrome] .live-app.workspace-inset { --shell-top: 48px; }
 html[data-desktop-app-chrome] .live-app.workspace-inset .rail { top: 0; height: 100dvh; padding-top: 60px; }
-html[data-desktop-app-chrome]:has(.workspace-inset) .desktop-titlebar { background: var(--frame, #eeede8); }
+html[data-desktop-app-chrome]:has(.workspace-inset) .desktop-titlebar { background: #08090b; color: #f4f4f5; }
 html[data-desktop-app-chrome]:has(.workspace-inset) .desktop-titlebar-drag { flex: 0 0 80px; padding: 0; }
 html[data-desktop-app-chrome]:has(.workspace-inset) .desktop-titlebar .topbar { background: transparent; }
 .desktop-mini-page .mini-capsule { height: 100%; min-width: 0; }
@@ -154,14 +156,14 @@ html[data-zulu-theme="dark"] .workspace-inset :is(.workspace-table th, .workspac
  .report-bar-row strong { grid-column: 2; font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .live-app.workspace-inset .rail { transition: none; } }
-:root:has(.workspace-inset) { --frame: #eeede8; }
+:root:has(.workspace-inset) { --frame: #08090b; }
 .workspace-drawer-backdrop { background: #14213b55; backdrop-filter: none; }
 .workspace-drawer-container { position: fixed; inset: 0 auto 0 0; margin: 0; width: 80px; max-width: 80px; height: 100dvh; padding: 0; align-items: stretch; }
 .workspace-drawer { position: relative; width: 80px; height: 100%; border-radius: 0; background: var(--frame); padding: 60px 10px 14px; box-shadow: none; }
 .workspace-drawer nav { display: flex; flex-direction: column; gap: 12px; }
 .workspace-drawer .rail-button { width: 48px; height: 48px; min-width: 0; padding: 0; margin: auto; color: var(--foreground); }
 @media (max-width: 760px) { .live-app.workspace-inset .rail { display: none; } }
-html[data-zulu-theme="dark"]:has(.workspace-inset) { --frame: #171b24; }
+html[data-zulu-theme="dark"]:has(.workspace-inset) { --frame: #08090b; }
 html[data-zulu-theme="dark"]:has(.workspace-inset) .zulu-overlay {
  --background:#10151e; --foreground:#e9edf7; --surface:#1c2431; --surface-foreground:#e9edf7; --surface-secondary:#273245; --surface-secondary-foreground:#e9edf7; --overlay:#1c2431; --overlay-foreground:#e9edf7; --field-background:#273245; --field-foreground:#e9edf7; --field-placeholder:#aab8d0; --muted:#aab8d0; --accent:#9dbaff; --accent-foreground:#14213b; color:#e9edf7;
 }
@@ -237,3 +239,62 @@ html[data-desktop-titlebar]:has(.workspace-inset) body { padding-top: 0; }
 .live-app.workspace-inset .workspace-settings .settings-tabs > .tabs__list-container { border-radius: 14px; padding: 6px; background: var(--surface-raised); }
 .live-app.workspace-inset .workspace-settings .settings-tabs .tabs__list { background: transparent; border-radius: 0; padding: 0; width: 100%; gap: 6px; }
 @media(max-width:760px) { .live-app.workspace-inset .workspace-settings .settings-tabs .tabs__list { width: max-content; min-width: 100%; } }
+
+/* Black outer frame frames the light workspace; native titlebar follows it. */
+.live-app.workspace-inset .app-content > .topbar {
+  color: var(--chrome-foreground);
+}
+.live-app.workspace-inset .app-content > .topbar :is(.workspace-button, .icon-button, .search-button, .mobile-navigation-toggle, .top-avatar) {
+  color: var(--chrome-foreground);
+}
+.live-app.workspace-inset .app-content > .topbar .workspace-button > svg {
+  color: var(--chrome-muted);
+}
+.live-app.workspace-inset .rail .rail-button {
+  color: var(--chrome-muted);
+}
+.live-app.workspace-inset .rail .rail-button:hover {
+  color: var(--chrome-foreground);
+  background: #ffffff12;
+}
+.live-app.workspace-inset .rail .rail-button.active {
+  color: #fff;
+  background: #263857;
+}
+.live-app.workspace-inset .rail .brand {
+  background: #fff;
+  border-radius: 13px;
+  padding: 3px;
+}
+.live-app.workspace-inset .rail .brand-mark {
+  width: 38px;
+  height: 38px;
+}
+.workspace-drawer { background: #08090b; }
+.workspace-drawer .rail-button { color: #a1a1aa; }
+.workspace-drawer .rail-button[aria-current="page"],
+.workspace-drawer .rail-button[aria-pressed="true"] { color: #fff; background: #263857; }
+html:has(.live-app.workspace-inset) .desktop-titlebar {
+  background: #08090b;
+  color: #f4f4f5;
+}
+html:has(.live-app.workspace-inset) .desktop-titlebar .topbar {
+  color: #f4f4f5;
+  --foreground: #f4f4f5;
+  --muted: #a1a1aa;
+}
+html:has(.live-app.workspace-inset) .desktop-titlebar .topbar :is(.workspace-button, .icon-button, .search-button, .workspace-icon) {
+  color: inherit;
+  background: transparent;
+  border-color: transparent;
+}
+html:has(.live-app.workspace-inset) .desktop-window-controls button:hover {
+  background: #ffffff14;
+}
+html:has(.live-app.workspace-inset) .desktop-runtime-tools .button:hover {
+  background: #ffffff1a;
+}
+html:has(.workspace-inset) .desktop-titlebar :is(.icon-button, .search-button, .workspace-button, .desktop-runtime-tools button) {
+  color: inherit;
+}
+html[data-zulu-theme="dark"]:has(.workspace-inset) { --frame: #08090b; }

@@ -69,7 +69,7 @@ O mini é uma cápsula arredondada sobre janela transparente, sem retângulo ext
 
 ### Tokens e dados privados
 
-A identidade Inter/marfim/azul permanece. Neste shell, os overrides atuais são `--frame: #eeede8` e `--workspace-content: #f8f9fc`; no escuro, frame `#171b24`, conteúdo/fundo `#10151e`, superfície `#1c2431`, campos `#273245`, texto `#e9edf7`, secundário `#aab8d0` e destaque `#9dbaff`. Foco visível, teclado/toque e movimento reduzido continuam obrigatórios. Fonte de implementação: `app/workspace-inset.css`.
+A identidade Inter/marfim/azul permanece. Neste shell, a moldura externa do header, sidebar e titlebar é preta (`#08090b`); o conteúdo permanece claro (`#f8f9fc`). No tema escuro, a moldura também permanece preta e conteúdo/fundo é `#10151e`, superfície `#1c2431`, campos `#273245`, texto `#e9edf7`, secundário `#aab8d0` e destaque `#9dbaff`. Foco visível, teclado/toque e movimento reduzido continuam obrigatórios. Fonte de implementação: `app/workspace-inset.css`.
 
 Relatórios PDF não incluem valores monetários. Incluem período, identificação, pessoas, horas por projeto/atividade, gráficos, detalhes e paginação. Administrador do workspace pode exportar o time separado por pessoa; líder e membro consultam somente registros próprios. MFA, acesso ao time e autorização são impostos pelas RPCs SQL, além da interface.
 
@@ -247,3 +247,6 @@ Herda a identidade plana marfim/azul do aplicativo. Lista e detalhe de pessoas, 
 ## Conversas, notificações e agenda — referências de 23/10/2026
 
 O pedido atual incorpora quatro referências Dribbble em chat, central de notificações, navegação compacta e calendário completo. Bolhas distinguem autoria, o sino abre inbox HeroUI com filtros de leitura, a rail destaca a área atual e a agenda destaca mês/data com eventos pastel. Preservar a identidade clara, a moldura contínua e o dashboard Bento. Fontes, contratos e limites em [collaboration-design.md](docs/collaboration-design.md).
+
+
+A pedido do usuário em 23/10/2026, o app usa moldura externa preta no header, sidebar, drawer móvel e titlebar nativa, separada do conteúdo claro. O indicador de cursor personalizado foi removido; cursores padrão do sistema permanecem.
