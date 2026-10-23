@@ -1478,3 +1478,7 @@ scenario('Governança: time criado e arquivado desaparece dos seletores, espaço
 scenario('Governança: políticas aceitam os tipos críticos expostos pela interface',async()=>{
  await login(users.admin);for(const action of ['member_permissions','member_restore'])await org('policy',{action,approvers:[users.admin],required_approvers:[],quorum:1,expires_days:7});assert.ok((await org('state')).policies.some(p=>p.action==='member_restore'));
 });
+scenario('Governança: arquivar time encerra timer antes de ocultar o espaço',async()=>{
+ await login(users.admin);const t=await org('create_team',{name:'Pesquisa com timer'});const timer=await rpc('start_timer',[t.id,null,'Atividade em andamento']);await requestChange('team_delete',{team_id:t.id});
+ await db.exec('reset role');assert.equal(await scalar('select ended_at is not null as closed from public.time_entries where id=$1',[timer]),true);
+});

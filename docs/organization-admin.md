@@ -29,7 +29,7 @@ Membros existentes mantêm padrões compatíveis. Gerenciamento fica com adminis
 - Rejeição encerra imediatamente com motivo; cancelamento preserva histórico; expiração padrão de sete dias, configurável de um a noventa.
 - Execução revalida autoridade e condições sob bloqueio transacional; pedido concluído não executa novamente.
 - Transferência exige aceite do sucessor. Transferência com saída acontece em conjunto; dono atual permanece até o aceite. Admin não remove/rebaixa o dono.
-- Suspensão/remoção revoga participação. Reativação da organização não restaura times automaticamente. Arquivamento de time preserva dados.
+- Suspensão/remoção revoga participação. Reativação da organização não restaura times automaticamente. Arquivamento de time preserva dados e encerra timers ativos antes da perda de acesso.
 - Permissões e política em edição sobrevivem à consulta automática de quinze segundos. Autorizações são conferidas novamente no servidor a cada operação; conexões Realtime já abertas podem manter autorização em cache do provedor.
 
 ## Convites
@@ -46,7 +46,7 @@ Ao sair o responsável, autoria histórica permanece. Responsabilidade é atribu
 
 ## QA e limites
 
-- 133 cenários SQL em PostgreSQL WASM/PGlite: isolamento, MFA, proteção do dono, aprovação, quórum, revogação, convites, ACL, anexos e contatos entre times.
+- 134 cenários SQL em PostgreSQL WASM/PGlite: isolamento, MFA, proteção do dono, aprovação, quórum, revogação, convites, ACL, anexos e contatos entre times.
 - 47 testes unitários existentes + 7 do modelo de permissões; build de produção aprovado.
 - 35 verificações HTTP públicas: incluindo bloqueio de emissão de convite/download sem sessão.
 - Chromium em 1440 e 390 px: painel, confirmação, convites, decisões, políticas, biblioteca e compartilhamento; sem erros JavaScript ou escritas de negócio. Regressão de dashboard, PDF, tema, configurações e seleção de calendário.
@@ -64,4 +64,6 @@ Cobrança/mudança de plano, E2EE, análise jurídica LGPD/ANPD, retenção e co
 
 ## Publicação
 
-Migrações `20261023160000` e `20261023170000` aplicadas e registradas em transação no projeto Supabase existente. Conferência remota: duas organizações com dono, nenhuma tabela nova sem RLS, bucket privado e nenhuma execução anônima dos consoles. Consulta adicional com contexto autenticado simulado, em transação somente de leitura, confirmou capacidades do dono e carregamento da biblioteca; não substitui login real no navegador.
+Migrações `20261023160000`, `20261023170000` e `20261023180000` aplicadas e registradas em transação no projeto Supabase existente. Conferência remota: duas organizações com dono, nenhuma tabela nova sem RLS, bucket privado e nenhuma execução anônima dos consoles. Consulta adicional com contexto autenticado simulado, em transação somente de leitura, confirmou capacidades do dono e carregamento da biblioteca; não substitui login real no navegador.
+
+Interface publicada em https://hub-one-azure.vercel.app, deployment `dpl_6qMTocyuUJ7y2dCNogpbkwezEANH`, estado READY. Fonte da interface: commit `7b815ae`; ajuste posterior somente de SQL/testes/documentação aplicado diretamente e registrado no Supabase.
