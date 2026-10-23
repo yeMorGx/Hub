@@ -13,6 +13,10 @@ try {
     const page = await browser.newPage({ viewport: { width, height: 1000 } });
     page.on("pageerror", error => errors.push(error.message));
     page.on("console", message => { if (message.type() === "error") errors.push(message.text()); if (message.type() === "warning" && !/WebGL|GPU|software|Service Worker registration/.test(message.text())) warnings.push(message.text()); });
+    const settleTop = async () => {
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+      await page.waitForTimeout(250);
+    };
     const go = async name => {
       await page.goto(`${base}/demo/workspace?page=${name}`);
       await page.locator(".workspace-inset").waitFor();
@@ -40,6 +44,7 @@ try {
       await page.getByRole("dialog").waitFor();
       await page.keyboard.press("Escape");
     }
+    await settleTop();
     if (process.env.ZULU_QA_CAPTURE !== "0") await page.screenshot({ path: `${out}/calendar-${width}.png`, fullPage: true });
     await go("chat");
     await page.getByRole("textbox", { name: "Buscar conversas" }).fill("não-existe");
@@ -47,13 +52,42 @@ try {
     await page.getByRole("textbox", { name: "Buscar conversas" }).fill("");
     if (width === 390) await page.getByRole("button", { name: "projeto-hub", exact: true }).click();
     assert.equal(await page.locator(".advanced-message").count(), 3);
+    assert(await page.locator(".advanced-conversation").evaluate(e => e.scrollWidth <= e.clientWidth + 1), "chat content overflows");
+    const draft = page.getByRole("textbox", { name: "Sua mensagem", exact: true });
+    assert(await draft.isVisible(), "composer missing");
+    const form = await page.locator(".message-form").boundingBox();
+    assert(form.x + form.width <= width + 1, "composer outside viewport");
+    await page.locator(".advanced-message").last().hover();
+    await page.getByRole("button", { name: "Reagir à mensagem", exact: true }).last().click();
+    await page.getByRole("menu").waitFor();
+    assert.equal(await page.getByRole("menuitem").count(), 5);
+    await page.keyboard.press("Escape");
     assert.equal(await page.locator(".conversation-day").count(), 1);
+    if (width === 1440) {
+      const panel = page.getByRole("complementary", { name: "Detalhes da conversa" });
+      assert(await panel.isVisible(), "context panel missing on desktop");
+      assert.equal(await panel.locator(".conversation-person").count(), 3);
+      await panel.getByRole("button", { name: /Arquivos/ }).click();
+      await panel.getByText("Nenhum item neste histórico.").last().waitFor();
+      await page.getByRole("button", { name: "Detalhes da conversa", exact: true }).click();
+      assert.equal(await panel.count(), 0);
+      await page.getByRole("button", { name: "Detalhes da conversa", exact: true }).click();
+      const ownText = await page.locator(".own-message .advanced-message-body > p").evaluate(e => {
+        const canvas = document.createElement("canvas"), ctx = canvas.getContext("2d");
+        canvas.width = canvas.height = 1;
+        ctx.fillStyle = getComputedStyle(e).color; ctx.fillRect(0, 0, 1, 1);
+        return [...ctx.getImageData(0, 0, 1, 1).data].slice(0, 3);
+      });
+      assert(ownText.every(channel => channel >= 240), "own message must have readable light text");
+    }
     const own = await page.locator(".own-message .advanced-message-body").boundingBox();
     const other = await page.locator(".advanced-message:not(.own-message) .advanced-message-body").first().boundingBox();
     assert(own.x > other.x || width === 390, "own message not right aligned");
+    await page.locator(".advanced-message").first().hover();
     await page.getByRole("button", { name: /Fixadas/ }).click();
     assert.equal(await page.locator(".advanced-message").count(), 1);
     await page.getByRole("button", { name: "Conversa", exact: true }).click();
+    await settleTop();
     if (process.env.ZULU_QA_CAPTURE !== "0") await page.screenshot({ path: `${out}/chat-${width}.png`, fullPage: true });
     await go("notifications");
     await page.getByRole("radio", { name: "Não lidas", exact: true }).click();
@@ -63,6 +97,7 @@ try {
     const inbox = page.getByRole("dialog", { name: "Central de notificações" });
     await inbox.waitFor();
     await page.waitForTimeout(300);
+    await settleTop();
     if (process.env.ZULU_QA_CAPTURE !== "0") await page.screenshot({ path: `${out}/inbox-${width}.png` });
     await page.keyboard.press("Escape");
     await inbox.waitFor({ state: "hidden" });
@@ -71,7 +106,9 @@ try {
     await page.getByRole("heading", { name: "Nenhuma notificação não lida", exact: true }).waitFor();
     await page.waitForFunction(() => document.querySelector(".notification-bell")?.getAttribute("aria-label") === "Notificações");
     await page.getByRole("radio", { name: "Todas", exact: true }).click();
-    assert.equal(await page.locator(".notification-feed-row.is-read").count(), 1);
+    assert.equal(await page.getByRole("radio", { name: "Todas", exact: true }).getAttribute("aria-checked"), "true");
+    assert.equal(await page.locator(".notification-feed-row.is-read").count(), 3);
+    await settleTop();
     if (process.env.ZULU_QA_CAPTURE !== "0") await page.screenshot({ path: `${out}/notifications-${width}.png`, fullPage: true });
     await page.close();
     console.log(`PASS ${width}px: calendar controls/title, chat search/pins, notification read/filter/badge, popover focus`);

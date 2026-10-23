@@ -1,33 +1,39 @@
 # Conversas, notificações, navegação e calendário
 
-## Referências de 23/10/2026
+## Autoridade e referências — 23/10/2026
 
-Modo Operate. Aplicar a identidade Inter/marfim/azul, superfícies planas, HeroUI v3 e os contratos de privacidade existentes.
+Extensão das superfícies existentes, em modo Operate. Mantém a autoridade atual de `DESIGN.md`: Inter, azul profundo, conteúdo claro, moldura preta compacta, superfícies planas e controles HeroUI v3. As descrições anteriores conflitantes no documento raiz são históricas. Hoje conserva Bento, Prism/Lava e fotografia de home office.
 
-- [Web Chat UI — Ronas IT](https://dribbble.com/shots/23280048-Web-Chat-UI): índice lateral de conversas, bolhas próprias à direita, recebidas à esquerda, agrupamento por dia e compositor ancorado.
-- [Notifications for Brainwave 2.0](https://dribbble.com/shots/26419555-Notifications-for-Brainwave-2-0): inbox no sino, filtros Todas/Não lidas, sinal de leitura e ação contextual.
-- [Sidebar Navigation](https://dribbble.com/shots/17511216-Sidebar-Navigation): agrupamento, estados claros de seleção e versão compacta. Preservar rail de 80px, união com titlebar e perfil somente no header.
-- [Calendar Dashboard](https://dribbble.com/shots/27596042-Calendar-Dashboard): mês em destaque, bloco de data, navegação e eventos pastel com título antes do horário. Linhas da grade indicam horários; não são bordas decorativas de cards.
+| Referência | Aplicação nesta entrega |
+| --- | --- |
+| [Web Chat UI — Ronas IT](https://dribbble.com/shots/23280048-Web-Chat-UI) | Índice lateral, bolhas próprias em azul profundo e recebidas em lilás, hierarquia de autor/horário, compositor ancorado e coluna contextual no desktop. |
+| [Notifications for Brainwave 2.0 — UI8](https://dribbble.com/shots/26419555-Notifications-for-Brainwave-2-0) | Inbox branco flutuante, filtros Todas/Não lidas, símbolos circulares, ponto de não lido e hierarquia de tipo, horário e ação. |
+| [Sidebar Navigation — Widelab](https://dribbble.com/shots/17511216-Sidebar-Navigation) | Rail compacta com seleção evidente, adaptada à moldura preta contínua e à marca oficial ZULU; perfil no header. |
+| [Calendar Dashboard — Tenso](https://dribbble.com/shots/27596042-Calendar-Dashboard) | Mês destacado, bloco de data e intervalo, navegação separada e eventos pastel com título antes do horário. |
 
-As quatro páginas e suas imagens foram consultadas. A leitura HTTP inicial recebeu desafio do Dribbble; Chromium e as prévias públicas permitiram inspeção visual. Assets dos autores não são incorporados ao produto.
+As páginas foram inspecionadas em Chromium e os artworks originais públicos de `og:image` foram baixados e vistos. URLs, autoria e hashes estão em [collaboration-2026-10-23.json](design-references/collaboration-2026-10-23.json). Nenhum artwork de terceiros foi incorporado ao produto. A composição e os tipos instalados do HeroUI 3.2.6 orientaram o Accordion e os primitives oficiais de Dropdown; este registro não afirma consulta remota adicional à documentação.
 
-## Implementação
+## Contratos de implementação
 
-`app/collaboration-design.css` contém os ajustes destas superfícies. `AdvancedConversation` preserva threads, reações, busca, arquivos, gravação e envio. Busca lateral filtra apenas canais já autorizados e carregados. Os controles existentes continuam HeroUI.
+`app/collaboration-design.css` concentra o acabamento; `AdvancedConversation`, `LiveCalendar`, `NotificationFeed` e `WorkspaceDemo` mantêm os fluxos existentes. Header e rail permanecem pretos e compactos, com cursor padrão, sem novas bordas ou sombras decorativas. Foco funcional e linhas de horário continuam visíveis.
 
-`NotificationFeed` serve a lista completa e o popover HeroUI no sino. ToggleButtonGroup oficial controla o filtro; Skeleton oficial sinaliza a carga inicial. O sino consulta contagem total e até 100 avisos recentes, atualiza em foco/a cada minuto e não zera o badge ao abrir. Somente a RPC existente marca um aviso como lido. Erros mantêm ação de tentar novamente. Trocar time invalida respostas pendentes e limpa o estado. A lista exibe tipo/data; não inventa remetentes nem lê mensagens para criar prévias. A lista completa também mantém o limite existente de 100 itens.
+**Conversas.** A autoria recebe contraste mais forte nas bolhas. Reações usam Dropdown HeroUI compacto com cinco opções; os contadores existentes continuam visíveis. Busca lateral filtra somente canais autorizados já carregados. Threads, fixadas, busca, gravação e envio preservam seus contratos.
 
-Calendário completo usa Dropdown oficial para filtros e ToggleButtonGroup para mês/semana/dia. A grade e seus cálculos continuam específicos do produto. Hoje mantém Bento, Prism/Lava, imagem de home office e layout próprios.
+A partir de 1280px, a terceira coluna reúne arquivos em Accordion HeroUI e autores sob o título **Neste histórico**. Os autores vêm apenas das mensagens carregadas: não representam o quadro de membros e não há nova consulta de associação. Os arquivos usam somente metadados de anexos autorizados já carregados e o download existente exige ação do usuário. A coluna é omitida abaixo de 1280px; mensagens e arquivos continuam no fluxo da conversa. No celular, o histórico rola independentemente e o compositor permanece ancorado e contido na largura disponível; ações também ficam acessíveis por toque.
 
-`/demo/workspace?page=chat|notifications|calendar` compartilha os componentes de produção com dados fictícios. Leitura de avisos na demonstração altera somente memória local.
+**Notificações.** A lista completa e o popover do sino compartilham `NotificationFeed`. O título comunica o tipo real do evento; horário e ação aparecem sem inventar atores ou prévias de mensagens. ToggleButtonGroup oficial controla os filtros e Skeleton oficial indica a carga inicial. O sino consulta a contagem total e até 100 avisos recentes, atualiza em foco/a cada minuto e mantém o badge ao abrir. Somente a RPC existente marca leitura; no celular a ação explícita fica visível. Erros permitem tentar novamente. Trocar time invalida respostas pendentes e limpa o estado. A lista completa mantém o limite de 100 itens.
 
-Movimento: seleção/hover/press em 150–180ms, overlays oficiais HeroUI e deslocamento de 2px do evento em hover. `prefers-reduced-motion` desliga deslocamentos e transições personalizadas. Celular preserva navegação entre lista/conversa, calendário horizontal e sino acessível.
+**Calendário.** Dropdown oficial filtra tipos; ToggleButtonGroup alterna mês/semana/dia. Reuniões e eventos recebem cores pastel, com títulos que podem quebrar linha. A grade completa tem rolagem limitada, cabeçalhos de dia e home office fixos e posição inicial às 09:00 nas visões horárias. Horários anteriores e noturnos continuam acessíveis por rolagem. A grade e os cálculos permanecem específicos do produto; no celular, a semana usa rolagem horizontal interna.
 
-## Verificação
+**Demonstração e movimento.** `/demo/workspace?page=chat|notifications|calendar` usa os componentes de produção com dados explicitamente fictícios. Os exemplos adicionais de calendário e notificações não introduzem dados reais; leitura na demonstração altera apenas memória local. Hover, seleção e pressão usam feedback breve e overlays oficiais. `prefers-reduced-motion` remove transições e deslocamentos personalizados.
 
-- `npm run build`: build de produção e TypeScript aprovados.
-- `npm run test:unit`: 61 testes aprovados.
-- `node scripts/collaboration-design-browser.mjs`: Chromium, 1440×1000 e 390×1000; filtros e mês/semana/dia, título do evento sem recorte, abertura de detalhe, busca lateral, autoria e fixadas do chat, filtros de avisos, marcação de leitura, atualização do badge, Escape/retorno de foco. Tema escuro do inbox e movimento reduzido aprovados, sem erros de página ou avisos de console.
-- Capturas locais em `/tmp/zulu-design-qa`. A consulta de referência e QA não acessaram dados reais do time.
+## Evidência e limites
 
-Limites: QA usa a demonstração pública em memória e emulação de viewport. Não comprova envio autenticado, persistência real, entrega de push, dispositivo físico ou execução nativa do Windows. Nenhuma migração, permissão ou binário nativo foi alterado.
+- `npm run build`: produção e TypeScript aprovados; `npm run test:unit`: 62 testes aprovados.
+- `node scripts/collaboration-design-browser.mjs`: aprovado em Chromium a 1440×1000 e 390×1000. Cobriu filtros e visões do calendário, detalhe de evento, busca/fixadas do chat, cinco opções de reação, alternância da coluna contextual, compositor sem overflow, leitura/filtros/badge, Escape/retorno de foco, inbox escuro e movimento reduzido. Nenhum erro de página ou aviso de console.
+- Oito capturas em `.impeccable/review/zulu-collaboration-refs/`: `{chat,calendar,inbox,notifications}-{1440,390}.png`.
+- Revisão independente: **ship**, limitada aos quatro artworks, oito capturas e evidência de código/demonstração. Sem achados materiais; o revisor não repetiu os testes. O detector Impeccable não foi executado porque seu launcher estava indisponível.
+
+A evidência usa demonstração pública em memória e emulação de viewport. Não comprova envio autenticado, autorização em execução, persistência, transferência real de anexos, push, dispositivos físicos, titlebar nativa ou acessibilidade completa. Bento/Prism/Lava não integram este conjunto de capturas. Nenhuma migração, permissão ou binário nativo foi alterado.
+
+Checagem adicional: `scripts/calendar-selection-browser.py` parou na primeira comparação de valor oculto, que espera `2026-10-19T10:00` e recebeu `2026-10-19T10:00:00`. O dia/horário está correto; o script pressupõe uma serialização sem segundos. Os adaptadores de formulário e `calendarDraft` não foram alterados nesta entrega. Esse script adicional não é declarado aprovado.

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ToggleButtonGroup, ToggleButton } from "@heroui/react";
-import { Bell, CalendarDots, ChatCircleText, Check, House, ArrowsLeftRight, At } from "@phosphor-icons/react";
+import { Bell, CalendarDots, ChatCircleText, Check, House, ArrowsLeftRight, At, ArrowUpRight } from "@phosphor-icons/react";
 import { ZuluButton } from "./dashboard-ui";
 import type { Row } from "@/lib/hub/types";
 
@@ -15,6 +15,7 @@ export function notificationLabel(n: Row<"notifications">) {
     default: return "Novo aviso do time";
   }
 }
+const kinds: Record<string, string> = { message: "Mensagem direta", mention: "Menção", meeting: "Reunião", home_office: "Home office", home_office_swap: "Troca de escala" };
 const icons = { message: ChatCircleText, mention: At, meeting: CalendarDots, home_office: House, home_office_swap: ArrowsLeftRight };
 
 /** No previews or sender identities are inferred from inaccessible messages. */
@@ -54,9 +55,9 @@ export function NotificationFeed({ notifications, onRead, onOpenChannel, compact
         {group.items.map(n => {
           const Icon = icons[n.kind as keyof typeof icons] || Bell;
           return <article className={`notification-feed-row ${n.read_at ? "is-read" : "is-unread"}`} key={n.id}>
-            <span className={`notification-feed-symbol notification-kind-${n.kind}`}><Icon size={20} /></span>
-            <div className="notification-feed-copy"><strong>{notificationLabel(n)}</strong><time dateTime={n.created_at}>{new Date(n.created_at).toLocaleString("pt-BR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</time>
-              {n.channel_id && onOpenChannel && <ZuluButton className="text-button" onClick={() => { onOpenChannel(n.channel_id!); if (!n.read_at) void markRead(n.id); }}>Abrir conversa</ZuluButton>}
+            <span className={`notification-feed-symbol notification-kind-${n.kind}`} aria-hidden="true"><Icon size={23} /><span className="notification-type-badge"><Icon size={11} weight="bold" /></span></span>
+            <div className="notification-feed-copy"><div className="notification-event-meta"><strong>{kinds[n.kind] || "Aviso do time"}</strong><time dateTime={n.created_at}>{new Date(n.created_at).toLocaleString("pt-BR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</time></div><p>{notificationLabel(n)}</p>
+              {n.channel_id && onOpenChannel && <ZuluButton className="text-button" onClick={() => { onOpenChannel(n.channel_id!); if (!n.read_at) void markRead(n.id); }}>Abrir conversa<ArrowUpRight size={14} /></ZuluButton>}
             </div>
             {!n.read_at && <ZuluButton className="notification-read-action icon-button" aria-label="Marcar como lida" disabled={pending.includes(n.id)} onClick={() => void markRead(n.id)}><span className="notification-unread-dot" /><Check size={16} /></ZuluButton>}
           </article>;

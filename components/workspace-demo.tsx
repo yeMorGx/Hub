@@ -34,7 +34,22 @@ export function WorkspaceDemo() {
     setReady(true);
   }, []);
   const hub = useMemo(() => {
-    const { hub } = createDemoBackend();
+    const { hub, notifications } = createDemoBackend();
+    const week = mondayOf(new Date());
+    const eventAt = (day: number, hour: number) => { const at = dateAt(week, day); at.setHours(Math.floor(hour), Math.round((hour % 1) * 60), 0, 0); return at.toISOString(); };
+    const sampleEvent = hub.snapshot.events[0];
+    if (sampleEvent) hub.snapshot.events = [
+      { ...sampleEvent, kind: "meeting", title: "Planejamento da semana", starts_at: eventAt(0, 9), ends_at: eventAt(0, 10.5) },
+      { ...sampleEvent, id: "demo-design-review", kind: "meeting", title: "Revisão de design", starts_at: eventAt(1, 10), ends_at: eventAt(1, 11.5) },
+      { ...sampleEvent, id: "demo-focus", kind: "event", title: "Foco no lançamento", starts_at: eventAt(2, 9), ends_at: eventAt(2, 11) },
+      { ...sampleEvent, id: "demo-product", kind: "meeting", title: "Alinhamento de produto", starts_at: eventAt(3, 11), ends_at: eventAt(3, 12) },
+      { ...sampleEvent, id: "demo-delivery", kind: "event", title: "Revisão das entregas", starts_at: eventAt(4, 9), ends_at: eventAt(4, 10.5) },
+    ];
+    const sampleNotification = notifications[0];
+    if (sampleNotification) notifications.push(
+      { ...sampleNotification, id: "demo-meeting-notice", kind: "meeting", read_at: new Date().toISOString(), created_at: new Date(Date.now() - 3600000).toISOString(), channel_id: null },
+      { ...sampleNotification, id: "demo-home-notice", kind: "home_office", read_at: new Date().toISOString(), created_at: new Date(Date.now() - 86400000).toISOString(), channel_id: null },
+    );
     hub.isAdmin = role === "admin" || role === "owner"; hub.canManage = role !== "member";
     if (hub.workspace) hub.workspace.owner_id = role === "owner" ? hub.userId : "demo-other-owner";
     const original = hub.client.rpc.bind(hub.client);

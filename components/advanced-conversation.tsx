@@ -1,10 +1,13 @@
 "use client";
+import { Accordion, Dropdown, Label } from "@heroui/react";
 import { ZuluForm } from "./dashboard-ui";
 import { ZuluButton, ZuluLabel, ZuluInput, ZuluTextArea, ZuluSelect, ZuluCheckboxField } from "./dashboard-ui";
 import { saveConversation, vaultUnlocked } from "@/public/offline-vault.js";
 import { parseChatCommand } from "@/lib/hub/commands";
 import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
 import {
+  SidebarSimple,
+  ImageSquare,
   ArrowDown,
   ArrowLeft,
   ChatCircleText,
@@ -52,6 +55,7 @@ export function AdvancedConversation({
   onEdit: (message: Message) => void;
   personName: (id: string) => string;
 }) {
+  const [detailsOpen, setDetailsOpen] = useState(true);
   const [draft, setDraft] = useState(""),
     [root, setRoot] = useState<Message | null>(null),
     [thread, setThread] = useState<Message[]>([]),
@@ -454,6 +458,18 @@ export function AdvancedConversation({
     const activeReactions = reactions.filter(
       (r) => r.message_id === message.id,
     );
+    const toggleReaction = async (r: (typeof reactionOptions)[number]) => {
+      const own = activeReactions.some(a => a.reaction === r.id && a.user_id === hub.userId);
+      const result = await hub.mutate(() => hub.rpc("react_to_message", { p_message_id: message.id, p_reaction: r.id, p_active: !own }), "Reação atualizada.");
+      if (result.ok) await channel.refresh();
+    };
+    const reactionButton = (r: (typeof reactionOptions)[number]) => {
+      const group = activeReactions.filter(a => a.reaction === r.id);
+      const own = group.some(a => a.user_id === hub.userId);
+      return <ZuluButton key={r.id} className={`reaction-button ${own ? "selected" : ""}`}
+        aria-label={`${r.label}: ${group.length}`} aria-pressed={own} disabled={hub.busy}
+        onClick={() => void toggleReaction(r)}><r.icon size={14} weight={own ? "fill" : "regular"} />{group.length || ""}</ZuluButton>;
+    };
     return (
       <article
         key={message.id}
@@ -499,38 +515,15 @@ export function AdvancedConversation({
             files
               .filter((a) => a.message_id === message.id)
               .map((a) => <MessageFile key={a.id} item={a} hub={hub} />)}
+          {!message.deleted_at && activeReactions.length > 0 && <div className="message-reaction-summary" aria-label="Reações da mensagem">{reactionOptions.filter(r => activeReactions.some(a => a.reaction === r.id)).map(reactionButton)}</div>}
           {!message.deleted_at && (
             <div className="message-tools">
-              {reactionOptions.map((r) => {
-                const group = activeReactions.filter(
-                    (a) => a.reaction === r.id,
-                  ),
-                  own = group.some((a) => a.user_id === hub.userId);
-                return (
-                  <ZuluButton
-                    key={r.id}
-                    className={`reaction-button ${own ? "selected" : ""}`}
-                    aria-label={`${r.label}: ${group.length}`}
-                    aria-pressed={own}
-                    disabled={hub.busy}
-                    onClick={async () => {
-                      const result = await hub.mutate(
-                        () =>
-                          hub.rpc("react_to_message", {
-                            p_message_id: message.id,
-                            p_reaction: r.id,
-                            p_active: !own,
-                          }),
-                        "Reação atualizada.",
-                      );
-                      if (result.ok) await channel.refresh();
-                    }}
-                  >
-                    <r.icon size={13} weight={own ? "fill" : "regular"} />
-                    {group.length || ""}
-                  </ZuluButton>
-                );
-              })}
+              <Dropdown>
+                <ZuluButton className="icon-button" aria-label="Reagir à mensagem" disabled={hub.busy}><Smiley size={17} /></ZuluButton>
+                <Dropdown.Popover className="zulu-overlay message-reaction-menu" placement="top start">
+                  <Dropdown.Menu aria-label="Escolher reação">{reactionOptions.map(r => <Dropdown.Item key={r.id} id={r.id} textValue={r.label} onAction={() => void toggleReaction(r)}><r.icon size={17} /><Label>{r.label}</Label></Dropdown.Item>)}</Dropdown.Menu>
+                </Dropdown.Popover>
+              </Dropdown>
               {!message.reply_to && (
                 <ZuluButton
                   className="text-button"
@@ -581,7 +574,16 @@ export function AdvancedConversation({
       </article>
     );
   };
+  const historyPeople = [...new Set(channel.messages.filter(m => !m.deleted_at).map(m => m.author_id))];
+  const availableMessageIds = new Set([...channel.messages, ...thread, ...results, ...pinMessages].filter(m => !m.deleted_at).map(m => m.id));
+  const sharedFiles = files.filter(file => availableMessageIds.has(file.message_id ?? ""));
+  const fileGroups = [
+    { id: "images", label: "Imagens", icon: ImageSquare, items: sharedFiles.filter(file => file.mime_type.startsWith("image/")) },
+    { id: "audio", label: "Áudios", icon: Microphone, items: sharedFiles.filter(file => file.mime_type.startsWith("audio/")) },
+    { id: "files", label: "Arquivos", icon: File, items: sharedFiles.filter(file => !file.mime_type.startsWith("image/") && !file.mime_type.startsWith("audio/")) },
+  ];
   return (
+    <div className={`conversation-stage ${detailsOpen ? "with-context" : ""}`}>
     <div className="advanced-conversation">
       <div className="conversation-tools">
         <ZuluButton
@@ -619,6 +621,7 @@ export function AdvancedConversation({
           <MagnifyingGlass size={16} />
           Buscar
         </ZuluButton>
+        <ZuluButton className="icon-button conversation-context-toggle" aria-label="Detalhes da conversa" aria-pressed={detailsOpen} onClick={() => setDetailsOpen(value => !value)}><SidebarSimple size={19} /></ZuluButton>
       </div>
       {root && (
         <div className="thread-heading">
@@ -900,6 +903,19 @@ export function AdvancedConversation({
           </ZuluForm>
         </>
       )}
+    </div>
+    {detailsOpen && <aside className="conversation-context" aria-label="Detalhes da conversa">
+      <div className="conversation-context-heading"><h3>Detalhes</h3><span>{sharedFiles.length} arquivo{sharedFiles.length === 1 ? "" : "s"}</span></div>
+      <Accordion hideSeparator defaultExpandedKeys={["images"]} allowsMultipleExpanded>
+        {fileGroups.map(group => <Accordion.Item key={group.id} id={group.id}>
+          <Accordion.Heading><Accordion.Trigger><group.icon size={20} /><span>{group.label}</span><small>{group.items.length}</small><Accordion.Indicator /></Accordion.Trigger></Accordion.Heading>
+          <Accordion.Panel><Accordion.Body>{group.items.length ? group.items.map(file => <MessageFile key={file.id} item={file} hub={hub} />) : <p className="context-empty">Nenhum item neste histórico.</p>}</Accordion.Body></Accordion.Panel>
+        </Accordion.Item>)}
+      </Accordion>
+      <div className="conversation-people"><div className="conversation-context-heading"><h3>Neste histórico</h3><span>{historyPeople.length}</span></div>
+        {historyPeople.map(id => <div className="conversation-person" key={id}><PersonAvatar name={personName(id)} id={id} /><span>{personName(id)}{id === hub.userId && <small>Você</small>}</span></div>)}
+      </div>
+    </aside>}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import { ZuluButton } from "./dashboard-ui";
 import { Card, Dropdown, Label, ToggleButtonGroup, ToggleButton } from "@heroui/react";
 import { DashboardDatePicker } from "./dashboard-ui";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FunnelSimple,
   Plus,
@@ -92,6 +92,7 @@ export function LiveCalendar({
   full?: boolean;
   compact?: boolean;
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const hourHeight = compact ? 60 : 84;
   const [filter, setFilter] = useState("all"),
     [filterOpen, setFilterOpen] = useState(false);
@@ -128,6 +129,12 @@ export function LiveCalendar({
     16,
     ...segments.flatMap((s) => s.events.map((e) => Math.ceil(e.end))),
   );
+  const dateKey = dayKey(date);
+  useEffect(() => {
+    if (full && view !== "month" && scrollRef.current) {
+      scrollRef.current.scrollTop = Math.max(0, (9 - startHour) * hourHeight);
+    }
+  }, [full, view, dateKey, startHour, hourHeight]);
   const hours = Array.from(
     { length: endHour - startHour + 1 },
     (_, i) => i + startHour,
@@ -156,7 +163,7 @@ export function LiveCalendar({
       <div className="section-heading calendar-heading">
         <div className="heading-with-count">
           {full && <span className="calendar-date-tile" aria-hidden="true"><small>{date.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "")}</small><strong>{date.getDate()}</strong></span>}
-          <h2>{full ? date.toLocaleDateString("pt-BR", { month: "long", year: "numeric" }) : view === "week" ? "Sua semana" : "Sua agenda"}</h2>
+          <div className="calendar-title-copy"><h2>{full ? date.toLocaleDateString("pt-BR", { month: "long", year: "numeric" }) : view === "week" ? "Sua semana" : "Sua agenda"}</h2>{full && <p>{view === "month" ? `1 – ${new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()} de ${date.toLocaleDateString("pt-BR", { month: "long" })}` : label}</p>}</div>
             <Dropdown isOpen={filterOpen} onOpenChange={setFilterOpen}>
               <ZuluButton className={`filter-button ${filter !== "all" ? "filter-active" : ""}`}><FunnelSimple size={14} />Filtrar</ZuluButton>
               <Dropdown.Popover className="zulu-overlay zulu-filter" placement="bottom start">
@@ -377,7 +384,7 @@ export function LiveCalendar({
           </div>
         </div>
       ) : (
-        <div className="calendar-scroll" data-lenis-prevent>
+        <div className="calendar-scroll" ref={scrollRef} data-lenis-prevent>
           <div
             className={`calendar-grid ${view === "day" ? "day-view" : "week-view"}`}
             style={{ "--days": visibleDays.length } as React.CSSProperties}

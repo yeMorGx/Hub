@@ -1,0 +1,43 @@
+{
+  "unitTests": 62,
+  "productionBuild": "passed",
+  "browser": {
+    "viewports": [
+      "1440x1000",
+      "390x1000"
+    ],
+    "checks": [
+      "calendar filters and month/week/day",
+      "event details and readable titles",
+      "chat search and pins",
+      "reaction menu five options",
+      "desktop context panel and collapse",
+      "composer width and own-message light text",
+      "notification filters and controlled selected state",
+      "notification read state and badge",
+      "popover Escape and restored focus",
+      "dark inbox",
+      "reduced motion",
+      "no page errors or console warnings"
+    ],
+    "result": "passed",
+    "screenshots": ".impeccable/review/zulu-collaboration-refs/"
+  },
+  "review": {
+    "disposition": "ship",
+    "scope": "four reference artworks, eight screenshots and source; demo evidence only"
+  },
+  "detector": "unavailable: launcher missing",
+  "integrationLimits": [
+    "no authenticated messaging/storage/push validation",
+    "no physical device or native execution validation"
+  ],
+  "references": "docs/design-references/collaboration-2026-10-23.json",
+  "additionalCalendarRegression": {
+    "script": "scripts/calendar-selection-browser.py",
+    "result": "stopped at an existing serialization expectation",
+    "expected": "2026-10-19T10:00",
+    "actual": "2026-10-19T10:00:00",
+    "assessment": "The correct date and time are present; the additional script assumes a minutes-only hidden value. Form controls and calendarDraft were not changed by this task. No complete pass is claimed for this script."
+  }
+}

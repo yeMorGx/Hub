@@ -392,5 +392,5 @@ export function createDemoBackend() {
       error: "Demonstração em memória. Entre no ZULU para salvar alterações.",
     }),
   } as unknown as HubController;
-  return { hub, messages };
+  return { hub, messages, notifications: data.notifications };
 }

@@ -1,0 +1,40 @@
+{
+  "references": [
+    {
+      "url": "https://dribbble.com/shots/27596042-Calendar-Dashboard",
+      "title": "Calendar Dashboard by Tenso UI UX Agency on Dribbble",
+      "artwork": "https://cdn.dribbble.com/userupload/48519970/file/3f53239319aefcd53ae7468a865e6273.png?crop=102x108-6629x5003&resize=1600x1200",
+      "inspected_sha256": "9563aa6a22f42d9fc6aa9ba43be095e672cf01f419e3a30a2b243116945047b5",
+      "usedAs": "Composition and component hierarchy reference; artwork is not shipped."
+    },
+    {
+      "url": "https://dribbble.com/shots/26419555-Notifications-for-Brainwave-2-0",
+      "title": "Notifications for Brainwave 2.0 by Tran Mau Tri Tam ✪ for UI8 on Dribbble",
+      "artwork": "https://cdn.dribbble.com/userupload/44565827/file/851e4170fb9d54f9ca0c3c6c836b882e.png?resize=1600x1200",
+      "inspected_sha256": "78724592d00138f1ebd63d895329f66805a29f6784efdeedc06045ba42dd95c5",
+      "usedAs": "Composition and component hierarchy reference; artwork is not shipped."
+    },
+    {
+      "url": "https://dribbble.com/shots/23280048-Web-Chat-UI",
+      "title": "Web Chat UI by Ronas IT | UI/UX Team on Dribbble",
+      "artwork": "https://cdn.dribbble.com/userupload/12021138/file/original-191fe5f7cbfdc56bcf3420b962c6a655.png?resize=1600x1200",
+      "inspected_sha256": "45bacf84656ffe6b7db91118d8532f9bde704b1f16cbae856115f12bdbdcbb2a",
+      "usedAs": "Composition and component hierarchy reference; artwork is not shipped."
+    },
+    {
+      "url": "https://dribbble.com/shots/17511216-Sidebar-Navigation",
+      "title": "Sidebar Navigation 🚀 by Michal Parulski for widelab on Dribbble",
+      "artwork": "https://cdn.dribbble.com/userupload/35515499/file/original-dac804aba7dc107f326700aed201f712.jpg?resize=1600x1200",
+      "inspected_sha256": "2920738117f2e9a26c5dd310f597af5a6a50ed3420627a425429da9d3517a4ea",
+      "usedAs": "Composition and component hierarchy reference; artwork is not shipped."
+    }
+  ],
+  "constraints": [
+    "HeroUI v3 controls",
+    "Black header, titlebar and compact rail",
+    "Flat surfaces without decorative borders",
+    "Inter, deep blue and existing ZULU brand",
+    "Dashboard composition and Prism/Lava preserved"
+  ],
+  "access": "Shot pages inspected with Chromium; public original og:image artworks downloaded and visually inspected."
+}
