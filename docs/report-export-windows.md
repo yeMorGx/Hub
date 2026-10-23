@@ -16,4 +16,4 @@ O navegador continua baixando o arquivo e informa que o download foi solicitado.
 - Regressão em 1440/390: dashboard, relatório, PDF, permissões de membro, configurações e temas.
 - Workflow Windows inclui compilação/assinatura, testes Rust e integração do diálogo real por automação Windows na página pública de demonstração: gerar e salvar PDF fictício, conferir bytes e cancelar uma exportação CSV. O modo de teste requer duas variáveis explícitas e navega somente para essa página fixa; não habilita depuração remota. Nenhuma conta criada ou dado real utilizado.
 
-Os resultados finais do workflow e da publicação devem ser registrados após a execução; a ponte simulada no Chromium não comprova o diálogo do Windows.
+Resultado Windows: workflow [39947349625](https://github.com/yeMorGx/Hub/actions/runs/39947349625) concluído com sucesso. `nativeExportSaved` e `nativeExportCancelled` verdadeiros no instalador real, ciclo de instalação/desinstalação aprovado e assinatura do updater validada, incluindo rejeição de adulteração. As tentativas anteriores de automação por depuração remota falharam antes da exportação e foram substituídas pela interação real com a interface.
