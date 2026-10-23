@@ -140,6 +140,16 @@ fn main() {
             if !background {
                 show_main_window(app.handle());
             }
+            // Explicit Windows CI fixture mode: fixed public demo, no account or business data.
+            // It exercises the real export UI and OS dialog without enabling remote debugging.
+            #[cfg(target_os = "windows")]
+            if std::env::var("ZULU_DESKTOP_SMOKE").as_deref() == Ok("1")
+                && std::env::var("ZULU_EXPORT_SMOKE").as_deref() == Ok("1")
+            {
+                if let Some(window) = app.get_webview_window("main") {
+                    window.navigate("https://hub-one-azure.vercel.app/demo/workspace".parse().unwrap())?;
+                }
+            }
             // A conflicting shortcut must not prevent the app from opening.
             if app
                 .global_shortcut()

@@ -14,6 +14,6 @@ O navegador continua baixando o arquivo e informa que o download foi solicitado.
 - Validador Rust: PDF/CSV aceitos, nomes/caminhos/tipos/tamanhos inválidos rejeitados.
 - Chromium em 1440/390: download real do PDF no navegador e ponte nativa simulada para sucesso, cancelamento CSV, falha e versão antiga. Sem erros JavaScript.
 - Regressão em 1440/390: dashboard, relatório, PDF, permissões de membro, configurações e temas.
-- Workflow Windows inclui compilação/assinatura, testes Rust e integração do diálogo real por WebView CDP local + automação Windows: salvar CSV fictício, conferir bytes e cancelar uma segunda exportação. Nenhuma conta criada ou dado real utilizado.
+- Workflow Windows inclui compilação/assinatura, testes Rust e integração do diálogo real por automação Windows na página pública de demonstração: gerar e salvar PDF fictício, conferir bytes e cancelar uma exportação CSV. O modo de teste requer duas variáveis explícitas e navega somente para essa página fixa; não habilita depuração remota. Nenhuma conta criada ou dado real utilizado.
 
 Os resultados finais do workflow e da publicação devem ser registrados após a execução; a ponte simulada no Chromium não comprova o diálogo do Windows.

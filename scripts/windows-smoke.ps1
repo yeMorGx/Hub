@@ -5,8 +5,6 @@ $installDirectory = Join-Path $env:RUNNER_TEMP 'HubDesktopSmoke'
 $webviewLog = Join-Path $env:RUNNER_TEMP 'zulu-desktop-smoke-webview.log'
 Remove-Item $webviewLog -Force -ErrorAction SilentlyContinue
 $env:ZULU_DESKTOP_SMOKE = '1'
-# Local-only WebView debugging for the native Save As integration check.
-$env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS = '--remote-debugging-port=9527 --remote-debugging-address=127.0.0.1'
 if (Test-Path $installDirectory) { throw 'The smoke install directory must be empty.' }
 $report = [ordered]@{ platform = 'Windows'; installer = (Split-Path $Installer -Leaf); sha256 = (Get-FileHash $Installer -Algorithm SHA256).Hash.ToLower(); signature = (Get-AuthenticodeSignature $Installer).Status.ToString(); signed = $false; installed = $false; windowOpened = $false; loginPageLoaded = $false; customTitlebar = $false; maximizeRestored = $false; minimizeControl = $false; singleInstance = $false; shortcutRestoredWindow = $false; backgroundTray = $false; autostartToggle = $false; miniWindow = $false; miniTopmost = $false; hiddenStartup = $false; uninstalled = $false; accountsCreated = 0; businessWrites = 0 }
 $report.signed = $report.signature -eq 'Valid'
@@ -271,15 +269,23 @@ try {
   Invoke-HubElement ($miniRoot.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $miniCloseCondition)) $miniHandle
   $currentStage = 'wait for mini timer to hide'
   Wait-Until { -not [HubNativeWindow]::IsWindowVisible($miniHandle) } 15
-  $currentStage = 'native report export save and cancel'
-  $exportPath = Join-Path $OutputDirectory 'native-report.csv'
+  $currentStage = 'restart with the public report fixture for native export'
+  Open-HubRuntimeOptions
+  Invoke-HubControl 'Sair do ZULU'
+  if (-not $appProcess.WaitForExit(10000)) { throw 'Fixture restart must close the previous process.' }
+  $env:ZULU_EXPORT_SMOKE = '1'
+  $appProcess = Start-Process -FilePath $appPath -PassThru
+  Wait-Until { $appProcess.Refresh(); [HubNativeWindow]::Find($appProcess.Id, $false) -ne [IntPtr]::Zero } 30
+  $handle = [HubNativeWindow]::Find($appProcess.Id, $false)
+  $root = [System.Windows.Automation.AutomationElement]::FromHandle($handle)
+  Invoke-HubControl ('Gerar relat' + [char]0xF3 + 'rio')
+  $exportPath = Join-Path $OutputDirectory 'native-report.pdf'
   $saveTitle = 'Salvar relat' + [char]0xF3 + 'rio'
   $dialogCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, $saveTitle)
   foreach ($cancel in @($false, $true)) {
-    $exportResult = Join-Path $OutputDirectory $(if ($cancel) { 'export-cancel.json' } else { 'export-save.json' })
-    $exportHelper = Start-Process -FilePath 'node' -ArgumentList @('scripts/windows-export-cdp.mjs', ('"' + $exportResult + '"')) -PassThru -NoNewWindow
-    Wait-Until { (Test-Path $exportResult) -or $null -ne [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $dialogCondition) } 30
-    if (Test-Path $exportResult) { throw ('Export failed before dialog: ' + (Get-Content $exportResult -Raw)) }
+    $currentStage = $(if ($cancel) { 'cancel native CSV export' } else { 'save native PDF export' })
+    Invoke-HubControl $(if ($cancel) { 'CSV' } else { 'Baixar PDF' })
+    Wait-Until { $null -ne [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $dialogCondition) } 30
     $saveDialog = [System.Windows.Automation.AutomationElement]::RootElement.FindFirst([System.Windows.Automation.TreeScope]::Children, $dialogCondition)
     [HubNativeWindow]::SetForegroundWindow([IntPtr]$saveDialog.Current.NativeWindowHandle) | Out-Null
     if ($cancel) {
@@ -290,15 +296,17 @@ try {
       [System.Windows.Forms.SendKeys]::SendWait($exportPath)
       [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
     }
-    Wait-Until { Test-Path $exportResult } 30
-    $exportData = Get-Content $exportResult -Raw | ConvertFrom-Json
-    if ($exportData.error -or $exportData.saved -eq $cancel) { throw 'Unexpected native export result.' }
+    $expectedNotice = $(if ($cancel) { 'Exporta' + [char]0xE7 + [char]0xE3 + 'o cancelada.' } else { 'Relat' + [char]0xF3 + 'rio salvo.' })
+    $noticeCondition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty, $expectedNotice)
+    Wait-Until { $null -ne $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $noticeCondition) } 30
     if (-not $cancel) {
-      if (-not (Test-Path $exportPath) -or (Get-Content $exportPath -Raw -Encoding utf8) -notmatch 'Jo.o;8') { throw 'Native export bytes missing.' }
+      if (-not (Test-Path $exportPath)) { throw 'Native PDF was not saved.' }
+      $pdfBytes = [System.IO.File]::ReadAllBytes($exportPath)
+      if ($pdfBytes.Length -lt 1000 -or [System.Text.Encoding]::ASCII.GetString($pdfBytes,0,5) -ne '%PDF-') { throw 'Native PDF bytes invalid.' }
       $report.nativeExportSaved = $true
     } else { $report.nativeExportCancelled = $true }
-    if (-not $exportHelper.WaitForExit(10000) -or $exportHelper.ExitCode -ne 0) { throw 'Native export helper failed.' }
   }
+  Remove-Item Env:ZULU_EXPORT_SMOKE
   $currentStage = 'open runtime options before quitting'
   Open-HubRuntimeOptions
   $currentStage = 'quit ZULU from runtime options'
