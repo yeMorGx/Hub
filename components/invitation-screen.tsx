@@ -1,4 +1,5 @@
 "use client";
+import { ZuluButton } from "./dashboard-ui";
 import { useEffect, useState } from "react";
 import { UserPlus, ArrowRight, CircleNotch } from "@phosphor-icons/react";
 import { AuthShell } from "./auth/auth-shell";
@@ -124,13 +125,13 @@ export function InvitationScreen({
             Ao aceitar, você poderá acessar as conversas públicas e os recursos
             deste time. Canais privados exigem participação.
           </p>
-          <button
+          <ZuluButton
             className="primary-button auth-submit"
             disabled={busy}
             onClick={() => void accept()}
           >
             Aceitar convite <ArrowRight size={18} />
-          </button>
+          </ZuluButton>
         </>
       ) : (
         !error &&
@@ -154,9 +155,9 @@ export function InvitationScreen({
       {!loading && (
         <div className="auth-switch">
           {error && <a href="/login">Entrar com outro e-mail</a>}
-          <button disabled={busy} onClick={() => void dismiss()}>
+          <ZuluButton disabled={busy} onClick={() => void dismiss()}>
             Voltar ao ZULU
-          </button>
+          </ZuluButton>
         </div>
       )}
     </AuthShell>

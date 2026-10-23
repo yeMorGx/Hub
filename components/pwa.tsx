@@ -1,4 +1,5 @@
 "use client";
+import { ZuluButton } from "./dashboard-ui";
 import { useEffect, useState } from "react";
 import { DownloadSimple, CheckCircle } from "@phosphor-icons/react";
 type InstallEvent = Event & {
@@ -76,7 +77,7 @@ export function InstallApp() {
     );
   if (!prompt) return null;
   return (
-    <button
+    <ZuluButton
       className="outline-button"
       onClick={async () => {
         await prompt.prompt();
@@ -87,6 +88,6 @@ export function InstallApp() {
     >
       <DownloadSimple size={17} />
       Instalar ZULU neste dispositivo
-    </button>
+    </ZuluButton>
   );
 }

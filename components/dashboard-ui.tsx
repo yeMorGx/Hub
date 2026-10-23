@@ -25,6 +25,8 @@ import {
   Dropdown,
   Input,
   TextArea,
+  TextField,
+  FieldError,
   Select,
   ListBox,
   Label,
@@ -41,12 +43,24 @@ import {
   Spinner,
 } from "@heroui/react";
 
+import {
+  ZuluTemporalInput,
+  ZuluNumericInput,
+  useFieldReset,
+  type ZuluInputProps,
+} from "./form-controls";
 import { CalendarDate } from "@internationalized/date";
 import { I18nProvider } from "react-aria-components";
-import { CalendarDots, SquaresFour, CaretDown, Plus } from "@phosphor-icons/react";
+import {
+  CalendarDots,
+  SquaresFour,
+  CaretDown,
+  Plus,
+} from "@phosphor-icons/react";
 
-// Scope the HeroUI migration to Today and the dialogs opened from it.
-const DashboardUI = createContext(false);
+// Shared HeroUI controls and pt-BR form contracts for every app surface.
+const DashboardUI = createContext(true);
+const DisabledFields = createContext(false);
 export function DashboardUIProvider({
   enabled,
   children,
@@ -55,42 +69,20 @@ export function DashboardUIProvider({
   children: ReactNode;
 }) {
   return (
-    <DashboardUI.Provider value={enabled}>
-      <I18nProvider locale={enabled ? "pt-BR" : undefined}>
-        {children}
-      </I18nProvider>
+    <DashboardUI.Provider value={true}>
+      <I18nProvider locale="pt-BR">{children}</I18nProvider>
     </DashboardUI.Provider>
   );
 }
 export const useDashboardUI = () => useContext(DashboardUI);
 
-export function ZuluButton({
-  disabled,
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement>) {
-  const enabled = useDashboardUI();
+export function ZuluButton({ disabled, ...props }: ComponentProps<"button">) {
+  const inheritedDisabled = useContext(DisabledFields);
+  disabled = disabled || inheritedDisabled;
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const railTooltip = Boolean(props["aria-label"] && /rail-button/.test(props.className ?? ""));
-  if (!enabled) {
-    const button = (
-      <button
-        {...props}
-        disabled={disabled}
-        onMouseEnter={railTooltip ? () => setTooltipOpen(true) : props.onMouseEnter}
-        onMouseLeave={railTooltip ? () => setTooltipOpen(false) : props.onMouseLeave}
-        onFocus={railTooltip ? event => { props.onFocus?.(event); setTooltipOpen(true); } : props.onFocus}
-        onBlur={railTooltip ? event => { props.onBlur?.(event); setTooltipOpen(false); } : props.onBlur}
-      />
-    );
-    return railTooltip ? (
-      <Tooltip isOpen={tooltipOpen} onOpenChange={setTooltipOpen} delay={450}>
-        {button}
-        <Tooltip.Content className="zulu-tooltip">
-          {props["aria-label"]}
-        </Tooltip.Content>
-      </Tooltip>
-    ) : button;
-  }
+  const railTooltip = Boolean(
+    props["aria-label"] && /rail-button/.test(props.className ?? ""),
+  );
   const button = (
     <Button
       {...(props as ComponentProps<typeof Button>)}
@@ -98,15 +90,33 @@ export function ZuluButton({
       type={props.type ?? "submit"}
       isDisabled={disabled}
       variant="tertiary"
-      onMouseEnter={railTooltip ? () => setTooltipOpen(true) : props.onMouseEnter}
-      onMouseLeave={railTooltip ? () => setTooltipOpen(false) : props.onMouseLeave}
-      onFocus={railTooltip ? () => setTooltipOpen(true) : props.onFocus as ComponentProps<typeof Button>["onFocus"]}
-      onBlur={railTooltip ? () => setTooltipOpen(false) : props.onBlur as ComponentProps<typeof Button>["onBlur"]}
+      onMouseEnter={
+        railTooltip ? () => setTooltipOpen(true) : props.onMouseEnter
+      }
+      onMouseLeave={
+        railTooltip ? () => setTooltipOpen(false) : props.onMouseLeave
+      }
+      onFocus={
+        railTooltip
+          ? () => setTooltipOpen(true)
+          : (props.onFocus as ComponentProps<typeof Button>["onFocus"])
+      }
+      onBlur={
+        railTooltip
+          ? () => setTooltipOpen(false)
+          : (props.onBlur as ComponentProps<typeof Button>["onBlur"])
+      }
     />
   );
   return props["aria-label"] &&
-    /icon-button|today-link|top-avatar|rail-button/.test(props.className ?? "") ? (
-    <Tooltip isOpen={railTooltip ? tooltipOpen : undefined} onOpenChange={railTooltip ? setTooltipOpen : undefined} delay={450}>
+    /icon-button|today-link|top-avatar|rail-button/.test(
+      props.className ?? "",
+    ) ? (
+    <Tooltip
+      isOpen={railTooltip ? tooltipOpen : undefined}
+      onOpenChange={railTooltip ? setTooltipOpen : undefined}
+      delay={450}
+    >
       {button}
       <Tooltip.Content className="zulu-tooltip">
         {props["aria-label"]}
@@ -116,15 +126,38 @@ export function ZuluButton({
     button
   );
 }
-export function ZuluInput(props: ComponentProps<"input">) {
-  const enabled = useDashboardUI();
-  return enabled ? <Input {...props} /> : <input {...props} />;
+export function ZuluInput(props: ZuluInputProps) {
+  const inheritedDisabled = useContext(DisabledFields);
+  props = { ...props, disabled: props.disabled || inheritedDisabled };
+  if (["date", "time", "datetime-local"].includes(props.type ?? ""))
+    return <ZuluTemporalInput {...props} />;
+  if (props.type === "number") return <ZuluNumericInput {...props} />;
+  const { fieldLabel, onValueChange, isInvalid, errorMessage, ...input } =
+    props;
+  if (fieldLabel || isInvalid !== undefined || errorMessage)
+    return (
+      <TextField
+        id={input.id}
+        isInvalid={isInvalid}
+        isDisabled={input.disabled}
+        isRequired={input.required}
+        className="zulu-field"
+        aria-label={
+          input["aria-label"] ?? (fieldLabel ? undefined : input.name)
+        }
+      >
+        {fieldLabel && <Label>{fieldLabel}</Label>}
+        <Input {...input} aria-invalid={isInvalid || input["aria-invalid"]} />
+        <FieldError>{errorMessage}</FieldError>
+      </TextField>
+    );
+  return <Input {...input} aria-invalid={isInvalid || input["aria-invalid"]} />;
 }
 export function ZuluTextArea(
   props: TextareaHTMLAttributes<HTMLTextAreaElement>,
 ) {
-  const enabled = useDashboardUI();
-  return enabled ? <TextArea {...props} /> : <textarea {...props} />;
+  const inheritedDisabled = useContext(DisabledFields);
+  return <TextArea {...props} disabled={props.disabled || inheritedDisabled} />;
 }
 
 type SelectProps = Omit<
@@ -183,29 +216,18 @@ export function ZuluSelect({
   "aria-label": ariaLabel,
   ...props
 }: SelectProps) {
-  const enabled = useDashboardUI();
+  const inheritedDisabled = useContext(DisabledFields);
+  disabled = disabled || inheritedDisabled;
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(
     defaultValue == null ? undefined : String(defaultValue),
   );
-  if (!enabled)
-    return (
-      <select
-        {...props}
-        id={id}
-        name={name}
-        value={value}
-        defaultValue={defaultValue}
-        disabled={disabled}
-        required={required}
-        className={className}
-        aria-label={ariaLabel}
-        onChange={(event) => onValueChange?.(event.target.value)}
-      >
-        {children}
-      </select>
-    );
   const options = optionsFrom(children);
+  const resetRef = useFieldReset(
+    defaultValue == null ? (options[0]?.value ?? "") : String(defaultValue),
+    value === undefined,
+    setSelected,
+  );
   const current = String(value ?? selected ?? options[0]?.value ?? "");
   // A distinct UI key keeps a legitimate empty value (e.g. "Sem projeto") selectable.
   const key = (v: string) => (v === "" ? "__zulu_empty_option__" : v);
@@ -219,16 +241,18 @@ export function ZuluSelect({
         onOpenChange={setOpen}
         aria-label={
           ariaLabel ??
-          {
-            project: "Projeto",
-            kind: "Tipo",
-            user: "Pessoa",
-            role: "Papel",
-            workspace: "Workspace",
-            availability: "Disponibilidade",
-          }[name ?? ""] ??
-          name ??
-          "Selecionar opção"
+          (label
+            ? undefined
+            : ({
+                project: "Projeto",
+                kind: "Tipo",
+                user: "Pessoa",
+                role: "Papel",
+                workspace: "Workspace",
+                availability: "Disponibilidade",
+              }[name ?? ""] ??
+              name ??
+              "Selecionar opção"))
         }
         value={key(current)}
         isDisabled={disabled}
@@ -268,14 +292,29 @@ export function ZuluSelect({
             ))}
           </ListBox>
           {onAddNew && (
-            <Button type="button" className="zulu-select-add" variant="tertiary" onPress={() => { setOpen(false); onAddNew(); }}>
-              <Plus size={16} />{addNewLabel}
+            <Button
+              type="button"
+              className="zulu-select-add"
+              variant="tertiary"
+              onPress={() => {
+                setOpen(false);
+                onAddNew();
+              }}
+            >
+              <Plus size={16} />
+              {addNewLabel}
             </Button>
           )}
         </Select.Popover>
       </Select>
       {name && (
-        <input type="hidden" name={name} value={current} disabled={disabled} />
+        <input
+          ref={resetRef}
+          type="hidden"
+          name={name}
+          value={current}
+          disabled={disabled}
+        />
       )}
     </>
   );
@@ -293,25 +332,17 @@ export function ZuluCheckbox({
   InputHTMLAttributes<HTMLInputElement>,
   "onChange" | "type" | "children"
 > & { onCheckedChange?: (checked: boolean) => void; children?: ReactNode }) {
-  const enabled = useDashboardUI();
-  if (!enabled)
-    return (
-      <input
-        {...props}
-        type="checkbox"
-        checked={checked}
-        defaultChecked={defaultChecked}
-        disabled={disabled}
-        required={required}
-        onChange={(event) => onCheckedChange?.(event.target.checked)}
-      />
-    );
+  const inheritedDisabled = useContext(DisabledFields);
+  disabled = disabled || inheritedDisabled;
   return (
     <Checkbox
       id={props.id}
       name={props.name}
       value={String(props.value ?? "on")}
-      aria-label={props["aria-label"] ?? props.name ?? "Selecionar"}
+      aria-label={
+        props["aria-label"] ??
+        (children ? undefined : (props.name ?? "Selecionar"))
+      }
       isSelected={checked}
       defaultSelected={defaultChecked}
       onChange={onCheckedChange}
@@ -331,15 +362,7 @@ export function ZuluCheckbox({
 
 // Whole labeled checkbox fields avoid nesting a React Aria label inside another label.
 export function ZuluCheckboxField(props: Parameters<typeof ZuluCheckbox>[0]) {
-  const hero = useDashboardUI();
-  if (hero) return <ZuluCheckbox {...props} />;
-  const { children, className, ...input } = props;
-  return (
-    <label className={className}>
-      <ZuluCheckbox {...input} />
-      {children}
-    </label>
-  );
+  return <ZuluCheckbox {...props} />;
 }
 
 export function DashboardDialog({
@@ -453,7 +476,7 @@ export function ZuluForm(props: FormHTMLAttributes<HTMLFormElement>) {
 }
 export function ZuluLabel(props: LabelHTMLAttributes<HTMLLabelElement>) {
   const hero = useDashboardUI();
-  if (!hero) return <label {...props} />;
+
   const children = Children.toArray(props.children);
   const select = children.find(
     (child) => isValidElement<SelectProps>(child) && child.type === ZuluSelect,
@@ -466,12 +489,40 @@ export function ZuluLabel(props: LabelHTMLAttributes<HTMLLabelElement>) {
       className: `zulu-field ${props.className ?? ""} ${select.props.className ?? ""}`,
     });
   }
+  const input = children.find(
+    (child) =>
+      isValidElement<ZuluInputProps>(child) &&
+      child.type === ZuluInput &&
+      (["date", "time", "datetime-local", "number"].includes(
+        child.props.type ?? "",
+      ) ||
+        child.props.isInvalid !== undefined ||
+        Boolean(child.props.errorMessage)),
+  );
+  if (isValidElement<ZuluInputProps>(input))
+    return cloneElement(input, {
+      fieldLabel: children.filter((child) => child !== input),
+      className: `zulu-field ${props.className ?? ""} ${input.props.className ?? ""}`,
+    });
+  const checkbox = children.find(
+    (child) => isValidElement(child) && child.type === ZuluCheckboxField,
+  );
+  if (isValidElement<Parameters<typeof ZuluCheckbox>[0]>(checkbox))
+    return cloneElement(checkbox, {
+      children: children.filter((child) => child !== checkbox),
+      className: props.className,
+    });
   return <Label {...props} />;
 }
 export function ZuluFieldset(
   props: FieldsetHTMLAttributes<HTMLFieldSetElement>,
 ) {
-  return useDashboardUI() ? <Fieldset {...props} /> : <fieldset {...props} />;
+  const disabled = useContext(DisabledFields) || Boolean(props.disabled);
+  return (
+    <DisabledFields.Provider value={disabled}>
+      <Fieldset {...props} disabled={disabled} />
+    </DisabledFields.Provider>
+  );
 }
 export function ZuluLegend(props: HTMLAttributes<HTMLLegendElement>) {
   return useDashboardUI() ? (
@@ -521,29 +572,88 @@ export function DashboardNotice({
   );
 }
 
-export function DashboardWorkspacePicker({ workspace, teamId, teams, role, canManage, onTeam, onNewTeam }: {
-  workspace: string; teamId: string; teams: { id: string; label: string; organization?: string }[]; role: string; canManage: boolean;
-  onTeam: (id: string) => void; onNewTeam: () => void; onSignOut?: () => void;
+export function DashboardWorkspacePicker({
+  workspace,
+  teamId,
+  teams,
+  role,
+  canManage,
+  onTeam,
+  onNewTeam,
+}: {
+  workspace: string;
+  teamId: string;
+  teams: { id: string; label: string; organization?: string }[];
+  role: string;
+  canManage: boolean;
+  onTeam: (id: string) => void;
+  onNewTeam: () => void;
+  onSignOut?: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const current = teams.find(team => team.id === teamId);
-  return <Dropdown isOpen={open} onOpenChange={setOpen}>
-    <Button className="workspace-button" variant="tertiary" aria-label={`Trocar time: ${current?.label ?? workspace}`}>
-      <span className="workspace-icon"><SquaresFour weight="fill" size={18} /></span>
-      <strong>{current?.label ?? workspace}</strong><CaretDown size={13} />
-    </Button>
-    <Dropdown.Popover className="zulu-overlay zulu-workspace workspace-team-menu" placement="bottom start">
-      <div className="workspace-menu-heading"><strong>Seus times</strong><small>{role}</small></div>
-      <Dropdown.Menu aria-label="Trocar time" selectionMode="single" selectedKeys={[teamId]} onAction={key => { setOpen(false); if (key === "new-team") onNewTeam(); else onTeam(String(key)); }}>
-        {teams.map(team => <Dropdown.Item key={team.id} id={team.id} textValue={team.label} className="workspace-team-option">
-          <span className="workspace-team-symbol" aria-hidden="true">{team.label.slice(0, 2).toUpperCase()}</span>
-          <span className="workspace-team-copy"><Label>{team.label}</Label><small>{team.organization || workspace}</small></span>
-          <Dropdown.ItemIndicator />
-        </Dropdown.Item>)}
-        {canManage && <Dropdown.Item id="new-team" textValue="Criar time" className="workspace-new-team"><Plus size={17} /><Label>Criar time</Label></Dropdown.Item>}
-      </Dropdown.Menu>
-    </Dropdown.Popover>
-  </Dropdown>;
+  const current = teams.find((team) => team.id === teamId);
+  return (
+    <Dropdown isOpen={open} onOpenChange={setOpen}>
+      <Button
+        className="workspace-button"
+        variant="tertiary"
+        aria-label={`Trocar time: ${current?.label ?? workspace}`}
+      >
+        <span className="workspace-icon">
+          <SquaresFour weight="fill" size={18} />
+        </span>
+        <strong>{current?.label ?? workspace}</strong>
+        <CaretDown size={13} />
+      </Button>
+      <Dropdown.Popover
+        className="zulu-overlay zulu-workspace workspace-team-menu"
+        placement="bottom start"
+      >
+        <div className="workspace-menu-heading">
+          <strong>Seus times</strong>
+          <small>{role}</small>
+        </div>
+        <Dropdown.Menu
+          aria-label="Trocar time"
+          selectionMode="single"
+          selectedKeys={[teamId]}
+          onAction={(key) => {
+            setOpen(false);
+            if (key === "new-team") onNewTeam();
+            else onTeam(String(key));
+          }}
+        >
+          {teams.map((team) => (
+            <Dropdown.Item
+              key={team.id}
+              id={team.id}
+              textValue={team.label}
+              className="workspace-team-option"
+            >
+              <span className="workspace-team-symbol" aria-hidden="true">
+                {team.label.slice(0, 2).toUpperCase()}
+              </span>
+              <span className="workspace-team-copy">
+                <Label>{team.label}</Label>
+                <small>{team.organization || workspace}</small>
+              </span>
+              <Dropdown.ItemIndicator />
+            </Dropdown.Item>
+          ))}
+          {canManage && (
+            <Dropdown.Item
+              id="new-team"
+              textValue="Criar time"
+              className="workspace-new-team"
+            >
+              <Plus size={17} />
+              <Label>Criar time</Label>
+            </Dropdown.Item>
+          )}
+        </Dropdown.Menu>
+      </Dropdown.Popover>
+    </Dropdown>
+  );
 }
 
 export function ZuluAlert({

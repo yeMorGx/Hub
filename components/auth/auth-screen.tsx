@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "../dashboard-ui";
+import { ZuluButton, ZuluLabel, ZuluInput } from "../dashboard-ui";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight,
@@ -152,14 +154,14 @@ export function AuthScreen({ configured }: { configured: boolean }) {
         <div className="form-alert" role="alert">
           {error}
           {showResendConfirmation && (
-            <button
+            <ZuluButton
               type="button"
               className="text-button"
               disabled={busy || !configured}
               onClick={() => void resendConfirmation()}
             >
               {busy ? "Enviando…" : "Reenviar link de confirmação"}
-            </button>
+            </ZuluButton>
           )}
         </div>
       )}
@@ -171,7 +173,7 @@ export function AuthScreen({ configured }: { configured: boolean }) {
       )}
       {mode === "login" &&
         process.env.NEXT_PUBLIC_AZURE_SSO_ENABLED === "true" && (
-          <button
+          <ZuluButton
             type="button"
             className="secondary-button azure-signin"
             disabled={busy || !configured}
@@ -194,24 +196,24 @@ export function AuthScreen({ configured }: { configured: boolean }) {
             }}
           >
             Entrar com Microsoft
-          </button>
+          </ZuluButton>
         )}
-      <form className="auth-form" onSubmit={submit}>
+      <ZuluForm className="auth-form" onSubmit={submit}>
         {mode === "signup" && (
-          <label>
+          <ZuluLabel>
             Seu nome
-            <input
+            <ZuluInput
               name="name"
               autoComplete="name"
               required
               maxLength={80}
               placeholder="Como podemos chamar você?"
             />
-          </label>
+          </ZuluLabel>
         )}
-        <label>
+        <ZuluLabel>
           E-mail
-          <input
+          <ZuluInput
             ref={emailRef}
             name="email"
             type="email"
@@ -220,23 +222,23 @@ export function AuthScreen({ configured }: { configured: boolean }) {
             maxLength={254}
             placeholder="voce@empresa.com"
           />
-        </label>
+        </ZuluLabel>
         {mode !== "reset" && (
           <div className="auth-password-field">
             <div className="password-label">
-              <label htmlFor="auth-password">Senha</label>
+              <ZuluLabel htmlFor="auth-password">Senha</ZuluLabel>
               {mode === "login" && (
-                <button
+                <ZuluButton
                   type="button"
                   className="text-button"
                   onClick={() => changeMode("reset")}
                 >
                   Esqueceu a senha?
-                </button>
+                </ZuluButton>
               )}
             </div>
             <span className="password-input">
-              <input
+              <ZuluInput
                 id="auth-password"
                 name="password"
                 type={showPassword ? "text" : "password"}
@@ -250,18 +252,18 @@ export function AuthScreen({ configured }: { configured: boolean }) {
                   mode === "signup" ? "Pelo menos 12 caracteres" : "Sua senha"
                 }
               />
-              <button
+              <ZuluButton
                 type="button"
                 className="icon-button"
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeSlash size={19} /> : <Eye size={19} />}
-              </button>
+              </ZuluButton>
             </span>
           </div>
         )}
-        <button
+        <ZuluButton
           type="submit"
           className="primary-button auth-submit"
           disabled={busy || !configured}
@@ -281,19 +283,19 @@ export function AuthScreen({ configured }: { configured: boolean }) {
               <ArrowRight size={18} />
             </>
           )}
-        </button>
-      </form>
+        </ZuluButton>
+      </ZuluForm>
       <div className="auth-switch">
         {mode === "login" ? (
           <>
             Ainda não tem uma conta?{" "}
-            <button onClick={() => changeMode("signup")}>Criar conta</button>
+            <ZuluButton onClick={() => changeMode("signup")}>Criar conta</ZuluButton>
           </>
         ) : (
-          <button onClick={() => changeMode("login")}>
+          <ZuluButton onClick={() => changeMode("login")}>
             <ArrowLeft size={13} />
             Voltar para entrar
-          </button>
+          </ZuluButton>
         )}
       </div>
       <p className="auth-security-note">

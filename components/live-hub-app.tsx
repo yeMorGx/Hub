@@ -115,7 +115,7 @@ const availabilityLabels: Record<string, string> = {
   meeting: "Em reunião",
   away: "Ausente",
   offline: "Offline",
-  unknown: "Presença indisponível",
+  unknown: "",
 };
 type Modal =
   | "event"
@@ -1053,7 +1053,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                               ? `${Object.keys(hub.onlinePeople).filter((id) => data.people.some((p) => p.id === id)).length} online`
                               : hub.presenceReady === "connecting"
                                 ? "Conectando presença"
-                                : "Presença indisponível"}
+                                : ""}
                           </span>
                         </div>
                         <p className="section-description">
@@ -1248,8 +1248,8 @@ export function LiveHubApp({ userId }: { userId: string }) {
                   projects={data.projects}
                   people={data.people}
                   userId={userId}
-                  canParticipate={hub.canParticipate}
-                  canManage={hub.canManage}
+                  canParticipate={hub.canParticipate && (Boolean(organization.authority?.owner) || organization.authority?.permissions[hub.teamId]?.["tasks.write"] !== false)}
+                  canManage={Boolean(organization.authority?.owner || (organization.authority?.permissions[hub.teamId]?.["tasks.manage"] ?? hub.canManage))}
                   busy={hub.busy}
                   activeTimer={activeTimer}
                   onSave={async (input: TaskInput) => {
@@ -1272,10 +1272,11 @@ export function LiveHubApp({ userId }: { userId: string }) {
                       ? null
                       : result.error || "Não foi possível salvar a tarefa.";
                   }}
-                  onMove={async (task, status) => {
+                  onMove={async (task, status, placement) => {
                     const result = await hub.mutate(
                       () =>
-                        hub.rpc("move_task", {
+                        hub.rpc(placement ? "position_task" : "move_task", {
+                          ...(placement ? {p_before_id: placement.beforeId, p_after_id: placement.afterId} : {}),
                           p_task_id: task.id,
                           p_status: status,
                           p_expected_version: task.version,

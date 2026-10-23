@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "./dashboard-ui";
+import { ZuluButton, ZuluLabel, ZuluInput, ZuluSelect } from "./dashboard-ui";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowClockwise,
@@ -200,14 +202,14 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
           <h2>Integrações e segurança</h2>
           <p>Calendários conectados, automações e histórico das alterações.</p>
         </div>
-        <button
+        <ZuluButton
           className="icon-button"
           aria-label="Atualizar integrações"
           onClick={() => run(refresh)}
           disabled={busy}
         >
           <ArrowClockwise />
-        </button>
+        </ZuluButton>
       </div>
       <div className="workspace-tabs" role="tablist">
         {(
@@ -217,7 +219,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
             ...(hub.isAdmin ? [["audit", "Auditoria", ShieldCheck]] : []),
           ] as const
         ).map(([key, label, Icon]) => (
-          <button
+          <ZuluButton
             key={key as string}
             role="tab"
             aria-selected={tab === key}
@@ -229,7 +231,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
           >
             <Icon size={18} />
             {label as string}
-          </button>
+          </ZuluButton>
         ))}
       </div>
       {error && (
@@ -281,15 +283,15 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                   <div className="integration-actions">
                     {connection ? (
                       <>
-                        <button
+                        <ZuluButton
                           className="primary-button"
                           disabled={busy}
                           onClick={() => run(() => sync(connection))}
                         >
                           <ArrowClockwise size={16} />
                           Sincronizar
-                        </button>
-                        <button
+                        </ZuluButton>
+                        <ZuluButton
                           className="text-button"
                           disabled={busy}
                           onClick={() => {
@@ -309,10 +311,10 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                           }}
                         >
                           Desconectar
-                        </button>
+                        </ZuluButton>
                       </>
                     ) : (
-                      <button
+                      <ZuluButton
                         className="primary-button"
                         disabled={busy || !status[provider]}
                         onClick={() =>
@@ -327,7 +329,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                       >
                         <Link size={16} />
                         Conectar
-                      </button>
+                      </ZuluButton>
                     )}
                   </div>
                 </article>
@@ -348,7 +350,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                     <p>{c.reason}</p>
                   </div>
                   <div className="integration-actions">
-                    <button
+                    <ZuluButton
                       disabled={busy}
                       onClick={() =>
                         activeSync &&
@@ -356,8 +358,8 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                       }
                     >
                       Usar ZULU
-                    </button>
-                    <button
+                    </ZuluButton>
+                    <ZuluButton
                       disabled={busy}
                       onClick={() =>
                         activeSync &&
@@ -365,7 +367,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                       }
                     >
                       Usar calendário
-                    </button>
+                    </ZuluButton>
                   </div>
                 </div>
               ))}
@@ -385,7 +387,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
             token aparece uma única vez e pode ser revogado aqui.
           </p>
           {hub.canManage && (
-            <form
+            <ZuluForm
               className="inline-form"
               onSubmit={(e) => {
                 e.preventDefault();
@@ -400,22 +402,22 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                 });
               }}
             >
-              <label>
+              <ZuluLabel>
                 Nome
-                <input
+                <ZuluInput
                   required
                   maxLength={100}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Ex.: Alertas do monitoramento"
                 />
-              </label>
-              <label>
+              </ZuluLabel>
+              <ZuluLabel>
                 Canal
-                <select
+                <ZuluSelect
                   required
                   value={channel}
-                  onChange={(e) => setChannel(e.target.value)}
+                  onValueChange={(e) => setChannel(e)}
                 >
                   <option value="">Escolha um canal</option>
                   {hub.snapshot.channels
@@ -425,12 +427,12 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                         #{c.name}
                       </option>
                     ))}
-                </select>
-              </label>
-              <button className="primary-button" disabled={busy}>
+                </ZuluSelect>
+              </ZuluLabel>
+              <ZuluButton className="primary-button" disabled={busy}>
                 Criar webhook
-              </button>
-            </form>
+              </ZuluButton>
+            </ZuluForm>
           )}
           {secret && (
             <div className="webhook-secret">
@@ -439,18 +441,18 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                 Copie para a ferramenta que enviará os alertas. Fechar esta tela
                 oculta o token.
               </p>
-              <label>
+              <ZuluLabel>
                 URL
-                <input readOnly value={webhookUrl} />
-              </label>
-              <label>
+                <ZuluInput readOnly value={webhookUrl} />
+              </ZuluLabel>
+              <ZuluLabel>
                 Authorization
-                <input readOnly value={`Bearer ${secret.token}`} />
-              </label>
+                <ZuluInput readOnly value={`Bearer ${secret.token}`} />
+              </ZuluLabel>
               <code>
                 {'{"event_id":"ticket-123","text":"Novo ticket recebido"}'}
               </code>
-              <button
+              <ZuluButton
                 className="secondary-button"
                 onClick={() =>
                   run(async () => {
@@ -474,10 +476,10 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
               >
                 <Copy />
                 Copiar configuração
-              </button>
-              <button className="text-button" onClick={() => setSecret(null)}>
+              </ZuluButton>
+              <ZuluButton className="text-button" onClick={() => setSecret(null)}>
                 Já salvei
-              </button>
+              </ZuluButton>
             </div>
           )}
           {hooks.length ? (
@@ -495,7 +497,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                       : ""}
                   </p>
                 </div>
-                <button
+                <ZuluButton
                   disabled={busy}
                   className="secondary-button"
                   onClick={() =>
@@ -509,7 +511,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                   }
                 >
                   {h.enabled ? "Revogar" : "Reativar"}
-                </button>
+                </ZuluButton>
               </div>
             ))
           ) : (
@@ -524,11 +526,11 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
       {tab === "audit" && hub.isAdmin && (
         <>
           <div className="inline-form">
-            <label>
+            <ZuluLabel>
               Tipo de registro
-              <select
+              <ZuluSelect
                 value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                onValueChange={(e) => setFilter(e)}
               >
                 <option value="">Todos</option>
                 {[
@@ -544,15 +546,15 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
                 ].map((t) => (
                   <option key={t}>{t}</option>
                 ))}
-              </select>
-            </label>
-            <button
+              </ZuluSelect>
+            </ZuluLabel>
+            <ZuluButton
               className="secondary-button"
               disabled={busy}
               onClick={() => loadAudit()}
             >
               Atualizar
-            </button>
+            </ZuluButton>
           </div>
           <p className="muted">
             Visível apenas para administradores. O log registra ações e campos
@@ -591,13 +593,13 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
             />
           )}
           {moreAudit && (
-            <button
+            <ZuluButton
               disabled={busy}
               className="secondary-button"
               onClick={() => loadAudit(true)}
             >
               Carregar registros anteriores
-            </button>
+            </ZuluButton>
           )}
         </>
       )}

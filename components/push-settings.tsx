@@ -1,4 +1,5 @@
 "use client";
+import { ZuluButton } from "./dashboard-ui";
 import { useEffect, useState } from "react";
 import { Bell, BellSlash } from "@phosphor-icons/react";
 import type { HubController } from "@/lib/hub/use-hub";
@@ -177,7 +178,7 @@ export function PushSettings({ hub }: { hub: HubController }) {
         Receba mensagens diretas, menções e lembretes. No iPhone, instale a PWA
         na tela inicial para ativar.
       </p>
-      <button
+      <ZuluButton
         className="outline-button"
         disabled={busy}
         onClick={() => void toggle()}
@@ -188,7 +189,7 @@ export function PushSettings({ hub }: { hub: HubController }) {
           : active
             ? "Desativar notificações"
             : "Ativar notificações"}
-      </button>
+      </ZuluButton>
       {error && (
         <p className="form-error" role="alert">
           {error}

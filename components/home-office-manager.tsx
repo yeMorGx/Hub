@@ -271,12 +271,12 @@ export function HomeOfficeManager({
               <div className="home-office-form-grid">
                 <ZuluLabel>
                   Semana de referência
-                  <ZuluInput type="date" required value={anchorWeek} onChange={(event) => setAnchorWeek(event.target.value)} />
+                  <ZuluInput type="date" required value={anchorWeek} onValueChange={(event) => setAnchorWeek(event)} />
                   <small>Use um domingo. O PDF começa em 04/10; a primeira escala acontece na segunda, 05/10.</small>
                 </ZuluLabel>
                 <ZuluLabel>
                   Lembrete no dia
-                  <span className="home-office-time-input"><Bell size={15} /><ZuluInput type="time" required value={reminderTime} onChange={(event) => setReminderTime(event.target.value)} /></span>
+                  <span className="home-office-time-input"><Bell size={15} /><ZuluInput type="time" required value={reminderTime} onValueChange={(event) => setReminderTime(event)} /></span>
                   <small>Horário de Brasília. Cada pessoa recebe um aviso no dia do home office.</small>
                 </ZuluLabel>
               </div>
@@ -312,7 +312,7 @@ export function HomeOfficeManager({
                 </div>
                 {hub.canManage && (
                   <ZuluForm className="home-office-add-holiday" onSubmit={addHoliday}>
-                    <ZuluInput aria-label="Data do feriado" type="date" required value={holidayDate} onChange={(event) => setHolidayDate(event.target.value)} />
+                    <ZuluInput aria-label="Data do feriado" type="date" required value={holidayDate} onValueChange={(event) => setHolidayDate(event)} />
                     <ZuluInput aria-label="Nome do feriado" placeholder="Nome do feriado" maxLength={120} value={holidayLabel} onChange={(event) => setHolidayLabel(event.target.value)} />
                     <ZuluButton className="outline-button" type="submit"><Plus size={15} /> Adicionar</ZuluButton>
                   </ZuluForm>

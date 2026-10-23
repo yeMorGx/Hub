@@ -1,4 +1,5 @@
 "use client";
+import { ZuluButton } from "./dashboard-ui";
 import { DesktopRuntimeControls } from "./desktop-runtime-controls";
 import { BrandMark } from "./brand";
 
@@ -161,15 +162,15 @@ export function DesktopTitlebar() {
         role="group"
         aria-label="Controles da janela"
       >
-        <button
+        <ZuluButton
           type="button"
           aria-label="Minimizar janela"
           title="Minimizar"
           onClick={() => void act("minimize")}
         >
           <Minus size={14} aria-hidden="true" />
-        </button>
-        <button
+        </ZuluButton>
+        <ZuluButton
           type="button"
           aria-label={maximized ? "Restaurar janela" : "Maximizar janela"}
           title={maximized ? "Restaurar" : "Maximizar"}
@@ -180,8 +181,8 @@ export function DesktopTitlebar() {
           ) : (
             <Square size={12} aria-hidden="true" />
           )}
-        </button>
-        <button
+        </ZuluButton>
+        <ZuluButton
           type="button"
           className="desktop-window-close"
           aria-label="Fechar ZULU"
@@ -189,7 +190,7 @@ export function DesktopTitlebar() {
           onClick={() => void act("close")}
         >
           <X size={15} aria-hidden="true" />
-        </button>
+        </ZuluButton>
       </div>
     </header>
   );

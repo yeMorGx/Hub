@@ -1,4 +1,5 @@
 "use client";
+import { ZuluLabel } from "./dashboard-ui";
 import { ZuluButton, ZuluSelect } from "./dashboard-ui";
 import { Card, Dropdown, Label, ToggleButtonGroup, ToggleButton } from "@heroui/react";
 import { DashboardDatePicker } from "./dashboard-ui";
@@ -178,7 +179,7 @@ export function LiveCalendar({
           </ZuluButton>
           {filterOpen && (
             <div className="filter-popover">
-              <label htmlFor="event-filter">Tipo de evento</label>
+              <ZuluLabel htmlFor="event-filter">Tipo de evento</ZuluLabel>
               <ZuluSelect
                 id="event-filter" aria-label="Tipo de evento"
                 value={filter}

@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "./dashboard-ui";
+import { ZuluButton, ZuluLabel, ZuluInput, ZuluSelect, ZuluCheckboxField } from "./dashboard-ui";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ArrowClockwise,
@@ -206,7 +208,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
             { id: "clients", label: "Clientes", icon: UsersThree },
           ] as const
         ).map((t) => (
-          <button
+          <ZuluButton
             key={t.id}
             className={tab === t.id ? "active" : ""}
             onClick={() => {
@@ -216,15 +218,15 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
           >
             <t.icon size={18} />
             {t.label}
-          </button>
+          </ZuluButton>
         ))}
-        <button
+        <ZuluButton
           className="icon-button"
           aria-label="Atualizar gestão"
           onClick={() => void store.refresh()}
         >
           <ArrowClockwise size={18} />
-        </button>
+        </ZuluButton>
       </nav>
       {error && (
         <p className="form-error" role="alert">
@@ -244,38 +246,38 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
               </p>
             </div>
           </div>
-          <form
+          <ZuluForm
             className="report-filters"
             onSubmit={(e) => {
               e.preventDefault();
               void loadReport();
             }}
           >
-            <label>
+            <ZuluLabel>
               De
-              <input
+              <ZuluInput
                 type="date"
                 value={from}
-                onChange={(e) => setFrom(e.target.value)}
+                onValueChange={(e) => setFrom(e)}
                 required
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Até
-              <input
+              <ZuluInput
                 type="date"
                 value={to}
                 min={from}
-                onChange={(e) => setTo(e.target.value)}
+                onValueChange={(e) => setTo(e)}
                 required
               />
-            </label>
+            </ZuluLabel>
             {canManage && (
-              <label>
+              <ZuluLabel>
                 Pessoa
-                <select
+                <ZuluSelect
                   value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
+                  onValueChange={(e) => setUserId(e)}
                 >
                   <option value="">Todas</option>
                   {hub.snapshot.people.map((p) => (
@@ -283,14 +285,14 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       {p.display_name}
                     </option>
                   ))}
-                </select>
-              </label>
+                </ZuluSelect>
+              </ZuluLabel>
             )}
-            <label>
+            <ZuluLabel>
               Projeto
-              <select
+              <ZuluSelect
                 value={projectId}
-                onChange={(e) => setProjectId(e.target.value)}
+                onValueChange={(e) => setProjectId(e)}
               >
                 <option value="">Todos</option>
                 {hub.snapshot.projects.map((p) => (
@@ -298,13 +300,13 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                     {p.name}
                   </option>
                 ))}
-              </select>
-            </label>
-            <label>
+              </ZuluSelect>
+            </ZuluLabel>
+            <ZuluLabel>
               Cliente
-              <select
+              <ZuluSelect
                 value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
+                onValueChange={(e) => setClientId(e)}
               >
                 <option value="">Todos</option>
                 {data?.clients.map((c) => (
@@ -312,12 +314,12 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                     {c.name}
                   </option>
                 ))}
-              </select>
-            </label>
-            <button className="primary-button" disabled={reportBusy}>
+              </ZuluSelect>
+            </ZuluLabel>
+            <ZuluButton className="primary-button" disabled={reportBusy}>
               {reportBusy ? "Consultando…" : "Gerar relatório"}
-            </button>
-          </form>
+            </ZuluButton>
+          </ZuluForm>
           {report !== null ? (
             <>
               <div className="report-summary">
@@ -329,7 +331,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                   <small>{report.length} registros no período</small>
                 </div>
                 <div className="report-export">
-                  <button
+                  <ZuluButton
                     className="outline-button"
                     disabled={!report.length}
                     onClick={() =>
@@ -342,8 +344,8 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                   >
                     <DownloadSimple size={16} />
                     CSV
-                  </button>
-                  <button
+                  </ZuluButton>
+                  <ZuluButton
                     className="outline-button"
                     disabled={!report.length}
                     onClick={() =>
@@ -358,7 +360,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                   >
                     <DownloadSimple size={16} />
                     PDF
-                  </button>
+                  </ZuluButton>
                 </div>
               </div>
               {report.length ? (
@@ -448,7 +450,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                 </div>
               </div>
               {hub.canParticipate && (
-                <form
+                <ZuluForm
                   className="inline-work-form"
                   onSubmit={async (e) => {
                     e.preventDefault();
@@ -469,9 +471,9 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                     );
                   }}
                 >
-                  <label>
+                  <ZuluLabel>
                     Pessoa
-                    <select name="user" defaultValue={hub.userId}>
+                    <ZuluSelect name="user" defaultValue={hub.userId}>
                       {hub.snapshot.people
                         .filter((p) => canManage || p.id === hub.userId)
                         .map((p) => (
@@ -479,11 +481,11 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                             {p.display_name}
                           </option>
                         ))}
-                    </select>
-                  </label>
-                  <label>
+                    </ZuluSelect>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Meta semanal (horas)
-                    <input
+                    <ZuluInput
                       name="hours"
                       type="number"
                       min="0"
@@ -495,10 +497,10 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       }
                       required
                     />
-                  </label>
-                  <label>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Alertar timer após (horas)
-                    <input
+                    <ZuluInput
                       name="alert"
                       type="number"
                       min="0.5"
@@ -510,11 +512,11 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       }
                       required
                     />
-                  </label>
-                  <button className="primary-button" disabled={hub.busy}>
+                  </ZuluLabel>
+                  <ZuluButton className="primary-button" disabled={hub.busy}>
                     Salvar meta
-                  </button>
-                </form>
+                  </ZuluButton>
+                </ZuluForm>
               )}
               <div className="goal-list">
                 {data.goals.map((goal) => (
@@ -559,23 +561,23 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                   </p>
                 </div>
                 <div className="workspace-filters">
-                  <input
+                  <ZuluInput
                     aria-label="Início da escala"
                     type="date"
                     value={from}
-                    onChange={(e) => setFrom(e.target.value)}
+                    onValueChange={(e) => setFrom(e)}
                   />
-                  <input
+                  <ZuluInput
                     aria-label="Fim da escala"
                     type="date"
                     value={to}
                     min={from}
-                    onChange={(e) => setTo(e.target.value)}
+                    onValueChange={(e) => setTo(e)}
                   />
                 </div>
               </div>
               {canManage && (
-                <form
+                <ZuluForm
                   key={editingShift?.id || "new"}
                   className="inline-work-form"
                   onSubmit={async (e) => {
@@ -601,18 +603,18 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                     if (ok) setEditingShift(null);
                   }}
                 >
-                  <label>
+                  <ZuluLabel>
                     Nome do turno
-                    <input
+                    <ZuluInput
                       name="label"
                       required
                       maxLength={120}
                       defaultValue={editingShift?.label || "Plantão"}
                     />
-                  </label>
-                  <label>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Pessoa
-                    <select
+                    <ZuluSelect
                       name="user"
                       defaultValue={editingShift?.user_id || hub.userId}
                     >
@@ -621,11 +623,11 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                           {p.display_name}
                         </option>
                       ))}
-                    </select>
-                  </label>
-                  <label>
+                    </ZuluSelect>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Início
-                    <input
+                    <ZuluInput
                       type="datetime-local"
                       name="start"
                       required
@@ -635,10 +637,10 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                           : undefined
                       }
                     />
-                  </label>
-                  <label>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Fim
-                    <input
+                    <ZuluInput
                       type="datetime-local"
                       name="end"
                       required
@@ -648,20 +650,20 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                           : undefined
                       }
                     />
-                  </label>
-                  <button className="primary-button" disabled={hub.busy}>
+                  </ZuluLabel>
+                  <ZuluButton className="primary-button" disabled={hub.busy}>
                     {editingShift ? "Salvar alteração" : "Criar turno"}
-                  </button>
+                  </ZuluButton>
                   {editingShift && (
-                    <button
+                    <ZuluButton
                       type="button"
                       className="outline-button"
                       onClick={() => setEditingShift(null)}
                     >
                       Cancelar edição
-                    </button>
+                    </ZuluButton>
                   )}
-                </form>
+                </ZuluForm>
               )}
               <div className="schedule-list">
                 {data.shifts
@@ -679,13 +681,13 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       </div>
                       {canManage && (
                         <>
-                          <button
+                          <ZuluButton
                             className="text-button"
                             onClick={() => setEditingShift(s)}
                           >
                             Editar
-                          </button>
-                          <button
+                          </ZuluButton>
+                          <ZuluButton
                             className="text-button"
                             disabled={hub.busy}
                             onClick={() => {
@@ -707,23 +709,23 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                             }}
                           >
                             Cancelar turno
-                          </button>
+                          </ZuluButton>
                         </>
                       )}
                       {s.user_id === hub.userId &&
                         new Date(s.starts_at).getTime() > Date.now() && (
-                          <button
+                          <ZuluButton
                             className="outline-button"
                             onClick={() => setSwapShift(s.id)}
                           >
                             Pedir troca
-                          </button>
+                          </ZuluButton>
                         )}
                     </article>
                   ))}
               </div>
               {swapShift && (
-                <form
+                <ZuluForm
                   className="inline-work-form"
                   onSubmit={async (e) => {
                     e.preventDefault();
@@ -741,9 +743,9 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       setSwapShift("");
                   }}
                 >
-                  <label>
+                  <ZuluLabel>
                     Quem pode assumir?
-                    <select name="target" required>
+                    <ZuluSelect name="target" required>
                       {hub.snapshot.people
                         .filter((p) => p.id !== hub.userId)
                         .map((p) => (
@@ -751,19 +753,19 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                             {p.display_name}
                           </option>
                         ))}
-                    </select>
-                  </label>
-                  <button className="primary-button" disabled={hub.busy}>
+                    </ZuluSelect>
+                  </ZuluLabel>
+                  <ZuluButton className="primary-button" disabled={hub.busy}>
                     Solicitar troca
-                  </button>
-                  <button
+                  </ZuluButton>
+                  <ZuluButton
                     type="button"
                     className="outline-button"
                     onClick={() => setSwapShift("")}
                   >
                     Cancelar
-                  </button>
-                </form>
+                  </ZuluButton>
+                </ZuluForm>
               )}
               {!data.shifts.some((s) => !s.cancelled_at) && (
                 <EmptyState
@@ -786,7 +788,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                         </div>
                         {r.target_user_id === hub.userId &&
                           r.status === "pending" && (
-                            <button
+                            <ZuluButton
                               className="outline-button"
                               onClick={() =>
                                 void act(
@@ -800,10 +802,10 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                               }
                             >
                               Aceitar
-                            </button>
+                            </ZuluButton>
                           )}
                         {canManage && r.status === "accepted" && (
-                          <button
+                          <ZuluButton
                             className="primary-button"
                             disabled={hub.busy}
                             onClick={() =>
@@ -818,10 +820,10 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                             }
                           >
                             Aprovar
-                          </button>
+                          </ZuluButton>
                         )}
                         {(r.target_user_id === hub.userId || canManage) && (
-                          <button
+                          <ZuluButton
                             className="text-button"
                             onClick={() =>
                               void act(
@@ -835,10 +837,10 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                             }
                           >
                             Recusar
-                          </button>
+                          </ZuluButton>
                         )}
                         {r.requested_by === hub.userId && (
-                          <button
+                          <ZuluButton
                             className="text-button"
                             onClick={() =>
                               void act(
@@ -852,7 +854,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                             }
                           >
                             Cancelar pedido
-                          </button>
+                          </ZuluButton>
                         )}
                       </article>
                     ))}
@@ -873,7 +875,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                 </div>
               </div>
               {hub.canParticipate && (
-                <form
+                <ZuluForm
                   className="inline-work-form"
                   onSubmit={async (e) => {
                     e.preventDefault();
@@ -895,32 +897,32 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       form.reset();
                   }}
                 >
-                  <label>
+                  <ZuluLabel>
                     Tipo
-                    <select name="kind">
+                    <ZuluSelect name="kind">
                       {Object.entries(absenceLabels).map(([id, name]) => (
                         <option key={id} value={id}>
                           {name}
                         </option>
                       ))}
-                    </select>
-                  </label>
-                  <label>
+                    </ZuluSelect>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     De
-                    <input type="date" name="start" required />
-                  </label>
-                  <label>
+                    <ZuluInput type="date" name="start" required />
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Até
-                    <input type="date" name="end" required />
-                  </label>
-                  <label>
+                    <ZuluInput type="date" name="end" required />
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Observação privada
-                    <input name="note" maxLength={4000} />
-                  </label>
-                  <button className="primary-button" disabled={hub.busy}>
+                    <ZuluInput name="note" maxLength={4000} />
+                  </ZuluLabel>
+                  <ZuluButton className="primary-button" disabled={hub.busy}>
                     Solicitar ausência
-                  </button>
-                </form>
+                  </ZuluButton>
+                </ZuluForm>
               )}
               <div className="schedule-list">
                 {data.absences.map((a) => (
@@ -939,7 +941,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       canManage &&
                       a.user_id !== hub.userId && (
                         <>
-                          <button
+                          <ZuluButton
                             className="outline-button"
                             disabled={hub.busy}
                             onClick={() =>
@@ -955,8 +957,8 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                           >
                             <Check size={15} />
                             Aprovar
-                          </button>
-                          <button
+                          </ZuluButton>
+                          <ZuluButton
                             className="text-button"
                             disabled={hub.busy}
                             onClick={() =>
@@ -971,12 +973,12 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                             }
                           >
                             Recusar
-                          </button>
+                          </ZuluButton>
                         </>
                       )}
                     {["pending", "approved"].includes(a.status) &&
                       (a.user_id === hub.userId || canManage) && (
-                        <button
+                        <ZuluButton
                           className="text-button"
                           disabled={hub.busy}
                           onClick={() => {
@@ -991,7 +993,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                           }}
                         >
                           Cancelar
-                        </button>
+                        </ZuluButton>
                       )}
                   </article>
                 ))}
@@ -1031,7 +1033,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                 </div>
               </div>
               {hub.canParticipate && (
-                <form
+                <ZuluForm
                   className="inline-work-form"
                   onSubmit={async (e) => {
                     e.preventDefault();
@@ -1052,27 +1054,27 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       form.reset();
                   }}
                 >
-                  <label>
+                  <ZuluLabel>
                     Nome da data
-                    <input
+                    <ZuluInput
                       name="label"
                       required
                       maxLength={160}
                       placeholder="Aniversário ou marco do time"
                     />
-                  </label>
-                  <label>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Data
-                    <input type="date" name="date" required />
-                  </label>
-                  <label className="checkbox-label">
-                    <input type="checkbox" name="yearly" defaultChecked />
+                    <ZuluInput type="date" name="date" required />
+                  </ZuluLabel>
+                  <ZuluLabel className="checkbox-label">
+                    <ZuluCheckboxField  name="yearly" defaultChecked />
                     Repetir todo ano
-                  </label>
-                  <button className="primary-button" disabled={hub.busy}>
+                  </ZuluLabel>
+                  <ZuluButton className="primary-button" disabled={hub.busy}>
                     Adicionar data
-                  </button>
-                </form>
+                  </ZuluButton>
+                </ZuluForm>
               )}
               <div className="schedule-list">
                 {data.dates.map((d) => (
@@ -1093,7 +1095,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                     </div>
                     {hub.canParticipate &&
                       (d.created_by === hub.userId || canManage) && (
-                        <button
+                        <ZuluButton
                           className="text-button"
                           onClick={() => {
                             if (window.confirm("Remover esta data do time?"))
@@ -1111,7 +1113,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                           }}
                         >
                           Remover
-                        </button>
+                        </ZuluButton>
                       )}
                   </article>
                 ))}
@@ -1136,7 +1138,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
               </div>
               {canManage && (
                 <>
-                  <form
+                  <ZuluForm
                     className="inline-work-form"
                     onSubmit={async (e) => {
                       e.preventDefault();
@@ -1155,16 +1157,16 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                         form.reset();
                     }}
                   >
-                    <label>
+                    <ZuluLabel>
                       Nome do cliente
-                      <input name="name" required maxLength={160} />
-                    </label>
-                    <button className="primary-button" disabled={hub.busy}>
+                      <ZuluInput name="name" required maxLength={160} />
+                    </ZuluLabel>
+                    <ZuluButton className="primary-button" disabled={hub.busy}>
                       <Plus size={16} />
                       Criar cliente
-                    </button>
-                  </form>
-                  <form
+                    </ZuluButton>
+                  </ZuluForm>
+                  <ZuluForm
                     className="inline-work-form"
                     onSubmit={async (e) => {
                       e.preventDefault();
@@ -1179,20 +1181,20 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       );
                     }}
                   >
-                    <label>
+                    <ZuluLabel>
                       Projeto
-                      <select name="project" required>
+                      <ZuluSelect name="project" required>
                         <option value="">Selecione</option>
                         {hub.snapshot.projects.map((p) => (
                           <option value={p.id} key={p.id}>
                             {p.name}
                           </option>
                         ))}
-                      </select>
-                    </label>
-                    <label>
+                      </ZuluSelect>
+                    </ZuluLabel>
+                    <ZuluLabel>
                       Cliente
-                      <select name="client">
+                      <ZuluSelect name="client">
                         <option value="">Sem cliente</option>
                         {data.clients
                           .filter((c) => !c.archived_at)
@@ -1201,12 +1203,12 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                               {c.name}
                             </option>
                           ))}
-                      </select>
-                    </label>
-                    <button className="outline-button" disabled={hub.busy}>
+                      </ZuluSelect>
+                    </ZuluLabel>
+                    <ZuluButton className="outline-button" disabled={hub.busy}>
                       Salvar vínculo
-                    </button>
-                  </form>
+                    </ZuluButton>
+                  </ZuluForm>
                 </>
               )}
               <div className="schedule-list">
@@ -1225,7 +1227,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                       </small>
                     </div>
                     {canManage && !c.archived_at && (
-                      <button
+                      <ZuluButton
                         className="text-button"
                         onClick={() => {
                           if (
@@ -1246,7 +1248,7 @@ export function LiveManagement({ hub, initialTab = "reports", embedded = false }
                         }}
                       >
                         Arquivar
-                      </button>
+                      </ZuluButton>
                     )}
                   </article>
                 ))}

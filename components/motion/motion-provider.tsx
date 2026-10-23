@@ -8,6 +8,7 @@ import {
   useReducedMotion,
   useSpring,
 } from "motion/react";
+import { I18nProvider } from "react-aria-components";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { loadMotionEngine } from "@/lib/motion/engine";
@@ -361,11 +362,11 @@ function CursorFollower() {
 export function MotionProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   return (
-    <MotionConfig reducedMotion="user">
+    <I18nProvider locale="pt-BR"><MotionConfig reducedMotion="user">
       <AnimatePresence initial={false} mode="wait">
         <RouteFrame key={pathname}>{children}</RouteFrame>
       </AnimatePresence>
       <CursorFollower />
-    </MotionConfig>
+    </MotionConfig></I18nProvider>
   );
 }

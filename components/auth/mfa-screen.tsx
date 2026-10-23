@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "../dashboard-ui";
+import { ZuluButton, ZuluLabel, ZuluSelect, ZuluInput } from "../dashboard-ui";
 import { useEffect, useState, type FormEvent } from "react";
 import {
   ShieldCheck,
@@ -140,7 +142,7 @@ export function MfaScreen() {
             Use um aplicativo como Microsoft Authenticator, Google Authenticator
             ou 1Password para gerar seus códigos.
           </p>
-          <button
+          <ZuluButton
             className="primary-button auth-submit"
             onClick={enroll}
             disabled={busy}
@@ -151,10 +153,10 @@ export function MfaScreen() {
               <Key size={19} />
             )}
             Configurar aplicativo
-          </button>
+          </ZuluButton>
         </div>
       ) : (
-        <form className="auth-form" onSubmit={verify}>
+        <ZuluForm className="auth-form" onSubmit={verify}>
           {qr && (
             <>
               <div className="qr-frame">
@@ -180,23 +182,23 @@ export function MfaScreen() {
             </>
           )}
           {factors.length > 1 && (
-            <label>
+            <ZuluLabel>
               Autenticador
-              <select
+              <ZuluSelect
                 value={factorId}
-                onChange={(e) => setFactorId(e.target.value)}
+                onValueChange={(e) => setFactorId(e)}
               >
                 {factors.map((factor, i) => (
                   <option key={factor.id} value={factor.id}>
                     {factor.friendly_name || `Autenticador ${i + 1}`}
                   </option>
                 ))}
-              </select>
-            </label>
+              </ZuluSelect>
+            </ZuluLabel>
           )}
-          <label htmlFor="totp-code">
+          <ZuluLabel htmlFor="totp-code">
             Código do autenticador
-            <input
+            <ZuluInput
               id="totp-code"
               className="totp-input"
               inputMode="numeric"
@@ -211,8 +213,8 @@ export function MfaScreen() {
               required
               autoFocus
             />
-          </label>
-          <button
+          </ZuluLabel>
+          <ZuluButton
             className="primary-button auth-submit"
             disabled={busy || code.length !== 6}
           >
@@ -223,14 +225,14 @@ export function MfaScreen() {
             )}
             Confirmar e entrar
             <ArrowRight size={18} />
-          </button>
-        </form>
+          </ZuluButton>
+        </ZuluForm>
       )}
       <div className="auth-switch">
-        <button onClick={signOut} disabled={busy}>
+        <ZuluButton onClick={signOut} disabled={busy}>
           <SignOut size={15} />
           Sair desta conta
-        </button>
+        </ZuluButton>
       </div>
       <p className="auth-security-note">
         Os códigos mudam a cada poucos segundos. Se você perdeu o autenticador,

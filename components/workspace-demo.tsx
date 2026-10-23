@@ -18,7 +18,7 @@ import { LiveManagement } from "./live-management";
 import { LiveCollaboration } from "./live-collaboration";
 import { LiveCalendar } from "./live-calendar";
 import { LiveCalls } from "./live-calls";
-import { LiveBoard } from "./live-board";
+import { BoardDemo } from "./board-demo";
 import { PersonAvatar, HubDialog } from "./hub-ui";
 export function WorkspaceDemo() {
   const [ready, setReady] = useState(false);
@@ -64,7 +64,7 @@ export function WorkspaceDemo() {
         {management && <LiveManagement key={page} hub={hub} initialTab={page as "goals"} embedded />}
         {collaboration && <LiveCollaboration key={page} hub={hub} initialTab={page as "notes"} embedded onOpenChannel={() => go("chat")} />}
         {page === "calendar" && <LiveCalendar hub={hub} date={date} onDate={setDate} monday={mondayOf(date)} today={new Date()} day={(date.getDay() + 6) % 7} view={view} onView={setView} onDay={day => setDate(dateAt(mondayOf(date), day))} onMove={direction => setDate(dateAt(date, direction * 7))} onToday={() => setDate(new Date())} onNew={() => setDialog("Novo encontro demonstrativo")} onSelect={event => setDialog(event.title)} onHomeOffice={() => setDialog("Escala de home office")} full />}
-        {page === "board" && <LiveBoard tasks={[]} projects={hub.snapshot.projects} people={hub.snapshot.people} userId={hub.userId} canParticipate canManage busy={false} activeTimer={undefined} onSave={async () => ""} onMove={async () => ""} onArchive={async () => ""} onStart={async () => ""} onStop={async () => ""} />}
+        {page === "board" && <BoardDemo embedded />}
         {page === "people" && <section className="people-grid">{hub.snapshot.people.map(person => <div className="panel" key={person.id}><PersonAvatar name={person.display_name} id={person.id} /><h2>{person.display_name}</h2><p>{person.role === "leader" ? "Líder" : "Membro"}</p></div>)}</section>}
         {page === "calls" && <LiveCalls hub={hub} />}
         {page === "chat" && <a className="primary-button" href="/demo/operations">Abrir conversas de demonstração</a>}

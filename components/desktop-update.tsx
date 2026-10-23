@@ -1,4 +1,5 @@
 "use client";
+import { ZuluButton } from "./dashboard-ui";
 
 import { useEffect, useState } from "react";
 import { isNewerVersion, versionParts } from "@/lib/desktop/updates";
@@ -154,7 +155,7 @@ export function DesktopUpdate() {
             <p role="alert">{automatic ? "Não foi possível concluir a atualização. Tente novamente." : "Não foi possível abrir o download. Tente novamente."}</p>
           )}
           <div className="desktop-update-actions">
-            <button
+            <ZuluButton
               className="outline-button"
               disabled={opening}
               onClick={() => {
@@ -163,8 +164,8 @@ export function DesktopUpdate() {
               }}
             >
               Depois
-            </button>
-            <button
+            </ZuluButton>
+            <ZuluButton
               className="primary-button"
               disabled={opening}
               onClick={async () => {
@@ -198,7 +199,7 @@ export function DesktopUpdate() {
               }}
             >
               {opening ? (automatic ? "Atualizando…" : "Abrindo…") : automatic ? "Instalar e reiniciar" : "Baixar atualização"}
-            </button>
+            </ZuluButton>
           </div>
         </>
       ) : (
@@ -208,7 +209,7 @@ export function DesktopUpdate() {
             <p>Recarregue para aplicar as mudanças da interface. Esta atualização não precisa de instalação.</p>
           </div>
           <div className="desktop-update-actions">
-            <button
+            <ZuluButton
               className="outline-button"
               onClick={() => {
                 if (webBuild) {
@@ -218,13 +219,13 @@ export function DesktopUpdate() {
               }}
             >
               Depois
-            </button>
-            <button
+            </ZuluButton>
+            <ZuluButton
               className="primary-button"
               onClick={() => window.location.reload()}
             >
               Aplicar melhorias
-            </button>
+            </ZuluButton>
           </div>
         </>
       )}

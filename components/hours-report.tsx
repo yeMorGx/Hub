@@ -58,8 +58,8 @@ export function HoursReport({ hub }: { hub: HubController }) {
   return <section className="hours-report" aria-label="Relatório de horas">
     <div className="workspace-section-heading"><div><h2>O trabalho em detalhes</h2><p>{hub.isAdmin ? "Exporte seu time, com uma seção para cada pessoa." : "Seu relatório inclui apenas suas horas e atividades."} Sem valores financeiros.</p></div><ChartBar size={26} /></div>
     <ZuluForm className="report-filters" onSubmit={event => { event.preventDefault(); void generate(); }}>
-      <ZuluLabel>De<ZuluInput type="date" required value={from} onChange={event => setFrom(event.target.value)} /></ZuluLabel>
-      <ZuluLabel>Até<ZuluInput type="date" required min={from} value={to} onChange={event => setTo(event.target.value)} /></ZuluLabel>
+      <ZuluLabel>De<ZuluInput type="date" required value={from} onValueChange={event => setFrom(event)} /></ZuluLabel>
+      <ZuluLabel>Até<ZuluInput type="date" required min={from} value={to} onValueChange={event => setTo(event)} /></ZuluLabel>
       {hub.isAdmin && <ZuluLabel>Pessoa<ZuluSelect value={user} onValueChange={setUser} aria-label="Pessoa do relatório"><option value="">Time inteiro</option>{hub.snapshot.people.map(person => <option key={person.id} value={person.id}>{person.display_name}</option>)}</ZuluSelect></ZuluLabel>}
       <ZuluLabel>Projeto<ZuluSelect value={project} onValueChange={setProject} aria-label="Projeto do relatório"><option value="">Todos os projetos</option>{hub.snapshot.projects.map(project => <option key={project.id} value={project.id}>{project.name}</option>)}</ZuluSelect></ZuluLabel>
       <ZuluButton type="submit" className="primary-button" disabled={busy}>{busy ? <><Spinner size="sm" />Consultando…</> : "Gerar relatório"}</ZuluButton>

@@ -12,6 +12,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Antes de criar ou retrabalhar componentes de interface, leia [`.agents/skills/zulu-heroui/SKILL.md`](.agents/skills/zulu-heroui/SKILL.md). Por decisão explícita do usuário, **HeroUI v3 é a referência obrigatória**: use os componentes e exemplos oficiais, com seus comportamentos e acessibilidade, adaptando os tokens à identidade documentada em `DESIGN.md`. Isso inclui calendário, feedback, formulários, OTP, controles, layout, navegação e overlays. Não aplicar padrões HeroUI v2 nem inventar substitutos visuais. A marca ZULU prioriza o símbolo e pouco texto.
 
+## ZULU: formulários HeroUI
+
+Ao criar ou alterar formulários, seguir [docs/form-controls.md](docs/form-controls.md) e usar os adaptadores compartilhados em todas as páginas. Selects, datas, horários, números, checkboxes e radios usam a composição oficial HeroUI v3 em pt-BR, com valores de envio, validação, foco e estado desabilitado preservados. Conferir a interação real de Checkbox.Content e o envio de FormData ao mudar esses controles.
+
 ## ZULU: microinterações obrigatórias
 
 Toda interface nova ou retrabalhada deve incluir microinterações e microanimações intencionais: feedback de hover/pressionamento, mudanças de estado, abertura/fechamento e resultados de ações, conforme o contexto. Usar os comportamentos oficiais HeroUI e seguir a política de movimento da skill e de `DESIGN.md`. Quando faltar uma boa solução, pesquisar exemplos reais em HeroUI, Refero, Unlume e outros sites de UI antes de implementar; registrar a referência consultada. Preservar teclado, toque, foco e `prefers-reduced-motion`, com animações rápidas e fluidas que não atrasem ações. Aplicar progressivamente no escopo de cada tarefa.

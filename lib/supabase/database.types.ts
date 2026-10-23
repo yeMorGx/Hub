@@ -1246,6 +1246,7 @@ export type Database = {
           id: string
           priority: string
           project_id: string | null
+          sort_order?: number
           status: string
           team_id: string
           title: string
@@ -1262,6 +1263,7 @@ export type Database = {
           id?: string
           priority?: string
           project_id?: string | null
+          sort_order?: number
           status?: string
           team_id: string
           title: string
@@ -1278,6 +1280,7 @@ export type Database = {
           id?: string
           priority?: string
           project_id?: string | null
+          sort_order?: number
           status?: string
           team_id?: string
           title?: string
@@ -1957,6 +1960,10 @@ export type Database = {
       }
       mark_notification_read: {
         Args: { p_notification_id: string }
+        Returns: undefined
+      }
+      position_task: {
+        Args: { p_task_id: string; p_status: string; p_expected_version: number; p_before_id?: string; p_after_id?: string }
         Returns: undefined
       }
       move_task: {

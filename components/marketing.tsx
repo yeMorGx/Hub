@@ -1,4 +1,5 @@
 "use client";
+import { ZuluButton } from "./dashboard-ui";
 import { BrandMark } from "./brand";
 
 import { useEffect, useRef, useState } from "react";
@@ -58,7 +59,7 @@ export function MarketingNav({ download = false }: { download?: boolean }) {
             Download <ArrowDown aria-hidden="true" />
           </Link>
         </div>
-        <button
+        <ZuluButton
           className="m-menu-button"
           aria-expanded={open}
           aria-controls="marketing-menu"
@@ -66,7 +67,7 @@ export function MarketingNav({ download = false }: { download?: boolean }) {
           onClick={() => setOpen(!open)}
         >
           {open ? <X /> : <List />}
-        </button>
+        </ZuluButton>
       </nav>
       {open && (
         <div id="marketing-menu" className="m-mobile-menu">
@@ -198,7 +199,7 @@ export function ProductExplorer() {
             aria-orientation="vertical"
           >
             {views.map((item, index) => (
-              <button
+              <ZuluButton
                 key={item.id}
                 ref={(el) => {
                   buttons.current[index] = el;
@@ -233,7 +234,7 @@ export function ProductExplorer() {
                     transition={transition}
                   />
                 )}
-              </button>
+              </ZuluButton>
             ))}
           </div>
           <AnimatePresence mode="wait" initial={false}>
@@ -328,7 +329,7 @@ export function FocusDemo() {
           <br />
           Nenhuma hora será registrada.
         </span>
-        <button
+        <ZuluButton
           aria-label={
             started === null
               ? "Experimentar timer"
@@ -342,7 +343,7 @@ export function FocusDemo() {
           }}
         >
           {started === null ? <Play weight="fill" /> : <Stop weight="fill" />}
-        </button>
+        </ZuluButton>
       </div>
     </div>
     </TiltCard>
@@ -838,7 +839,7 @@ export function DownloadPage() {
                 no PowerShell.
               </p>
               <code>{WINDOWS_RELEASE.sha256}</code>
-              <button
+              <ZuluButton
                 className="m-text-link"
                 onClick={async () => {
                   try {
@@ -856,7 +857,7 @@ export function DownloadPage() {
                 ) : (
                   <ArrowRight aria-hidden="true" />
                 )}
-              </button>
+              </ZuluButton>
               <span role="status">
                 {copied
                   ? "SHA-256 copiado para a área de transferência."

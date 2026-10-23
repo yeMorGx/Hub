@@ -65,7 +65,7 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
       <Tabs.Panel id="desktop" className="settings-panel">
         <h2>ZULU no seu PC</h2><p>Seu tempo à mão, mesmo com a janela recolhida.</p>
         {runtime?.supported ? <>
-          <div className="settings-row"><div><strong>Abrir ao ligar o PC</strong><p>Inicia discretamente na bandeja.</p></div><Checkbox isSelected={runtime.autostart} isDisabled={busy} onChange={enabled => void runtimeAction("set_autostart", enabled)}><Checkbox.Control><Checkbox.Indicator /></Checkbox.Control><Checkbox.Content>Iniciar automaticamente</Checkbox.Content></Checkbox></div>
+          <div className="settings-row"><div><strong>Abrir ao ligar o PC</strong><p>Inicia discretamente na bandeja.</p></div><Checkbox isSelected={runtime.autostart} isDisabled={busy} onChange={enabled => void runtimeAction("set_autostart", enabled)}><Checkbox.Content><Checkbox.Control><Checkbox.Indicator /></Checkbox.Control>Iniciar automaticamente</Checkbox.Content></Checkbox></div>
           <div className="settings-row"><div><strong>Segundo plano</strong><p>{runtime.background ? "Ativo. Fechar a janela mantém o ZULU na bandeja." : "Bandeja indisponível neste dispositivo. Fechar a janela encerra o app."}</p></div></div>
           <div className="settings-row"><div><strong>Mini timer</strong><p>Cápsula flutuante com dois tamanhos e ações rápidas.</p></div><Button variant="secondary" isDisabled={busy} onPress={() => void runtimeAction(runtime.miniVisible ? "hide_mini" : "show_mini")}>{runtime.miniVisible ? "Ocultar" : "Mostrar"}</Button></div>
           <Button variant="danger-soft" isDisabled={busy} onPress={() => void runtimeAction("quit")}>Encerrar ZULU</Button>

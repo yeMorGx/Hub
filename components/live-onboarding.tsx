@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "./dashboard-ui";
+import { ZuluLabel, ZuluSelect, ZuluInput, ZuluButton } from "./dashboard-ui";
 import { useState, type FormEvent } from "react";
 import {
   SquaresFour,
@@ -77,13 +79,13 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
           {error}
         </div>
       )}
-      <form className="auth-form" onSubmit={submit}>
+      <ZuluForm className="auth-form" onSubmit={submit}>
         {admins.length > 0 && (
-          <label>
+          <ZuluLabel>
             Workspace
-            <select
+            <ZuluSelect
               value={workspaceId}
-              onChange={(e) => setWorkspaceId(e.target.value)}
+              onValueChange={(e) => setWorkspaceId(e)}
               disabled={hub.busy || !!createdWorkspace}
             >
               <option value="">Criar novo workspace</option>
@@ -92,19 +94,19 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
                   {w.name}
                 </option>
               ))}
-            </select>
-          </label>
+            </ZuluSelect>
+          </ZuluLabel>
         )}
         {!workspaceId && !createdWorkspace && (
-          <label>
+          <ZuluLabel>
             Nome do workspace
-            <input
+            <ZuluInput
               name="workspace"
               required
               maxLength={120}
               placeholder="Nome da sua organização"
             />
-          </label>
+          </ZuluLabel>
         )}
         {createdWorkspace && (
           <div className="form-success">
@@ -112,19 +114,19 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
             Workspace criado. Agora conclua seu time.
           </div>
         )}
-        <label>
+        <ZuluLabel>
           Nome do time
-          <input
+          <ZuluInput
             name="team"
             required
             maxLength={120}
             placeholder="Ex.: Produto"
           />
-        </label>
+        </ZuluLabel>
         <p className="demo-note">
           O time terá um canal público #geral para começar as conversas.
         </p>
-        <button className="primary-button auth-submit" disabled={hub.busy}>
+        <ZuluButton className="primary-button auth-submit" disabled={hub.busy}>
           {hub.busy ? (
             <CircleNotch className="spinning" size={19} />
           ) : (
@@ -132,23 +134,23 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
           )}
           Criar meu espaço
           <ArrowRight size={18} />
-        </button>
-      </form>
+        </ZuluButton>
+      </ZuluForm>
       <div className="onboarding-invite">
         <strong>Seu time já usa o ZULU?</strong>
         <p>
           Peça um link de convite ao administrador e aceite com o e-mail
           convidado. Depois de entrar no time, seu acesso aparece aqui.
         </p>
-        <button className="text-button" onClick={() => void hub.refreshAll()}>
+        <ZuluButton className="text-button" onClick={() => void hub.refreshAll()}>
           Conferir meu acesso <ArrowRight size={14} />
-        </button>
+        </ZuluButton>
       </div>
       <div className="auth-switch">
-        <button onClick={signOut}>
+        <ZuluButton onClick={signOut}>
           <SignOut size={15} />
           Sair desta conta
-        </button>
+        </ZuluButton>
       </div>
     </AuthShell>
   );

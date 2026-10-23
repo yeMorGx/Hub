@@ -1,4 +1,5 @@
 "use client";
+import { ZuluLabel, ZuluInput, ZuluButton } from "./dashboard-ui";
 import { useEffect, useState } from "react";
 import {
   clearVault,
@@ -51,9 +52,9 @@ export function OfflineSettings({ userId }: { userId: string }) {
         </p>
       ) : (
         <>
-          <label>
+          <ZuluLabel>
             Senha exclusiva para a cópia offline
-            <input
+            <ZuluInput
               type="password"
               minLength={12}
               autoComplete="new-password"
@@ -67,19 +68,19 @@ export function OfflineSettings({ userId }: { userId: string }) {
               onChange={(e) => setPass(e.target.value)}
               placeholder="Pelo menos 12 caracteres"
             />
-          </label>
-          <button
+          </ZuluLabel>
+          <ZuluButton
             type="button"
             className="secondary-button"
             disabled={busy || pass.length < 12}
             onClick={enable}
           >
             {exists ? "Desbloquear cópia" : "Ativar cópia offline"}
-          </button>
+          </ZuluButton>
         </>
       )}
       {exists && (
-        <button
+        <ZuluButton
           type="button"
           className="text-button"
           disabled={busy}
@@ -90,7 +91,7 @@ export function OfflineSettings({ userId }: { userId: string }) {
           }}
         >
           Apagar cópia deste dispositivo
-        </button>
+        </ZuluButton>
       )}
       <a className="text-button" href="/offline.html">
         Abrir leitor offline

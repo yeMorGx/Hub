@@ -24,7 +24,7 @@ Decisão explícita do usuário em 21/10/2026: **HeroUI é a referência total d
 5. Aplicar o tema do ZULU pelos pontos de extensão/tokens/variantes documentados. O dashboard é flat: sem bordas decorativas nem sombras; preservar os contornos funcionais de foco. Não alterar as outras superfícies fora do escopo da tarefa.
 6. HeroUI v3 usa React Aria e Tailwind v4; seguir a API composta atual e `@heroui/styles`. Não acrescentar `HeroUIProvider` ou padrões da v2. Instalar dependências pelo gerenciador já usado pelo projeto quando a tarefa exigir componentes reais; ler o guia específico antes de mudar a configuração CSS.
 7. Não misturar outra biblioteca de componentes por preferência do agente. Código específico de produto integra as primitivas HeroUI; efeitos especializados já escolhidos explicitamente pelo usuário, como o fundo **Prism da Spell UI**, mantêm essa escolha, sem substituir a biblioteca padrão de controles.
-8. A regra não pede uma migração global imediata das telas existentes. Migrar os componentes ao trabalhar no seu escopo, preservando lógica, dados e integrações.
+8. Todos os formulários usam os adaptadores compartilhados. Antes de alterá-los, ler `docs/form-controls.md`; preservar os contratos de FormData, valores ISO, locale pt-BR, validação e desabilitação. Em Checkbox, Control e o texto ficam dentro de Checkbox.Content, que fornece a área interativa.
 
 ## Microinterações obrigatórias
 
@@ -47,7 +47,7 @@ Registrar qual componente/exemplo oficial foi usado. Conferir a versão instalad
 
 ## Dashboard implementado
 
-Hoje e `/demo/dashboard` já usam HeroUI React/Styles 3.2.6 em Bento Grid. Ler `docs/dashboard-bento.md` antes de alterar a tela. `components/dashboard-ui.tsx` compõe as primitivas oficiais e mantém fallback nativo fora do dashboard. Preservar a foto local da escala, os contratos de FormData, os portais claros e a semântica de radiogroup para mês/semana/dia. A grade horária é específica do produto; HeroUI Calendar escolhe a data. O timer mantém os presets originais Prism e Lava da Spell UI.
+Hoje e `/demo/dashboard` já usam HeroUI React/Styles 3.2.6 em Bento Grid. Ler `docs/dashboard-bento.md` antes de alterar a tela. `components/dashboard-ui.tsx` compõe as primitivas oficiais para todas as páginas; campos de data/hora/número usam `components/form-controls.tsx`. Preservar a foto local da escala, os contratos de FormData, os portais claros e a semântica de radiogroup para mês/semana/dia. A grade horária é específica do produto; HeroUI Calendar escolhe a data. O timer mantém os presets originais Prism e Lava da Spell UI.
 
 ## Sidebar: exceção de ícones escolhida pelo usuário
 

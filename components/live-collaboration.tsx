@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "./dashboard-ui";
+import { ZuluButton, ZuluLabel, ZuluInput, ZuluTextArea, ZuluSelect } from "./dashboard-ui";
 import { useState, type FormEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import {
@@ -81,7 +83,7 @@ export function LiveCollaboration({
             { id: "notifications", label: "Notificações", icon: Bell },
           ] as const
         ).map((t) => (
-          <button
+          <ZuluButton
             key={t.id}
             className={tab === t.id ? "active" : ""}
             onClick={() => {
@@ -93,15 +95,15 @@ export function LiveCollaboration({
           >
             <t.icon size={18} />
             {t.label}
-          </button>
+          </ZuluButton>
         ))}
-        <button
+        <ZuluButton
           className="icon-button"
           onClick={() => void store.refresh()}
           aria-label="Atualizar colaboração"
         >
           <ArrowClockwise size={18} />
-        </button>
+        </ZuluButton>
       </nav>
       {error && (
         <p className="form-error" role="alert">
@@ -123,27 +125,27 @@ export function LiveCollaboration({
             (editing !== undefined ? (
               <div className="document-editor">
                 <div className="workspace-section-heading">
-                  <button
+                  <ZuluButton
                     className="text-button"
                     onClick={() => setEditing(undefined)}
                   >
                     <ArrowLeft size={16} />
                     Todos os documentos
-                  </button>
-                  <button
+                  </ZuluButton>
+                  <ZuluButton
                     className="outline-button"
                     onClick={() => setPreview(!preview)}
                   >
                     {preview ? "Editar Markdown" : "Pré-visualizar"}
-                  </button>
+                  </ZuluButton>
                 </div>
-                <form
+                <ZuluForm
                   className="dialog-form"
                   onSubmit={(e) => void saveNote(e)}
                 >
-                  <label>
+                  <ZuluLabel>
                     Título
-                    <input
+                    <ZuluInput
                       key={editing?.id || "new"}
                       name="title"
                       defaultValue={editing?.title || ""}
@@ -151,7 +153,7 @@ export function LiveCollaboration({
                       maxLength={180}
                       readOnly={!canWrite}
                     />
-                  </label>
+                  </ZuluLabel>
                   {preview ? (
                     <article className="markdown-body">
                       <ReactMarkdown>
@@ -159,9 +161,9 @@ export function LiveCollaboration({
                       </ReactMarkdown>
                     </article>
                   ) : (
-                    <label>
+                    <ZuluLabel>
                       Conteúdo em Markdown
-                      <textarea
+                      <ZuluTextArea
                         className="markdown-input"
                         value={body}
                         onChange={(e) => setBody(e.target.value)}
@@ -169,13 +171,13 @@ export function LiveCollaboration({
                         maxLength={100000}
                         readOnly={!canWrite}
                       />
-                    </label>
+                    </ZuluLabel>
                   )}
                   <div className="dialog-actions">
                     {editing &&
                       (editing.created_by === hub.userId || hub.canManage) &&
                       canWrite && (
-                        <button
+                        <ZuluButton
                           className="text-button task-archive"
                           type="button"
                           disabled={hub.busy}
@@ -207,19 +209,19 @@ export function LiveCollaboration({
                         >
                           <Trash size={16} />
                           Arquivar
-                        </button>
+                        </ZuluButton>
                       )}
                     {canWrite && (
-                      <button
+                      <ZuluButton
                         className="primary-button"
                         disabled={hub.busy}
                         type="submit"
                       >
                         Salvar documento
-                      </button>
+                      </ZuluButton>
                     )}
                   </div>
-                </form>
+                </ZuluForm>
               </div>
             ) : (
               <>
@@ -231,7 +233,7 @@ export function LiveCollaboration({
                     </p>
                   </div>
                   {canWrite && (
-                    <button
+                    <ZuluButton
                       className="primary-button"
                       onClick={() => {
                         setEditing(null);
@@ -241,13 +243,13 @@ export function LiveCollaboration({
                     >
                       <Plus size={17} />
                       Novo documento
-                    </button>
+                    </ZuluButton>
                   )}
                 </div>
                 {data.notes.length ? (
                   <div className="document-list">
                     {data.notes.map((note) => (
-                      <button
+                      <ZuluButton
                         key={note.id}
                         className="document-row"
                         onClick={() => {
@@ -267,7 +269,7 @@ export function LiveCollaboration({
                           </small>
                         </span>
                         <span>v{note.version}</span>
-                      </button>
+                      </ZuluButton>
                     ))}
                   </div>
                 ) : (
@@ -292,14 +294,14 @@ export function LiveCollaboration({
                   <p>Compartilhe avanços e peça ajuda sem ocupar a agenda.</p>
                 </div>
                 <div className="workspace-filters">
-                  <label>
+                  <ZuluLabel>
                     <span className="sr-only">Tipo de check-in</span>
-                    <select
+                    <ZuluSelect
                       value={kind}
-                      onChange={(e) => {
-                        setKind(e.target.value);
+                      onValueChange={(e) => {
+                        setKind(e);
                         setPeriod(
-                          e.target.value === "weekly"
+                          e === "weekly"
                             ? dayKey(mondayOf(new Date()))
                             : dayKey(new Date()),
                         );
@@ -307,21 +309,21 @@ export function LiveCollaboration({
                     >
                       <option value="daily">Standup diário</option>
                       <option value="weekly">Check-in semanal</option>
-                    </select>
-                  </label>
-                  <label>
+                    </ZuluSelect>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     <span className="sr-only">Data do check-in</span>
-                    <input
+                    <ZuluInput
                       type="date"
                       value={period}
-                      onChange={(e) => setPeriod(e.target.value)}
+                      onValueChange={(e) => setPeriod(e)}
                       max={dayKey(new Date())}
                     />
-                  </label>
+                  </ZuluLabel>
                 </div>
               </div>
               {canWrite && (
-                <form
+                <ZuluForm
                   key={`${period}:${kind}:${own?.updated_at || "new"}`}
                   className="standup-form dialog-form"
                   onSubmit={async (e) => {
@@ -345,50 +347,50 @@ export function LiveCollaboration({
                   }}
                 >
                   <div className="standup-fields">
-                    <label>
+                    <ZuluLabel>
                       O que você concluiu?
-                      <textarea
+                      <ZuluTextArea
                         name="accomplished"
                         defaultValue={own?.accomplished || ""}
                         rows={3}
                         maxLength={5000}
                         required
                       />
-                    </label>
-                    <label>
+                    </ZuluLabel>
+                    <ZuluLabel>
                       Qual é o próximo passo?
-                      <textarea
+                      <ZuluTextArea
                         name="planned"
                         defaultValue={own?.planned || ""}
                         rows={3}
                         maxLength={5000}
                         required
                       />
-                    </label>
-                    <label>
+                    </ZuluLabel>
+                    <ZuluLabel>
                       Precisa de ajuda com algo?
-                      <textarea
+                      <ZuluTextArea
                         name="blockers"
                         defaultValue={own?.blockers || ""}
                         rows={3}
                         maxLength={5000}
                       />
-                    </label>
+                    </ZuluLabel>
                   </div>
                   <div className="workspace-section-heading">
-                    <label>
+                    <ZuluLabel>
                       Como você está?
-                      <select name="mood" defaultValue={own?.mood || "steady"}>
+                      <ZuluSelect name="mood" defaultValue={own?.mood || "steady"}>
                         <option value="great">Com energia</option>
                         <option value="steady">Tudo em ordem</option>
                         <option value="struggling">Preciso de apoio</option>
-                      </select>
-                    </label>
-                    <button className="primary-button" disabled={hub.busy}>
+                      </ZuluSelect>
+                    </ZuluLabel>
+                    <ZuluButton className="primary-button" disabled={hub.busy}>
                       {own ? "Atualizar check-in" : "Publicar check-in"}
-                    </button>
+                    </ZuluButton>
                   </div>
-                </form>
+                </ZuluForm>
               )}
               <div className="standup-feed">
                 {data.standups
@@ -442,12 +444,12 @@ export function LiveCollaboration({
                   <h2>Reuniões com contexto</h2>
                   <p>Prepare a pauta e registre as decisões do encontro.</p>
                 </div>
-                <label>
+                <ZuluLabel>
                   <span className="sr-only">Selecionar evento</span>
-                  <select
+                  <ZuluSelect
                     value={eventId}
-                    onChange={(e) => {
-                      setEventId(e.target.value);
+                    onValueChange={(e) => {
+                      setEventId(e);
                       setError("");
                     }}
                   >
@@ -458,11 +460,11 @@ export function LiveCollaboration({
                         {e.title}
                       </option>
                     ))}
-                  </select>
-                </label>
+                  </ZuluSelect>
+                </ZuluLabel>
               </div>
               {selectedEvent ? (
-                <form
+                <ZuluForm
                   key={`${eventId}:${meeting?.version || 0}`}
                   className="dialog-form"
                   onSubmit={async (e) => {
@@ -486,9 +488,9 @@ export function LiveCollaboration({
                     {selectedEvent.title} ·{" "}
                     {new Date(selectedEvent.starts_at).toLocaleString("pt-BR")}
                   </p>
-                  <label>
+                  <ZuluLabel>
                     Pauta
-                    <textarea
+                    <ZuluTextArea
                       name="agenda"
                       defaultValue={meeting?.agenda || ""}
                       rows={8}
@@ -499,10 +501,10 @@ export function LiveCollaboration({
                           selectedEvent.created_by !== hub.userId)
                       }
                     />
-                  </label>
-                  <label>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Ata e decisões
-                    <textarea
+                    <ZuluTextArea
                       name="minutes"
                       defaultValue={meeting?.minutes || ""}
                       rows={8}
@@ -513,17 +515,17 @@ export function LiveCollaboration({
                           selectedEvent.created_by !== hub.userId)
                       }
                     />
-                  </label>
+                  </ZuluLabel>
                   {canWrite &&
                     (hub.canManage ||
                       selectedEvent.created_by === hub.userId) && (
                       <div className="dialog-actions">
-                        <button className="primary-button" disabled={hub.busy}>
+                        <ZuluButton className="primary-button" disabled={hub.busy}>
                           Salvar pauta e ata
-                        </button>
+                        </ZuluButton>
                       </div>
                     )}
-                </form>
+                </ZuluForm>
               ) : (
                 <EmptyState
                   title="Escolha um encontro"
@@ -569,7 +571,7 @@ export function LiveCollaboration({
                         </small>
                       </div>
                       {n.channel_id && (
-                        <button
+                        <ZuluButton
                           className="outline-button"
                           onClick={() => {
                             onOpenChannel(n.channel_id!);
@@ -581,10 +583,10 @@ export function LiveCollaboration({
                           }}
                         >
                           Abrir conversa
-                        </button>
+                        </ZuluButton>
                       )}
                       {!n.read_at && (
-                        <button
+                        <ZuluButton
                           className="icon-button"
                           aria-label="Marcar como lida"
                           onClick={() =>
@@ -596,7 +598,7 @@ export function LiveCollaboration({
                           }
                         >
                           <Check size={18} />
-                        </button>
+                        </ZuluButton>
                       )}
                     </article>
                   ))}

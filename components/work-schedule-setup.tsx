@@ -131,7 +131,7 @@ export function WorkScheduleSetup({
               step="0.25"
               required
               value={dailyHours}
-              onChange={(event) => setDailyHours(event.target.value)}
+              onValueChange={(event) => setDailyHours(event)}
             />
             <small>h</small>
           </span>

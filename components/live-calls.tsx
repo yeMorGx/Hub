@@ -1,4 +1,5 @@
 "use client";
+import { ZuluLabel, ZuluSelect, ZuluCheckboxField, ZuluButton } from "./dashboard-ui";
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import {
@@ -173,11 +174,11 @@ export function LiveCalls({
         </div>
         <div className="call-lobby-controls">
           <h3>Preparar chamada</h3>
-          <label>
+          <ZuluLabel>
             Canal
-            <select
+            <ZuluSelect
               value={channel}
-              onChange={(e) => setChannel(e.target.value)}
+              onValueChange={(e) => setChannel(e)}
               disabled={busy}
             >
               <option value="">Escolha onde conversar</option>
@@ -186,26 +187,26 @@ export function LiveCalls({
                   {c.kind === "dm" ? "Conversa direta" : `#${c.name}`}
                 </option>
               ))}
-            </select>
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
+            </ZuluSelect>
+          </ZuluLabel>
+          <ZuluLabel className="checkbox-label">
+            <ZuluCheckboxField
+
               checked={audio}
-              onChange={(e) => setAudio(e.target.checked)}
+              onCheckedChange={(e) => setAudio(e)}
             />
             <Microphone size={18} />
             Entrar com microfone
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
+          </ZuluLabel>
+          <ZuluLabel className="checkbox-label">
+            <ZuluCheckboxField
+
               checked={video}
-              onChange={(e) => setVideo(e.target.checked)}
+              onCheckedChange={(e) => setVideo(e)}
             />
             <VideoCamera size={18} />
             Entrar com câmera
-          </label>
+          </ZuluLabel>
           {enabled === null && !statusError && (
             <p role="status" className="muted">
               Conferindo serviço de chamadas…
@@ -214,12 +215,12 @@ export function LiveCalls({
           {statusError && (
             <div role="alert" className="form-error">
               <p>{statusError}</p>
-              <button
+              <ZuluButton
                 className="text-button"
                 onClick={() => setStatusAttempt((attempt) => attempt + 1)}
               >
                 Tentar novamente
-              </button>
+              </ZuluButton>
             </div>
           )}
           {!availableChannels.length && (
@@ -239,13 +240,13 @@ export function LiveCalls({
               {error}
             </p>
           )}
-          <button
+          <ZuluButton
             className="primary-button"
             disabled={busy || !channelReady || !enabled}
             onClick={join}
           >
             {busy ? "Conectando…" : "Entrar na sala"}
-          </button>
+          </ZuluButton>
           <small className="muted">
             <MonitorArrowUp size={16} /> Compartilhe uma janela ou sua tela
             durante a chamada.

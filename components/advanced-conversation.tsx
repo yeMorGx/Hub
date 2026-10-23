@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "./dashboard-ui";
+import { ZuluButton, ZuluLabel, ZuluInput, ZuluTextArea, ZuluSelect, ZuluCheckboxField } from "./dashboard-ui";
 import { saveConversation, vaultUnlocked } from "@/public/offline-vault.js";
 import { parseChatCommand } from "@/lib/hub/commands";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -482,13 +484,13 @@ export function AdvancedConversation({
             )}
           </header>
           {message.reply_to && !root && (
-            <button
+            <ZuluButton
               className="text-button thread-context"
               onClick={() => void loadThread(message)}
             >
               <ChatCircleText size={14} />
               Resposta em uma conversa
-            </button>
+            </ZuluButton>
           )}
           <p className={message.deleted_at ? "message-deleted" : ""}>
             {message.deleted_at ? "Mensagem removida" : message.body}
@@ -505,7 +507,7 @@ export function AdvancedConversation({
                   ),
                   own = group.some((a) => a.user_id === hub.userId);
                 return (
-                  <button
+                  <ZuluButton
                     key={r.id}
                     className={`reaction-button ${own ? "selected" : ""}`}
                     aria-label={`${r.label}: ${group.length}`}
@@ -526,20 +528,20 @@ export function AdvancedConversation({
                   >
                     <r.icon size={13} weight={own ? "fill" : "regular"} />
                     {group.length || ""}
-                  </button>
+                  </ZuluButton>
                 );
               })}
               {!message.reply_to && (
-                <button
+                <ZuluButton
                   className="text-button"
                   onClick={() => void loadThread(message)}
                 >
                   <ChatCircleText size={14} />
                   Responder
-                </button>
+                </ZuluButton>
               )}
               {moderator && (
-                <button
+                <ZuluButton
                   className="icon-button"
                   aria-label={
                     pins.some((p) => p.message_id === message.id)
@@ -562,16 +564,16 @@ export function AdvancedConversation({
                   }}
                 >
                   <PushPin size={14} />
-                </button>
+                </ZuluButton>
               )}
               {(message.author_id === hub.userId || moderator) && (
-                <button
+                <ZuluButton
                   className="icon-button"
                   aria-label="Editar ou remover mensagem"
                   onClick={() => onEdit(message)}
                 >
                   <DotsThree size={17} />
-                </button>
+                </ZuluButton>
               )}
             </div>
           )}
@@ -582,7 +584,7 @@ export function AdvancedConversation({
   return (
     <div className="advanced-conversation">
       <div className="conversation-tools">
-        <button
+        <ZuluButton
           className={
             mode === "conversation" ? "text-button selected" : "text-button"
           }
@@ -593,8 +595,8 @@ export function AdvancedConversation({
           }}
         >
           Conversa
-        </button>
-        <button
+        </ZuluButton>
+        <ZuluButton
           className={mode === "pins" ? "text-button selected" : "text-button"}
           onClick={() => {
             setMode("pins");
@@ -603,8 +605,8 @@ export function AdvancedConversation({
         >
           <PushPin size={16} />
           Fixadas{pins.length ? ` (${pins.length})` : ""}
-        </button>
-        <button
+        </ZuluButton>
+        <ZuluButton
           className={mode === "search" ? "text-button selected" : "text-button"}
           onClick={() => {
             setMode("search");
@@ -613,11 +615,11 @@ export function AdvancedConversation({
         >
           <MagnifyingGlass size={16} />
           Buscar
-        </button>
+        </ZuluButton>
       </div>
       {root && (
         <div className="thread-heading">
-          <button
+          <ZuluButton
             className="text-button"
             onClick={() => {
               threadSerial.current++;
@@ -628,22 +630,22 @@ export function AdvancedConversation({
           >
             <ArrowLeft size={16} />
             Voltar ao canal
-          </button>
+          </ZuluButton>
           <span>Respostas</span>
         </div>
       )}
       {mode === "search" && (
-        <form
+        <ZuluForm
           className="conversation-search"
           onSubmit={(e) => {
             e.preventDefault();
             void runSearch();
           }}
         >
-          <label className="sr-only" htmlFor="conversation-search">
+          <ZuluLabel className="sr-only" htmlFor="conversation-search">
             Buscar no histórico
-          </label>
-          <input
+          </ZuluLabel>
+          <ZuluInput
             id="conversation-search"
             value={search}
             onChange={(e) => {
@@ -657,21 +659,21 @@ export function AdvancedConversation({
             minLength={2}
             maxLength={200}
           />
-          <button className="outline-button" disabled={searchBusy}>
+          <ZuluButton className="outline-button" disabled={searchBusy}>
             Buscar
-          </button>
-        </form>
+          </ZuluButton>
+        </ZuluForm>
       )}
       {error && (
         <div className="form-alert" role="alert">
           {error}
-          <button
+          <ZuluButton
             className="icon-button"
             aria-label="Fechar aviso"
             onClick={() => setError("")}
           >
             <X size={16} />
-          </button>
+          </ZuluButton>
         </div>
       )}
       <div
@@ -683,7 +685,7 @@ export function AdvancedConversation({
         }}
       >
         {mode === "conversation" && !root && channel.hasOlder && (
-          <button
+          <ZuluButton
             className="load-older-button"
             disabled={channel.loadingOlder}
             onClick={() => {
@@ -692,16 +694,16 @@ export function AdvancedConversation({
             }}
           >
             Carregar mensagens anteriores
-          </button>
+          </ZuluButton>
         )}
         {root && threadMore && (
-          <button
+          <ZuluButton
             className="load-older-button"
             disabled={threadBusy}
             onClick={() => void loadThread(root, true)}
           >
             Carregar respostas anteriores
-          </button>
+          </ZuluButton>
         )}
         {channel.loading ? (
           <p role="status">Carregando conversa…</p>
@@ -724,19 +726,19 @@ export function AdvancedConversation({
           </div>
         )}
         {searchMore && mode === "search" && (
-          <button
+          <ZuluButton
             className="load-older-button"
             disabled={searchBusy}
             onClick={() => void runSearch(true)}
           >
             Mais resultados
-          </button>
+          </ZuluButton>
         )}
       </div>
       {mode === "conversation" && (
         <>
           {!atBottom && (
-            <button
+            <ZuluButton
               className="new-messages-button"
               onClick={() => {
                 const list = scroller.current;
@@ -746,31 +748,31 @@ export function AdvancedConversation({
             >
               Ir para mensagens recentes
               <ArrowDown size={14} />
-            </button>
+            </ZuluButton>
           )}
           <div className="composer-context">
             {pending.map((a) => (
               <span key={a.id}>
                 <Paperclip size={14} />
                 {a.filename}
-                <button
+                <ZuluButton
                   className="icon-button"
                   type="button"
                   aria-label={`Remover ${a.filename}`}
                   onClick={() => void removePending(a)}
                 >
                   <X size={13} />
-                </button>
+                </ZuluButton>
               </span>
             ))}
             {mentions.map((id) => (
-              <button
+              <ZuluButton
                 key={id}
                 className="mention-token"
                 onClick={() => setMentions((m) => m.filter((v) => v !== id))}
               >
                 @{personName(id)} <X size={11} />
-              </button>
+              </ZuluButton>
             ))}
           </div>
           <span className="typing-indicator" role="status">
@@ -782,11 +784,11 @@ export function AdvancedConversation({
                   ? "Alguém está digitando…"
                   : ""}
           </span>
-          <form className="message-form" onSubmit={(e) => void send(e)}>
-            <label className="sr-only" htmlFor="advanced-draft">
+          <ZuluForm className="message-form" onSubmit={(e) => void send(e)}>
+            <ZuluLabel className="sr-only" htmlFor="advanced-draft">
               {root ? "Sua resposta" : "Sua mensagem"}
-            </label>
-            <textarea
+            </ZuluLabel>
+            <ZuluTextArea
               id="advanced-draft"
               value={draft}
               onChange={(e) => {
@@ -821,7 +823,7 @@ export function AdvancedConversation({
                     e.target.value = "";
                   }}
                 />
-                <button
+                <ZuluButton
                   type="button"
                   className="icon-button"
                   aria-label="Anexar arquivo"
@@ -829,8 +831,8 @@ export function AdvancedConversation({
                   onClick={() => uploadInput.current?.click()}
                 >
                   <Paperclip size={19} />
-                </button>
-                <button
+                </ZuluButton>
+                <ZuluButton
                   type="button"
                   className={`icon-button ${recording ? "recording" : ""}`}
                   aria-label={recording ? "Parar gravação" : "Gravar áudio"}
@@ -838,16 +840,16 @@ export function AdvancedConversation({
                   onClick={() => void record()}
                 >
                   {recording ? <Stop size={19} /> : <Microphone size={19} />}
-                </button>
-                <label>
+                </ZuluButton>
+                <ZuluLabel>
                   <span className="sr-only">Mencionar pessoa</span>
-                  <select
+                  <ZuluSelect
                     value=""
                     title="As menções notificam participantes deste canal"
-                    onChange={(e) => {
-                      if (e.target.value)
+                    onValueChange={(e) => {
+                      if (e)
                         setMentions((m) => [
-                          ...new Set([...m, e.target.value]),
+                          ...new Set([...m, e]),
                         ]);
                     }}
                   >
@@ -859,20 +861,20 @@ export function AdvancedConversation({
                           {p.display_name}
                         </option>
                       ))}
-                  </select>
-                </label>
+                  </ZuluSelect>
+                </ZuluLabel>
                 {moderator && (
-                  <label className="mention-everyone">
-                    <input
-                      type="checkbox"
+                  <ZuluLabel className="mention-everyone">
+                    <ZuluCheckboxField
+
                       checked={mentionChannel}
-                      onChange={(e) => setMentionChannel(e.target.checked)}
+                      onCheckedChange={(e) => setMentionChannel(e)}
                     />
                     @canal
-                  </label>
+                  </ZuluLabel>
                 )}
               </div>
-              <button
+              <ZuluButton
                 className="send-button"
                 type="submit"
                 aria-label="Enviar mensagem"
@@ -885,9 +887,9 @@ export function AdvancedConversation({
                 }
               >
                 <PaperPlaneTilt size={18} weight="fill" />
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
         </>
       )}
     </div>
@@ -952,14 +954,14 @@ function MessageFile({
           {item.filename}
           <small>{(item.byte_size / 1024).toFixed(0)} KB</small>
         </span>
-        <button
+        <ZuluButton
           className="icon-button"
           disabled={busy}
           aria-label={`Abrir ${item.filename}`}
           onClick={() => void download()}
         >
           <DownloadSimple size={18} />
-        </button>
+        </ZuluButton>
       </div>
       {url && item.mime_type.startsWith("image/") && <><img src={url} alt={item.filename} loading="lazy" /><a href={url} download={item.filename} className="attachment-save">Baixar imagem</a></>}
       {url && item.mime_type.startsWith("audio/") && (

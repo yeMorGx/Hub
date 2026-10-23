@@ -182,3 +182,58 @@ html[data-zulu-theme="dark"] .live-app.workspace-inset :is(.tabs__list,.select__
 html[data-zulu-theme="dark"] .live-app.workspace-inset :is(.tabs__indicator,.tabs__tab[data-selected="true"]) { background:var(--surface); color:var(--text); }
 html[data-zulu-theme="dark"] .live-app.workspace-inset .settings-tabs .tabs__list { background:transparent; }
 @media(max-width:760px) { .live-app.workspace-inset .today-demo-controls .select { min-width:115px; } }
+
+/* Shared form surfaces use HeroUI v3, including segmented date/time controls. */
+.zulu-field { min-width: 0; }
+.zulu-temporal-field, .zulu-number-field { display: grid; gap: 7px; width: 100%; }
+.zulu-temporal-field [data-slot="date-input-group"], .zulu-temporal-field .date-input-group,
+.zulu-number-field .number-field__group { min-height: 40px; border: 0; box-shadow: none; background: var(--field-background, var(--surface-raised)); color: var(--text); border-radius: 8px; }
+.zulu-temporal-field [role="spinbutton"] { min-width: 1ch; font-variant-numeric: tabular-nums; }
+.zulu-temporal-field .date-input-group__input { flex-wrap: nowrap; white-space: nowrap; }
+.zulu-number-field .number-field__input { min-width: 0; text-align: center; background: transparent; box-shadow: none; }
+.zulu-calendar-picker { z-index: 250; }
+.avatar, .avatar img, .avatar [data-slot="avatar-image"], .avatar [data-slot="avatar-fallback"] { border-radius: 999px !important; }
+.avatar { aspect-ratio: 1; flex-shrink: 0; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.live-app .person-row, .live-app .dm-button { justify-content: flex-start; text-align: left; }
+.live-app .dm-button > span:not(.avatar):not(.channel-count) { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.live-app .dm-button .channel-count { margin-left: auto; }
+.opening-greeting { line-height: 1.25; overflow: visible; }
+.greeting-name { overflow: visible; }
+.greeting-signature { display: block; height: 1.75em; margin-block: -.18em; overflow: visible; }
+html[data-desktop-titlebar]:has(.workspace-inset) body { padding-top: 0; }
+.live-app.workspace-inset .settings-tabs > .tabs__list-container { width: 200px; flex-shrink: 0; }
+.live-app.workspace-inset .settings-tabs > .tabs__list-container > .tabs__list { padding: 6px; border-radius: 14px; background: var(--surface-raised); gap: 6px; width: 100%; }
+.live-app.workspace-inset .settings-tabs .tabs__tab { min-height: 46px; padding: 10px 14px; border-radius: 10px; justify-content: flex-start; }
+.live-app.workspace-inset .settings-tabs .tabs__indicator { border-radius: 10px; }
+@media(max-width:760px) { .live-app.workspace-inset .settings-tabs > .tabs__list-container { width: 100%; } .live-app.workspace-inset .settings-tabs > .tabs__list-container > .tabs__list { width: max-content; min-width: 100%; } }
+.kanban-sortable { position: relative; touch-action: pan-y; }
+.kanban-sortable.is-dragging > .task-card { transform: scale(.98); }
+.kanban-drag-handle.button { position: absolute; top: 9px; right: 7px; z-index: 2; width: 28px; min-width: 28px; height: 28px; padding: 0; color: var(--muted); background: transparent; cursor: grab; touch-action: none; border-radius: 7px; }
+.kanban-drag-handle.button:active { cursor: grabbing; transform: none; }
+.kanban-sortable .task-card-top { padding-right: 20px; }
+.kanban-physics-card { transform-origin: 50% 35%; pointer-events: none; }
+.kanban-overlay-surface.live-app.workspace-inset { background: transparent; min-height: 0; height: auto; }
+.kanban-overlay-surface .task-card { box-shadow: 0 18px 35px -10px #18283f55; margin: 0; }
+.task-board .board-column:has(.is-drag-target), .task-board .board-drop-target { background: color-mix(in srgb, var(--accent) 12%, var(--surface-raised)); }
+.task-board .task-card-actions .zulu-select { min-width: 0; max-width: 65%; }
+.task-board .task-card-actions .select__trigger { min-height: 28px; height: auto; padding: 5px 8px; font-size: 11px; }
+.task-board .task-title.button { height: auto; min-height: 0; justify-content: flex-start; text-align: left; white-space: normal; padding: 0; background: transparent; }
+.task-board .board-project, .task-board .board-filters > .select { max-width: 230px; }
+@media(prefers-reduced-motion:reduce) { .kanban-sortable.is-dragging > .task-card { transform: none; } }
+.share-source-options .radio, .share-quality-options .radio { min-width: 0; }
+.share-source-options .radio__content, .share-quality-options .radio__content { display: flex; align-items: center; gap: 12px; min-height: 68px; width: 100%; padding: 15px; border-radius: 10px; background: var(--surface-raised); }
+.share-source-options .radio[data-selected=true] .radio__content, .share-quality-options .radio[data-selected=true] .radio__content { background: color-mix(in srgb,var(--accent) 12%,var(--surface)); }
+.share-source-options .radio__content span, .share-quality-options .radio__content span { min-width: 0; }
+.share-source-options .radio__content strong, .share-quality-options .radio__content strong { display: block; }
+.share-source-options .radio__content small, .share-quality-options .radio__content small { display: block; color: var(--muted); margin-top: 5px; }
+.live-app .zulu-select .select__trigger, .zulu-overlay .zulu-select .select__trigger { padding-inline-end: 30px; }
+.zulu-select .select__value { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: inherit; }
+.task-board .task-card-actions .select__trigger { padding-right: 28px; border-radius: 8px; }
+.kanban-overlay-surface .task-title.button { min-height: 0; height: auto; padding: 0; justify-content: flex-start; text-align: left; white-space: normal; background: transparent; color: var(--text); }
+.kanban-overlay-surface [data-disabled=true] { opacity: 1; filter: none; }
+.kanban-overlay-surface .task-card-actions .select__trigger { padding: 5px 28px 5px 8px; border-radius: 8px; font-size: 11px; }
+/* HeroUI's list container owns the surface; its scroller wraps the tab list. */
+.live-app.workspace-inset .workspace-settings .settings-tabs > .tabs__list-container { border-radius: 14px; padding: 6px; background: var(--surface-raised); }
+.live-app.workspace-inset .workspace-settings .settings-tabs .tabs__list { background: transparent; border-radius: 0; padding: 0; width: 100%; gap: 6px; }
+@media(max-width:760px) { .live-app.workspace-inset .workspace-settings .settings-tabs .tabs__list { width: max-content; min-width: 100%; } }

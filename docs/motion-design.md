@@ -32,6 +32,8 @@ Este contrato guia animações no aplicativo, na demonstração e no site públi
 - App autenticado `/`: microfeedback global, transição breve entre módulos, tilt/spotlight nos cartões de foco e home office. O timer conserva os presets Prism/Lava e sua própria regra de movimento reduzido.
 - Outras rotas recebem apenas a transição de entrada e interações compartilhadas; não aplicar reveal a cada bloco de formulários, relatórios ou conversa.
 
+O Kanban usa dnd-kit e MotionValues para o arraste com física; ler [kanban-interactions.md](kanban-interactions.md) antes de alterar o quadro.
+
 ## Referências
 
 - [HeroUI React v3](https://heroui.com/en/docs/react/components): controles, foco e estados.

@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "./dashboard-ui";
+import { ZuluButton, ZuluLabel, ZuluSelect, ZuluTextArea, ZuluInput } from "./dashboard-ui";
 import { BrandMark } from "./brand";
 import { DashboardNavIcon } from "./dashboard-nav-icon";
 import { Tooltip } from "@heroui/react";
@@ -153,9 +155,9 @@ function Dialog({
     >
       <div className="dialog-head">
         <h2>{title}</h2>
-        <button className="icon-button" aria-label="Fechar" onClick={onClose}>
+        <ZuluButton className="icon-button" aria-label="Fechar" onClick={onClose}>
           <X size={20} />
-        </button>
+        </ZuluButton>
       </div>
       {children}
     </dialog>
@@ -507,7 +509,7 @@ export function HubApp() {
         <div className="section-heading calendar-heading">
           <div className="heading-with-count">
             <h2>{full ? "Agenda do time" : "Sua semana"}</h2>
-            <button
+            <ZuluButton
               className={`filter-button ${projectFilter !== "all" ? "filter-active" : ""}`}
               onClick={() => setFilterOpen(!filterOpen)}
               aria-expanded={filterOpen}
@@ -515,15 +517,15 @@ export function HubApp() {
               <FunnelSimple size={14} />
               Filtrar
               {projectFilter !== "all" && <span className="filter-dot" />}
-            </button>
+            </ZuluButton>
             {filterOpen && (
               <div className="filter-popover">
-                <label htmlFor="project-filter">Projeto</label>
-                <select
+                <ZuluLabel htmlFor="project-filter">Projeto</ZuluLabel>
+                <ZuluSelect
                   id="project-filter"
                   value={projectFilter}
-                  onChange={(e) => {
-                    setProjectFilter(e.target.value);
+                  onValueChange={(e) => {
+                    setProjectFilter(e);
                     setFilterOpen(false);
                   }}
                 >
@@ -531,37 +533,37 @@ export function HubApp() {
                   {projects.map((p) => (
                     <option key={p}>{p}</option>
                   ))}
-                </select>
+                </ZuluSelect>
               </div>
             )}
           </div>
           <div className="calendar-actions">
             <div className="segmented">
-              <button
+              <ZuluButton
                 className={calendarView === "week" ? "selected" : ""}
                 onClick={() => setCalendarView("week")}
               >
                 Semana
-              </button>
-              <button
+              </ZuluButton>
+              <ZuluButton
                 className={calendarView === "day" ? "selected" : ""}
                 onClick={() => setCalendarView("day")}
               >
                 Dia
-              </button>
+              </ZuluButton>
             </div>
-            <button
+            <ZuluButton
               className="icon-button add-calendar"
               aria-label="Criar evento"
               onClick={openEventForm}
             >
               <Plus size={18} />
-            </button>
+            </ZuluButton>
           </div>
         </div>
         <div className="calendar-toolbar">
           <div className="date-controls">
-            <button
+            <ZuluButton
               className="icon-button"
               aria-label={
                 calendarView === "week" ? "Semana anterior" : "Dia anterior"
@@ -569,7 +571,7 @@ export function HubApp() {
               onClick={() => moveCalendar(-1)}
             >
               <CaretLeft size={15} />
-            </button>
+            </ZuluButton>
             <span>
               {calendarView === "week"
                 ? weekLabel
@@ -579,7 +581,7 @@ export function HubApp() {
                     month: "long",
                   })}
             </span>
-            <button
+            <ZuluButton
               className="icon-button"
               aria-label={
                 calendarView === "week" ? "Próxima semana" : "Próximo dia"
@@ -587,8 +589,8 @@ export function HubApp() {
               onClick={() => moveCalendar(1)}
             >
               <CaretRight size={15} />
-            </button>
-            <button
+            </ZuluButton>
+            <ZuluButton
               className="text-button today-button"
               onClick={() => {
                 setWeekOffset(0);
@@ -596,7 +598,7 @@ export function HubApp() {
               }}
             >
               Hoje
-            </button>
+            </ZuluButton>
           </div>
           <span className="timezone">
             GMT{-today.getTimezoneOffset() / 60 >= 0 ? "+" : ""}
@@ -615,7 +617,7 @@ export function HubApp() {
               const d = dateAt(monday, day),
                 isToday = dayKey(d) === dayKey(today);
               return (
-                <button
+                <ZuluButton
                   key={day}
                   className={`day-header ${isToday ? "is-today" : ""}`}
                   onClick={() => {
@@ -626,7 +628,7 @@ export function HubApp() {
                   <span>{days[day]}</span>
                   <strong>{String(d.getDate()).padStart(2, "0")}</strong>
                   {isToday && <span className="day-today">Hoje</span>}
-                </button>
+                </ZuluButton>
               );
             })}
             <div
@@ -646,7 +648,7 @@ export function HubApp() {
                 style={{ height: (gridEnd - gridStart) * 84 }}
               >
                 {hours.slice(0, -1).map((hour) => (
-                  <button
+                  <ZuluButton
                     key={hour}
                     className="hour-cell"
                     style={{ height: 84 }}
@@ -662,7 +664,7 @@ export function HubApp() {
                 {weeklyEvents
                   .filter((e) => e.day === day)
                   .map((event) => (
-                    <button
+                    <ZuluButton
                       key={event.id}
                       className={`calendar-event event-${event.tone}`}
                       style={{
@@ -681,7 +683,7 @@ export function HubApp() {
                       {event.duration >= 1.25 && (
                         <AvatarGroup ids={event.people} />
                       )}
-                    </button>
+                    </ZuluButton>
                   ))}
               </div>
             ))}
@@ -725,7 +727,7 @@ export function HubApp() {
         <h2>{timer?.description ?? description}</h2>
         <span>{timer?.project ?? project}</span>
       </div>
-      <button
+      <ZuluButton
         className="timer-control"
         onClick={() => (timer ? stopTimer() : startTimer())}
         aria-label={timer ? "Parar timer" : "Iniciar timer"}
@@ -736,7 +738,7 @@ export function HubApp() {
         ) : (
           <Play weight="fill" size={25} />
         )}
-      </button>
+      </ZuluButton>
       <div className="timer-bottom">
         <span className="timer-digits">{clock(elapsed)}</span>
         <span>{timer ? "Parar e registrar" : "Pronto para começar"}</span>
@@ -758,20 +760,20 @@ export function HubApp() {
         Pular para o conteúdo
       </a>
       <aside className="rail" aria-label="Navegação principal">
-        <button
+        <ZuluButton
           className="brand"
           aria-label="ZULU — início"
           onClick={() => navigate("overview")}
         >
           <BrandMark size={32} />
-        </button>
+        </ZuluButton>
         <div className="rail-divider" />
         <nav>
           {navigation.map((item) => (
             <Tooltip key={item.id} isOpen={navTooltip === item.label} onOpenChange={open => { if (!open) setNavTooltip(null); }} delay={450}>
               <Tooltip.Trigger<"button">
                 render={(triggerProps) => (
-                  <button
+                  <ZuluButton
                     {...triggerProps}
                     className={`rail-button ${page === item.id ? "active" : ""}`}
                     onClick={() => navigate(item.id)}
@@ -796,7 +798,7 @@ export function HubApp() {
           <Tooltip isOpen={navTooltip === "Preferências"} onOpenChange={open => { if (!open) setNavTooltip(null); }} delay={450}>
             <Tooltip.Trigger<"button">
               render={(triggerProps) => (
-                <button
+                <ZuluButton
                   {...triggerProps}
                   className="rail-button"
                   aria-label="Preferências e perfil"
@@ -814,20 +816,20 @@ export function HubApp() {
               Preferências
             </Tooltip.Content>
           </Tooltip>
-          <button
+          <ZuluButton
             className="profile-button"
             aria-label="Editar meu perfil"
             onClick={() => setDialog("settings")}
           >
             <Avatar name={name} />
             <i className={`presence ${status}`} />
-          </button>
+          </ZuluButton>
         </div>
       </aside>
       <div className="app-content">
         <header className="topbar">
           <div className="workspace-wrap">
-            <button
+            <ZuluButton
               className="workspace-button"
               aria-expanded={popover === "workspace"}
               onClick={() =>
@@ -839,7 +841,7 @@ export function HubApp() {
               </span>
               <strong>Estúdio</strong>
               <CaretDown size={13} />
-            </button>
+            </ZuluButton>
             {popover === "workspace" && (
               <div className="popover workspace-popover">
                 <span className="popover-label">Workspace de demonstração</span>
@@ -848,14 +850,14 @@ export function HubApp() {
                   Explore a interface com dados fictícios. As alterações ficam
                   neste navegador.
                 </p>
-                <button
+                <ZuluButton
                   className="text-button"
                   onClick={() => {
                     navigate("people");
                   }}
                 >
                   Ver pessoas <ArrowRight size={14} />
-                </button>
+                </ZuluButton>
               </div>
             )}
           </div>
@@ -866,7 +868,7 @@ export function HubApp() {
               <i />
               Demonstração
             </span>
-            <button
+            <ZuluButton
               className="search-button"
               aria-label="Buscar no ZULU"
               onClick={() => setDialog("search")}
@@ -876,10 +878,10 @@ export function HubApp() {
               <kbd>
                 <Command size={11} />K
               </kbd>
-            </button>
+            </ZuluButton>
             <span className="topbar-divider" />
             <div className="notification-wrap">
-              <button
+              <ZuluButton
                 className={`icon-button ${popover === "notifications" ? "is-open" : ""}`}
                 aria-label="Notificações"
                 aria-expanded={popover === "notifications"}
@@ -891,19 +893,19 @@ export function HubApp() {
               >
                 <Bell size={21} />
                 {!notified && <i className="notification-dot" />}
-              </button>
+              </ZuluButton>
               {popover === "notifications" && (
                 <div className="popover notifications-popover">
                   <div className="section-heading">
                     <h3>Notificações</h3>
-                    <button
+                    <ZuluButton
                       className="text-button"
                       onClick={() => setNotified(true)}
                     >
                       {notified ? "Tudo lido" : "Marcar como lidas"}
-                    </button>
+                    </ZuluButton>
                   </div>
-                  <button
+                  <ZuluButton
                     className="notification-item"
                     onClick={() => {
                       navigate("chat");
@@ -918,8 +920,8 @@ export function HubApp() {
                       <strong>O time está conversando</strong>
                       <small>Veja as mensagens em #geral.</small>
                     </span>
-                  </button>
-                  <button
+                  </ZuluButton>
+                  <ZuluButton
                     className="notification-item"
                     onClick={() => navigate("calendar")}
                   >
@@ -930,18 +932,18 @@ export function HubApp() {
                       <strong>Sua agenda da semana</strong>
                       <small>Confira os próximos encontros.</small>
                     </span>
-                  </button>
+                  </ZuluButton>
                   <p className="demo-note">Avisos ilustrativos deste espaço.</p>
                 </div>
               )}
             </div>
-            <button
+            <ZuluButton
               className="top-avatar"
               aria-label="Meu perfil"
               onClick={() => setDialog("settings")}
             >
               <Avatar name={name} />
-            </button>
+            </ZuluButton>
           </div>
         </header>
         <main id="main-content" className="main-content">
@@ -965,28 +967,28 @@ export function HubApp() {
             </div>
             <div className="page-heading-actions">
               {timer && page !== "overview" && (
-                <button
+                <ZuluButton
                   className="running-pill"
                   onClick={() => navigate("hours")}
                 >
                   <i className="live-dot live" />
                   <span>{clock(elapsed)}</span>
                   <TimerIcon size={16} />
-                </button>
+                </ZuluButton>
               )}
               {page === "overview" || page === "calendar" ? (
-                <button className="primary-button" onClick={openEventForm}>
+                <ZuluButton className="primary-button" onClick={openEventForm}>
                   <Plus size={17} />
                   Novo evento
-                </button>
+                </ZuluButton>
               ) : page === "hours" ? (
-                <button
+                <ZuluButton
                   className="primary-button"
                   onClick={() => setDialog("manual")}
                 >
                   <Plus size={17} />
                   Adicionar horas
-                </button>
+                </ZuluButton>
               ) : (
                 <span className="team-pill">
                   <i className="live-dot live" />
@@ -1029,7 +1031,7 @@ export function HubApp() {
                             meta: "Pesquisa e descoberta",
                           },
                         ].map((work) => (
-                          <button
+                          <ZuluButton
                             key={work.title}
                             className="work-item"
                             onClick={() => startTimer(work.title, work.project)}
@@ -1042,15 +1044,15 @@ export function HubApp() {
                               <small>{work.meta}</small>
                             </span>
                             <ArrowUpRight className="work-arrow" size={16} />
-                          </button>
+                          </ZuluButton>
                         ))}
                       </div>
-                      <button
+                      <ZuluButton
                         className="card-bottom-link"
                         onClick={() => navigate("hours")}
                       >
                         Ver minhas horas <ArrowRight size={14} />
-                      </button>
+                      </ZuluButton>
                     </section>
                     <section className="meetings-card panel">
                       <div className="section-heading">
@@ -1062,7 +1064,7 @@ export function HubApp() {
                       <div className="meeting-list">
                         {todayEvents.length ? (
                           todayEvents.slice(0, 2).map((event, i) => (
-                            <button
+                            <ZuluButton
                               className={`meeting-preview ${i === 0 ? "meeting-featured" : ""}`}
                               key={event.id}
                               onClick={() => setSelectedEvent(event)}
@@ -1078,7 +1080,7 @@ export function HubApp() {
                                   {Math.round(event.duration * 60)} min
                                 </span>
                               </span>
-                            </button>
+                            </ZuluButton>
                           ))
                         ) : (
                           <div className="compact-empty">
@@ -1088,12 +1090,12 @@ export function HubApp() {
                           </div>
                         )}
                       </div>
-                      <button
+                      <ZuluButton
                         className="card-bottom-link"
                         onClick={() => navigate("calendar")}
                       >
                         Abrir calendário <ArrowRight size={14} />
-                      </button>
+                      </ZuluButton>
                     </section>
                   </div>
                 )}
@@ -1110,7 +1112,7 @@ export function HubApp() {
                   </p>
                   <div className="team-list">
                     {people.slice(1, 5).map((p, i) => (
-                      <button
+                      <ZuluButton
                         className="person-row"
                         key={p.name}
                         onClick={() => {
@@ -1123,10 +1125,10 @@ export function HubApp() {
                           <strong>{p.name}</strong>
                           <small>{p.work}</small>
                         </span>
-                      </button>
+                      </ZuluButton>
                     ))}
                   </div>
-                  <button
+                  <ZuluButton
                     className="text-button sidebar-link"
                     onClick={() => {
                       setPeopleQuery("");
@@ -1134,7 +1136,7 @@ export function HubApp() {
                     }}
                   >
                     Ver todo o time <ArrowUpRight size={14} />
-                  </button>
+                  </ZuluButton>
                 </section>
                 <section className="hours-summary">
                   <div className="section-heading">
@@ -1194,7 +1196,7 @@ export function HubApp() {
                       <p>Bom dia, time! Já atualizei a agenda da semana.</p>
                     </div>
                   </div>
-                  <button
+                  <ZuluButton
                     className="outline-button"
                     onClick={() => {
                       setChannel("geral");
@@ -1202,7 +1204,7 @@ export function HubApp() {
                     }}
                   >
                     Entrar na conversa <ArrowUpRight size={15} />
-                  </button>
+                  </ZuluButton>
                 </section>
                 <div className="sidebar-footnote">
                   <span className="tiny-brand">ZULU</span>
@@ -1220,7 +1222,7 @@ export function HubApp() {
                 </div>
                 <p className="list-label">Canais do time</p>
                 {["geral", "design", "desenvolvimento"].map((c) => (
-                  <button
+                  <ZuluButton
                     className={`channel-button ${channel === c ? "selected" : ""}`}
                     key={c}
                     onClick={() => setChannel(c)}
@@ -1228,7 +1230,7 @@ export function HubApp() {
                     <Hash size={17} />
                     <span>{c}</span>
                     {c === "geral" && <span className="channel-count">4</span>}
-                  </button>
+                  </ZuluButton>
                 ))}
                 <p className="list-label dm-label">Mensagens diretas</p>
                 {[
@@ -1238,14 +1240,14 @@ export function HubApp() {
                     .map((key) => Number(key.slice(3)))
                     .filter((i) => i > 1 && i < people.length),
                 ].map((i) => (
-                  <button
+                  <ZuluButton
                     key={i}
                     className={`channel-button dm-button ${directPerson === i ? "selected" : ""}`}
                     onClick={() => setChannel(i === 1 ? "marina" : `dm-${i}`)}
                   >
                     <Avatar person={i} size="small" dot />
                     <span>{people[i].name}</span>
-                  </button>
+                  </ZuluButton>
                 ))}
                 <div className="channel-sidebar-note">
                   <i className="live-dot live" />
@@ -1275,7 +1277,7 @@ export function HubApp() {
                       </small>
                     </span>
                   </div>
-                  <button
+                  <ZuluButton
                     className="icon-button"
                     aria-label="Ver pessoas do time"
                     onClick={() => {
@@ -1284,7 +1286,7 @@ export function HubApp() {
                     }}
                   >
                     <UsersThree size={21} />
-                  </button>
+                  </ZuluButton>
                 </div>
                 <div className="messages-area">
                   <div className="conversation-start">
@@ -1328,11 +1330,11 @@ export function HubApp() {
                   ))}
                   <div ref={chatEnd} />
                 </div>
-                <form className="message-form" onSubmit={sendMessage}>
-                  <label className="sr-only" htmlFor="message">
+                <ZuluForm className="message-form" onSubmit={sendMessage}>
+                  <ZuluLabel className="sr-only" htmlFor="message">
                     Sua mensagem
-                  </label>
-                  <textarea
+                  </ZuluLabel>
+                  <ZuluTextArea
                     id="message"
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
@@ -1355,16 +1357,16 @@ export function HubApp() {
                       <kbd>Enter</kbd> para enviar · <kbd>Shift + Enter</kbd>{" "}
                       para nova linha
                     </span>
-                    <button
+                    <ZuluButton
                       className="send-button"
                       type="submit"
                       aria-label="Enviar mensagem"
                       disabled={!draft.trim()}
                     >
                       <PaperPlaneTilt size={19} weight="fill" />
-                    </button>
+                    </ZuluButton>
                   </div>
-                </form>
+                </ZuluForm>
                 <p className="chat-local-note">
                   Mensagens salvas apenas neste navegador. O envio para o time
                   será conectado ao Supabase.
@@ -1380,30 +1382,30 @@ export function HubApp() {
                   <p>Uma coisa de cada vez. O tempo a gente cuida.</p>
                 </div>
                 <div className="timer-form">
-                  <label>
+                  <ZuluLabel>
                     Descrição
-                    <input
+                    <ZuluInput
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       disabled={!!timer}
                       maxLength={180}
                     />
-                  </label>
-                  <label>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Projeto
-                    <select
+                    <ZuluSelect
                       value={project}
-                      onChange={(e) => setProject(e.target.value)}
+                      onValueChange={(e) => setProject(e)}
                       disabled={!!timer}
                     >
                       {projects.map((p) => (
                         <option key={p}>{p}</option>
                       ))}
-                    </select>
-                  </label>
+                    </ZuluSelect>
+                  </ZuluLabel>
                   <div className="inline-timer">
                     <strong>{clock(elapsed)}</strong>
-                    <button
+                    <ZuluButton
                       className={`primary-button ${timer ? "stop-button" : ""}`}
                       onClick={() => (timer ? stopTimer() : startTimer())}
                     >
@@ -1413,7 +1415,7 @@ export function HubApp() {
                         <Play weight="fill" size={16} />
                       )}{" "}
                       {timer ? "Parar" : "Iniciar"}
-                    </button>
+                    </ZuluButton>
                   </div>
                 </div>
                 {timer && (
@@ -1482,12 +1484,12 @@ export function HubApp() {
                     <TimerIcon size={38} />
                     <h3>Seu primeiro registro começa aqui</h3>
                     <p>Inicie o timer ou adicione as horas manualmente.</p>
-                    <button
+                    <ZuluButton
                       className="outline-button"
                       onClick={() => setDialog("manual")}
                     >
                       Adicionar horas
-                    </button>
+                    </ZuluButton>
                   </div>
                 )}
               </section>
@@ -1498,27 +1500,27 @@ export function HubApp() {
               <div className="people-toolbar">
                 <div className="people-search">
                   <MagnifyingGlass size={18} />
-                  <label htmlFor="people-search" className="sr-only">
+                  <ZuluLabel htmlFor="people-search" className="sr-only">
                     Buscar pessoas
-                  </label>
-                  <input
+                  </ZuluLabel>
+                  <ZuluInput
                     id="people-search"
                     value={peopleQuery}
                     onChange={(e) => setPeopleQuery(e.target.value)}
                     placeholder="Encontrar alguém no time…"
                   />
                 </div>
-                <select
+                <ZuluSelect
                   aria-label="Filtrar disponibilidade"
                   value={availability}
-                  onChange={(e) => setAvailability(e.target.value)}
+                  onValueChange={(e) => setAvailability(e)}
                 >
                   <option value="all">Todas as pessoas</option>
                   <option value="online">Disponíveis</option>
                   <option value="meeting">Em reunião</option>
                   <option value="away">Ausentes</option>
                   <option value="offline">Offline</option>
-                </select>
+                </ZuluSelect>
                 <span className="subtle-text">6 pessoas no time</span>
               </div>
               <div className="people-directory">
@@ -1565,15 +1567,15 @@ export function HubApp() {
                           </strong>
                         </div>
                         {i === 0 ? (
-                          <button
+                          <ZuluButton
                             className="outline-button"
                             onClick={() => setDialog("settings")}
                           >
                             <PencilSimple size={16} />
                             Editar perfil
-                          </button>
+                          </ZuluButton>
                         ) : (
-                          <button
+                          <ZuluButton
                             className="outline-button"
                             onClick={() => {
                               const key = i === 1 ? "marina" : `dm-${i}`;
@@ -1586,7 +1588,7 @@ export function HubApp() {
                           >
                             <ChatCircleText size={17} />
                             Conversar
-                          </button>
+                          </ZuluButton>
                         )}
                       </article>
                     );
@@ -1604,7 +1606,7 @@ export function HubApp() {
                   <UsersThree size={38} />
                   <h3>Ninguém por aqui com esse filtro</h3>
                   <p>Tente outro nome ou disponibilidade.</p>
-                  <button
+                  <ZuluButton
                     className="outline-button"
                     onClick={() => {
                       setPeopleQuery("");
@@ -1612,7 +1614,7 @@ export function HubApp() {
                     }}
                   >
                     Limpar filtros
-                  </button>
+                  </ZuluButton>
                 </div>
               )}
             </section>
@@ -1623,9 +1625,9 @@ export function HubApp() {
         <div role="status" className="toast">
           <CheckCircle size={19} />
           {toast}
-          <button aria-label="Dispensar aviso" onClick={() => setToast("")}>
+          <ZuluButton aria-label="Dispensar aviso" onClick={() => setToast("")}>
             <X size={16} />
-          </button>
+          </ZuluButton>
         </div>
       )}
       {selectedEvent && (
@@ -1671,7 +1673,7 @@ export function HubApp() {
             </div>
           </div>
           <div className="dialog-actions">
-            <button
+            <ZuluButton
               className="outline-button"
               onClick={() => {
                 setEditEvent(selectedEvent);
@@ -1681,8 +1683,8 @@ export function HubApp() {
             >
               <PencilSimple size={16} />
               Editar
-            </button>
-            <button
+            </ZuluButton>
+            <ZuluButton
               className={`primary-button ${selectedEvent.rsvp ? "confirmed" : ""}`}
               onClick={() => {
                 const updated = { ...selectedEvent, rsvp: !selectedEvent.rsvp };
@@ -1696,7 +1698,7 @@ export function HubApp() {
               {selectedEvent.rsvp
                 ? "Presença confirmada"
                 : "Confirmar presença"}
-            </button>
+            </ZuluButton>
           </div>
           <p className="demo-note">
             Confirmação local no espaço de demonstração.
@@ -1711,10 +1713,10 @@ export function HubApp() {
             setEditEvent(null);
           }}
         >
-          <form className="dialog-form" onSubmit={saveEvent}>
-            <label>
+          <ZuluForm className="dialog-form" onSubmit={saveEvent}>
+            <ZuluLabel>
               Título do evento
-              <input
+              <ZuluInput
                 name="title"
                 required
                 maxLength={120}
@@ -1722,22 +1724,22 @@ export function HubApp() {
                 placeholder="O que vamos fazer juntos?"
                 defaultValue={editEvent?.title}
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Projeto
-              <select
+              <ZuluSelect
                 name="project"
                 defaultValue={editEvent?.project ?? projects[3]}
               >
                 {projects.map((p) => (
                   <option key={p}>{p}</option>
                 ))}
-              </select>
-            </label>
+              </ZuluSelect>
+            </ZuluLabel>
             <div className="form-row">
-              <label>
+              <ZuluLabel>
                 Data
-                <input
+                <ZuluInput
                   name="date"
                   type="date"
                   required
@@ -1752,10 +1754,10 @@ export function HubApp() {
                       : dayKey(dateAt(monday, activeDay))
                   }
                 />
-              </label>
-              <label>
+              </ZuluLabel>
+              <ZuluLabel>
                 Início
-                <input
+                <ZuluInput
                   name="start"
                   type="time"
                   required
@@ -1763,44 +1765,44 @@ export function HubApp() {
                     editEvent ? hourLabel(editEvent.start) : eventStart
                   }
                 />
-              </label>
+              </ZuluLabel>
             </div>
             <div className="form-row">
-              <label>
+              <ZuluLabel>
                 Duração
-                <select name="duration" defaultValue={editEvent?.duration ?? 1}>
+                <ZuluSelect name="duration" defaultValue={editEvent?.duration ?? 1}>
                   {[0.25, 0.5, 0.75, 1, 1.5, 2, 3].map((n) => (
                     <option key={n} value={n}>
                       {n * 60} minutos
                     </option>
                   ))}
-                </select>
-              </label>
-              <label>
+                </ZuluSelect>
+              </ZuluLabel>
+              <ZuluLabel>
                 Cor
-                <select name="tone" defaultValue={editEvent?.tone ?? "blue"}>
+                <ZuluSelect name="tone" defaultValue={editEvent?.tone ?? "blue"}>
                   <option value="blue">Azul</option>
                   <option value="orange">Laranja</option>
                   <option value="purple">Violeta</option>
                   <option value="green">Verde</option>
-                </select>
-              </label>
+                </ZuluSelect>
+              </ZuluLabel>
             </div>
-            <label>
+            <ZuluLabel>
               Pauta
-              <textarea
+              <ZuluTextArea
                 name="description"
                 placeholder="Contexto e assuntos para a conversa…"
                 rows={3}
                 maxLength={2000}
                 defaultValue={editEvent?.description}
               />
-            </label>
+            </ZuluLabel>
             <p className="demo-note">
               Nesta demonstração, os participantes são definidos pelo exemplo.
             </p>
             <div className="dialog-actions">
-              <button
+              <ZuluButton
                 type="button"
                 className="outline-button"
                 onClick={() => {
@@ -1809,50 +1811,50 @@ export function HubApp() {
                 }}
               >
                 Cancelar
-              </button>
-              <button className="primary-button" type="submit">
+              </ZuluButton>
+              <ZuluButton className="primary-button" type="submit">
                 <Check size={17} />
                 {editEvent ? "Salvar alterações" : "Criar evento"}
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
         </Dialog>
       )}
       {dialog === "manual" && (
         <Dialog title="Adicionar horas" onClose={() => setDialog(null)}>
-          <form className="dialog-form" onSubmit={saveManual}>
-            <label>
+          <ZuluForm className="dialog-form" onSubmit={saveManual}>
+            <ZuluLabel>
               O que você fez?
-              <input
+              <ZuluInput
                 name="description"
                 autoFocus
                 required
                 maxLength={180}
                 placeholder="Descreva a atividade"
               />
-            </label>
-            <label>
+            </ZuluLabel>
+            <ZuluLabel>
               Projeto
-              <select name="project">
+              <ZuluSelect name="project">
                 {projects.map((p) => (
                   <option key={p}>{p}</option>
                 ))}
-              </select>
-            </label>
+              </ZuluSelect>
+            </ZuluLabel>
             <div className="form-row">
-              <label>
+              <ZuluLabel>
                 Data
-                <input
+                <ZuluInput
                   type="date"
                   name="date"
                   required
                   max={dayKey(today)}
                   defaultValue={dayKey(today)}
                 />
-              </label>
-              <label>
+              </ZuluLabel>
+              <ZuluLabel>
                 Tempo em minutos
-                <input
+                <ZuluInput
                   type="number"
                   name="minutes"
                   min="1"
@@ -1860,26 +1862,26 @@ export function HubApp() {
                   required
                   placeholder="60"
                 />
-              </label>
+              </ZuluLabel>
             </div>
             <p className="demo-note">
               Registro local de demonstração. A validação de sobreposição será
               feita na integração com o banco.
             </p>
             <div className="dialog-actions">
-              <button
+              <ZuluButton
                 type="button"
                 className="outline-button"
                 onClick={() => setDialog(null)}
               >
                 Cancelar
-              </button>
-              <button className="primary-button" type="submit">
+              </ZuluButton>
+              <ZuluButton className="primary-button" type="submit">
                 <Check size={17} />
                 Adicionar registro
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
         </Dialog>
       )}
       {dialog === "settings" && (
@@ -1887,7 +1889,7 @@ export function HubApp() {
           title="Seu espaço, do seu jeito"
           onClose={() => setDialog(null)}
         >
-          <form
+          <ZuluForm
             className="dialog-form"
             onSubmit={(e) => {
               e.preventDefault();
@@ -1907,20 +1909,20 @@ export function HubApp() {
                 <small>Perfil de demonstração</small>
               </span>
             </div>
-            <label>
+            <ZuluLabel>
               Como podemos chamar você?
-              <input name="name" required maxLength={80} defaultValue={name} />
-            </label>
-            <label>
+              <ZuluInput name="name" required maxLength={80} defaultValue={name} />
+            </ZuluLabel>
+            <ZuluLabel>
               Disponibilidade
-              <select name="status" defaultValue={status}>
+              <ZuluSelect name="status" defaultValue={status}>
                 {Object.entries(statusLabels).map(([value, label]) => (
                   <option key={value} value={value}>
                     {label}
                   </option>
                 ))}
-              </select>
-            </label>
+              </ZuluSelect>
+            </ZuluLabel>
             <div className="settings-info">
               <SquaresFour size={23} />
               <div>
@@ -1932,18 +1934,18 @@ export function HubApp() {
               </div>
             </div>
             <div className="dialog-actions">
-              <button
+              <ZuluButton
                 type="button"
                 className="outline-button"
                 onClick={() => setDialog(null)}
               >
                 Cancelar
-              </button>
-              <button type="submit" className="primary-button">
+              </ZuluButton>
+              <ZuluButton type="submit" className="primary-button">
                 Salvar perfil <Check size={16} />
-              </button>
+              </ZuluButton>
             </div>
-          </form>
+          </ZuluForm>
         </Dialog>
       )}
       {dialog === "search" && (
@@ -1957,7 +1959,7 @@ export function HubApp() {
         >
           <div className="search-input-wrap">
             <MagnifyingGlass size={21} />
-            <input
+            <ZuluInput
               autoFocus
               aria-label="Buscar páginas e eventos"
               value={query}
@@ -1972,7 +1974,7 @@ export function HubApp() {
                 n.label.toLowerCase().includes(query.toLowerCase()),
               )
               .map((n) => (
-                <button
+                <ZuluButton
                   key={n.id}
                   onClick={() => {
                     navigate(n.id);
@@ -1982,7 +1984,7 @@ export function HubApp() {
                   <n.icon size={20} />
                   <span>{n.label}</span>
                   <ArrowUpRight size={16} />
-                </button>
+                </ZuluButton>
               ))}
             <p className="list-label">Eventos</p>
             {events
@@ -1993,7 +1995,7 @@ export function HubApp() {
               )
               .slice(0, 8)
               .map((e) => (
-                <button
+                <ZuluButton
                   key={e.id}
                   onClick={() => {
                     setDialog(null);
@@ -2006,7 +2008,7 @@ export function HubApp() {
                     <small>{e.project}</small>
                   </span>
                   <ArrowUpRight size={16} />
-                </button>
+                </ZuluButton>
               ))}
             {query &&
               !navigation.some((n) =>

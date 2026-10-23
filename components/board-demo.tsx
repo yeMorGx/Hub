@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Columns } from "@phosphor-icons/react";
+import { moveBoardTask } from "@/lib/hub/kanban";
 import { LiveBoard, type Task } from "./live-board";
 import type { Person } from "@/lib/hub/types";
 const stamp = "2026-10-20T12:00:00Z";
@@ -101,33 +102,39 @@ const initial: Task[] = [
   team_id: "demo-team",
   created_by: "demo-rafael",
   version: 1,
+  sort_order: index * 1024,
   archived_at: null,
   created_at: stamp,
   updated_at: stamp,
 }));
-export function BoardDemo() {
+export function BoardDemo({ embedded = false }: { embedded?: boolean }) {
   const [tasks, setTasks] = useState(initial),
     [active, setActive] = useState<
       { id: string; task_id: string } | undefined
     >();
+  const Frame = embedded ? "div" : "main";
   return (
-    <main className="kanban-demo live-app">
-      <header>
-        <Link href="/demo" className="text-button">
-          <ArrowLeft size={16} />
-          Voltar à demonstração
-        </Link>
-        <span>Demonstração · dados fictícios, sem acesso ao Supabase</span>
-      </header>
-      <div className="page-heading">
-        <div>
-          <h1>
-            Tarefas<span className="heading-period">.</span>
-          </h1>
-          <p>Do próximo passo à entrega, com o tempo registrado.</p>
-        </div>
-        <Columns size={28} />
-      </div>
+    <Frame className={embedded ? "board-preview" : "kanban-demo live-app"}>
+      {!embedded && (
+        <>
+          <header>
+            <Link href="/demo" className="text-button">
+              <ArrowLeft size={16} />
+              Voltar à demonstração
+            </Link>
+            <span>Demonstração · dados fictícios, sem acesso ao Supabase</span>
+          </header>
+          <div className="page-heading">
+            <div>
+              <h1>
+                Tarefas<span className="heading-period">.</span>
+              </h1>
+              <p>Do próximo passo à entrega, com o tempo registrado.</p>
+            </div>
+            <Columns size={28} />
+          </div>
+        </>
+      )}
       <LiveBoard
         tasks={tasks}
         projects={projects}
@@ -172,10 +179,14 @@ export function BoardDemo() {
           );
           return null;
         }}
-        onMove={async (task, status) => {
+        onMove={async (task, status, placement) => {
           setTasks((current) =>
-            current.map((t) =>
-              t.id === task.id ? { ...t, status, version: t.version + 1 } : t,
+            moveBoardTask(current, task.id, status, placement?.beforeId).map(
+              (t, index) => ({
+                ...t,
+                sort_order: index * 1024,
+                version: t.id === task.id ? t.version + 1 : t.version,
+              }),
             ),
           );
           return null;
@@ -200,6 +211,6 @@ export function BoardDemo() {
           return null;
         }}
       />
-    </main>
+    </Frame>
   );
 }

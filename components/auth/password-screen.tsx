@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "../dashboard-ui";
+import { ZuluLabel, ZuluInput, ZuluButton } from "../dashboard-ui";
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { CircleNotch, CheckCircle, ArrowRight } from "@phosphor-icons/react";
@@ -104,10 +106,10 @@ export function PasswordScreen() {
           </Link>
         </>
       ) : allowed ? (
-        <form className="auth-form" onSubmit={submit}>
-          <label>
+        <ZuluForm className="auth-form" onSubmit={submit}>
+          <ZuluLabel>
             Nova senha
-            <input
+            <ZuluInput
               name="password"
               type="password"
               autoComplete="new-password"
@@ -115,10 +117,10 @@ export function PasswordScreen() {
               maxLength={128}
               required
             />
-          </label>
-          <label>
+          </ZuluLabel>
+          <ZuluLabel>
             Confirmar nova senha
-            <input
+            <ZuluInput
               name="confirmation"
               type="password"
               autoComplete="new-password"
@@ -126,11 +128,11 @@ export function PasswordScreen() {
               maxLength={128}
               required
             />
-          </label>
+          </ZuluLabel>
           {factorId && (
-            <label>
+            <ZuluLabel>
               Código do autenticador
-              <input
+              <ZuluInput
                 name="code"
                 inputMode="numeric"
                 autoComplete="one-time-code"
@@ -139,17 +141,17 @@ export function PasswordScreen() {
                 required
                 placeholder="000000"
               />
-            </label>
+            </ZuluLabel>
           )}
-          <button className="primary-button auth-submit" disabled={busy}>
+          <ZuluButton className="primary-button auth-submit" disabled={busy}>
             {busy ? (
               <CircleNotch className="spinning" size={19} />
             ) : (
               <CheckCircle size={19} />
             )}
             Salvar nova senha
-          </button>
-        </form>
+          </ZuluButton>
+        </ZuluForm>
       ) : (
         <Link className="outline-button" href="/login">
           Voltar para entrar

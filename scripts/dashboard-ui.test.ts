@@ -92,7 +92,7 @@ test("checkbox fields use one label with a native named checkbox", () => {
   assert.match(html, /value="user1"/);
 });
 
-test("non-dashboard surfaces retain native controls and native form semantics", () => {
+test("all surfaces use HeroUI and retain named form values", () => {
   const html = render(
     false,
     h(
@@ -106,9 +106,9 @@ test("non-dashboard surfaces retain native controls and native form semantics", 
       ),
     ),
   );
-  assert.match(html, /<button disabled="">Salvar<\/button>/);
-  assert.match(html, /<select name="project">/);
-  assert.doesNotMatch(html, /class="button/);
+  assert.match(html, /data-slot="button"[^>]*disabled/);
+  assert.match(html, /data-slot="select-trigger"/);
+  assert.match(html, /type="hidden" name="project" value="p1"/);
 });
 
 test("select labels are composed without copying label IDs into the selected value", () => {

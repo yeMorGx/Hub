@@ -1,6 +1,33 @@
 "use client";
-
-import { useMemo, useState, type FormEvent } from "react";
+import { ZuluForm, ZuluFieldset } from "./dashboard-ui";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
+import { createPortal } from "react-dom";
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  closestCorners,
+  defaultDropAnimationSideEffects,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragOverEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useReducedMotion } from "motion/react";
 import {
   Archive,
   CalendarBlank,
@@ -16,10 +43,31 @@ import {
   Timer,
 } from "@phosphor-icons/react";
 import { HubDialog, PersonAvatar } from "./hub-ui";
+import {
+  ZuluButton,
+  ZuluInput,
+  ZuluLabel,
+  ZuluSelect,
+  ZuluTextArea,
+} from "./dashboard-ui";
+import {
+  BoardColumn,
+  BoardPointerSensor,
+  BoardTouchSensor,
+  KANBAN_PHYSICS,
+  PhysicsCard,
+  SortableTask,
+} from "./kanban-dnd";
+import {
+  moveBoardTask,
+  orderedTasks,
+  taskPlacement,
+  type BoardTask,
+  type TaskPlacement,
+} from "@/lib/hub/kanban";
 import { dayKey } from "@/lib/hub/dates";
 import type { Person, Row } from "@/lib/hub/types";
-
-export type Task = Row<"tasks">;
+export type Task = BoardTask;
 export type TaskInput = {
   id?: string;
   version?: number;
@@ -51,116 +99,260 @@ type Props = {
   busy: boolean;
   activeTimer: Pick<Row<"time_entries">, "id" | "task_id"> | undefined;
   onSave: (input: TaskInput) => Operation;
-  onMove: (task: Task, status: string) => Operation;
+  onMove: (task: Task, status: string, placement?: TaskPlacement) => Operation;
   onArchive: (task: Task) => Operation;
   onStart: (task: Task) => Operation;
   onStop: () => Operation;
 };
+const mayEdit = (task: Task, p: Props) =>
+  p.canParticipate &&
+  (p.canManage ||
+    task.created_by === p.userId ||
+    !task.assignee_id ||
+    task.assignee_id === p.userId);
+
 export function LiveBoard(props: Props) {
-  const {
-    tasks,
-    projects,
-    people,
-    userId,
-    canParticipate,
-    canManage,
-    busy,
-    activeTimer,
-  } = props;
   const [query, setQuery] = useState(""),
     [project, setProject] = useState("all"),
-    [mine, setMine] = useState(false);
-  const [editor, setEditor] = useState<{ task: Task | null } | null>(null),
-    [dragged, setDragged] = useState(""),
-    [dropStage, setDropStage] = useState("");
-  const [error, setError] = useState("");
-  const today = dayKey(new Date());
-  const canEdit = (task: Task) =>
-    canParticipate &&
-    (canManage ||
-      task.created_by === userId ||
-      !task.assignee_id ||
-      task.assignee_id === userId);
+    [mine, setMine] = useState(false),
+    [editor, setEditor] = useState<{ task: Task | null } | null>(null),
+    [error, setError] = useState("");
+  const [board, setBoard] = useState(() => orderedTasks(props.tasks)),
+    [activeId, setActiveId] = useState<string | null>(null),
+    [saving, setSaving] = useState(false),
+    [targetStage, setTargetStage] = useState("");
+  const latest = useRef(props);
+  latest.current = props;
+  const snapshot = useRef<Task[]>([]);
+  const boardRef = useRef(board);
+  boardRef.current = board;
+  const locked = useRef(false);
+  const reduced = useReducedMotion();
+  const sensors = useSensors(
+    useSensor(BoardPointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(BoardTouchSensor, {
+      activationConstraint: { delay: 150, tolerance: 5 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+  useEffect(() => {
+    if (!activeId && !saving) setBoard(orderedTasks(props.tasks));
+  }, [props.tasks, activeId, saving]);
   const visible = useMemo(
     () =>
-      tasks
-        .filter(
-          (task) =>
-            (project === "all" ||
-              (project === "none"
-                ? !task.project_id
-                : task.project_id === project)) &&
-            (!mine || task.assignee_id === userId) &&
-            `${task.title} ${task.description}`
-              .toLocaleLowerCase("pt-BR")
-              .includes(query.toLocaleLowerCase("pt-BR").trim()),
-        )
-        .sort((a, b) => {
-          const rank = { high: 0, normal: 1, low: 2 };
-          return (
-            rank[a.priority as keyof typeof rank] -
-              rank[b.priority as keyof typeof rank] ||
-            (a.due_on || "9999").localeCompare(b.due_on || "9999") ||
-            b.created_at.localeCompare(a.created_at) ||
-            a.id.localeCompare(b.id)
-          );
-        }),
-    [tasks, project, mine, query, userId],
+      board.filter(
+        (task) =>
+          (project === "all" ||
+            (project === "none"
+              ? !task.project_id
+              : task.project_id === project)) &&
+          (!mine || task.assignee_id === props.userId) &&
+          `${task.title} ${task.description}`
+            .toLocaleLowerCase("pt-BR")
+            .includes(query.toLocaleLowerCase("pt-BR").trim()),
+      ),
+    [board, project, mine, query, props.userId],
   );
-  async function move(task: Task, status: string) {
-    if (task.status === status || busy || !canEdit(task)) return;
-    setError((await props.onMove(task, status)) || "");
-  }
+  const projectNames = useMemo(
+    () => new Map(props.projects.map((p) => [p.id, p.name])),
+    [props.projects],
+  );
+  const people = useMemo(
+    () => new Map(props.people.map((p) => [p.id, p])),
+    [props.people],
+  );
+  const edit = useCallback((task: Task) => setEditor({ task }), []);
+  const move = useCallback(async (task: Task, status: string) => {
+    const p = latest.current;
+    if (task.status === status || p.busy || locked.current || !mayEdit(task, p))
+      return;
+    locked.current = true;
+    try {
+      setError((await p.onMove(task, status)) || "");
+    } catch {
+      setError("Não foi possível mover a tarefa. Tente novamente.");
+    } finally {
+      locked.current = false;
+    }
+  }, []);
+  const start = useCallback(async (task: Task) => {
+    try {
+      setError((await latest.current.onStart(task)) || "");
+    } catch {
+      setError("Não foi possível iniciar o timer.");
+    }
+  }, []);
+  const stop = useCallback(async () => {
+    try {
+      setError((await latest.current.onStop()) || "");
+    } catch {
+      setError("Não foi possível parar o timer.");
+    }
+  }, []);
+  const cancel = useCallback(() => {
+    setBoard(snapshot.current);
+    setActiveId(null);
+    setTargetStage("");
+  }, []);
+  const dragOver = useCallback(({ active, over }: DragOverEvent) => {
+    if (!over) return;
+    const current = boardRef.current;
+    const task = current.find((t) => t.id === String(active.id));
+    const status =
+      current.find((t) => t.id === String(over.id))?.status ?? String(over.id);
+    if (!task || !stages.some((s) => s.id === status)) return;
+    setTargetStage(status);
+    if (task.status !== status) {
+      const next = moveBoardTask(
+        current,
+        task.id,
+        status,
+        current.some((t) => t.id === String(over.id))
+          ? String(over.id)
+          : undefined,
+      );
+      boardRef.current = next;
+      setBoard(next);
+    }
+  }, []);
+  const dragEnd = useCallback(
+    async ({ active, over }: DragEndEvent) => {
+      if (!over) {
+        cancel();
+        return;
+      }
+      const current = boardRef.current,
+        task = current.find((t) => t.id === String(active.id)),
+        original = snapshot.current.find((t) => t.id === String(active.id));
+      if (!task || !original) {
+        cancel();
+        return;
+      }
+      const status =
+        current.find((t) => t.id === String(over.id))?.status ??
+        String(over.id);
+      if (!stages.some((s) => s.id === status)) {
+        cancel();
+        return;
+      }
+      let next = current;
+      if (task.status !== status)
+        next = moveBoardTask(current, task.id, status, String(over.id));
+      else {
+        const column = current.filter((t) => t.status === status),
+          from = column.findIndex((t) => t.id === task.id),
+          to = column.findIndex((t) => t.id === String(over.id));
+        if (to >= 0 && from !== to) {
+          const reordered = arrayMove(column, from, to);
+          let index = 0;
+          next = current.map((t) =>
+            t.status === status ? reordered[index++] : t,
+          );
+        }
+      }
+      const before = taskPlacement(snapshot.current, task.id),
+        after = taskPlacement(next, task.id),
+        changed =
+          original.status !== status ||
+          before.afterId !== after.afterId ||
+          before.beforeId !== after.beforeId;
+      setBoard(next);
+      setActiveId(null);
+      setTargetStage("");
+      if (!changed) return;
+      locked.current = true;
+      setSaving(true);
+      setError("");
+      try {
+        const result = await latest.current.onMove(original, status, after);
+        if (result) {
+          setError(result);
+          setBoard(snapshot.current);
+        }
+      } catch {
+        setError("Não foi possível salvar a posição. O quadro foi restaurado.");
+        setBoard(snapshot.current);
+      } finally {
+        locked.current = false;
+        setSaving(false);
+      }
+    },
+    [cancel],
+  );
+  const active = board.find((t) => t.id === activeId);
+  const busy = props.busy || saving;
+  const renderCard = (task: Task, overlay = false) => (
+    <KanbanCard
+      task={task}
+      projectName={projectNames.get(task.project_id ?? "")}
+      person={people.get(task.assignee_id ?? "")}
+      editable={mayEdit(task, props)}
+      busy={busy}
+      running={props.activeTimer?.task_id === task.id}
+      timerActive={Boolean(props.activeTimer)}
+      canParticipate={props.canParticipate}
+      overlay={overlay}
+      onEdit={edit}
+      onMove={move}
+      onStart={start}
+      onStop={stop}
+    />
+  );
   return (
-    <section className="task-board" aria-label="Quadro de tarefas">
+    <section
+      className="task-board"
+      aria-label="Quadro de tarefas"
+      aria-busy={saving}
+      data-lenis-prevent
+    >
       <div className="board-toolbar">
         <div className="board-filters">
-          <label className="board-search">
+          <ZuluLabel className="board-search">
             <MagnifyingGlass size={17} />
-            <input
+            <ZuluInput
               aria-label="Buscar tarefas"
               placeholder="Buscar uma tarefa…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              disabled={Boolean(activeId)}
             />
-          </label>
-          <label className="board-project">
-            <span className="sr-only">Filtrar por projeto</span>
-            <select
-              value={project}
-              onChange={(e) => setProject(e.target.value)}
-            >
-              <option value="all">Todos os projetos</option>
-              <option value="none">Sem projeto</option>
-              {projects.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-              {project !== "all" &&
-                project !== "none" &&
-                !projects.some((p) => p.id === project) && (
-                  <option value={project}>Projeto arquivado</option>
-                )}
-            </select>
-          </label>
-          <button
+          </ZuluLabel>
+          <ZuluSelect
+            aria-label="Filtrar por projeto"
+            value={project}
+            onValueChange={setProject}
+            disabled={Boolean(activeId)}
+          >
+            <option value="all">Todos os projetos</option>
+            <option value="none">Sem projeto</option>
+            {props.projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </ZuluSelect>
+          <ZuluButton
+            type="button"
             className={`outline-button board-mine ${mine ? "selected" : ""}`}
             aria-pressed={mine}
             onClick={() => setMine(!mine)}
+            disabled={Boolean(activeId)}
           >
             Atribuídas a mim
-          </button>
+          </ZuluButton>
         </div>
-        {canParticipate && (
-          <button
+        {props.canParticipate && (
+          <ZuluButton
+            type="button"
             className="primary-button"
             disabled={busy}
             onClick={() => setEditor({ task: null })}
           >
             <Plus size={17} />
             Nova tarefa
-          </button>
+          </ZuluButton>
         )}
       </div>
       <div className="board-summary">
@@ -169,223 +361,130 @@ export function LiveBoard(props: Props) {
           {visible.length} {visible.length === 1 ? "tarefa" : "tarefas"}
           {mine ? " para você" : " no quadro"}
         </span>
-        <span>Prioridade e prazo primeiro</span>
+        <span>{saving ? "Salvando posição…" : "Arraste para organizar"}</span>
       </div>
       {error && (
         <div className="form-error" role="alert">
           {error}
-          <button className="text-button" onClick={() => setError("")}>
+          <ZuluButton
+            type="button"
+            className="text-button"
+            onClick={() => setError("")}
+          >
             Fechar aviso
-          </button>
+          </ZuluButton>
         </div>
       )}
-      <div className="board-columns">
-        {stages.map((stage) => {
-          const cards = visible.filter((task) => task.status === stage.id);
-          return (
-            <section
-              key={stage.id}
-              className={`board-column board-${stage.id} ${dropStage === stage.id ? "board-drop-target" : ""}`}
-              aria-label={stage.label}
-              onDragOver={(e) => {
-                if (dragged && !busy) {
-                  e.preventDefault();
-                  e.dataTransfer.dropEffect = "move";
-                  setDropStage(stage.id);
-                }
-              }}
-              onDragLeave={(e) => {
-                if (!e.currentTarget.contains(e.relatedTarget as Node))
-                  setDropStage("");
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                const task = tasks.find((t) => t.id === dragged);
-                setDragged("");
-                setDropStage("");
-                if (task) void move(task, stage.id);
-              }}
-            >
-              <div className="board-column-heading">
-                <h2>
-                  <stage.icon size={18} />
-                  {stage.label}
-                </h2>
-                <span>{cards.length}</span>
-              </div>
-              <div className="board-card-list">
-                {cards.map((task) => {
-                  const person = people.find((p) => p.id === task.assignee_id),
-                    projectName = projects.find(
-                      (p) => p.id === task.project_id,
-                    )?.name;
-                  const running = activeTimer?.task_id === task.id;
-                  const editable = canEdit(task),
-                    overdue =
-                      task.due_on &&
-                      task.due_on < today &&
-                      task.status !== "done";
-                  return (
-                    <article
-                      key={task.id}
-                      className={`task-card ${running ? "task-running" : ""} ${dragged === task.id ? "task-dragging" : ""}`}
-                      draggable={editable && !busy}
-                      onDragStart={(e) => {
-                        e.dataTransfer.setData("text/plain", task.id);
-                        e.dataTransfer.effectAllowed = "move";
-                        setDragged(task.id);
-                      }}
-                      onDragEnd={() => {
-                        setDragged("");
-                        setDropStage("");
-                      }}
-                    >
-                      <div className="task-card-top">
-                        <span className="task-project">
-                          {projectName ||
-                            (task.project_id
-                              ? "Projeto arquivado"
-                              : "Sem projeto")}
-                        </span>
-                        {task.priority !== "normal" && (
-                          <span
-                            className={`task-priority priority-${task.priority}`}
-                          >
-                            <Flag
-                              size={12}
-                              weight={
-                                task.priority === "high" ? "fill" : "regular"
-                              }
-                            />
-                            {priorities[task.priority]}
-                          </span>
-                        )}
-                      </div>
-                      <button
-                        className="task-title"
-                        onClick={() => setEditor({ task })}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={({ active }) => {
+          snapshot.current = boardRef.current;
+          setActiveId(String(active.id));
+          setError("");
+        }}
+        onDragOver={dragOver}
+        onDragEnd={dragEnd}
+        onDragCancel={cancel}
+        accessibility={{
+          screenReaderInstructions: {
+            draggable:
+              "Pressione Espaço para pegar a tarefa. Use as setas para mudar a posição e Espaço para soltar. Escape cancela.",
+          },
+          announcements: {
+            onDragStart: ({ active }) =>
+              `Movendo ${boardRef.current.find((t) => t.id === active.id)?.title ?? "tarefa"}.`,
+            onDragOver: ({ over }) =>
+              over
+                ? `Destino: ${stages.find((s) => s.id === (boardRef.current.find((t) => t.id === over.id)?.status ?? over.id))?.label ?? "quadro"}.`
+                : undefined,
+            onDragEnd: () => "Tarefa solta. A posição será salva.",
+            onDragCancel: () => "Movimento cancelado.",
+          },
+        }}
+      >
+        <div className="board-columns">
+          {stages.map((stage) => {
+            const cards = visible.filter((t) => t.status === stage.id);
+            return (
+              <BoardColumn id={stage.id} label={stage.label} key={stage.id}>
+                <div
+                  className={`board-column-heading${targetStage === stage.id ? " is-drag-target" : ""}`}
+                >
+                  <h2>
+                    <stage.icon size={18} />
+                    {stage.label}
+                  </h2>
+                  <span>{cards.length}</span>
+                </div>
+                <SortableContext
+                  items={cards.map((t) => t.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="board-card-list">
+                    {cards.map((task) => (
+                      <SortableTask
+                        key={task.id}
+                        id={task.id}
+                        title={task.title}
+                        disabled={busy || !mayEdit(task, props)}
                       >
-                        {task.title}
-                      </button>
-                      {task.description && (
-                        <p className="task-preview">{task.description}</p>
-                      )}
-                      <div className="task-metadata">
-                        <span className={overdue ? "task-overdue" : ""}>
-                          {task.due_on ? (
-                            <>
-                              <CalendarBlank size={14} />
-                              {new Date(
-                                `${task.due_on}T12:00:00`,
-                              ).toLocaleDateString("pt-BR", {
-                                day: "numeric",
-                                month: "short",
-                              })}
-                              {overdue && " · Atrasada"}
-                            </>
-                          ) : (
-                            "Sem prazo"
-                          )}
-                        </span>
-                        {person ? (
-                          <PersonAvatar
-                            name={person.display_name}
-                            id={person.id}
-                            size="small"
-                          />
-                        ) : (
-                          <span className="task-unassigned">
-                            {task.assignee_id
-                              ? "Pessoa inativa"
-                              : "Sem responsável"}
-                          </span>
-                        )}
-                      </div>
-                      <div className="task-card-actions">
-                        <label>
-                          <span className="sr-only">
-                            Andamento de {task.title}
-                          </span>
-                          <select
-                            value={task.status}
-                            disabled={!editable || busy}
-                            onChange={(e) => void move(task, e.target.value)}
-                          >
-                            {stages.map((s) => (
-                              <option key={s.id} value={s.id}>
-                                {s.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        {running ? (
-                          <button
-                            className="task-timer-button is-running"
+                        {renderCard(task)}
+                      </SortableTask>
+                    ))}
+                    {!cards.length && (
+                      <div className="board-empty">
+                        <stage.icon size={23} />
+                        <p>
+                          {query || mine || project !== "all"
+                            ? "Nenhuma tarefa neste filtro."
+                            : stage.id === "todo"
+                              ? "Seu próximo trabalho começa aqui."
+                              : stage.id === "in_progress"
+                                ? "O que estiver em foco aparece aqui."
+                                : "As entregas do time ficam aqui."}
+                        </p>
+                        {stage.id === "todo" && props.canParticipate && (
+                          <ZuluButton
+                            type="button"
+                            className="text-button"
                             disabled={busy}
-                            onClick={async () =>
-                              setError((await props.onStop()) || "")
-                            }
-                            aria-label={`Parar timer de ${task.title}`}
+                            onClick={() => setEditor({ task: null })}
                           >
-                            <Stop size={14} weight="fill" />
-                            Parar
-                          </button>
-                        ) : task.status !== "done" && canParticipate ? (
-                          <button
-                            className="task-timer-button"
-                            disabled={busy || Boolean(activeTimer)}
-                            title={
-                              activeTimer
-                                ? "Pare o timer atual antes de iniciar outro"
-                                : "Iniciar registro de horas"
-                            }
-                            onClick={async () =>
-                              setError((await props.onStart(task)) || "")
-                            }
-                            aria-label={`Iniciar timer de ${task.title}`}
-                          >
-                            <Play size={14} weight="fill" />
-                            Iniciar
-                          </button>
-                        ) : (
-                          <span className="task-finished">
-                            <CheckCircle size={15} />
-                            {task.status === "done" ? "Concluída" : "Consulta"}
-                          </span>
+                            Criar tarefa
+                            <Plus size={14} />
+                          </ZuluButton>
                         )}
                       </div>
-                    </article>
-                  );
-                })}
-                {!cards.length && (
-                  <div className="board-empty">
-                    <stage.icon size={23} />
-                    <p>
-                      {query || mine || project !== "all"
-                        ? "Nenhuma tarefa neste filtro."
-                        : stage.id === "todo"
-                          ? "Seu próximo trabalho começa aqui."
-                          : stage.id === "in_progress"
-                            ? "O que estiver em foco aparece aqui."
-                            : "As entregas do time ficam aqui."}
-                    </p>
-                    {stage.id === "todo" && canParticipate && (
-                      <button
-                        className="text-button"
-                        disabled={busy}
-                        onClick={() => setEditor({ task: null })}
-                      >
-                        Criar tarefa
-                        <Plus size={14} />
-                      </button>
                     )}
                   </div>
-                )}
-              </div>
-            </section>
-          );
-        })}
-      </div>
+                </SortableContext>
+              </BoardColumn>
+            );
+          })}
+        </div>
+        {typeof document !== "undefined" &&
+          createPortal(
+            <DragOverlay
+              dropAnimation={{
+                duration: reduced ? 150 : KANBAN_PHYSICS.dropDuration,
+                easing: reduced ? "ease-out" : KANBAN_PHYSICS.dropEasing,
+                sideEffects: defaultDropAnimationSideEffects({
+                  styles: { active: { opacity: "0.3" } },
+                }),
+              }}
+            >
+              {active && (
+                <PhysicsCard>
+                  <div className="live-app workspace-inset kanban-overlay-surface">
+                    {renderCard(active, true)}
+                  </div>
+                </PhysicsCard>
+              )}
+            </DragOverlay>,
+            document.body,
+          )}
+      </DndContext>
       <p className="board-help">
         <Timer size={15} />
         Inicie as horas no card. Mover ou concluir uma tarefa não encerra o
@@ -395,14 +494,16 @@ export function LiveBoard(props: Props) {
         <TaskEditor
           key={editor.task?.id || "new"}
           task={editor.task}
-          editable={!editor.task ? canParticipate : canEdit(editor.task)}
+          editable={
+            !editor.task ? props.canParticipate : mayEdit(editor.task, props)
+          }
           canArchive={Boolean(
             editor.task &&
-              canParticipate &&
-              (canManage || editor.task.created_by === userId),
+            props.canParticipate &&
+            (props.canManage || editor.task.created_by === props.userId),
           )}
-          projects={projects}
-          people={people}
+          projects={props.projects}
+          people={props.people}
           initialProject={
             project !== "all" && project !== "none" ? project : ""
           }
@@ -415,6 +516,137 @@ export function LiveBoard(props: Props) {
     </section>
   );
 }
+const KanbanCard = memo(function KanbanCard({
+  task,
+  projectName,
+  person,
+  editable,
+  busy,
+  running,
+  timerActive,
+  canParticipate,
+  overlay,
+  onEdit,
+  onMove,
+  onStart,
+  onStop,
+}: {
+  task: Task;
+  projectName?: string;
+  person?: Person;
+  editable: boolean;
+  busy: boolean;
+  running: boolean;
+  timerActive: boolean;
+  canParticipate: boolean;
+  overlay: boolean;
+  onEdit: (task: Task) => void;
+  onMove: (task: Task, status: string) => void;
+  onStart: (task: Task) => void;
+  onStop: () => void;
+}) {
+  const overdue =
+    task.due_on && task.due_on < dayKey(new Date()) && task.status !== "done";
+  return (
+    <article
+      className={`task-card${running ? " task-running" : ""}${overlay ? " task-overlay" : ""}`}
+    >
+      <div className="task-card-top">
+        <span className="task-project">
+          {projectName ||
+            (task.project_id ? "Projeto arquivado" : "Sem projeto")}
+        </span>
+        {task.priority !== "normal" && (
+          <span className={`task-priority priority-${task.priority}`}>
+            <Flag
+              size={12}
+              weight={task.priority === "high" ? "fill" : "regular"}
+            />
+            {priorities[task.priority]}
+          </span>
+        )}
+      </div>
+      <ZuluButton
+        type="button"
+        className="task-title"
+        onClick={() => onEdit(task)}
+        disabled={overlay}
+      >
+        {task.title}
+      </ZuluButton>
+      {task.description && <p className="task-preview">{task.description}</p>}
+      <div className="task-metadata">
+        <span className={overdue ? "task-overdue" : ""}>
+          {task.due_on ? (
+            <>
+              <CalendarBlank size={14} />
+              {new Date(`${task.due_on}T12:00:00`).toLocaleDateString("pt-BR", {
+                day: "numeric",
+                month: "short",
+              })}
+              {overdue && " · Atrasada"}
+            </>
+          ) : (
+            "Sem prazo"
+          )}
+        </span>
+        {person ? (
+          <PersonAvatar
+            name={person.display_name}
+            id={person.id}
+            size="small"
+          />
+        ) : (
+          <span className="task-unassigned">
+            {task.assignee_id ? "Pessoa inativa" : "Sem responsável"}
+          </span>
+        )}
+      </div>
+      <div className="task-card-actions">
+        <ZuluSelect
+          aria-label={`Andamento de ${task.title}`}
+          value={task.status}
+          disabled={!editable || busy || overlay}
+          onValueChange={(status) => onMove(task, status)}
+        >
+          {stages.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.label}
+            </option>
+          ))}
+        </ZuluSelect>
+        {running ? (
+          <ZuluButton
+            type="button"
+            className="task-timer-button is-running"
+            disabled={busy || overlay}
+            onClick={onStop}
+            aria-label={`Parar timer de ${task.title}`}
+          >
+            <Stop size={14} weight="fill" />
+            Parar
+          </ZuluButton>
+        ) : task.status !== "done" && canParticipate ? (
+          <ZuluButton
+            type="button"
+            className="task-timer-button"
+            disabled={busy || timerActive || overlay}
+            onClick={() => onStart(task)}
+            aria-label={`Iniciar timer de ${task.title}`}
+          >
+            <Play size={14} weight="fill" />
+            Iniciar
+          </ZuluButton>
+        ) : (
+          <span className="task-finished">
+            <CheckCircle size={15} />
+            {task.status === "done" ? "Concluída" : "Consulta"}
+          </span>
+        )}
+      </div>
+    </article>
+  );
+});
 function TaskEditor({
   task,
   editable,
@@ -465,11 +697,11 @@ function TaskEditor({
       }}
       wide
     >
-      <form className="dialog-form" onSubmit={(e) => void submit(e)}>
-        <fieldset className="task-fields" disabled={!editable || busy}>
-          <label>
+      <ZuluForm className="dialog-form" onSubmit={(e) => void submit(e)}>
+        <ZuluFieldset className="task-fields" disabled={!editable || busy}>
+          <ZuluLabel>
             Título
-            <input
+            <ZuluInput
               name="title"
               required
               maxLength={180}
@@ -477,21 +709,21 @@ function TaskEditor({
               placeholder="O que precisa ser feito?"
               autoFocus
             />
-          </label>
-          <label>
+          </ZuluLabel>
+          <ZuluLabel>
             Descrição
-            <textarea
+            <ZuluTextArea
               name="description"
               rows={4}
               maxLength={10000}
               defaultValue={task?.description || ""}
               placeholder="Contexto, passos e o que define uma entrega pronta."
             />
-          </label>
+          </ZuluLabel>
           <div className="form-row">
-            <label>
+            <ZuluLabel>
               Projeto
-              <select
+              <ZuluSelect
                 name="project"
                 defaultValue={task?.project_id || initialProject}
               >
@@ -505,11 +737,14 @@ function TaskEditor({
                   !projects.some((p) => p.id === task.project_id) && (
                     <option value={task.project_id}>Projeto arquivado</option>
                   )}
-              </select>
-            </label>
-            <label>
+              </ZuluSelect>
+            </ZuluLabel>
+            <ZuluLabel>
               Responsável
-              <select name="assignee" defaultValue={task?.assignee_id || ""}>
+              <ZuluSelect
+                name="assignee"
+                defaultValue={task?.assignee_id || ""}
+              >
                 <option value="">Sem responsável</option>
                 {people.map((p) => (
                   <option value={p.id} key={p.id}>
@@ -520,26 +755,33 @@ function TaskEditor({
                   !people.some((p) => p.id === task.assignee_id) && (
                     <option value={task.assignee_id}>Pessoa inativa</option>
                   )}
-              </select>
-            </label>
+              </ZuluSelect>
+            </ZuluLabel>
           </div>
           <div className="form-row">
-            <label>
+            <ZuluLabel>
               Prazo
-              <input type="date" name="due" defaultValue={task?.due_on || ""} />
-            </label>
-            <label>
+              <ZuluInput
+                type="date"
+                name="due"
+                defaultValue={task?.due_on || ""}
+              />
+            </ZuluLabel>
+            <ZuluLabel>
               Prioridade
-              <select name="priority" defaultValue={task?.priority || "normal"}>
+              <ZuluSelect
+                name="priority"
+                defaultValue={task?.priority || "normal"}
+              >
                 {Object.entries(priorities).map(([id, label]) => (
                   <option key={id} value={id}>
                     {label}
                   </option>
                 ))}
-              </select>
-            </label>
+              </ZuluSelect>
+            </ZuluLabel>
           </div>
-        </fieldset>
+        </ZuluFieldset>
         {!editable && (
           <p className="muted">
             Você pode consultar esta tarefa. A edição é permitida ao criador,
@@ -559,15 +801,15 @@ function TaskEditor({
               preservados e um timer ativo continua contando.
             </p>
             <div>
-              <button
+              <ZuluButton
                 type="button"
                 className="outline-button"
                 disabled={busy}
                 onClick={() => setConfirmArchive(false)}
               >
                 Voltar
-              </button>
-              <button
+              </ZuluButton>
+              <ZuluButton
                 type="button"
                 className="primary-button"
                 disabled={busy}
@@ -579,13 +821,13 @@ function TaskEditor({
                 }}
               >
                 Confirmar arquivamento
-              </button>
+              </ZuluButton>
             </div>
           </div>
         )}
         <div className="dialog-actions">
           {canArchive && !confirmArchive && (
-            <button
+            <ZuluButton
               type="button"
               className="text-button task-archive"
               disabled={busy}
@@ -593,23 +835,27 @@ function TaskEditor({
             >
               <Archive size={16} />
               Arquivar
-            </button>
+            </ZuluButton>
           )}
-          <button
+          <ZuluButton
             type="button"
             className="outline-button"
             disabled={busy}
             onClick={onClose}
           >
             {editable ? "Cancelar" : "Fechar"}
-          </button>
+          </ZuluButton>
           {editable && !confirmArchive && (
-            <button className="primary-button" disabled={busy} type="submit">
+            <ZuluButton
+              className="primary-button"
+              disabled={busy}
+              type="submit"
+            >
               {busy ? "Salvando…" : task ? "Salvar alterações" : "Criar tarefa"}
-            </button>
+            </ZuluButton>
           )}
         </div>
-      </form>
+      </ZuluForm>
     </HubDialog>
   );
 }

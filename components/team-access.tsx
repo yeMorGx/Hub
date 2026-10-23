@@ -1,4 +1,6 @@
 "use client";
+import { ZuluForm } from "./dashboard-ui";
+import { ZuluButton, ZuluLabel, ZuluInput, ZuluSelect } from "./dashboard-ui";
 import { useEffect, useState, type FormEvent } from "react";
 import { ArrowClockwise, Copy, UserPlus } from "@phosphor-icons/react";
 import type { HubController } from "@/lib/hub/use-hub";
@@ -109,7 +111,7 @@ export function TeamAccess({
             ["invitations", "Convites"],
           ] as const
         ).map(([id, label]) => (
-          <button
+          <ZuluButton
             key={id}
             role="tab"
             className={tab === id ? "active" : ""}
@@ -121,7 +123,7 @@ export function TeamAccess({
             }}
           >
             {label}
-          </button>
+          </ZuluButton>
         ))}
       </div>
       {error && (
@@ -145,7 +147,7 @@ export function TeamAccess({
                 sete dias e só pode ser aceito pela conta com o e-mail
                 informado.
               </p>
-              <form
+              <ZuluForm
                 className="dialog-form"
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -158,9 +160,9 @@ export function TeamAccess({
                   );
                 }}
               >
-                <label>
+                <ZuluLabel>
                   E-mail da pessoa
-                  <input
+                  <ZuluInput
                     type="email"
                     name="email"
                     autoComplete="email"
@@ -168,33 +170,33 @@ export function TeamAccess({
                     required
                     placeholder="pessoa@empresa.com"
                   />
-                </label>
-                <label>
+                </ZuluLabel>
+                <ZuluLabel>
                   Papel no time
-                  <select name="role" defaultValue="member">
+                  <ZuluSelect name="role" defaultValue="member">
                     <option value="member">Membro</option>
                     <option value="leader">Líder</option>
-                  </select>
-                </label>
-                <button className="primary-button" disabled={busy}>
+                  </ZuluSelect>
+                </ZuluLabel>
+                <ZuluButton className="primary-button" disabled={busy}>
                   <UserPlus size={16} />
                   {busy ? "Criando…" : "Criar convite"}
-                </button>
-              </form>
+                </ZuluButton>
+              </ZuluForm>
             </>
           )}
           {created && tab !== "members" && (
             <div className="invitation-share">
               <strong>Convite para {created.email}</strong>
-              <label>
+              <ZuluLabel>
                 Link do convite
-                <input
+                <ZuluInput
                   readOnly
                   value={created.url}
                   onFocus={(e) => e.currentTarget.select()}
                 />
-              </label>
-              <button
+              </ZuluLabel>
+              <ZuluButton
                 className="outline-button"
                 onClick={async () => {
                   try {
@@ -207,7 +209,7 @@ export function TeamAccess({
               >
                 <Copy size={16} />
                 Copiar link
-              </button>
+              </ZuluButton>
               <small>
                 Compartilhe este link com a pessoa convidada. O ZULU não envia
                 e-mails automaticamente nesta etapa.
@@ -215,7 +217,7 @@ export function TeamAccess({
             </div>
           )}
           {tab === "members" && selected && (
-            <form
+            <ZuluForm
               key={
                 selected.id +
                 selected.workspace_role +
@@ -225,11 +227,11 @@ export function TeamAccess({
               className="dialog-form"
               onSubmit={(e) => void saveMember(e)}
             >
-              <label>
+              <ZuluLabel>
                 Pessoa
-                <select
+                <ZuluSelect
                   value={selected.id}
-                  onChange={(e) => setMemberId(e.target.value)}
+                  onValueChange={(e) => setMemberId(e)}
                 >
                   {data.members.map((m) => (
                     <option key={m.id} value={m.id}>
@@ -240,15 +242,15 @@ export function TeamAccess({
                         : ""}
                     </option>
                   ))}
-                </select>
-              </label>
+                </ZuluSelect>
+              </ZuluLabel>
               {!selected.workspace_active ? (
                 <>
                   <p className="demo-note">
                     Esta pessoa está suspensa na organização. Reative esse
                     acesso para editar sua participação no time.
                   </p>
-                  <button
+                  <ZuluButton
                     type="button"
                     className="outline-button"
                     disabled={busy}
@@ -267,63 +269,63 @@ export function TeamAccess({
                     }
                   >
                     Reativar na organização
-                  </button>
+                  </ZuluButton>
                 </>
               ) : (
                 <>
-                  <label>
+                  <ZuluLabel>
                     Papel na organização
-                    <select
+                    <ZuluSelect
                       name="workspaceRole"
                       defaultValue={selected.workspace_role}
                     >
                       <option value="member">Membro</option>
                       <option value="admin">Administrador</option>
-                    </select>
-                  </label>
+                    </ZuluSelect>
+                  </ZuluLabel>
                   <p className="demo-note">
                     Administradores gerenciam os times e acessos de toda a
                     organização.
                   </p>
-                  <label>
+                  <ZuluLabel>
                     Papel neste time
-                    <select name="teamRole" defaultValue={selected.team_role}>
+                    <ZuluSelect name="teamRole" defaultValue={selected.team_role}>
                       <option value="member">Membro</option>
                       <option value="leader">Líder</option>
-                    </select>
-                  </label>
-                  <label>
+                    </ZuluSelect>
+                  </ZuluLabel>
+                  <ZuluLabel>
                     Acesso ao time
-                    <select
+                    <ZuluSelect
                       name="active"
                       defaultValue={String(selected.team_active)}
                     >
                       <option value="true">Ativo</option>
                       <option value="false">Suspenso</option>
-                    </select>
-                  </label>
+                    </ZuluSelect>
+                  </ZuluLabel>
                   <p className="demo-note">
                     Suspender encerra o timer e a participação neste time.
                     Administradores mantêm as permissões de gestão da
                     organização.
                   </p>
-                  <button className="primary-button" disabled={busy}>
+                  <ZuluButton className="primary-button" disabled={busy}>
                     {busy ? "Salvando…" : "Salvar acesso"}
-                  </button>
+                  </ZuluButton>
                 </>
               )}
-            </form>
+            </ZuluForm>
           )}
           {tab === "invitations" && (
             <>
-              <button
+              <ZuluButton
                 className="text-button"
                 disabled={busy}
                 onClick={() => void run(load)}
               >
                 <ArrowClockwise size={15} />
                 Atualizar convites
-              </button>
+              </ZuluButton>
               {data.invitations.length ? (
                 <div className="invitation-list">
                   {data.invitations.map((i) => (
@@ -348,7 +350,7 @@ export function TeamAccess({
                       </div>
                       {i.status !== "accepted" && (
                         <div className="invitation-row-actions">
-                          <button
+                          <ZuluButton
                             className="text-button"
                             disabled={busy}
                             onClick={() =>
@@ -356,9 +358,9 @@ export function TeamAccess({
                             }
                           >
                             Gerar novo link
-                          </button>
+                          </ZuluButton>
                           {i.status === "pending" && (
-                            <button
+                            <ZuluButton
                               className="text-button"
                               disabled={busy}
                               onClick={() =>
@@ -373,7 +375,7 @@ export function TeamAccess({
                               }
                             >
                               Revogar
-                            </button>
+                            </ZuluButton>
                           )}
                         </div>
                       )}

@@ -1,4 +1,5 @@
 "use client";
+import { ZuluButton, ZuluLabel } from "./dashboard-ui";
 import { useEffect, useMemo, useState } from "react";
 import {
   LiveKitRoom,
@@ -14,6 +15,7 @@ import {
   MonitorArrowUp,
   Stop,
 } from "@phosphor-icons/react";
+import { RadioGroup, Radio, Label } from "@heroui/react";
 import { HubDialog } from "@/components/hub-ui";
 import "@livekit/components-styles";
 
@@ -262,7 +264,7 @@ function ScreenShareControl({
 
   return (
     <>
-      <button
+      <ZuluButton
         className="call-screen-share-toggle"
         onClick={() => void toggleShare()}
         disabled={starting || loadingSources}
@@ -288,7 +290,7 @@ function ScreenShareControl({
                 : "Compartilhar tela"}
           </>
         )}
-      </button>
+      </ZuluButton>
 
       {dialogOpen && (
         <HubDialog
@@ -319,7 +321,7 @@ function ScreenShareControl({
                   const selected = nativeSelectedId === item.sourceId;
                   const Icon = item.kind === "window" ? AppWindow : Monitor;
                   return (
-                    <button
+                    <ZuluButton
                       type="button"
                       key={item.sourceId}
                       aria-pressed={selected}
@@ -332,7 +334,7 @@ function ScreenShareControl({
                         <small>{item.detail}{item.primary ? " · Principal" : ""}</small>
                       </span>
                       <i aria-hidden="true" />
-                    </button>
+                    </ZuluButton>
                   );
                 })}
                 {nativeSources.length === 0 && (
@@ -341,64 +343,16 @@ function ScreenShareControl({
               </div>
             </div>
           ) : (
-            <fieldset className="share-source-options">
-              <legend>Tipo de fonte</legend>
-              <label className={source === "window" ? "is-selected" : ""}>
-                <input
-                  type="radio"
-                  name="screen-share-source"
-                  value="window"
-                  checked={source === "window"}
-                  onChange={() => setSource("window")}
-                />
-                <AppWindow size={20} aria-hidden="true" />
-                <span>
-                  <strong>Janela</strong>
-                  <small>Um aplicativo por vez</small>
-                </span>
-              </label>
-              <label className={source === "monitor" ? "is-selected" : ""}>
-                <input
-                  type="radio"
-                  name="screen-share-source"
-                  value="monitor"
-                  checked={source === "monitor"}
-                  onChange={() => setSource("monitor")}
-                />
-                <Monitor size={20} aria-hidden="true" />
-                <span>
-                  <strong>Tela inteira</strong>
-                  <small>O monitor completo</small>
-                </span>
-              </label>
-            </fieldset>
+            <RadioGroup className="share-source-options" value={source} onChange={value=>setSource(value as ShareSource)}>
+              <Label>Tipo de fonte</Label>
+              <Radio value="window" className={source === "window" ? "is-selected" : ""}><Radio.Content><Radio.Control><Radio.Indicator/></Radio.Control><AppWindow size={20} aria-hidden="true"/><span><strong>Janela</strong><small>Um aplicativo por vez</small></span></Radio.Content></Radio>
+              <Radio value="monitor" className={source === "monitor" ? "is-selected" : ""}><Radio.Content><Radio.Control><Radio.Indicator/></Radio.Control><Monitor size={20} aria-hidden="true"/><span><strong>Tela inteira</strong><small>O monitor completo</small></span></Radio.Content></Radio>
+            </RadioGroup>
           )}
-
-          <fieldset className="share-quality-options">
-            <legend>Qualidade</legend>
-            {(Object.keys(shareProfiles) as ShareProfile[]).map((key) => {
-              const option = shareProfiles[key];
-              return (
-                <label
-                  key={key}
-                  className={profile === key ? "is-selected" : ""}
-                >
-                  <input
-                    type="radio"
-                    name="screen-share-profile"
-                    value={key}
-                    checked={profile === key}
-                    onChange={() => setProfile(key)}
-                  />
-                  <span>
-                    <strong>{option.label}</strong>
-                    <small>{option.details}</small>
-                  </span>
-                  {profile === key && <i aria-hidden="true" />}
-                </label>
-              );
-            })}
-          </fieldset>
+          <RadioGroup className="share-quality-options" value={profile} onChange={value=>setProfile(value as ShareProfile)}>
+            <Label>Qualidade</Label>
+            {(Object.keys(shareProfiles) as ShareProfile[]).map(key=><Radio key={key} value={key} className={profile===key?"is-selected":""}><Radio.Content><Radio.Control><Radio.Indicator/></Radio.Control><span><strong>{shareProfiles[key].label}</strong><small>{shareProfiles[key].details}</small></span></Radio.Content></Radio>)}
+          </RadioGroup>
 
           <p className="share-quality-note">
             {isWindowsDesktop
@@ -409,13 +363,13 @@ function ScreenShareControl({
           </p>
 
           <div className="dialog-actions">
-            <button
+            <ZuluButton
               className="outline-button"
               onClick={() => setDialogOpen(false)}
             >
               Cancelar
-            </button>
-            <button
+            </ZuluButton>
+            <ZuluButton
               className="primary-button"
               onClick={() => void startShare()}
               disabled={starting || (isWindowsDesktop && !nativeSelectedId)}
@@ -424,7 +378,7 @@ function ScreenShareControl({
               {starting
                 ? "Iniciando…"
                 : `Compartilhar ${selectedProfile.details}`}
-            </button>
+            </ZuluButton>
           </div>
         </HubDialog>
       )}
@@ -491,7 +445,7 @@ export default function LiveCallRoom({
               isDesktopApp={isDesktopApp}
               onError={setError}
             />
-            <button
+            <ZuluButton
               className="secondary-button"
               onClick={() => {
                 void room.disconnect();
@@ -499,7 +453,7 @@ export default function LiveCallRoom({
               }}
             >
               Sair da chamada
-            </button>
+            </ZuluButton>
           </div>
         </div>
         <VideoConference />

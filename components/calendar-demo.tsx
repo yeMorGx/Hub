@@ -1,4 +1,5 @@
 "use client";
+import { ZuluInput } from "./dashboard-ui";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Form, Input, Label } from "@heroui/react";
 import { LiveCalendar } from "./live-calendar";
@@ -141,9 +142,9 @@ export function CalendarDemo() {
             <Label htmlFor="demo-event-title">Título</Label>
             <Input id="demo-event-title" name="title" required maxLength={200} autoFocus placeholder="Nome do encontro" />
             <Label htmlFor="demo-event-start">Início</Label>
-            <Input id="demo-event-start" name="start" type="datetime-local" required defaultValue={toLocalInput(draft.start.toISOString())} />
+            <ZuluInput aria-label="Início do evento" id="demo-event-start" name="start" type="datetime-local" required defaultValue={toLocalInput(draft.start.toISOString())} />
             <Label htmlFor="demo-event-end">Término</Label>
-            <Input id="demo-event-end" name="end" type="datetime-local" required defaultValue={toLocalInput(draft.end.toISOString())} />
+            <ZuluInput aria-label="Fim do evento" id="demo-event-end" name="end" type="datetime-local" required defaultValue={toLocalInput(draft.end.toISOString())} />
             <Button type="submit" className="primary-button">Criar encontro de teste</Button>
           </Form>
         </HubDialog>

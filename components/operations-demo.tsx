@@ -1,4 +1,5 @@
 "use client";
+import { ZuluButton } from "./dashboard-ui";
 import { useMemo, useState } from "react";
 import {
   ArrowLeft,
@@ -56,7 +57,7 @@ export function OperationsDemo() {
               ["integrations", "Integrações", ShieldCheck],
               ["calls", "Chamadas", Headphones],
             ].map(([id, label, Icon]) => (
-              <button
+              <ZuluButton
                 key={id as string}
                 className={page === id ? "active" : ""}
                 onClick={() => {
@@ -66,7 +67,7 @@ export function OperationsDemo() {
               >
                 <Icon size={20} />
                 <span>{label as string}</span>
-              </button>
+              </ZuluButton>
             ))}
           </nav>
           <a className="text-button" href="/demo/calendar">

@@ -13,6 +13,7 @@ type SignatureGlyph = {
     fontSize: number,
   ) => {
     toPathData: (decimalPlaces?: number) => string;
+    getBoundingBox: () => {x1: number; y1: number; x2: number; y2: number};
   };
 };
 
@@ -91,16 +92,20 @@ async function buildSignaturePaths({
   fontSize: number;
   baseline: number;
   horizontalPadding: number;
-}): Promise<{ paths: string[]; width: number }> {
+}): Promise<{ paths: string[]; width: number; viewBox: string }> {
   const font = await loadFontFromPaths(["/fonts/Allura-Regular.ttf"]);
 
   let x = horizontalPadding;
   const nextPaths: string[] = [];
+  const bounds = {x1: 0, y1: 0, x2: 0, y2: SVG_HEIGHT};
 
   for (const char of text) {
     const glyph = font.charToGlyph(char);
     const path = glyph.getPath(x, baseline, fontSize);
     nextPaths.push(path.toPathData(3));
+    const box = path.getBoundingBox();
+    bounds.x1 = Math.min(bounds.x1, box.x1); bounds.y1 = Math.min(bounds.y1, box.y1);
+    bounds.x2 = Math.max(bounds.x2, box.x2); bounds.y2 = Math.max(bounds.y2, box.y2);
 
     const advanceWidth = glyph.advanceWidth ?? font.unitsPerEm;
     x += advanceWidth * (fontSize / font.unitsPerEm);
@@ -108,7 +113,8 @@ async function buildSignaturePaths({
 
   return {
     paths: nextPaths,
-    width: x + horizontalPadding,
+    width: Math.max(x + horizontalPadding, bounds.x2) - bounds.x1 + 4,
+    viewBox: `${bounds.x1 - 2} ${bounds.y1 - 2} ${Math.max(x + horizontalPadding, bounds.x2) - bounds.x1 + 4} ${bounds.y2 - bounds.y1 + 4}`,
   };
 }
 
@@ -175,6 +181,7 @@ export function Signature({
 }: SignatureProps) {
   const [paths, setPaths] = useState<string[]>([]);
   const [width, setWidth] = useState<number>(300);
+  const [viewBox, setViewBox] = useState("0 0 300 100");
   const horizontalPadding = fontSize * 0.1;
   const topMargin = Math.max(5, (SVG_HEIGHT - fontSize) / 2);
   const baseline = Math.min(SVG_HEIGHT - 5, topMargin + fontSize);
@@ -185,7 +192,7 @@ export function Signature({
 
     async function loadSignaturePaths() {
       try {
-        const { paths: nextPaths, width: nextWidth } = await buildSignaturePaths({
+        const { paths: nextPaths, width: nextWidth, viewBox: nextViewBox } = await buildSignaturePaths({
           text,
           fontSize,
           baseline,
@@ -198,6 +205,7 @@ export function Signature({
 
         setPaths(nextPaths);
         setWidth(nextWidth);
+        setViewBox(nextViewBox);
       } catch {
         if (isCancelled) {
           return;
@@ -222,7 +230,7 @@ export function Signature({
       focusable="false"
       width={width}
       height={SVG_HEIGHT}
-      viewBox={`0 0 ${width} ${SVG_HEIGHT}`}
+      viewBox={viewBox}
       fill="none"
       className={className}
       initial={play ? "hidden" : "visible"}
@@ -247,7 +255,7 @@ export function Signature({
       {renderMotionPaths({
         paths,
         stroke: color,
-        strokeWidth: 2,
+        strokeWidth: 0.55,
         strokeLinecap: "butt",
         strokeLinejoin: "round",
         duration,
