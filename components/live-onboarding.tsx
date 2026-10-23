@@ -7,14 +7,12 @@ import {
   ArrowRight,
   SignOut,
   CircleNotch,
-  CheckCircle,
 } from "@phosphor-icons/react";
 import type { HubController } from "@/lib/hub/use-hub";
 import { AuthShell } from "./auth/auth-shell";
 import { errorMessage } from "@/lib/supabase/errors";
 export function LiveOnboarding({ hub }: { hub: HubController }) {
   const [workspaceId, setWorkspaceId] = useState(""),
-    [createdWorkspace, setCreatedWorkspace] = useState(""),
     [error, setError] = useState("");
   const admins =
     hub.bootstrap?.workspaces.filter((w) =>
@@ -27,15 +25,16 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
     const data = new FormData(e.currentTarget);
     setError("");
     const result = await hub.mutate(async () => {
-      let wid = workspaceId || createdWorkspace;
-      if (!wid) {
-        wid = await hub.rpc("create_workspace", {
-          p_name: String(data.get("workspace")).trim(),
-        });
-        setCreatedWorkspace(wid);
+      if (!workspaceId) {
+        const created = await hub.rpc("create_organization", {
+          p_name: String(data.get("workspace") ?? "").trim(),
+          p_team_name: String(data.get("team") ?? "").trim(),
+        }) as { team_id: string };
+        hub.setTeamId(created.team_id);
+        return created.team_id;
       }
       const team = await hub.rpc("create_team", {
-        p_workspace_id: wid,
+        p_workspace_id: workspaceId,
         p_name: String(data.get("team")).trim(),
       });
       // A successfully created team is usable even if the optional initial channel fails.
@@ -53,7 +52,7 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
     }, "Seu espaço está pronto. Bem-vindo ao ZULU!");
     if (!result.ok)
       setError(
-        "Não foi possível concluir. O workspace já criado será reaproveitado ao tentar novamente.",
+        result.error || "Não foi possível criar seu espaço. Confira os dados e tente novamente.",
       );
   }
   async function signOut() {
@@ -69,8 +68,8 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
       <div className="auth-title">
         <h2>Vamos preparar seu espaço.</h2>
         <p>
-          Olá, {hub.bootstrap?.profile.display_name.split(" ")[0]}. Crie um
-          workspace e seu primeiro time, ou abra o link de convite enviado pelo
+          Olá, {hub.bootstrap?.profile.display_name.split(" ")[0]}. Crie
+          uma organização e seu primeiro time, ou abra o link de convite enviado pelo
           administrador para participar de um time existente.
         </p>
       </div>
@@ -82,13 +81,13 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
       <ZuluForm className="auth-form" onSubmit={submit}>
         {admins.length > 0 && (
           <ZuluLabel>
-            Workspace
+            Organização
             <ZuluSelect
               value={workspaceId}
               onValueChange={(e) => setWorkspaceId(e)}
-              disabled={hub.busy || !!createdWorkspace}
+              disabled={hub.busy}
             >
-              <option value="">Criar novo workspace</option>
+              <option value="">Criar nova organização</option>
               {admins.map((w) => (
                 <option value={w.id} key={w.id}>
                   {w.name}
@@ -97,9 +96,9 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
             </ZuluSelect>
           </ZuluLabel>
         )}
-        {!workspaceId && !createdWorkspace && (
+        {!workspaceId && (
           <ZuluLabel>
-            Nome do workspace
+            Nome da organização
             <ZuluInput
               name="workspace"
               required
@@ -107,12 +106,6 @@ export function LiveOnboarding({ hub }: { hub: HubController }) {
               placeholder="Nome da sua organização"
             />
           </ZuluLabel>
-        )}
-        {createdWorkspace && (
-          <div className="form-success">
-            <CheckCircle size={18} />
-            Workspace criado. Agora conclua seu time.
-          </div>
         )}
         <ZuluLabel>
           Nome do time

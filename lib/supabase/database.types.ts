@@ -1902,6 +1902,11 @@ export type Database = {
         Returns: string
       }
       create_workspace: { Args: { p_name: string }; Returns: string }
+      create_organization: { Args: { p_name: string; p_team_name: string }; Returns: Json }
+      organization_deletion_status: { Args: { p_workspace_id: string }; Returns: boolean }
+      begin_organization_deletion: { Args: { p_workspace_id: string; p_confirmation_name: string }; Returns: undefined }
+      organization_deletion_files: { Args: { p_workspace_id: string }; Returns: { bucket_id: string; object_path: string }[] }
+      finalize_organization_deletion: { Args: { p_workspace_id: string; p_confirmation_name: string }; Returns: undefined }
       decide_home_office_swap: { Args: { p_action: string; p_request_id: string }; Returns: undefined }
       decide_absence: {
         Args: { p_absence_id: string; p_note?: string; p_status: string }

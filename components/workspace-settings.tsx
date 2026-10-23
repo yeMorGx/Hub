@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Button, Tabs, Label, Select, ListBox, Checkbox } from "@heroui/react";
+import { Button, Tabs, Label, Select, ListBox, Checkbox, Spinner } from "@heroui/react";
+import { ZuluForm, ZuluInput, ZuluLabel } from "./dashboard-ui";
+import { clearVault } from "@/public/offline-vault.js";
 import { HubDialog } from "./hub-ui";
 import type { Authority } from "@/lib/organization/model";
 import type { OrgCommand } from "./organization-admin";
-import { UserCircle, Palette, Desktop, Buildings, ArrowUpRight } from "@phosphor-icons/react";
+import { UserCircle, Palette, Desktop, Buildings, ArrowUpRight, Trash } from "@phosphor-icons/react";
 import type { HubController } from "@/lib/hub/use-hub";
 import { PushSettings } from "./push-settings";
 import { OfflineSettings } from "./offline-settings";
@@ -16,9 +18,43 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
 }) {
   const [narrow, setNarrow] = useState(false);
   const [leaveOpen,setLeaveOpen]=useState(false);
-  const canManageOrganization=hub.isAdmin||Boolean(organization?.authority?.team_admin||organization?.authority?.can_approve);
+  const [deleteOpen, setDeleteOpen] = useState(false), [confirmation, setConfirmation] = useState(""), [deleteError, setDeleteError] = useState(""), [deletionPending, setDeletionPending] = useState(false);
+  const isOwner = hub.workspace?.owner_id === hub.userId || Boolean(organization?.authority?.owner);
+  const canManageOrganization=isOwner||hub.isAdmin||Boolean(organization?.authority?.team_admin||organization?.authority?.can_approve);
   const [theme, setTheme] = useState("light"), [message, setMessage] = useState(""), [busy, setBusy] = useState(false);
   const [runtime, setRuntime] = useState<RuntimeState | null>(null);
+  useEffect(() => {
+    setDeleteOpen(false); setConfirmation(""); setDeleteError(""); setDeletionPending(false);
+    if (!isOwner || !hub.workspace?.id) return;
+    let active = true;
+    void hub.client.rpc("organization_deletion_status", { p_workspace_id: hub.workspace.id }).then(({ data }) => { if (active) setDeletionPending(data === true); });
+    return () => { active = false; };
+  }, [hub.client, hub.workspace?.id, isOwner]);
+  async function deleteOrganization() {
+    if (busy || !isOwner || !hub.workspace || confirmation.trim() !== hub.workspace.name) return;
+    const workspaceId = hub.workspace.id;
+    setBusy(true); setDeleteError("");
+    try {
+      let completed = false;
+      while (!completed) {
+        const { data, error } = await hub.client.functions.invoke("delete-organization", { body: { workspace_id: workspaceId, confirmation_name: confirmation.trim() } });
+        if (error || !data?.ok) throw new Error(data?.error || "A exclusão não terminou. Confira sua conexão e tente novamente.");
+        setDeletionPending(true);
+        completed = data.completed === true;
+      }
+      await clearVault().catch(() => {});
+      setDeleteOpen(false);
+      hub.notify("Organização excluída definitivamente.");
+      await hub.refreshBootstrap();
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : "Não foi possível concluir a exclusão.");
+      const status = await hub.client.rpc("organization_deletion_status", { p_workspace_id: workspaceId });
+      if (!status.error) setDeletionPending(status.data === true);
+      // Reconcile access if the server finished but its response was lost.
+      await clearVault().catch(() => {});
+      await hub.refreshBootstrap();
+    } finally { setBusy(false); }
+  }
   useEffect(() => {
     const media = matchMedia("(max-width: 760px)"); const update = () => setNarrow(media.matches); update(); media.addEventListener("change", update); return () => media.removeEventListener("change", update);
   }, []);
@@ -75,9 +111,22 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
         <h2>{hub.workspace?.name ?? "Sua organização"}</h2><p>Administre as conexões e os acessos do seu time.</p>
         <div className="settings-row"><div><strong>Pessoas e permissões</strong><p>Convites, papéis e acesso ao time.</p></div><Button variant="secondary" onPress={onMembers}>Gerenciar pessoas</Button></div>
         <div className="settings-row"><div><strong>Integrações e auditoria</strong><p>Calendários, automações e histórico de alterações.</p></div><Button variant="secondary" onPress={onIntegrations}>Abrir integrações</Button></div>
+        {isOwner && <div className="settings-row organization-delete-row"><div><strong>{deletionPending ? "Exclusão em andamento" : "Excluir organização"}</strong><p>{deletionPending ? "Retome para terminar de apagar os arquivos e dados deste espaço." : "Apaga permanentemente todos os times, conversas, documentos, arquivos e horas desta organização."}</p></div><Button variant="danger-soft" isDisabled={busy} onPress={() => { setConfirmation(""); setDeleteError(""); setDeleteOpen(true); }}><Trash size={17} />{deletionPending ? "Continuar exclusão" : "Excluir organização"}</Button></div>}
       </Tabs.Panel>}
     </Tabs>
     {leaveOpen&&organization&&<HubDialog title="Sair da organização" onClose={()=>{if(!busy)setLeaveOpen(false);}}><div className="org-confirm"><p>Você perderá o acesso aos times desta organização. Seus documentos permanecerão com sua autoria e passarão à responsabilidade da administração.</p><Button variant="danger" isDisabled={busy} onPress={async()=>{setBusy(true);try{await organization.command('leave');setLeaveOpen(false);await hub.refreshAll();}catch{setMessage('Não foi possível sair. Confira sua conexão e tente novamente.');}finally{setBusy(false);}}}>Confirmar saída</Button></div></HubDialog>}
+    {deleteOpen && isOwner && hub.workspace && <HubDialog title={deletionPending ? "Concluir exclusão" : "Excluir organização"} onClose={() => { if (!busy) setDeleteOpen(false); }}>
+      <ZuluForm className="org-confirm" onSubmit={event => { event.preventDefault(); void deleteOrganization(); }}>
+        <p><strong>{hub.workspace.name}</strong> e todos os seus dados armazenados no ZULU serão apagados permanentemente para todos os participantes.</p>
+        <p className="org-delete-warning">Esta ação não pode ser desfeita. Sua conta pessoal continua ativa.</p>
+        {deletionPending && <p>O processo já começou. Continue para remover os arquivos restantes e concluir a exclusão.</p>}
+        <ZuluLabel>Digite o nome da organização<ZuluInput name="confirmation" value={confirmation} onChange={event => setConfirmation(event.target.value)} autoFocus autoComplete="off" disabled={busy} required maxLength={120} aria-describedby="organization-delete-help" /></ZuluLabel>
+        <small id="organization-delete-help">{hub.workspace.name}</small>
+        {deleteError && <p role="alert" className="org-feedback org-error">{deleteError}</p>}
+        <div className="organization-delete-actions"><Button type="button" variant="secondary" isDisabled={busy} onPress={() => setDeleteOpen(false)}>Fechar</Button><Button type="submit" variant="danger" isDisabled={busy || confirmation.trim() !== hub.workspace.name}>{busy ? <><Spinner size="sm" />Excluindo…</> : <><Trash size={17} />{deletionPending ? "Continuar exclusão" : "Excluir definitivamente"}</>}</Button></div>
+        {busy && <p role="status">Apagando arquivos e dados. Aguarde a confirmação.</p>}
+      </ZuluForm>
+    </HubDialog>}
     {message && <p className="inline-notice" role="status">{message}</p>}
   </section>;
 }

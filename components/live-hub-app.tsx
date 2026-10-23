@@ -95,6 +95,7 @@ import {
   type CalendarView,
 } from "@/lib/hub/calendar";
 import { LiveOnboarding } from "./live-onboarding";
+import { CreateOrganizationDialog } from "./create-organization-dialog";
 import { usePageTransition } from "./motion/use-page-transition";
 import { PersonAvatar, PeopleAvatars, HubDialog, EmptyState } from "./hub-ui";
 const navigation = [
@@ -126,6 +127,7 @@ type Modal =
   | "project"
   | "member"
   | "team"
+  | "organization"
   | "message"
   | "channel-members"
   | null;
@@ -640,6 +642,19 @@ export function LiveHubApp({ userId }: { userId: string }) {
       setModal(null);
     }
   }
+  async function createOrganization(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const fields = new FormData(e.currentTarget);
+    const result = await hub.mutate(async () => {
+      const created = await hub.rpc("create_organization", {
+        p_name: String(fields.get("name") ?? "").trim(),
+        p_team_name: String(fields.get("team") ?? "").trim(),
+      }) as { team_id: string };
+      hub.setTeamId(created.team_id);
+      return created;
+    }, "Organização criada. Seu novo espaço está pronto.");
+    if (result.ok) { setModal(null); setPage("overview"); }
+  }
   const Notice = hub.notice ? (page === "overview" ? <DashboardNotice message={hub.notice.message} error={hub.notice.error} onClose={hub.dismissNotice} /> : (
     <div
       role={hub.notice.error ? "alert" : "status"}
@@ -755,6 +770,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
               role={hub.isAdmin ? "Administrador" : hub.canManage ? "Líder" : "Membro"} canManage={hub.isAdmin}
               onTeam={id => { if (id === hub.teamId) return; hub.setTeamId(id); setPage("overview"); setSearch(""); setChannelId(""); setEventId(""); setEditingEvent(null); setModal(null); setDraft(""); setProjectId(""); setCalendarDate(todayKey); }} onNewTeam={() => openModal("team")}
               onSignOut={() => void signOut()}
+              onNewOrganization={() => openModal("organization")}
             />
           </div>
           <div className="topbar-right">
@@ -2526,6 +2542,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
         >
           <TeamAccess hub={hub} onClose={() => setModal(null)} />
         </HubDialog>
+      )}
+      {modal === "organization" && (
+        <CreateOrganizationDialog busy={hub.busy} onSubmit={createOrganization} onClose={() => setModal(null)} />
       )}
       {modal === "team" && hub.isAdmin && (
         <HubDialog title="Novo time" onClose={() => setModal(null)}>

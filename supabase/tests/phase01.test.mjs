@@ -1482,3 +1482,82 @@ scenario('Governança: arquivar time encerra timer antes de ocultar o espaço',a
  await login(users.admin);const t=await org('create_team',{name:'Pesquisa com timer'});const timer=await rpc('start_timer',[t.id,null,'Atividade em andamento']);await requestChange('team_delete',{team_id:t.id});
  await db.exec('reset role');assert.equal(await scalar('select ended_at is not null as closed from public.time_entries where id=$1',[timer]),true);
 });
+
+scenario('Organizações: criação atômica entrega dono, time e canal inicial; nomes inválidos não deixam espaço parcial', async () => {
+  await login(users.alice);
+  const created = await rpc('create_organization', ['Minha organização', 'Produto']);
+  assert.equal(await scalar('select owner_id from public.workspaces where id=$1', [created.workspace_id]), users.alice);
+  assert.equal(await count('select count(*) from public.team_members where team_id=$1 and user_id=$2 and is_active', [created.team_id, users.alice]), 1);
+  assert.equal(await scalar('select name from public.channels where id=$1', [created.channel_id]), 'geral');
+  const before = await count('select count(*) from public.workspaces');
+  await sqlError('select public.create_organization($1,$2)', ['Sem time', ' '], '22023');
+  assert.equal(await count('select count(*) from public.workspaces'), before);
+  await login(users.alice, 'aal1');
+  await sqlError('select public.create_organization($1,$2)', ['Sem MFA', 'Geral'], '42501');
+});
+
+scenario('Organizações: somente dono com MFA e confirmação exata inicia exclusão; marcadores privados não podem ser falsificados', async () => {
+  await login(users.leader);
+  await sqlError('select public.begin_organization_deletion($1,$2)', [ids.workspace, 'Org A'], '42501');
+  await generalAdmin();
+  await sqlError('select public.begin_organization_deletion($1,$2)', [ids.workspace, 'Org A'], '42501');
+  await login(users.admin, 'aal1');
+  await sqlError('select public.begin_organization_deletion($1,$2)', [ids.workspace, 'Org A'], '42501');
+  await login(users.admin);
+  await sqlError('select public.begin_organization_deletion($1,$2)', [ids.workspace, 'Org B'], '22023');
+  await sqlError('insert into private.organization_deletion_jobs(workspace_id,owner_id,confirmation_name,finalizing_txid) values($1,$2,$3,txid_current())', [ids.workspace, users.admin, 'Org A'], '42501');
+  await sqlError('select public.finalize_organization_deletion($1,$2)', [ids.workspace, 'Org A'], '55000');
+});
+
+scenario('Organizações: exclusão congela escritas/envios e só conclui após remover todos os arquivos, incluindo versões antigas', async () => {
+  await login(users.leader);
+  await rpc('send_rich_message', [ids.general, randomUUID(), 'Resposta', ids.generalMessage]);
+  await rpc('react_to_message', [ids.generalMessage, 'like', true]);
+  await rpc('pin_message', [ids.generalMessage, true]);
+  await rpc('reserve_attachment', [ids.general, 'pendente.txt', 'text/plain', 100]);
+  await rpc('save_task', [ids.red, 'Tarefa vinculada', '', ids.project, users.alice]);
+  const client = await rpc('save_client', [ids.red, 'Cliente de teste']);
+  await rpc('set_project_client', [ids.project, client]);
+  await login(users.alice);
+  await rpc('save_calendar_connection', [ids.red, 'google', 'calendar-deletion', 'ciphertext-deletion-fixture']);
+  await rpc('start_timer', [ids.red, ids.project, 'Atividade pausada']);
+  await rpc('pause_timer');
+  await login(users.admin);
+  const root = await newLibrary(), doc = await newDocument(root);
+  await library('share', { id: doc, user_id: users.alice, permissions: ['read'] });
+  await rpc('create_team_invitation', [ids.red, 'outsider@example.test', 'member', inviteHash(9)]);
+  await db.exec('reset role');
+  for (const [bucket, path] of [['organization-library', `${doc}/atual`], ['organization-library', `${doc}/antigo`], ['hub-files', `${ids.red}/orfao/arquivo`], ['hub-files', `${ids.otherTeam}/preservado/arquivo`]]) {
+    await query('insert into storage.objects(bucket_id,name) values($1,$2)', [bucket, path]);
+  }
+  await login(users.admin);
+  await rpc('begin_organization_deletion', [ids.workspace, 'Org A']);
+  await rpc('begin_organization_deletion', [ids.workspace, 'Org A']);
+  assert.equal(await rpc('organization_deletion_status', [ids.workspace]), true);
+  const files = (await query('select * from public.organization_deletion_files($1)', [ids.workspace])).rows;
+  assert.equal(files.length, 3);
+  await sqlError('select public.create_team($1,$2)', [ids.workspace, 'Bloqueado'], '55000');
+  await sqlError('select public.library_console($1,$2,$3)', [ids.workspace, 'save', { id: doc, version: 1, title: 'Bloqueado', body: 'x' }], '55000');
+  await sqlError("insert into storage.objects(bucket_id,name) values('organization-library',$1)", [`${doc}/novo`], '42501');
+  await sqlError('select public.finalize_organization_deletion($1,$2)', [ids.workspace, 'Org A'], '55000');
+  await login(users.leader);
+  await sqlError('select public.send_message($1,$2,$3)', [ids.general, randomUUID(), 'Bloqueado'], '55000');
+  // The test storage stub has no HTTP API; emulate successful Storage removals.
+  await db.exec('reset role');
+  for (const file of files) await query('delete from storage.objects where bucket_id=$1 and name=$2', [file.bucket_id, file.object_path]);
+  await login(users.admin);
+  await rpc('finalize_organization_deletion', [ids.workspace, 'Org A']);
+  await db.exec('reset role');
+  assert.equal(await count('select count(*) from public.workspaces where id=$1', [ids.workspace]), 0);
+  assert.equal(await count('select count(*) from public.workspaces where id=$1', [ids.otherWorkspace]), 1);
+  assert.equal(await count('select count(*) from public.profiles'), Object.keys(users).length);
+  assert.equal(await count("select count(*) from storage.objects where name=$1", [`${ids.otherTeam}/preservado/arquivo`]), 1);
+  assert.equal(await count('select count(*) from private.organization_deletion_jobs'), 0);
+  assert.equal(await count('select count(*) from private.calendar_credentials'), 0);
+  for (const table of ['teams','workspace_members','org_activity','org_requests','org_notices','library_nodes']) {
+    assert.equal(await count(`select count(*) from public.${table} where workspace_id=$1`, [ids.workspace]), 0, table);
+  }
+  for (const table of ['messages','channels','attachments','message_reactions','message_pins','time_entries','paused_timers','tasks','projects','clients','calendar_connections','events','team_members','member_statuses']) {
+    assert.equal(await count(`select count(*) from public.${table} where team_id=any($1::uuid[])`, [[ids.red,ids.blue]]), 0, table);
+  }
+});

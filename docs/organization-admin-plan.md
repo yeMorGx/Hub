@@ -76,6 +76,8 @@ Exemplos acordados: banir/expulsar/suspender pessoas, nomear/rebaixar/remover ad
 
 ## 8. Privacidade e plano futuro
 
+Criação de organizações adicionais e exclusão permanente pelo dono foram definidas posteriormente em [organization-lifecycle.md](organization-lifecycle.md).
+
 - Dono/admin não recebem acesso às DMs de outras pessoas por autoridade administrativa.
 - Consulta à LGPD e orientações oficiais da ANPD, política de retenção/exclusão e arquitetura de criptografia/E2EE constituem plano futuro no backlog, não bug nem garantia já implementada.
 - Alcance da E2EE, gestão de chaves, anexos, recuperação e múltiplos dispositivos continuam em aberto. Não afirmar conformidade apenas por usar criptografia.

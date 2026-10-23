@@ -379,6 +379,8 @@ export function createDemoBackend() {
     isAdmin: true,
     busy: false,
     refreshTeam: async () => {},
+    refreshBootstrap: async () => {},
+    refreshAll: async () => {},
     notify: () => {},
     rpc: async (name: string, args: Record<string, unknown>) => {
       const result = await client.rpc(name, args);

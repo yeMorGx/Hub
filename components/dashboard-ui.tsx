@@ -580,6 +580,7 @@ export function DashboardWorkspacePicker({
   canManage,
   onTeam,
   onNewTeam,
+  onNewOrganization,
 }: {
   workspace: string;
   teamId: string;
@@ -588,6 +589,7 @@ export function DashboardWorkspacePicker({
   canManage: boolean;
   onTeam: (id: string) => void;
   onNewTeam: () => void;
+  onNewOrganization?: () => void;
   onSignOut?: () => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -620,6 +622,7 @@ export function DashboardWorkspacePicker({
           onAction={(key) => {
             setOpen(false);
             if (key === "new-team") onNewTeam();
+            else if (key === "new-organization") onNewOrganization?.();
             else onTeam(String(key));
           }}
         >
@@ -650,6 +653,10 @@ export function DashboardWorkspacePicker({
               <Label>Criar time</Label>
             </Dropdown.Item>
           )}
+          {onNewOrganization && <Dropdown.Item id="new-organization" textValue="Criar organização" className="workspace-new-team">
+            <SquaresFour size={17} />
+            <Label>Criar organização</Label>
+          </Dropdown.Item>}
         </Dropdown.Menu>
       </Dropdown.Popover>
     </Dropdown>

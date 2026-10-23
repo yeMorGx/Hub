@@ -69,6 +69,16 @@ body:has(.workspace-inset) { background: #08090b; padding-top: 0; }
 .settings-row p, .avatar-upload small { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 6px 0 0; }
 .settings-row .select { width: 160px; flex-shrink: 0; }
 .settings-row strong { font-weight: 600; }
+.organization-delete-row { margin-top: 20px; padding: 22px; border-radius: 14px; background: color-mix(in srgb, var(--danger, #c33e48) 7%, var(--surface)); }
+.organization-delete-row > .button { flex-shrink: 0; min-height: 40px; }
+.org-delete-warning { color: #a52637; font-weight: 550; }
+html[data-zulu-theme="dark"] .org-delete-warning { color: #ffb0b7; }
+.organization-delete-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+.organization-delete-actions > .button { min-height: 40px; }
+.organization-create-form .label { color: var(--muted); font-size: 13px; }
+.organization-create-form .primary-button { color: #fff; font-size: 13px; min-height: 44px; }
+html[data-zulu-theme="dark"] .organization-create-form .primary-button { color: #14213b; }
+@media (max-width: 760px) { .organization-delete-row { align-items: flex-start; flex-direction: column; } .organization-delete-actions { flex-direction: column; } .organization-delete-actions > .button { width: 100%; min-height: 44px; } }
 .settings-panel .profile-account-actions, .settings-panel .settings-info { border: 0; }
 .settings-panel > section, .settings-panel > div { border-color: transparent; }
 .avatar-upload { display: grid; gap: 8px; }
