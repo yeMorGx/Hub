@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "product": "ZULU",
   "branding": {
     "name": "ZULU",
@@ -10,210 +10,152 @@
     "markGeometry": "Original black rounded rectangle and white ULU/smile paths, extracted without redrawing",
     "primarySlots": {
       "sidebar": "44px",
-      "desktopTitlebar": "24px",
+      "desktopTitlebar": "Workspace header/actions and native controls; no extra adjacent wordmark",
       "marketing": "40px",
       "auth": "40px",
       "privacy": "30px"
     },
     "primarySlotRule": "Use the official symbol without adjacent product name or tagline; retain accessible ZULU names",
     "platformIcons": "PWA PNG and desktop PNG/ICO/ICNS derive from the exact official symbol",
-    "scope": "Brand identity update; existing surface palettes and functional icon library remain",
+    "scope": "Official symbol preserved across Night Shift workspace/access/demo; public marketing independent",
     "technicalCompatibility": "app.hub.team, native Hub productName/setup filenames, repository, registry/cache/vault keys retained; no technical identity migration claimed"
   },
   "componentStandard": {
     "reference": "HeroUI v3 official components and examples",
     "mandatorySkill": ".agents/skills/zulu-heroui/SKILL.md",
     "scope": "All new and reworked UI components; preserve surface tokens, keyboard, focus and accessibility",
-    "state": "HeroUI React/Styles 3.2.6 installed; Today, compact calendar controls and dialogs migrated through scoped official-component adapters; other modules retain native fallbacks",
-    "specializedEffect": "Original Spell UI Prism/Lava for timer; 650ms state-driven crossfade",
+    "state": "HeroUI React/Styles 3.2.6; shared dashboard-ui and form-controls adapters; preserve official interaction contracts",
+    "specializedEffect": "Original Spell UI Prism/Lava retained as small timer-state signal; reduced-motion and lifecycle rules preserved",
     "specializedIcons": "Sidebar: official Animate UI Hugeicons; hover/focus with reduced-motion support. HeroUI controls retained."
   },
   "mode": "operate",
-  "reference": "https://dribbble.com/shots/24177180-Team-Management-Calendar-UI-Dashboard",
-  "font": "Inter Variable",
-  "icons": "@phosphor-icons/react",
+  "reference": "docs/design-references/2026-10-24/night-shift.png",
+  "font": "Inter Variable body/controls; Manrope Variable headings; locally served",
+  "icons": "Animate UI Hugeicons navigation; @phosphor-icons/react content",
   "tokens": {
-    "background": "#f6f5f1",
-    "rail": "#fdfcf9",
-    "surface": "#ffffff",
-    "surfaceRaised": "#eef1f7",
-    "border": "#e0e3ea",
-    "text": "#202b40",
-    "muted": "#59667c",
-    "accent": "#294d94",
-    "radius": 14
+    "background": "#101217",
+    "frame": "#0c0e12",
+    "rail": "#0c0e12",
+    "surface": "#15171e",
+    "surfaceRaised": "#232630",
+    "surfaceTertiary": "#2c2f3a",
+    "overlay": "#1a1c25",
+    "fieldBackground": "#232630",
+    "fieldForeground": "#f1f0f7",
+    "text": "#f1f0f7",
+    "muted": "#b4b4c4",
+    "accent": "#a5ddc6",
+    "accentForeground": "#10251d",
+    "accentHover": "#bce9d7",
+    "selection": "#29273d",
+    "selectionHover": "#333046",
+    "focus": "#c2b0fb",
+    "border": "#30333f",
+    "danger": "#ffb1bc",
+    "radius": 14,
+    "fieldRadius": 10
   },
   "surface": {
-    "name": "Hoje",
-    "scope": ".live-app across authenticated app pages; .dashboard-redesign adds the Hoje Bento composition; marketing remains independent.",
-    "desktop": "12-column Bento: timer/journey/calendar span 8; photo home-office/meetings/people/recent/chat span 4",
-    "mobile": "Single-column Bento with 14px gaps and bottom navigation",
-    "sidebarWidth": "80px",
-    "sidebarWidthAt1200": "80px",
-    "contextBelowAt": "1200px",
+    "name": "Night Shift",
+    "scope": "Authenticated workspace, access and shared in-memory demo; public marketing independent",
+    "desktop": "80px continuous rail; 64px web header / 48px native titlebar; task list about 72% and contextual agenda/team about 28% above 1200px",
+    "contextBelowAt": "960px",
     "mobileNavigationAt": "760px",
-    "initialDayViewAt": "520px",
-    "calendarHourHeight": "60px",
-    "calendarMaxHeight": "460px"
+    "mobile": "60px header, HeroUI Drawer, stacked content; persistent timer dock",
+    "timerDock": {
+      "desktopMinHeight": "102px",
+      "mobileMinHeight": "132px",
+      "radius": "16px",
+      "position": "fixed bottom; content and rail reserve space"
+    }
   },
   "dashboard": {
     "mode": "operate",
-    "designDocument": "docs/dashboard-bento.md",
-    "authority": "User chose ivory, white surfaces, dark text, deep blue and Inter for Hoje, then explicitly extended that identity to every app page. Decorative shell/card borders are removed. The public marketing site keeps its own visual authority. Prism/Lava remains specialized to the timer; Bento and the home-office image remain specific to Hoje.",
+    "designDocument": "docs/night-shift.md",
+    "authority": "User selected option 3 / exact third image on 2026-10-24; supersedes ivory/Bento/photo/large gradient composition",
     "sources": [
-      "components/today-dashboard.tsx",
+      "components/night-dashboard.tsx",
       "components/live-hub-app.tsx",
-      "app/dashboard.css",
-      "components/desktop-titlebar.tsx",
-      "app/desktop.css",
-      "src-tauri/src/titlebar.rs",
-      "components/animated-gradient.tsx",
+      "lib/hub/use-demo-workspace.ts",
+      "app/night-shift.css",
       "components/dashboard-ui.tsx",
-      "app/dashboard-bento.css",
-      "public/dashboard/home-office.webp",
-      "app/zulu-workspace.css",
-      "components/hub-app.tsx"
+      "components/form-controls.tsx",
+      "components/workspace-settings.tsx"
     ],
     "preview": {
       "route": "/demo/dashboard",
-      "sharedComponents": [
-        "TodayOverview",
-        "TodayContext"
-      ],
-      "data": "fictional, local interactions, no business-record writes",
-      "existingDemo": "/demo preserved"
+      "sharedRenderer": "HubWorkspace",
+      "productionController": "useHub",
+      "demoController": "lib/hub/use-demo-workspace.ts",
+      "data": "Explicitly illustrative; mutations memory-only, isolated profile/bootstrap; external actions explain limitations; fixtures excluded from authenticated mount"
     },
     "behavior": {
-      "journey": "Weekly and monthly balances compare actual work with expected work through today; full-month target remains secondary.",
-      "homeOffice": "Current week Sunday through today + 42 days, independent of calendar selection; holiday weeks suppress assignments; empty and retry states."
+      "tasks": "Real description/project/assignee/due/status; inline expansion, actual versioned completion RPC and permissions",
+      "schemaLimit": "No invented subtask counts or attachments; unsupported by current task schema",
+      "timer": "Persistent dock; single lunch pause ends work segment, keeps activity, excludes lunch and requires manual resume",
+      "context": "Real agenda dates and team presence; home-office context without decorative photo"
     },
-    "verification": {
-      "unit": "29 passed",
-      "build": "flat dashboard and desktop-titlebar build passed; production served at http://127.0.0.1:3005",
-      "fullCalendarRegression": "Prior calendar-browser.py run passed at 1440px/390px; does not establish light-identity visual approval.",
-      "browser": {
-        "script": "scripts/dashboard-browser.py",
-        "widths": [
-          1440,
-          1280,
-          390
-        ],
-        "result": "flat dashboard production round at http://127.0.0.1:3005 passed at 1440px/1280px/390px; no page overflow, JavaScript errors or business-record writes",
-        "scenarios": [
-          "pause and resume",
-          "stop and restart",
-          "unconfigured journey",
-          "holiday week",
-          "summary independent of calendar selection",
-          "empty data",
-          "retry"
-        ]
-      },
-      "typescript": "passed",
-      "desktopTitlebar": "scripts/desktop-titlebar-browser.py passed for web, legacy installer and mocked Windows: controls, drag, unread count and visible dashboard border scan; no native Windows proof",
-      "detector": "Impeccable detector unavailable; no detector pass claimed",
-      "prism": "scripts/prism-browser.py passed actual WebGL2 animation, reduced motion and fallback at 1440px/390px; one stable context, working controls, no overflow/page errors"
+    "tokens": {
+      "background": "#101217",
+      "frame": "#0c0e12",
+      "rail": "#0c0e12",
+      "surface": "#15171e",
+      "surfaceRaised": "#232630",
+      "surfaceTertiary": "#2c2f3a",
+      "overlay": "#1a1c25",
+      "fieldBackground": "#232630",
+      "fieldForeground": "#f1f0f7",
+      "text": "#f1f0f7",
+      "muted": "#b4b4c4",
+      "accent": "#a5ddc6",
+      "accentForeground": "#10251d",
+      "accentHover": "#bce9d7",
+      "selection": "#29273d",
+      "selectionHover": "#333046",
+      "focus": "#c2b0fb",
+      "border": "#30333f",
+      "danger": "#ffb1bc",
+      "radius": 14,
+      "fieldRadius": 10
     },
+    "tokenAuthority": "DESIGN.md; app/night-shift.css; theme.tokens in this sidecar",
     "review": {
       "visual_verdict": "ship",
-      "scope": "Final independent review of ZULU symbol-first branding, Prism timer, fallback/mobile states and refreshed marketing hero; runtime checks recorded separately.",
-      "finding": "No material finish gaps. Previous hold for old marketing logo closed by current dashboard captures.",
-      "evidence": ".impeccable/review/zulu-prism/; titlebar .impeccable/review/zulu-final/desktop-titlebar.png",
-      "captures": [
-        "1440.png",
-        "390.png",
-        "empty-1440.png",
-        "empty-390.png",
-        "fallback-1440.png",
-        "fallback-390.png",
-        "site-1440.png",
-        "site-390.png"
+      "scope": "Independent final Night Shift review; five material findings resolved",
+      "resolved": [
+        "running board contrast",
+        "schedule numeric field",
+        "light header foreground",
+        "demo profile filtering and own bootstrap",
+        "calendar highlight"
       ],
-      "limits": "No complete accessibility, real-account authentication, MFA, RLS, Presence or RPC persistence validation. Windows 0.1.4 published after native smoke and signature verification; actual 0.1.3 to 0.1.4 upgrade unverified. Drag/close/recovery contracts supported by browser/code, not native automation.",
-      "previousVerdict": "Flat surface ship predates Prism and is historical evidence."
+      "evidence": ".impeccable/review/night-shift/",
+      "limits": "Local candidate; publication confirmation recorded in design-qa.md. No native Windows/media validation.",
+      "assetManifest": ".impeccable/review/night-shift/assets.json",
+      "imageCount": 35
     },
-    "font": "Inter Variable, npm-installed and locally served",
-    "tokens": {
-      "background": "#f6f5f1",
-      "rail": "#fdfcf9",
-      "surface": "#ffffff",
-      "surfaceRaised": "#eef1f7",
-      "border": "#e0e3ea",
-      "text": "#202b40",
-      "muted": "#59667c",
-      "accent": "#294d94",
-      "radius": 14
-    },
-    "tokenAuthority": "DESIGN.md and docs/dashboard-bento.md; app/dashboard.css plus app/dashboard-bento.css",
-    "focus": {
-      "default": "2px solid #3764b6; outline-offset:4px",
-      "insideTimer": "2px solid #ffffff; outline-offset:4px",
-      "verifiedContrast": "Previous solid-blue timer measurement 10.15:1 is historical; Prism overlay caps brightest background at #5c5c5c and secondary text #ccd9f1 exceeds 4.5:1."
-    },
-    "flat": {
-      "scope": ".dashboard-redesign only; other modules and marketing retain their authorities",
-      "separation": "white and tinted fields, spacing and typography; no decorative borders or dividers across dashboard navigation, panels, calendar, controls, context, popovers or dialogs",
-      "inputs": "tinted background, no decorative border",
-      "shadows": "no decorative shadow on selected calendar view or scoped flat controls",
-      "focus": "functional visible outlines preserved",
-      "retainedBorderToken": "#e0e3ea is retained in CSS; it does not authorize decorative dashboard borders"
-    },
-    "desktopTitlebar": {
-      "height": "48px",
-      "appearance": "Official symbol, app workspace/team/actions/profile through portal; runtime menu and window controls; no duplicated sidebar avatar or connection label",
-      "controls": [
-        "minimize",
-        "maximize/restore",
-        "close",
-        "drag",
-        "double-click maximize/restore"
+    "verification": {
+      "build": "passed",
+      "unitPassed": 63,
+      "publicLocalPassed": 35,
+      "demoBrowserScenariosPassed": 26,
+      "realFlow": "Isolated organization with actual MFA: task/project create, timer start, lunch, resume, stop, complete",
+      "screens": 22,
+      "widths": [
+        1440,
+        390
       ],
-      "integration": "Native main-window titlebar and runtime commands; DesktopChrome portal preserves browser header fallback",
-      "compatibility": "native decorations retained on web, non-Windows and older installers; restore attempted after control errors/unmount; navigation starts with native decorations",
-      "release": "0.1.4 published: build 39645508848 compiled/signed; retest 39648289490 passed native checks and crypto on same native tree 54aa364ba68e354496fdfe5d056adcc100486154; promotion 39648700277 succeeded",
-      "contract": "docs/desktop-runtime.md"
-    },
-    "prism": {
-      "scope": ".today-focus only",
-      "source": "https://github.com/xxtomm/spell-ui/blob/659b5c2ae405ea9e1c363e09cca7380a0d98e271/registry/spell-ui/animated-gradient.tsx",
-      "implementation": "components/animated-gradient.tsx; original shader and Prism/Lava presets retained; timer-state crossfade",
-      "license": [
-        "docs/licenses/spell-ui-MIT.txt",
-        "public/licenses/spell-ui-MIT.txt"
-      ],
-      "colors": [
-        "#050505",
-        "#66b3ff",
-        "#ffffff"
-      ],
-      "overlay": "#000000a3",
-      "contrast": "Brightest composited background #5c5c5c; secondary #ccd9f1 >4.5:1",
-      "lifecycle": "initial shader time +3; max DPR 1.5 and 30fps; stop offscreen/hidden; reduced motion static with resize redraw; CSS fallback without WebGL2"
-    },
-    "homeOfficeArtwork": {
-      "status": "Implemented: local photograph with dark overlay and reduced-motion-aware hover",
-      "asset": "public/dashboard/home-office.webp",
-      "source": "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd",
-      "layout": "4 of 12 columns on desktop, 3 of 8 below 1200px, full width below 760px; content-driven height with 272px/250px minimum"
-    },
-    "bentoReview": {
-      "evidence": ".impeccable/review/zulu-bento",
-      "scope": "Primary-agent visual inspection of desktop/mobile and local fixture browser checks; no independent-review claim",
-      "limits": "No authenticated business writes or full accessibility audit"
+      "roles": "Owner full navigation; administrator/member sample of three screens each",
+      "publication": "See design-qa.md; service confirmation required",
+      "deliveryDocument": "docs/night-shift-delivery.json"
     }
   },
-  "status": "implemented adaptation; Supabase Auth/MFA, workspace onboarding, RPC adapter and PWA implemented; browser-local demonstration at /demo; authenticated flows await real-account validation",
+  "status": "Night Shift implemented and independently reviewed; local real-backend and demo evidence scoped separately; publication status in design-qa.md",
   "review": {
-    "auth_ui_verdict": "ship",
-    "scope": [
-      "desktop login",
-      "mobile login",
-      "desktop signup",
-      "desktop recovery request",
-      "512px PWA icon"
-    ],
-    "evidence": ".impeccable/review/auth/",
-    "limits": "No private-screen or MFA captures; no real account, email or end-to-end authentication validation; device installation unverified"
+    "visual_verdict": "ship",
+    "scope": "Night Shift final independent review; see dashboard.review",
+    "evidence": ".impeccable/review/night-shift/",
+    "limits": "Not certification of all mutations, accessibility, authorization or external providers; native Windows/media not validated"
   },
   "marketing": {
     "mode": "persuade",
@@ -332,12 +274,11 @@
     }
   },
   "dashboardWorkflow": {
-    "brief": "docs/dashboard-workflow.md",
-    "navigation": "Today floating rounded sidebar/dock; no decorative borders/shadows",
-    "timer": "Inline HeroUI activity/project selection, recent work and linked task RPC",
-    "balance": "Explicit credit/debit words, actual vs expected and today-inclusive basis",
-    "people": "Own activity first, team-private presence activity and own unread DM previews",
-    "footer": "Promotional/MFA footer removed"
+    "brief": "docs/night-shift.md",
+    "navigation": "Continuous 80px icon rail/header; <=760px HeroUI Drawer",
+    "timer": "Persistent dock with shared official HeroUI activity/project selection",
+    "balance": "Registered/expected/remaining summary links to Horas",
+    "people": "Own activity and private-team presence; real unread DM links"
   },
   "desktopRuntime": {
     "platform": "Windows",
@@ -345,21 +286,23 @@
     "background": "Close hides to tray; explicit quit exits; autostart opt-in and hidden --background launch",
     "mini": "328x80 transparent always-on-top window; 72px capsule with radius 999px; original Prism/Lava; no credentials or description transferred",
     "glass": "Explicit user choice: liquid glass for inline activity picker, dark focused fields and light text",
-    "contract": "docs/desktop-runtime.md"
+    "contract": "docs/desktop-runtime.md",
+    "nightShiftScope": "React/web appearance only; no Rust changes or new native Windows validation; native APIs remain mandatory"
   },
   "application": {
-    "scope": "Authenticated app pages, account access and local app demonstration; public marketing keeps its independent world.",
-    "authority": "User extended the approved ivory, navy and Inter identity from Hoje to all app pages, with a compact icon rail and flat surfaces.",
-    "font": "Inter Variable, locally served",
-    "desktopSidebar": "80px floating rail, 12px inset, 22px radius, icon centered, HeroUI tooltip on hover and keyboard focus",
-    "mobileNavigation": "62px floating bottom dock below 760px",
-    "surfaces": "Ivory page background, white content, blue-gray field fill, navy actions and text, no decorative card or shell borders; preserve useful structure and visible focus.",
-    "motion": "Short HeroUI state feedback; respect prefers-reduced-motion.",
-    "source": "app/zulu-workspace.css"
+    "scope": "Authenticated workspace/access and local demo; public marketing independent",
+    "authority": "Night Shift option 3 selected 2026-10-24",
+    "font": "Inter Variable body/controls; Manrope Variable headings; locally served",
+    "desktopSidebar": "80px continuous fixed icon rail with official animated Hugeicons and HeroUI tooltips",
+    "mobileNavigation": "HeroUI Drawer <=760px",
+    "surfaces": "Graphite default, lavender task selection, mint action; semantic light variant",
+    "motion": "Brief state feedback and inline expansion; reduced motion; no navigation entrance replay",
+    "source": "app/night-shift.css",
+    "sharedRenderer": "HubWorkspace"
   },
   "workspace20261023": {
-    "authority": "docs/zulu-workspace-plan.md; DESIGN.md#workspace-de-23102026--autoridade-atual",
-    "precedence": "Latest authority for authenticated app and demo; supersedes conflicting historical floating rail/bottom dock, titlebar logo, Today journey and single-size mini descriptions and earlier review/release evidence.",
+    "authority": "docs/zulu-workspace-plan.md; historical visual authority superseded by docs/night-shift.md",
+    "precedence": "Historical 2026-10-23 package. Functional/navigation/native contracts remain applicable; Night Shift supersedes its visual tokens, Today composition and earlier review/publication status.",
     "mode": "operate",
     "areas": {
       "Hoje": [
@@ -467,12 +410,74 @@
   },
   "organizationAdministration": {
     "scope": "Organization administration, internal library and organization contacts; preserve existing dashboard and shell",
-    "identity": "Inherit ivory/deep-blue flat application tokens; no decorative borders or card shadows",
+    "identity": "Inherit Night Shift semantic dark/light application tokens; preserve visible focus and privacy contracts",
     "components": "HeroUI v3 Tabs, Button, Input, Label, Checkbox, TextArea, Spinner; existing HeroUI-backed HubDialog and ZuluSelect",
     "layout": "People master/detail and per-person permission matrix; mobile stacked with horizontal tab scrolling; library navigation/editor and explicit share dialog",
     "motion": "Existing hover, press, tab, loading and dialog feedback; respect reduced motion",
     "privacy": "No admin override for private DMs/documents; free job title never grants authority",
     "documentation": "docs/organization-admin.md",
-    "review": "Bounded final ship; 1440/390 fixture captures and static contracts; not authenticated production validation"
+    "review": "Prior fixture review is historical; current local candidate navigation/role samples recorded in dashboard.verification",
+    "visualAuthority": "Night Shift semantic themes; prior visual evidence historical"
+  },
+  "theme": {
+    "default": "dark",
+    "preferenceKey": "zulu:appearance:v2",
+    "storage": "device-local localStorage",
+    "attribute": "data-zulu-theme",
+    "choices": [
+      "dark",
+      "light"
+    ],
+    "tokens": {
+      "dark": {
+        "background": "#101217",
+        "frame": "#0c0e12",
+        "rail": "#0c0e12",
+        "surface": "#15171e",
+        "surfaceRaised": "#232630",
+        "surfaceTertiary": "#2c2f3a",
+        "overlay": "#1a1c25",
+        "fieldBackground": "#232630",
+        "fieldForeground": "#f1f0f7",
+        "text": "#f1f0f7",
+        "muted": "#b4b4c4",
+        "accent": "#a5ddc6",
+        "accentForeground": "#10251d",
+        "accentHover": "#bce9d7",
+        "selection": "#29273d",
+        "selectionHover": "#333046",
+        "focus": "#c2b0fb",
+        "border": "#30333f",
+        "danger": "#ffb1bc",
+        "radius": 14,
+        "fieldRadius": 10
+      },
+      "light": {
+        "background": "#f5f5f8",
+        "frame": "#0c0e12",
+        "rail": "#0c0e12",
+        "surface": "#ffffff",
+        "surfaceRaised": "#ececf3",
+        "surfaceTertiary": "#e3e3ed",
+        "overlay": "#ffffff",
+        "fieldBackground": "#ececf3",
+        "fieldForeground": "#20212d",
+        "text": "#20212d",
+        "muted": "#5e6072",
+        "accent": "#27634d",
+        "accentForeground": "#ffffff",
+        "accentHover": "#20523f",
+        "selection": "#e8e2f4",
+        "selectionHover": "#ddd5ef",
+        "focus": "#7655c1",
+        "border": "#d5d5e2",
+        "danger": "#a33349",
+        "radius": 14,
+        "fieldRadius": 10
+      }
+    },
+    "authority": "app/night-shift.css; DESIGN.md",
+    "migration": "Semantic surface/text/field/action/selection/focus tokens across app, access, loading and HeroUI portals; conflicting fixed colors migrated, legacy styles remain",
+    "lightFrame": "Dark frame and light header/rail foreground preserved"
   }
 }

@@ -1,0 +1,143 @@
+[
+  {
+    "role": "member",
+    "source": "authenticated local candidate; login and MFA established via HTTPS production",
+    "mfaVerified": true,
+    "provisioning": "isolated audit membership; invitation delivery not exercised",
+    "screens": [
+      {
+        "file": "role-member-people.png",
+        "id": "people",
+        "tabs": [
+          "Pessoas",
+          "Check-ins"
+        ],
+        "visibleButtons": [
+          "",
+          "",
+          "Configurar agora",
+          "Agora não",
+          "Todas as pessoas",
+          "Conversar",
+          "Conversar",
+          "Editar meu perfil"
+        ]
+      },
+      {
+        "file": "role-member-reports.png",
+        "id": "reports",
+        "tabs": [
+          "Tarefas",
+          "Horas",
+          "Relatórios",
+          "Biblioteca",
+          "Notas",
+          "Metas",
+          "Clientes"
+        ],
+        "visibleButtons": [
+          "",
+          "",
+          "Configurar agora",
+          "Agora não",
+          "",
+          "",
+          "Todos os projetos",
+          "Gerar relatório"
+        ]
+      },
+      {
+        "file": "role-member-settings.png",
+        "id": "settings",
+        "tabs": [
+          "Preferências",
+          "Integrações"
+        ],
+        "visibleButtons": [
+          "",
+          "",
+          "Configurar agora",
+          "Agora não",
+          "",
+          "",
+          "Editar perfil",
+          "Alterar senha",
+          "Sair da organização",
+          "Sair da conta"
+        ]
+      }
+    ]
+  },
+  {
+    "role": "admin",
+    "source": "authenticated local candidate; login and MFA established via HTTPS production",
+    "mfaVerified": true,
+    "provisioning": "isolated audit membership; invitation delivery not exercised",
+    "screens": [
+      {
+        "file": "role-admin-people.png",
+        "id": "people",
+        "tabs": [
+          "Pessoas",
+          "Check-ins"
+        ],
+        "visibleButtons": [
+          "",
+          "",
+          "Convidar pessoa",
+          "Configurar agora",
+          "Agora não",
+          "Todas as pessoas",
+          "Editar meu perfil",
+          "Conversar",
+          "Conversar"
+        ]
+      },
+      {
+        "file": "role-admin-reports.png",
+        "id": "reports",
+        "tabs": [
+          "Tarefas",
+          "Horas",
+          "Relatórios",
+          "Biblioteca",
+          "Notas",
+          "Metas",
+          "Clientes"
+        ],
+        "visibleButtons": [
+          "",
+          "",
+          "Configurar agora",
+          "Agora não",
+          "",
+          "",
+          "Time inteiro",
+          "Todos os projetos",
+          "Gerar relatório"
+        ]
+      },
+      {
+        "file": "role-admin-settings.png",
+        "id": "settings",
+        "tabs": [
+          "Preferências",
+          "Organização",
+          "Integrações"
+        ],
+        "visibleButtons": [
+          "",
+          "",
+          "Configurar agora",
+          "Agora não",
+          "",
+          "",
+          "Editar perfil",
+          "Alterar senha",
+          "Sair da organização",
+          "Sair da conta"
+        ]
+      }
+    ]
+  }
+]

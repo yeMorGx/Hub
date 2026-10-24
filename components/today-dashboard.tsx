@@ -50,6 +50,7 @@ export type ActivityInput = {
   taskId?: string;
 };
 export type TodayOverviewProps = {
+  compact?: boolean;
   showHours?: boolean; showCalendar?: boolean;
   timer: {
     state: "idle" | "running" | "lunch";
@@ -159,10 +160,10 @@ export function TodayOverview(props: TodayOverviewProps) {
   return (
     <>
       {props.showHours !== false && <section
-        className={`today-workspace timer-${timer.state}`}
+        className={`today-workspace ${props.compact ? "timer-compact" : ""} timer-${timer.state}`}
         aria-label="Timer e jornada"
       >
-        <TiltCard maxTilt={3}>
+        <TiltCard maxTilt={props.compact ? 0 : 3} spotlight={!props.compact}>
         <Card className="today-focus">
           <div className="today-prism" aria-hidden="true">
             <AnimatedGradient
@@ -504,6 +505,7 @@ export function TodayOverview(props: TodayOverviewProps) {
 }
 
 export type TodayContextProps = {
+  showEventDates?: boolean;
   showCalendar?: boolean; showPeople?: boolean; showChat?: boolean; showHours?: boolean;
   events: Row<"events">[];
   people: Person[];
@@ -551,7 +553,7 @@ export function TodayContext(props: TodayContextProps) {
     >
       {props.showCalendar !== false && <Card className="today-meetings-card">
         <Card.Header className="today-section-heading">
-          <Card.Title>Encontros de hoje</Card.Title>
+          <Card.Title>Agenda</Card.Title>
           <CalendarDots size={18} />
         </Card.Header>
         {props.events.length ? (
@@ -567,6 +569,7 @@ export function TodayContext(props: TodayContextProps) {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
+                  {props.showEventDates && <small>{new Date(event.starts_at).toLocaleDateString("pt-BR",{day:"numeric",month:"short"})}</small>}
                   <small>
                     {new Date(event.ends_at).toLocaleTimeString("pt-BR", {
                       hour: "2-digit",

@@ -22,7 +22,7 @@ As migrações das fases 0/1, do Kanban da Fase 2 e do home office estão no rep
 
 ## Direção confirmada
 
-Shakuro permanece como referência histórica da composição anterior. A identidade clara aprovada e agora estendida a todo o aplicativo rege sua evolução; `/site` e `/download` seguem independentes. Referência e pesquisa anterior: docs/frontend-research.md.
+Em 24/10/2026, o usuário escolheu a opção 3, terceira imagem: [Night Shift](docs/design-references/2026-10-24/night-shift.png). A direção vigente do workspace, acesso e demonstração usa grafite, tarefa expandida em lavanda, ação verde e timer compacto persistente, com variante clara nas preferências locais. Inter/Manrope, símbolo oficial, HeroUI v3, navegação animada e contratos nativos são preservados. Produção e demo compartilham `HubWorkspace` com controladores reais ou em memória; dados ilustrativos e ações externas limitadas são identificados. [Contrato atual e limites](docs/night-shift.md). As descrições anteriores de composição e validação acima são históricas; `/site` e `/download` mantêm sua identidade independente.
 
 ## Limites
 

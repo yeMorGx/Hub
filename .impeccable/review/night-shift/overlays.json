@@ -1,0 +1,14 @@
+{
+  "rows": [
+    "task-dialog",
+    "activity-picker",
+    "project-created",
+    "profile",
+    "home-office",
+    "schedule",
+    "search",
+    "light"
+  ],
+  "projectPersisted": true,
+  "renderer": "local candidate, real MFA and isolated backend data"
+}

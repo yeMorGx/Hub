@@ -1,73 +1,53 @@
-# Hub — revisão visual da primeira entrega
+# Night Shift — QA do redesign
 
 final result: passed
 
-Escopo do resultado: adaptação visual da referência Shakuro e resolução dos dois achados materiais da revisão. Não é aprovação de funcionalidade multiusuário, conformidade WCAG ou integração com Supabase.
+Revisão independente: **ship no escopo do frontend**. Os cinco achados materiais da revisão foram corrigidos e confirmados em uma rodada delimitada. A publicação é conferida separadamente em `docs/night-shift-delivery.json`.
 
-## Referência e capturas
+## Fonte e normalização
 
-- Referência escolhida pelo usuário: `docs/design-references/calendar-shakuro.png`.
-- Hoje desktop: `.impeccable/review/desktop.png`, viewport 1440 × 1100, captura completa.
-- Hoje celular: `.impeccable/review/mobile.png`, viewport 390 × 844, captura completa.
-- Outras telas: `chat.png`, `hours.png`, `people.png`, `calendar.png`, no mesmo diretório.
-- Estado do timer no celular: `.impeccable/review/mobile-timer.png`, viewport 390 × 844.
-- Observações de renderização: `.impeccable/review/render-observations.jsonl`.
+- Referência escolhida: `docs/design-references/2026-10-24/night-shift.png`, opção3,1487×1058.
+- Composição normalizada para1440×1024, densidade1. A captura é recortada à primeira dobra para comparar a mesma região; a captura completa fica preservada.
+- Estado: modo escuro, tarefa em andamento expandida, timer ativo. Dados reais dependem da organização; a demonstração é identificada e usa dados em memória.
+- Evidência conjunta e recortes: `.impeccable/review/night-shift/comparison-full.jpg`, `comparison-tasks.jpg`, `comparison-timer.jpg`, `comparison-context.jpg`.
 
-As capturas finais foram abertas e inspecionadas. Capturas intermediárias com o destaque de navegação em transição e tooltip sob o mouse foram substituídas por capturas estáveis, com redução de movimento e mouse afastado dos controles.
+## Superfícies de fidelidade
 
-## Comparação com a direção escolhida
+- Tipografia: Inter para controles/texto, Manrope para título; corpo14–16px, timer tabular.
+- Layout: rail e titlebar contínuos; tarefas dominam a esquerda; agenda/equipe à direita; dock inferior fixo. Celular empilha contexto e preserva controles do timer.
+- Cores: grafite, texto claro, lavanda na tarefa expandida, ação principal verde. Tokens compartilhados em controles e portais; variante clara preservada nas preferências.
+- Assets: símbolo SVG oficial preservado. Avatares são dados reais/assinados ou iniciais, não imagens inventadas. Nenhuma ilustração raster adicional é necessária.
+- Conteúdo: nomes/datas/atividades reais no app; mocks identificados na demo. Subtarefas e anexos do conceito não viram contagens ou arquivos fictícios no app, pois não fazem parte do esquema atual de tarefas. A ação de almoço preserva a regra de pausa existente; não são criadas duas ações equivalentes de pausa.
 
-A implementação preserva grafite, trilho compacto, destaque quente do timer, grade semanal ampla e contexto lateral da referência. A adaptação substitui tarefas futuras por trabalho atual, agenda e contexto de pessoas do Hub. No celular, reorganiza foco e reuniões e abre a agenda no dia atual.
+## Histórico de correções
 
-O produto foi pedido como frontend inspirado nas referências; não como réplica literal da prancha de apresentação do Dribbble. Dispositivo, fotografia, dados e identidade do autor não são assets do aplicativo.
+- P1: CSS antigo deixava dock com318px. Corrigido para102pxdesktop/132pxmobile, com espaço reservado nas páginas.
+- P1: seletor de atividade recortado por overflow do antigo card. Corrigido no wrapper; abrir/fechar exercitado com sessão real.
+- P2: tema claro residual em textarea/portais. Cores fixas convertidas a tokens e portais alinhados ao novo tema.
+- P2: cabeçalhos/equipe herdavam alinhamento centralizado de Card/Header e Button. Composição horizontal e listas alinhadas à esquerda.
+- P2: a agenda pode mostrar eventos de outros dias; datas explicitadas nos itens.
+- P1: a atualização do time desmontava o seletor ao criar projeto. Dock preservado enquanto o mesmo snapshot continua válido.
+- P1: dock cobria Configurações. Rail ganhou respiro inferior e o teste verifica o alvo real de clique.
 
-## Achados e correções
+## Verificação funcional
 
-| Achado da revisão independente | Correção | Veredito |
-| --- | --- | --- |
-| Rótulos inferiores de 7px prejudicavam a identificação dos módulos no celular. | Rótulos de 10px e botões flexíveis, acomodando Minhas horas. | resolved |
-| Indicador de timer era ocultado em outros módulos no celular. | Indicador flutuante acima da navegação, com acesso a Minhas horas. | resolved |
+-63 testes unitários e35 testes públicos passaram no candidato local.
+-26 cenários públicos de demonstração: criação de tarefa em memória, almoço/retomada/encerramento/seletor, busca, edição isolada do próprio perfil e22 páginas em1440/390px. Sem erros de JavaScript/overflow horizontal.
+-Sessão real autenticada com MFA e organização isolada: criar tarefa, iniciar timer, almoço com contador separado, retomar, encerrar, concluir tarefa, abrir/fechar seletor e busca exercitados.
+-22 páginas reais do candidato local verificadas em1440×1000/390×1000. Isso comprova o renderer com backend real; a confirmação no deploy publicado ainda é necessária.
 
-A revisão inicial indicou `fix`. O veredito após correções foi `ship`, restrito aos dois ajustes e à validade das capturas secundárias. Nenhum dos dois achados ficou aberto.
+## Limites
 
-## Evidência técnica e limites
+Sem teste físico de áudio/vídeo/captura nativa Windows, bandeja ou instalador. Identidade web/React e titlebar são atualizadas sem alteração de Rust. Fluxos externos da demo explicam os limites e não enviam convites; produção preserva seus serviços.
 
-- `npm run build` concluiu e o TypeScript passou na versão final.
-- As cinco telas renderizaram sem `pageerror` observado no Chromium.
-- Nas capturas de Hoje, o documento manteve a largura de 1440px e 390px, respectivamente.
-- O estado de timer ativo para captura foi preparado no storage de um contexto descartável. Isso não comprova início/parada, persistência ou contagem corretos.
-- Nenhum teste funcional ou suíte de testes foi adicionado/executado nesta entrega.
-- Diálogos, estados de erro, teclado virtual e outros navegadores não receberam validação funcional completa.
-- Launcher e detector Impeccable não estavam disponíveis; revisão visual independente foi feita manualmente.
-- Na primeira entrega, Auth/MFA, Realtime, PWA e integração com RPCs estavam pendentes. Os dados dessas capturas são fictícios e locais; essa demonstração está preservada em `/demo`.
+## Confirmação da revisão independente
 
-## Continuação: acesso e integração — 20/10/2026
+| Achado | Resultado | Evidência após correção |
+|---|---|---|
+| Card em execução/hover ilegível | Resolvido | `confirmed-board-{1440,390}.png`, `confirmed-board-hover-1440.png` |
+| Valor numérico da jornada | Resolvido | `confirmed-schedule-{1440,390}.png`, sessão real com MFA |
+| Nome do time no tema claro | Resolvido | `confirmed-light-{1440,390}.png`, sessão real com MFA |
+| Edição do perfil da demo afetava outras pessoas e mantinha nome antigo | Resolvido | Regressão do próprio perfil e preservação de Pedro/Lia;26 cenários passaram |
+| Destaque claro residual do calendário | Resolvido | `confirmed-calendar-{1440,390}.png` |
 
-O aplicativo principal agora implementa Auth/MFA, onboarding, consultas e gravações no Supabase, assinaturas privadas Realtime e a base da PWA. Os detalhes e limites estão em `docs/supabase-app-integration.md`.
-
-A revisão visual independente teve veredito `ship` restrito a estas capturas em `.impeccable/review/auth/`:
-
-- `login-desktop.png`, viewport 1440 × 1000.
-- `login-mobile.png`, viewport 390 × 844.
-- `signup-desktop.png` e `recovery-desktop.png`.
-- `icon-512.png`.
-
-As capturas foram abertas e inspecionadas. A inspeção anônima observou redirecionamento de `/` para `/login`, ausência de `pageerror` e largura do documento igual à viewport nos dois tamanhos. Manifest e ícones retornaram HTTP 200. Os rótulos dos campos de senha foram corrigidos para usar associação explícita, com botões fora do rótulo.
-
-Esse veredito não abrange telas privadas, MFA, resultados de formulários, navegação por teclado, leitor de tela, instalação da PWA ou funcionamento multiusuário. Não foram criadas contas, enviados e-mails ou executados testes funcionais/suítes nesta etapa. A validação autenticada ponta a ponta permanece pendente.
-
-## Continuação: Kanban da Fase 2 — 20/10/2026
-
-Resultado visual do incremento: `ship`, restrito à demonstração `/demo/kanban` e ao editor capturados. A revisão independente `kanban_finish_review` não encontrou defeito material; sugeriu opcionalmente um nome curto do responsável. Esse resultado não altera o alcance das revisões históricas acima.
-
-Capturas em `.impeccable/review/kanban/`:
-
-- `desktop.png`, viewport 1440 × 1000, e `mobile.png`, viewport 390 × 844.
-- `editor-desktop.png` e `editor-mobile.png`, nos mesmos tamanhos.
-- `render-observations.jsonl`: quadro com HTTP 200 nos dois tamanhos; quadro e editor sem `pageerror` observado e sem overflow horizontal do documento.
-
-O quadro desktop e celular foi aberto e comparado com `DESIGN.md`: mantém modo Operate, grafite, laranja, Manrope e Phosphor. Três colunas desktop tornam-se colunas empilhadas no celular. Filtros, cards, seletor de etapa e ação principal seguem a linguagem existente. `DESIGN.md` e `.impeccable/design.json` foram preservados; este incremento não define novos fundamentos visuais.
-
-O componente é compartilhado com o módulo Tarefas autenticado, mas estas capturas usam somente dados fictícios e estado em memória, sem backend. A compilação Next.js/TypeScript passou. Não houve testes funcionais/suítes, criação de contas, envio de e-mails ou dados reais de negócio. Permissões, concorrência, timer e Realtime permanecem sem validação autenticada real; este veredito não aprova produção, integração ponta a ponta ou acessibilidade completa.
-
-A Fase 2 continua parcial. [Escopo, contratos e limites do Kanban](docs/phase-2-kanban.md).
+As evidências estão em `.impeccable/review/night-shift/`. O carregador/detector executável do Impeccable não estava disponível; comparação manual com capturas e revisão independente substituíram essas ferramentas. Os controles de janela da referência aparecem no Windows via titlebar nativa existente; não são imitados no navegador.

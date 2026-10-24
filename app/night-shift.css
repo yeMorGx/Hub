@@ -1,0 +1,1483 @@
+/* Selected visual authority: Night Shift, option3 (24/10/2026).
+   Semantic theme shared by the real workspace, its memory controller and portals. */
+:root:has(.night-shift),
+:root:has(.zulu-dashboard-loading),
+:root:has(.auth-shell),
+html[data-zulu-theme] .live-app.night-shift,
+html[data-zulu-theme]:has(.night-shift) .zulu-overlay,
+html[data-zulu-theme]:has(.auth-shell) .zulu-overlay {
+  color-scheme: dark;
+  --bg: #101217;
+  --frame: #0c0e12;
+  --rail: #0c0e12;
+  --workspace-content: #101217;
+  --background: #101217;
+  --foreground: #f1f0f7;
+  --text: #f1f0f7;
+  --surface: #15171e;
+  --surface-foreground: #f1f0f7;
+  --surface-raised: #232630;
+  --surface-secondary: #232630;
+  --surface-secondary-foreground: #f1f0f7;
+  --surface-tertiary: #2c2f3a;
+  --surface-tertiary-foreground: #f1f0f7;
+  --overlay: #1a1c25;
+  --overlay-foreground: #f1f0f7;
+  --field-background: #232630;
+  --field-foreground: #f1f0f7;
+  --field-placeholder: #b4b4c4;
+  --field-border: #535666;
+  --default: #272a35;
+  --default-foreground: #f1f0f7;
+  --muted: #b4b4c4;
+  --quiet: #b4b4c4;
+  --border: #30333f;
+  --accent: #a5ddc6;
+  --accent-foreground: #10251d;
+  --accent-hover: #bce9d7;
+  --focus: #c2b0fb;
+  --blue: #a9c8ff;
+  --purple: #c2b0fb;
+  --green: #a5ddc6;
+  --orange: #f4b67d;
+  --danger: #ffb1bc;
+  --danger-foreground: #291016;
+  --success: #a5ddc6;
+  --success-foreground: #10251d;
+  --warning: #efc992;
+  --warning-foreground: #2d2111;
+  --night-selection: #29273d;
+  --night-selection-hover: #333046;
+  --night-divider: #2b2d38;
+  --field-radius: 10px;
+  --radius: 14px;
+  --border-width: 0px;
+  --field-border-width: 0px;
+  --shadow: none;
+  --surface-shadow: none;
+  --overlay-shadow: none;
+  font-family: "Inter Variable", sans-serif;
+}
+html[data-zulu-theme="light"]:has(.night-shift),
+html[data-zulu-theme="light"]:has(.auth-shell),
+html[data-zulu-theme="light"] .live-app.night-shift,
+html[data-zulu-theme="light"]:has(.night-shift) .zulu-overlay,
+html[data-zulu-theme="light"]:has(.auth-shell) .zulu-overlay {
+  color-scheme: light;
+  --bg: #f5f5f8;
+  --frame: #0c0e12;
+  --workspace-content: #f5f5f8;
+  --background: #f5f5f8;
+  --text: #20212d;
+  --foreground: #20212d;
+  --surface: #fff;
+  --surface-foreground: #20212d;
+  --surface-raised: #ececf3;
+  --surface-secondary: #ececf3;
+  --surface-secondary-foreground: #20212d;
+  --surface-tertiary: #e3e3ed;
+  --surface-tertiary-foreground: #20212d;
+  --overlay: #fff;
+  --overlay-foreground: #20212d;
+  --field-background: #ececf3;
+  --field-foreground: #20212d;
+  --field-placeholder: #5e6072;
+  --default: #e6e6ef;
+  --default-foreground: #20212d;
+  --muted: #5e6072;
+  --quiet: #5e6072;
+  --border: #d5d5e2;
+  --accent: #27634d;
+  --accent-foreground: #fff;
+  --accent-hover: #20523f;
+  --focus: #7655c1;
+  --blue: #355f9a;
+  --purple: #7655c1;
+  --green: #27634d;
+  --orange: #85552b;
+  --danger: #a33349;
+  --success: #27634d;
+  --night-selection: #e8e2f4;
+  --night-selection-hover: #ddd5ef;
+  --night-divider: #dedee8;
+}
+body:has(.night-shift),
+body:has(.auth-shell) {
+  font-family: "Inter Variable", sans-serif;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--text);
+}
+body:has(.night-shift) ::selection,
+body:has(.auth-shell) ::selection {
+  background: var(--purple);
+  color: #17121f;
+}
+body:has(.night-shift) *,
+body:has(.auth-shell) * {
+  scrollbar-color: var(--surface-tertiary) transparent;
+  caret-color: var(--accent);
+}
+body:has(.night-shift) ::-webkit-scrollbar-thumb,
+body:has(.auth-shell) ::-webkit-scrollbar-thumb {
+  background: var(--surface-tertiary);
+}
+html[data-zulu-theme] .live-app.night-shift {
+  --shell-rail: 80px;
+  --shell-top: 64px;
+  background: var(--frame);
+  color: var(--text);
+  font-size: 14px;
+}
+.live-app.night-shift .rail,
+.live-app.night-shift .app-content > .topbar {
+  background: var(--frame);
+  color: #f1f0f7;
+}
+.live-app.night-shift .app-content {
+  padding-bottom: 148px;
+}
+.live-app.night-shift .main-content {
+  background: var(--workspace-content);
+  min-height: calc(100dvh - var(--shell-top) - 148px);
+  border-radius: 16px;
+  padding: 28px 30px;
+}
+.live-app.night-shift .main-content.today-page {
+  padding: 0;
+  background: transparent;
+}
+.live-app.night-shift .app-content::before {
+  display: none;
+}
+.live-app.night-shift .page-heading[hidden] {
+  display: none;
+}
+.live-app.night-shift .page-heading h1 {
+  font-family: "Manrope Variable", sans-serif;
+  font-size: 30px;
+  letter-spacing: -0.03em;
+  font-weight: 750;
+}
+.live-app.night-shift .heading-period {
+  display: none;
+}
+.live-app.night-shift .page-heading p {
+  font-size: 14px;
+}
+.live-app.night-shift .page-heading .team-pill {
+  background: var(--surface-raised);
+  color: var(--muted);
+}
+.live-app.night-shift .rail .rail-button {
+  color: #b4b4c4;
+}
+.live-app.night-shift .rail .rail-button.active {
+  background: #292c36;
+  color: #f1f0f7;
+}
+.live-app.night-shift .rail .rail-button:hover {
+  background: #232630;
+  color: #fff;
+}
+.live-app.night-shift .rail .rail-button svg {
+  width: 23px;
+  height: 23px;
+}
+.live-app.night-shift
+  .topbar
+  :is(.workspace-button, .search-button, .top-avatar) {
+  color: #e4e3ec;
+  background: transparent;
+}
+.live-app.night-shift .topbar .workspace-team-symbol {
+  background: #262936;
+  color: #e4e3ec;
+}
+.live-app.night-shift .area-tabs {
+  margin-bottom: 26px;
+}
+html[data-zulu-theme]
+  .night-shift
+  :is(.tabs__list, .select__trigger, .input, .text-area) {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+html[data-zulu-theme] .night-shift .tabs__tab[aria-selected="true"] {
+  background: var(--night-selection);
+  color: var(--text);
+}
+html[data-zulu-theme]
+  .live-app.night-shift
+  :is(.primary-button, .button--primary) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border: 0;
+  min-height: 44px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+html[data-zulu-theme]
+  .live-app.night-shift
+  :is(.primary-button, .button--primary):hover:not(:disabled) {
+  background: var(--accent-hover);
+  color: var(--accent-foreground);
+}
+.night-shift :is(.text-button, .today-link) {
+  color: var(--accent);
+}
+.night-shift
+  :is(
+    .panel,
+    .workspace-module,
+    .settings-panel,
+    .report-chart,
+    .kanban-column,
+    .task-card,
+    .org-card,
+    .org-row,
+    .note-editor,
+    .channel-card
+  ) {
+  background: var(--surface);
+  color: var(--text);
+  border-color: transparent;
+  box-shadow: none;
+}
+.night-shift :is(h1, h2, h3, h4, strong, .list-label) {
+  color: var(--text);
+}
+.night-shift
+  :is(
+    .muted,
+    .empty-state p,
+    .settings-row p,
+    .module-heading p,
+    .workspace-module > p,
+    .form-hint
+  ) {
+  color: var(--muted);
+}
+.night-shift :is(input, textarea, .select__trigger) {
+  background: var(--field-background);
+  color: var(--field-foreground);
+  border-color: transparent;
+  box-shadow: none;
+}
+.night-shift :is(input, textarea)::placeholder {
+  color: var(--field-placeholder);
+  opacity: 1;
+}
+.night-shift :is(button, a, input, textarea, select):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+.night-shift .eyebrow {
+  display: none;
+}
+.night-shift :is(.work-schedule-nudge, .connection-banner, .org-notice-banner) {
+  color: var(--text);
+  background: var(--surface-raised);
+  border: 0;
+  border-radius: 12px;
+}
+.night-shift .work-schedule-nudge {
+  margin: 0 0 18px;
+  padding: 14px 20px;
+}
+.night-shift .work-schedule-nudge p {
+  color: var(--muted);
+}
+.night-shift :is(.inline-notice, .form-error, .org-error) {
+  background: color-mix(in srgb, var(--danger) 9%, var(--surface));
+  color: var(--danger);
+  border: 0;
+}
+.night-shift .form-error {
+  padding: 12px 16px;
+  border-radius: 10px;
+}
+.night-shift .settings-row {
+  border-color: var(--night-divider);
+}
+.night-shift .settings-panel {
+  padding: 24px;
+  border-radius: 14px;
+}
+.night-shift .settings-tabs .tabs__tab svg {
+  color: inherit;
+}
+/* One task-focused composition shared by real data and the memory controller. */
+.night-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 12px;
+  align-items: start;
+  min-width: 0;
+}
+.night-work {
+  min-width: 0;
+  min-height: calc(100dvh - 220px);
+  padding: 32px 30px 24px;
+  background: var(--surface);
+  border-radius: 16px;
+}
+.night-heading {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: 0 0 30px;
+}
+.night-heading h1 {
+  font-family: "Manrope Variable", sans-serif;
+  font-size: clamp(27px, 2.4vw, 36px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0 0 10px;
+  text-wrap: balance;
+}
+.night-heading p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+  text-transform: capitalize;
+}
+.night-heading > .button {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.night-task-toolbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  min-width: 0;
+}
+.night-task-tabs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.night-shift .night-task-tabs .button {
+  background: transparent;
+  color: var(--muted);
+  min-height: 42px;
+  padding: 0 16px;
+  gap: 12px;
+  white-space: nowrap;
+}
+.night-shift .night-task-tabs .button[aria-pressed="true"] {
+  background: var(--night-selection);
+  color: var(--text);
+}
+.night-task-tabs span {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  font-size: 12px;
+}
+.night-task-toolbar > .select {
+  max-width: 190px;
+  min-width: 0;
+}
+.night-shift .night-task-toolbar .select__trigger {
+  background: transparent;
+}
+.night-task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.night-task {
+  border-radius: 14px;
+  background: transparent;
+  transition: background 180ms var(--motion-ease-out);
+  min-width: 0;
+}
+.night-task[data-expanded="true"] {
+  background: var(--night-selection);
+}
+.night-task-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 20px 20px 16px;
+  min-width: 0;
+}
+.night-task-row > .checkbox {
+  flex-shrink: 0;
+  --accent: var(--purple);
+  --accent-foreground: #191524;
+}
+.night-task-row .checkbox__control {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 1.5px solid var(--muted);
+  background: transparent;
+}
+.night-task-row .checkbox.is-selected .checkbox__control {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: #191524;
+}
+.night-shift .night-task-summary {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  min-height: 54px;
+  height: auto;
+  padding: 0 28px 0 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  white-space: normal;
+  border: 0;
+}
+.night-task-summary > svg {
+  position: absolute;
+  right: 0;
+  top: 4px;
+  color: var(--muted);
+}
+.night-task-name {
+  font-size: 16px;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.night-task[data-complete="true"] .night-task-name {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.night-task-meta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.night-task-meta > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.night-task-meta i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--purple);
+}
+.night-task-meta .priority-high svg {
+  color: var(--danger);
+}
+.night-task-meta .priority-normal svg {
+  color: var(--orange);
+}
+.night-task-meta .priority-low svg {
+  color: var(--accent);
+}
+.night-task-detail {
+  padding: 0 24px 22px 57px;
+  animation: night-detail-in 180ms ease-out;
+}
+.night-task-detail > p {
+  color: var(--muted);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  font-size: 14px;
+  margin: 8px 0 26px;
+  max-width: 68ch;
+}
+.night-task-detail-footer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12px;
+}
+.night-shift .night-task-start {
+  min-height: 40px;
+  background: color-mix(in srgb, var(--purple) 15%, transparent);
+  color: var(--text);
+  padding: 0 12px;
+}
+.night-shift .night-board-link {
+  display: flex;
+  margin: 24px 0 0 auto;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 0;
+}
+.night-journey {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--surface-raised);
+  color: var(--muted);
+  font-size: 12px;
+  text-align: left;
+  white-space: normal;
+  min-height: 54px;
+}
+.night-journey strong {
+  font-size: 12px;
+  font-weight: 550;
+}
+.night-journey > svg {
+  margin-left: auto;
+}
+.night-empty {
+  padding: 54px 24px;
+  min-height: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--muted);
+}
+.night-empty h2 {
+  font-size: 20px;
+  margin: 4px 0;
+}
+.night-empty p {
+  max-width: 40ch;
+  margin: 0 0 14px;
+}
+.live-app.night-shift .night-context {
+  min-width: 0;
+  padding: 26px 16px 20px 20px;
+  background: var(--surface);
+  border-radius: 16px;
+}
+.live-app.night-shift .night-context .today-context {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: transparent;
+  padding: 0;
+}
+.live-app.night-shift .night-context .card {
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+}
+.live-app.night-shift .night-context .today-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0 0 18px;
+}
+.live-app.night-shift .night-context .card__title {
+  font-size: 18px;
+  font-weight: 650;
+}
+.live-app.night-shift .night-context .today-section-heading > svg {
+  color: var(--muted);
+}
+.live-app.night-shift .night-context .today-meeting {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: 14px;
+  background: transparent;
+  white-space: normal;
+  min-height: 72px;
+  padding: 12px 0;
+  color: var(--text);
+  text-align: left;
+}
+.live-app.night-shift .night-context .today-meeting > span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+.live-app.night-shift .night-context .today-meeting-time {
+  color: var(--muted);
+  font-size: 12px;
+  min-width: 43px;
+  font-variant-numeric: tabular-nums;
+}
+.live-app.night-shift .night-context .today-meeting-time small {
+  display: block;
+  margin-top: 3px;
+  opacity: 0.8;
+}
+.live-app.night-shift .night-context .today-meeting strong {
+  font-size: 14px;
+  font-weight: 550;
+}
+.live-app.night-shift .night-context .today-meeting small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.live-app.night-shift .night-context .today-meetings-empty {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 10px 0 18px;
+}
+.live-app.night-shift .night-context .today-link {
+  background: transparent;
+  padding: 10px 0;
+  color: var(--muted);
+  font-size: 12px;
+  justify-content: space-between;
+  min-height: 40px;
+}
+.live-app.night-shift .night-context .today-people-card {
+  border-top: 1px solid var(--night-divider);
+  margin-top: 22px;
+  padding-top: 24px;
+}
+.live-app.night-shift .night-context .today-person {
+  background: transparent;
+  color: var(--text);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+}
+.live-app.night-shift .night-context .today-person .avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.live-app.night-shift .night-context .today-person-name {
+  color: var(--text);
+}
+.live-app.night-shift
+  .night-context
+  :is(.today-person small, .today-presence-note, .today-inbox-preview) {
+  color: var(--muted);
+}
+.live-app.night-shift .night-context :is(.today-recent-card, .today-chat-card) {
+  display: none;
+}
+.live-app.night-shift .night-context .today-people-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.live-app.night-shift .night-office {
+  padding-top: 20px;
+  margin-top: 18px;
+  border-top: 1px solid var(--night-divider);
+}
+.live-app.night-shift .night-office header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.live-app.night-shift .night-office h2 {
+  font-size: 16px;
+  margin: 0;
+}
+.live-app.night-shift .night-office p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 14px 0 6px;
+}
+.live-app.night-shift .night-office small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.live-app.night-shift .night-office .text-button {
+  padding: 10px 0;
+  min-height: 40px;
+  font-size: 12px;
+  background: transparent;
+}
+/* Persistent timer, with existing project creation and lunch logic. */
+.live-app.night-shift .night-timer-dock {
+  position: fixed;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 105;
+  min-width: 0;
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: 0 -12px 40px #08090d24;
+}
+.live-app.night-shift .night-timer-dock .today-workspace {
+  display: block;
+}
+.live-app.night-shift .night-timer-dock .tilt-card {
+  display: block;
+  transform: none;
+}
+.live-app.night-shift .night-timer-dock .today-focus {
+  position: relative;
+  display: grid;
+  grid-template-columns: 220px 1fr minmax(190px, 28%);
+  grid-template-rows: 28px 36px;
+  column-gap: 28px;
+  padding: 16px 24px;
+  min-height: 102px;
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  overflow: visible;
+  box-shadow: none;
+  border-radius: 16px;
+}
+.live-app.night-shift .night-timer-dock .today-prism {
+  position: absolute;
+  left: 26px;
+  top: 28px;
+  inset: auto auto auto 26px;
+  top: 29px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.live-app.night-shift .night-timer-dock .today-prism > div {
+  position: absolute;
+  inset: 0;
+  transition: opacity 650ms ease;
+}
+.live-app.night-shift .night-timer-dock .today-lava {
+  opacity: 0;
+}
+.live-app.night-shift .night-timer-dock .timer-running .today-lava {
+  opacity: 1;
+}
+.live-app.night-shift .night-timer-dock .today-section-heading {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 0 0 0 22px;
+  display: flex;
+  align-items: center;
+  background: transparent;
+}
+.live-app.night-shift .night-timer-dock .today-section-heading .card__title {
+  display: none;
+}
+.live-app.night-shift .night-timer-dock .today-timer-status {
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 0;
+}
+.live-app.night-shift .night-timer-dock .today-timer-status i {
+  display: none;
+}
+.live-app.night-shift .night-timer-dock .today-clock {
+  grid-column: 1;
+  grid-row: 2;
+  font-size: 26px;
+  letter-spacing: 0;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-left: 22px;
+  font-variant-numeric: tabular-nums;
+  align-self: center;
+  color: var(--text);
+}
+.live-app.night-shift .night-timer-dock .today-activity {
+  grid-column: 3;
+  grid-row: 1/3;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  min-width: 0;
+  gap: 4px;
+  padding-left: 22px;
+  border-left: 1px solid var(--night-divider);
+}
+.live-app.night-shift .night-timer-dock .today-activity strong {
+  font-size: 14px;
+  font-weight: 550;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.live-app.night-shift .night-timer-dock .today-activity > span {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.live-app.night-shift .night-timer-dock .today-timer-actions {
+  grid-column: 2;
+  grid-row: 1/3;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.live-app.night-shift .night-timer-dock .today-timer-actions .button {
+  height: 46px;
+  padding: 0 20px;
+  min-width: 0;
+  border: 0;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--surface-raised);
+  color: var(--text);
+  white-space: nowrap;
+  gap: 9px;
+}
+.live-app.night-shift .night-timer-dock .today-timer-actions .button:hover {
+  background: var(--surface-tertiary);
+}
+.live-app.night-shift .night-timer-dock .timer-idle .today-timer-primary {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.live-app.night-shift .night-timer-dock .today-activity-picker {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 24px;
+  right: auto;
+  width: min(640px, calc(100vw - 76px));
+  max-height: min(650px, calc(100dvh - 180px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: color-mix(in srgb, var(--overlay) 94%, transparent);
+  backdrop-filter: blur(24px);
+  padding: 24px;
+  border-radius: 16px;
+  color: var(--text);
+  border: 1px solid var(--night-divider);
+  box-shadow: 0 20px 60px #0005;
+}
+.live-app.night-shift .night-timer-dock .today-activity-form {
+  display: grid;
+  gap: 14px;
+}
+.live-app.night-shift .night-timer-dock .today-picker-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.live-app.night-shift .night-timer-dock .today-picker-heading strong {
+  font-size: 16px;
+}
+.live-app.night-shift .night-timer-dock .today-activity-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.live-app.night-shift .night-timer-dock .today-activity-suggestions .button {
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: 12px;
+  gap: 10px;
+  white-space: normal;
+  height: auto;
+  padding: 9px 12px;
+}
+.live-app.night-shift .night-timer-dock .today-lunch-timer {
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 12px;
+  color: var(--orange);
+  font-size: 12px;
+}
+.live-app.night-shift .night-timer-dock .today-lunch-timer > div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.live-app.night-shift .night-timer-dock .today-lunch-timer strong {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  color: var(--orange);
+}
+.live-app.night-shift .night-timer-dock .today-new-project {
+  padding: 14px;
+  background: var(--surface-raised);
+  border-radius: 10px;
+}
+.live-app.night-shift .night-timer-dock .today-new-project-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.night-demo-label {
+  position: fixed;
+  right: 26px;
+  bottom: 124px;
+  z-index: 70;
+  color: var(--muted);
+  font-size: 10px;
+  pointer-events: none;
+}
+/* Portal primitives use the same tokens, rather than inherited light literals. */
+html[data-zulu-theme]:has(.night-shift) .zulu-overlay,
+html[data-zulu-theme]:has(.auth-shell) .zulu-overlay {
+  background: var(--overlay);
+  color: var(--text);
+  border: 0;
+  box-shadow: 0 20px 70px #0004;
+}
+html[data-zulu-theme]:has(.night-shift)
+  .zulu-overlay
+  :is(h1, h2, h3, strong, label, .label),
+html[data-zulu-theme]:has(.auth-shell)
+  .zulu-overlay
+  :is(h1, h2, h3, strong, label, .label) {
+  color: var(--text);
+}
+html[data-zulu-theme]:has(.night-shift)
+  .zulu-overlay
+  :is(
+    .button--tertiary,
+    .button--secondary,
+    .input,
+    .select__trigger,
+    .text-area
+  ) {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+html[data-zulu-theme]:has(.night-shift) .zulu-overlay .primary-button {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+html[data-zulu-theme]:has(.night-shift)
+  .zulu-overlay
+  :is(
+    .search-results button,
+    .search-results .button,
+    .select-list-item,
+    .list-box-item
+  ) {
+  color: var(--text);
+  background: transparent;
+}
+html[data-zulu-theme]:has(.night-shift)
+  .zulu-overlay
+  :is(.form-error, .inline-notice) {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+}
+html:has(.night-shift) :is(.zulu-tooltip, .popover) {
+  background: var(--overlay);
+  color: var(--text);
+}
+html:has(.night-shift) .desktop-titlebar,
+html:has(.auth-shell) .desktop-titlebar {
+  background: var(--frame);
+  color: #f1f0f7;
+}
+html:has(.night-shift) .desktop-window-controls button:hover {
+  background: #2c2f3a;
+}
+html:has(.night-shift) .desktop-window-controls button:last-child:hover {
+  background: #a53349;
+}
+/* External authentication is part of the same visual world. */
+.auth-shell {
+  background: var(--bg);
+  color: var(--text);
+}
+.auth-shell :is(.auth-story, .auth-panel, .auth-form) {
+  background: transparent;
+  color: var(--text);
+}
+.auth-shell :is(h1, h2, label, .label) {
+  color: var(--text);
+}
+.auth-shell :is(p, .auth-footer, .form-hint) {
+  color: var(--muted);
+}
+.auth-shell :is(.primary-button, .button--primary) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.auth-shell :is(input, .input) {
+  background: var(--field-background);
+  color: var(--field-foreground);
+}
+.auth-shell .auth-story {
+  background: var(--surface);
+}
+.auth-shell a {
+  color: var(--accent);
+}
+@keyframes night-detail-in {
+  from {
+    opacity: 0.6;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (min-width: 761px) {
+  html[data-desktop-titlebar="true"] .live-app.night-shift {
+    --shell-top: 48px;
+  }
+}
+@media (max-width: 1200px) {
+  .night-dashboard {
+    grid-template-columns: minmax(0, 1fr) 290px;
+  }
+  .night-work {
+    padding: 26px 22px;
+  }
+  .night-heading {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .night-task-toolbar {
+    flex-wrap: wrap;
+  }
+  .live-app.night-shift .night-timer-dock .today-focus {
+    grid-template-columns: 185px 1fr minmax(160px, 25%);
+    column-gap: 15px;
+  }
+  .live-app.night-shift .night-timer-dock .today-timer-actions .button {
+    padding: 0 13px;
+    font-size: 12px;
+  }
+}
+@media (max-width: 960px) {
+  .night-dashboard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .live-app.night-shift .night-context {
+    padding: 24px;
+  }
+  .live-app.night-shift .night-context .today-context {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .live-app.night-shift .night-context .today-people-card {
+    border-top: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .night-work {
+    min-height: 0;
+  }
+  .live-app.night-shift .night-timer-dock .today-activity {
+    display: none;
+  }
+  .live-app.night-shift .night-timer-dock .today-focus {
+    grid-template-columns: 190px 1fr;
+  }
+}
+@media (max-width: 760px) {
+  html[data-zulu-theme] .live-app.night-shift {
+    --shell-top: 60px;
+  }
+  .live-app.night-shift .app-content {
+    padding: var(--shell-top) 8px 184px;
+    margin-left: 0;
+  }
+  .live-app.night-shift .main-content {
+    padding: 20px 16px;
+    border-radius: 16px;
+    min-height: calc(100dvh - 244px);
+  }
+  .live-app.night-shift .main-content.today-page {
+    padding: 0;
+  }
+  .live-app.night-shift .page-heading h1 {
+    font-size: 26px;
+  }
+  .night-work {
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
+  .night-heading {
+    margin-bottom: 22px;
+    gap: 18px;
+  }
+  .night-heading h1 {
+    font-size: 29px;
+    max-width: 20ch;
+  }
+  .night-heading p {
+    font-size: 12px;
+  }
+  .night-heading > .button {
+    font-size: 13px;
+    padding: 0 14px;
+    min-height: 42px;
+  }
+  .night-task-toolbar {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .night-task-tabs {
+    gap: 1px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .night-shift .night-task-tabs .button {
+    padding: 0 9px;
+    font-size: 12px;
+    gap: 6px;
+  }
+  .night-task-toolbar > .select {
+    max-width: none;
+    width: 100%;
+  }
+  .night-task-row {
+    gap: 12px;
+    padding: 18px 12px;
+  }
+  .night-task-name {
+    font-size: 14px;
+  }
+  .night-task-meta {
+    gap: 8px 12px;
+    font-size: 11px;
+  }
+  .night-task-detail {
+    padding: 0 16px 20px 49px;
+  }
+  .night-task-detail > p {
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .night-task-detail-footer {
+    font-size: 11px;
+    gap: 10px;
+  }
+  .live-app.night-shift .night-context {
+    padding: 24px 18px;
+  }
+  .live-app.night-shift .night-context .today-context {
+    display: flex;
+  }
+  .live-app.night-shift .night-context .today-people-card {
+    border-top: 1px solid var(--night-divider);
+    padding-top: 24px;
+    margin-top: 22px;
+  }
+  .live-app.night-shift .night-timer-dock {
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    border-radius: 16px;
+  }
+  .live-app.night-shift .night-timer-dock .today-focus {
+    grid-template-columns: 1fr;
+    grid-template-rows: 24px 32px auto;
+    padding: 12px 16px 14px;
+    gap: 0;
+    min-height: 132px;
+  }
+  .live-app.night-shift .night-timer-dock .today-prism {
+    top: 21px;
+    left: 18px;
+    width: 8px;
+    height: 8px;
+  }
+  .live-app.night-shift .night-timer-dock .today-section-heading {
+    grid-column: 1;
+    grid-row: 1;
+    padding-left: 16px;
+  }
+  .live-app.night-shift .night-timer-dock .today-clock {
+    grid-column: 1;
+    grid-row: 2;
+    padding-left: 16px;
+    font-size: 24px;
+  }
+  .live-app.night-shift .night-timer-dock .today-timer-actions {
+    grid-row: 3;
+    grid-column: 1;
+    justify-content: flex-start;
+    gap: 8px;
+    padding-top: 10px;
+  }
+  .live-app.night-shift .night-timer-dock .today-timer-actions .button {
+    height: 42px;
+    min-height: 42px;
+    padding: 0 12px;
+    font-size: 12px;
+    border-radius: 10px;
+    flex: 1;
+  }
+  .live-app.night-shift .night-timer-dock .today-activity-picker {
+    left: 0;
+    width: 100%;
+    max-height: calc(100dvh - 240px);
+    padding: 20px;
+  }
+  .live-app.night-shift .night-timer-dock .today-lunch-timer {
+    grid-row: 4;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 11px;
+    padding-top: 10px;
+  }
+  .night-demo-label {
+    bottom: 152px;
+    right: 20px;
+  }
+  .night-shift .work-schedule-nudge {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+  }
+  html[data-zulu-theme]:has(.night-shift) .zulu-overlay {
+    max-width: calc(100vw - 24px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .night-task-detail {
+    animation: none;
+  }
+  .night-task,
+  .live-app.night-shift .night-timer-dock .today-prism > div {
+    transition: none;
+  }
+}
+
+/* A docked timer must never cover the conversation or call controls. */
+.live-app.night-shift
+  .main-content[data-motion-page="calls"]:has(> .zulu-call-room) {
+  height: calc(100dvh - var(--shell-top) - 164px);
+}
+.live-app.night-shift .main-content[data-motion-page="chat"] {
+  height: calc(100dvh - var(--shell-top) - 164px);
+  min-height: 440px;
+  display: flex;
+  flex-direction: column;
+}
+.live-app.night-shift
+  .main-content[data-motion-page="chat"]
+  > .live-chat-layout {
+  flex: 1;
+  min-height: 0;
+}
+.live-app.night-shift .live-chat-layout {
+  min-height: 0;
+}
+.live-app.night-shift .chat-main {
+  min-height: 0;
+}
+.live-app.night-shift .work-schedule-nudge + .night-dashboard {
+  margin-top: 18px;
+}
+
+.live-app.night-shift .night-timer-dock .today-workspace {
+  margin: 0;
+  background: transparent;
+}
+.live-app.night-shift .night-timer-dock .today-focus {
+  height: auto;
+  min-height: 102px;
+  max-height: none;
+}
+.live-app.night-shift .night-timer-dock .today-section-heading {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 0;
+}
+.live-app.night-shift .night-timer-dock .today-prism {
+  background: var(--orange);
+}
+.live-app.night-shift .night-timer-dock .today-prism > div {
+  opacity: 0.4;
+}
+.live-app.night-shift .night-context .card {
+  display: block;
+  height: auto;
+  min-height: 0;
+}
+.live-app.night-shift .night-context .today-section-heading {
+  flex-direction: row;
+  gap: 12px;
+  text-align: left;
+}
+.live-app.night-shift .night-context .today-person {
+  justify-content: flex-start;
+}
+.live-app.night-shift .night-context .today-person > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.live-app.night-shift .night-context .today-person strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.live-app.night-shift .night-context .today-person em {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--muted);
+}
+.live-app.night-shift .night-context .today-person small {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 225px;
+}
+.live-app.night-shift .night-context .today-chat {
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 16px;
+  width: 100%;
+  justify-content: space-between;
+}
+.live-app.night-shift .night-context .today-chat strong {
+  font-weight: 400;
+  font-size: 12px;
+}
+.live-app.night-shift .night-context .today-chat > span small {
+  display: none;
+}
+.live-app.night-shift .night-heading > .button {
+  font-size: 14px;
+  padding: 0 18px;
+  min-height: 44px;
+}
+.live-app.night-shift .night-journey {
+  border-radius: 10px;
+  height: auto;
+  min-height: 54px;
+  justify-content: flex-start;
+}
+.live-app.night-shift .avatar.avatar-green {
+  background: #a5ddc6;
+  color: #15251e;
+}
+.live-app.night-shift .avatar.avatar-purple {
+  background: #c2b0fb;
+  color: #211936;
+}
+.live-app.night-shift .avatar.avatar-blue {
+  background: #a9c8ff;
+  color: #1b2840;
+}
+.live-app.night-shift .avatar.avatar-sand,
+.live-app.night-shift .avatar.avatar-orange {
+  background: #edc8a5;
+  color: #2b2118;
+}
+.live-app.night-shift .avatar.avatar-rose {
+  background: #dfb8ce;
+  color: #30202a;
+}
+@media (max-width: 760px) {
+  .live-app.night-shift .night-timer-dock .today-focus {
+    min-height: 132px;
+  }
+}
+
+html[data-zulu-theme]:has(.night-shift)
+  .zulu-overlay
+  :is(textarea, .textarea, .text-area) {
+  background: var(--field-background);
+  color: var(--field-foreground);
+  border: 0;
+}
+html[data-zulu-theme]:has(.night-shift)
+  .zulu-overlay
+  :is(input, textarea)::placeholder {
+  color: var(--field-placeholder);
+}
+html[data-zulu-theme]:has(.night-shift)
+  .zulu-overlay
+  :is(input, textarea, button):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+html[data-zulu-theme]:has(.night-shift)
+  .zulu-overlay
+  :is(.zulu-temporal-field, .zulu-number-field, .date-input-group) {
+  --field-background: var(--surface-raised);
+  color: var(--text);
+}
+html[data-zulu-theme]:has(.night-shift) .zulu-overlay .search-results .button {
+  color: var(--text);
+}
+.live-app.night-shift :is(.text-button, .today-link) {
+  color: var(--accent);
+}
+.live-app.night-shift :is(.today-context-empty, .today-online) {
+  color: var(--muted);
+}
+.live-app.night-shift .night-context .today-online {
+  color: var(--green);
+  font-size: 12px;
+}
+html[data-zulu-theme]:has(.night-shift) .toast {
+  background: var(--surface-raised);
+  color: var(--text);
+  border: 0;
+}
+html[data-zulu-theme]:has(.night-shift) .toast-error {
+  background: #34212a;
+  color: #ffb1bc;
+}
+.live-app.night-shift .night-timer-dock .today-workspace {
+  overflow: visible;
+}
+.live-app.night-shift .night-timer-dock .today-focus::after {
+  display: none;
+}
+.live-app.night-shift .night-timer-dock .today-focus[data-motion-tilt] {
+  transform: none;
+  transform-style: flat;
+}
+.live-app.night-shift .night-timer-dock .today-activity-picker {
+  z-index: 5;
+}
+html[data-zulu-theme]:has(.night-shift) .zulu-toast-region {
+  bottom: 142px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.zulu-dashboard-loading{background:var(--bg);color:var(--text)}
+.zulu-dashboard-loading .skeleton{background:var(--surface-raised)}
+
+@media(min-width:1201px){.night-dashboard{grid-template-columns:minmax(0,1fr) minmax(300px,28%)}}
+.live-app.night-shift .avatar .avatar__fallback{background:inherit;color:inherit}
+.live-app.night-shift .night-timer-dock .today-prism{z-index:3}
+.live-app.night-shift .night-timer-dock .today-prism>div{opacity:.15}
+/* The full-width dock must leave the rail's last destination reachable. */
+.live-app.night-shift .rail{padding-bottom:160px}
+
+html[data-zulu-theme]:has(.night-shift) .zulu-overlay .zulu-number-field .number-field__input{color:var(--text)}
+.live-app.night-shift .topbar .workspace-button strong{color:inherit}

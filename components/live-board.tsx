@@ -647,7 +647,7 @@ const KanbanCard = memo(function KanbanCard({
     </article>
   );
 });
-function TaskEditor({
+export function TaskEditor({
   task,
   editable,
   canArchive,

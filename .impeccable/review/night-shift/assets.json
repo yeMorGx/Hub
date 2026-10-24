@@ -1,0 +1,177 @@
+[
+  {
+    "file": "comparison-context.jpg",
+    "sha256": "63e69ac9a62ff102b89ec8bb923026445e0575429b52a6aab22eb566b048ef93",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "comparison-full.jpg",
+    "sha256": "3ab4f350708d72fba37432e9ab13a353aa484cc6542f99efd2223c3d24184f58",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "comparison-tasks.jpg",
+    "sha256": "e13c41ca1a26557568aaa0a962b5252e1352e0af71d9390fe4b3ce0022819028",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "comparison-timer.jpg",
+    "sha256": "4258d7e7713595d18c8efb08eb86750427ffdfeeb8b9cc1b5ee117577da8b2d2",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "confirmed-board-1440.png",
+    "sha256": "4576f0cfce566a061744582884ef042fd309f8846d5afaf3d333fb39bea25e92",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "confirmed-board-390.png",
+    "sha256": "e470c792868474647ecb9fd5b3e5753b1030403c5dd874d21da37575197a351f",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "confirmed-board-hover-1440.png",
+    "sha256": "08f60d3a934b05d48068f33d161c5e0e2d6a9ab854ae5c315848d5adc568dfc2",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "confirmed-calendar-1440.png",
+    "sha256": "e0754b3d74700168e211971506cfd84c6ca77b1dbad3a6835ab4b0a9d23d2b3a",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "confirmed-calendar-390.png",
+    "sha256": "e8fdaea1f15cc607d6fdd15fdb279a30d11b3afc5814c9ebce49c6daacddc2f6",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "confirmed-light-1440.png",
+    "sha256": "d26bfc4ceea6c82f58feabfc56f575bb17b4d2ab30671514031a16aaafa83005",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "confirmed-light-390.png",
+    "sha256": "11c3e79af81d8a6aa6efb82d390af76c7bc7558a0b214bf0965274072ddf162c",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "confirmed-schedule-1440.png",
+    "sha256": "7345589df60eaaa4880c04e3e92b5a87d5e86c15badacf8ae1df527fc7cd1ed5",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "confirmed-schedule-390.png",
+    "sha256": "178387bd99116c36e49d673c5372f589ec87580b7139d7eae4888b396cc0615a",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "desktop.png",
+    "sha256": "68e2a4d49bc8d7ebf4767deb0a43374ede37a19cabd0e1c209150ff370c0ad71",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-activity-picker-1440.png",
+    "sha256": "a37ba13a851011be9ff98ed2e62df15b81031aee07887f3cf98016fcbf692a69",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-activity-picker-390.png",
+    "sha256": "61877f94e9c38f8aab4cec62cbdef9fa0d2172ac40d6d7dd83ed3a19ee4e679f",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-home-office-1440.png",
+    "sha256": "65053e2cbb63cc876f2283a85e7dd06cb1addccd47eea22b3730c8ee43c30813",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-home-office-390.png",
+    "sha256": "8d8ad59fa09840b92040714ad4108231fa5a7559158bb893833d9a30b6a63acb",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-light-1440.png",
+    "sha256": "f7b8822a151cc3ab5584adf183dafc95e2ca6e67d334dc2631e44c7caacdc358",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-light-390.png",
+    "sha256": "db40bc782d5b5eb6959e477a3769e1cc805c3d64d09a2385a3a12ac9e34338e3",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-profile-1440.png",
+    "sha256": "f0130db72907acdb0be14497064f76f05e20113da288a0aaf23994e9a71a293e",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-profile-390.png",
+    "sha256": "dc0ef65a32810f4ecc6d755ef4c229493e04a55c6a520b234b379403df096af7",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-project-created-1440.png",
+    "sha256": "1fa0cfc968712d4f0f9f12451af86f426b5d8e4311b4f96ce16f67921152d92c",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-project-created-390.png",
+    "sha256": "df56852d9e267cffeffe346de7aabb8edad7f8f496644d9cfd12d1263fe254fa",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-schedule-1440.png",
+    "sha256": "d8a304b547bcf9342b3d2a70ebcf95576b299ed02fae9d9bc3660c6204f1a899",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-schedule-390.png",
+    "sha256": "9b8c2cec01657355be5580874c1f609cad794481041705268560378c8861937e",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-search-1440.png",
+    "sha256": "5b0c4dad624423e6a0fe48a32f039e716e51ebd309032993e4f4814994d98574",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-search-390.png",
+    "sha256": "bdf67c10e57de04801754fd90856b77170d808086b0bb826dde98a6eb6a8c5e2",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-task-dialog-1440.png",
+    "sha256": "ca8439d60bb412636f761a90bdf313aa1b0d209ec558a324e27b6eabe5ac34cc",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "final-task-dialog-390.png",
+    "sha256": "2e62b291f887e834dc7bc55ff17ecaaa10ff93dedfed3e54d2b5cb2be5049952",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "mobile.png",
+    "sha256": "a16c5569afb56321e618abb1740d355cd50dbde36959d8af240f05ffedeeccc2",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "pages-0.jpg",
+    "sha256": "dd6fc65197b12a3718504e1ea8865c79f46ecdd1d39bec6280fc84e52e65815d",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "pages-1.jpg",
+    "sha256": "44ad0aa1dd2eee99cdd954b555ae8ac9115dd175a66950635e23384162d173fe",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "pages-2.jpg",
+    "sha256": "37d9aade09325fb86412984388d36217b4ef11a1b091d9a0c272ed5ed8976fd1",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  },
+  {
+    "file": "pages-3.jpg",
+    "sha256": "057be374019a896ec50efb099a6d2681c8973a22a62aa84cbc3c7a03e12bb1de",
+    "origin": "Playwright capture or QA comparison of selected generated concept with app renderer; fictitious audit/demo data"
+  }
+]

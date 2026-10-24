@@ -17,7 +17,7 @@ import type { SyncConflict } from "@/lib/integrations/sync";
 import { errorMessage } from "@/lib/supabase/errors";
 import { EmptyState } from "./hub-ui";
 const names = { google: "Google Calendar", outlook: "Outlook" };
-export function LiveIntegrations({ hub }: { hub: HubController }) {
+export function LiveIntegrations({ hub, demo = false }: { hub: HubController; demo?: boolean }) {
   const [tab, setTab] = useState<"calendars" | "webhooks" | "audit">(
       "calendars",
     ),
@@ -52,7 +52,7 @@ export function LiveIntegrations({ hub }: { hub: HubController }) {
         .from("calendar_connections")
         .select("*")
         .eq("team_id", hub.teamId),
-      fetch("/api/integrations/status", { cache: "no-store" }).then(
+      (demo ? Promise.resolve(new Response(JSON.stringify({google:false,outlook:false,livekit:false}),{status:200})) : fetch("/api/integrations/status", { cache: "no-store" })).then(
         async (response) => ({
           ok: response.ok,
           data: (await response.json()) as Record<string, unknown>,

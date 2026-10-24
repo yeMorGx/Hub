@@ -190,7 +190,7 @@ html[data-zulu-theme="dark"] .live-app.workspace-inset {
  --background:#10151e; --default:#273245; --default-foreground:#e9edf7; --surface-secondary-foreground:#e9edf7;
  --surface-tertiary:#303c50; --surface-tertiary-foreground:#e9edf7; --field-placeholder:#aab8d0; --focus:#9dbaff;
 }
-html[data-zulu-theme="dark"] .live-app.workspace-inset :is(.tabs__list,.select__trigger,.input,.button--secondary,.button--tertiary) { background:var(--surface-raised); color:var(--text); }
+html[data-zulu-theme="dark"] .live-app.workspace-inset :is(.tabs__list,.select__trigger,.input) { background:var(--surface-raised); color:var(--text); }
 html[data-zulu-theme="dark"] .live-app.workspace-inset :is(.tabs__indicator,.tabs__tab[data-selected="true"]) { background:var(--surface); color:var(--text); }
 html[data-zulu-theme="dark"] .live-app.workspace-inset .settings-tabs .tabs__list { background:transparent; }
 @media(max-width:760px) { .live-app.workspace-inset .today-demo-controls .select { min-width:115px; } }

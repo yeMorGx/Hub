@@ -12,6 +12,7 @@ import "./organization-admin.css";
 import "./motion.css";
 import "./collaboration-design.css";
 import "./calls-design.css";
+import "./night-shift.css";
 import { WorkspaceTheme } from "@/components/workspace-settings";
 import { ServiceWorkerRegistration } from "@/components/pwa";
 import { DesktopUpdate } from "@/components/desktop-update";

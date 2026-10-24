@@ -1,0 +1,10 @@
+{
+  "rows": [
+    "schedule",
+    "light",
+    "board",
+    "board-hover",
+    "calendar"
+  ],
+  "scope": "reviewer material list only; schedule and light use actual MFA isolated data; board/calendar use memory renderer"
+}

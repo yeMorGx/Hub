@@ -6,8 +6,8 @@
 
 .organization-contact-thread{min-width:0}.organization-contact-thread .conversation-scroll{max-height:520px;overflow-y:auto}.organization-contact-thread .library-toolbar{justify-content:space-between}.org-notice-banner [role=dialog]{font-size:14px}
 /* Scoped finish: preserve HeroUI semantics and the workspace's flat palette. */
-.organization-admin .button--primary,.organization-library .button--primary,.org-confirm .button--primary{background:var(--accent);color:var(--accent-foreground,#fff)}
-.organization-admin .button--danger,.organization-library .button--danger,.org-confirm .button--danger{color:var(--danger-foreground,#fff)}
+.organization-admin .button--primary,.organization-library .button--primary,.org-confirm .button--primary{background:var(--accent);color:var(--accent-foreground,var(--text))}
+.organization-admin .button--danger,.organization-library .button--danger,.org-confirm .button--danger{color:var(--danger-foreground,var(--text))}
 .organization-admin .checkbox,.organization-library .checkbox,.org-confirm .checkbox{display:inline-flex;flex-direction:row;align-items:center;gap:10px;min-width:0}
 .org-person>.avatar{flex:0 0 34px;width:34px;height:34px;min-width:34px;border:0}
 .org-tabs [role=tab]{gap:8px}.org-tabs .tabs__indicator{box-shadow:none}

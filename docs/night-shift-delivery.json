@@ -1,0 +1,11 @@
+{
+  "status": "reviewed candidate; production deployment pending",
+  "design": "selected option3, Night Shift",
+  "review": "ship within frontend scope; five material findings resolved",
+  "unitTests": {"passed":63,"failed":0},
+  "publicLocalTests": {"passed":35,"failed":0},
+  "publicDemoScenarios":26,
+  "realNavigation": {"screens":22,"widths":[1440,390],"mfa":true,"isolatedData":true,"renderer":"local candidate"},
+  "cleanup": "pending published verification",
+  "nativeWindowsMediaVerified":false
+}

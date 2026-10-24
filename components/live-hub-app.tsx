@@ -83,8 +83,9 @@ import { LiveCalls } from "./live-calls";
 import { LiveIntegrations } from "./live-integrations";
 import { LiveManagement } from "./live-management";
 import { LiveCollaboration } from "./live-collaboration";
-import { LiveBoard, type TaskInput } from "./live-board";
+import { LiveBoard, TaskEditor, type TaskInput } from "./live-board";
 import { LiveCalendar } from "./live-calendar";
+import { NightDashboard } from "./night-dashboard";
 import { TodayOverview, TodayContext } from "./today-dashboard";
 import { HomeOfficeManager } from "./home-office-manager";
 import { WorkScheduleSetup } from "./work-schedule-setup";
@@ -132,10 +133,15 @@ type Modal =
   | "channel-members"
   | null;
 export function LiveHubApp({ userId }: { userId: string }) {
+  return <HubWorkspace userId={userId} useController={useHub} />;
+}
+
+export function HubWorkspace({ userId, useController, demo = false }: { userId: string; useController: typeof useHub; demo?: boolean }) {
   const [now, setNow] = useState(0),
     [page, setPage] = useState<LivePage>("overview"),
     [calendarDate, setCalendarDate] = useState("2026-01-05"),
     [calendarView, setCalendarView] = useState<CalendarView>("week");
+  const [newTaskOpen, setNewTaskOpen] = useState(false);
   const mainContentRef = useRef<HTMLElement>(null);
   usePageTransition(mainContentRef, page);
   const [collaborationInitialTab, setCollaborationInitialTab] = useState<
@@ -148,6 +154,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
     }
     if (new URLSearchParams(window.location.search).get("integrations") === "1")
       setPage("integrations");
+    if (demo) { const requested = new URLSearchParams(location.search).get("page"); if (requested && pageTitles[requested as LivePage]) setPage(requested as LivePage); }
     const current = new Date();
     setNow(current.getTime());
     setCalendarDate(dayKey(current));
@@ -173,7 +180,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
   );
   const rangeStart = range.start.toISOString(),
     rangeEnd = range.end.toISOString();
-  const hub = useHub(userId, rangeStart, rangeEnd, todayKey),
+  const hub = useController(userId, rangeStart, rangeEnd, todayKey),
     data = hub.snapshot;
   const organization = useOrganization(hub);
   const canAdminister = Boolean(organization.authority && (organization.authority.owner || organization.authority.general_admin || organization.authority.team_admin || organization.authority.can_approve));
@@ -225,6 +232,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
     selectedChannel?.id ?? "",
     Boolean(channelMembership),
     hub.refreshTeam,
+    hub.client,
   );
   useEffect(() => {
     if (priorTeam.current && priorTeam.current !== hub.teamId) {
@@ -380,6 +388,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
     );
   }
   async function signOut() {
+    if (demo) { window.location.assign("/login"); return; }
     await clearVault().catch(() => {});
     if ("serviceWorker" in navigator) {
       try {
@@ -734,11 +743,120 @@ export function LiveHubApp({ userId }: { userId: string }) {
               : selectedChannel.dm_user_low),
         )
       : null;
+  async function saveDashboardTask(input: TaskInput) {
+    const result = await hub.mutate(() => hub.rpc("save_task", { p_team_id: hub.teamId, p_title: input.title, p_description: input.description, p_project_id: input.projectId || undefined, p_assignee_id: input.assigneeId || undefined, p_due_on: input.dueOn || undefined, p_priority: input.priority, p_task_id: input.id, p_expected_version: input.version }), "Tarefa salva.");
+    return result.ok ? null : result.error || "Não foi possível salvar a tarefa.";
+  }
+  const timerDock = <TodayOverview compact
+                        showHours={isAllowed("hours")} showCalendar={false}
+                        key={hub.teamId}
+                        timer={{
+                          state: activeTimer
+                            ? "running"
+                            : pausedTimer
+                              ? "lunch"
+                              : "idle",
+                          elapsed,
+                          pausedAt: pausedTimer?.paused_at,
+                          projectId: timerSession?.project_id ?? projectId,
+                          description: timerSession?.description || description,
+                          project: timerSession
+                            ? timerSession.team_id === hub.teamId
+                              ? projectName(timerSession.project_id)
+                              : "Timer de outro time"
+                            : projectId
+                              ? projectName(projectId)
+                              : "",
+                        }}
+                        busy={hub.busy}
+                        canParticipate={hub.canParticipate && modulePermission("hours","write")}
+                        configured={workScheduleConfigured}
+                        today={todayBalance}
+                        week={weekBalance}
+                        month={monthBalance}
+                        monthTargetMinutes={fullMonthTargetMinutes}
+                        todayKey={todayKey}
+                        homeOffice={data.upcomingHomeOffice}
+                        homeOfficeError={data.homeOfficeSummaryError}
+                        projects={data.projects}
+                        activities={[
+                          ...(isAllowed("board") ? data.tasks.filter(task => !task.archived_at && task.status !== "done" && (!task.project_id || data.projects.some(project => project.id === task.project_id))).slice(0, 3).map(task => ({id: task.id, description: task.title, projectId: task.project_id ?? "", kind: "task" as const})) : []),
+                          ...recentWork.map(entry => ({id: entry.id, description: entry.description, projectId: entry.project_id ?? "", kind: "recent" as const})),
+                        ]}
+                        onCreateProject={modulePermission("projects","write") ? async name => {
+                          const result = await hub.mutate(() => hub.rpc("save_project", {
+                            p_team_id: hub.teamId, p_name: name, p_description: "",
+                          }), "Projeto criado.");
+                          return result.ok ? { id: result.value, name } : null;
+                        } : undefined}
+                        onStartActivity={async input => {
+                          if (activeTimer || pausedTimer) {hub.notify("Encerre o timer atual antes de iniciar outro.", true); return false;}
+                          const result = input.taskId
+                            ? await hub.mutate(() => hub.rpc("start_task_timer", {p_task_id: input.taskId!}), "Timer iniciado na tarefa.")
+                            : await startTimer(input.description, input.projectId);
+                          if (result?.ok) {setDescription(input.description);setProjectId(input.projectId);}
+                          return Boolean(result?.ok);
+                        }}
+                        onToggleTimer={() => void toggleFocusTimer()}
+                        onStopTimer={() => void stopTimer()}
+                        onHours={() => navigate("hours")}
+                        onSchedule={() => setWorkScheduleOpen(true)}
+                        onHomeOffice={() => {
+                          setHomeOfficeFocusWeek("");
+                          setHomeOfficeOpen(true);
+                        }}
+                        onRetry={() => void hub.refreshTeam()}
+                      />;
+  const dashboardContext = <TodayContext showEventDates
+                      showCalendar={isAllowed("calendar")} showPeople={isAllowed("people")} showChat={isAllowed("chat")} showHours={isAllowed("hours")}
+                      events={data.events.filter(
+                        (event) => new Date(event.ends_at).getTime() > now,
+                      )}
+                      people={data.people}
+                      presence={hub.presenceReady}
+                      online={hub.onlinePeople}
+                      unread={totalUnread}
+                      currentUserId={userId}
+                      currentActivity={timerSession?.team_id === hub.teamId ? [pausedTimer ? `Almoço · ${timerSession.description}` : timerSession.description || "Trabalhando agora", data.projects.find(project => project.id === timerSession.project_id)?.name].filter(Boolean).join(" · ") : ""}
+                      activities={hub.onlineActivities}
+                      inbox={data.inbox}
+                      unreadByPerson={Object.fromEntries(data.channels.filter(channel => channel.kind === "dm" && !channel.archived_at && (channel.dm_user_low === userId || channel.dm_user_high === userId) && data.channelMemberships.some(member => member.channel_id === channel.id && member.user_id === userId)).map(channel => [channel.dm_user_low === userId ? channel.dm_user_high! : channel.dm_user_low!, data.unread[channel.id] ?? 0]))}
+                      inboxError={data.inboxError}
+                      onMessage={id => {setChannelId(id);navigate("chat");setShowChannelList(false);}}
+                      recent={[].map((entry: typeof recentWork[number]) => ({
+                        id: entry.id,
+                        description: entry.description,
+                        project: projectName(entry.project_id),
+                      }))}
+                      busy={hub.busy}
+                      canRestart={!timerSession && hub.canParticipate}
+                      onEvent={(event) => setEventId(event.id)}
+                      onCalendar={() => navigate("calendar")}
+                      onPerson={(person) => {
+                        setPeopleQuery(person.display_name);
+                        navigate("people");
+                      }}
+                      onPeople={() => {
+                        setPeopleQuery("");
+                        navigate("people");
+                      }}
+                      onRestart={(id) => {
+                        const entry = recentWork.find(
+                          (entry) => entry.id === id,
+                        );
+                        if (entry)
+                          void startTimer(
+                            entry.description,
+                            entry.project_id ?? "",
+                          );
+                      }}
+                      onChat={() => navigate("chat")}
+                    />;
   const profileBody = data.people.find((p) => p.id === userId)?.body ?? "";
   return (
     <DashboardUIProvider enabled>
     <AvatarProvider hub={hub}>
-    <div className={`app-shell live-app workspace-inset ${page === "overview" ? "dashboard-redesign" : ""}`} data-menu-open={menuOpen}>
+    <div className="app-shell live-app workspace-inset night-shift" data-menu-open={menuOpen}>
       <a className="skip-link" href="#main-content">
         Pular para o conteúdo
       </a>
@@ -762,7 +880,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
         </nav>
         <div className="rail-bottom"><ZuluButton className={`rail-button ${currentArea.id === "settings" ? "active" : ""}`} aria-label="Configurações" onClick={() => navigate("settings")}><DashboardNavIcon name="settings" /></ZuluButton></div>
       </aside>
-<WorkspaceDrawer isAllowed={isAllowed} open={menuOpen} onOpenChange={setMenuOpen} onPage={navigate} />      <DesktopBridge hub={hub} />
+<WorkspaceDrawer isAllowed={isAllowed} open={menuOpen} onOpenChange={setMenuOpen} onPage={navigate} />      {!demo && <DesktopBridge hub={hub} />}
       <div className="app-content">
         <DesktopChrome><header className="topbar"><ZuluButton className="mobile-navigation-toggle" aria-label="Abrir navegação" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><SquaresFour size={21} /></ZuluButton>
           <div className="workspace-wrap">
@@ -809,10 +927,10 @@ export function LiveHubApp({ userId }: { userId: string }) {
           <WorkspaceAreaTabs page={page} onPage={navigate} isAllowed={isAllowed} />
           {organization.error&&<div className="org-notice-banner" role="alert"><p>{organization.error}</p><ZuluButton onClick={()=>void organization.refresh()}>Conferir acesso novamente</ZuluButton></div>}
           <OrganizationNotices hub={hub} authority={organization.authority} command={organization.command} />
-          <div className="page-heading">
+          <div className="page-heading" hidden={page === "overview"}>
             <div>
               <h1>
-                {page === "overview" ? <OpeningGreeting name={currentName.split(" ")[0]} userId={userId} /> : currentArea.label}
+                {currentPage.label}
                 <span className="heading-period">.</span>
               </h1>
               <p>
@@ -926,73 +1044,22 @@ export function LiveHubApp({ userId }: { userId: string }) {
             </div>
           ) : (
             <>
-              {(page === "overview" || page === "calendar") && (
+              {page === "overview" && <NightDashboard
+                key={hub.teamId} tasks={data.tasks} projects={data.projects} people={data.people} userId={userId} now={now}
+                busy={hub.busy} canWrite={hub.canParticipate && modulePermission("tasks","write")} canManage={modulePermission("tasks","manage")}
+                canTrack={hub.canParticipate && modulePermission("hours","write")} hasTimer={Boolean(timerSession)} context={dashboardContext}
+                homeOffice={data.upcomingHomeOffice} homeOfficeError={data.homeOfficeSummaryError}
+                showTasks={isAllowed("board")} showCalendar={isAllowed("calendar")} showHours={isAllowed("hours")}
+                journey={todayBalance} configured={workScheduleConfigured} onNew={()=>setNewTaskOpen(true)} onBoard={()=>navigate("board")}
+                onStart={task=>{ if(timerSession)return; void hub.mutate(()=>hub.rpc("start_task_timer",{p_task_id:task.id}),"Timer iniciado na tarefa."); }}
+                onComplete={async(task,done)=>{const result=await hub.mutate(()=>hub.rpc("move_task",{p_task_id:task.id,p_status:done?"done":"todo",p_expected_version:task.version}),"Andamento atualizado.");return result.ok;}}
+                onHomeOffice={()=>{setHomeOfficeFocusWeek("");setHomeOfficeOpen(true);}} onHours={()=>navigate("hours")}
+              />}
+              {page === "calendar" && (
                 <div
-                  className={`dashboard-layout ${page === "calendar" ? "calendar-page-layout" : "today-layout"}`}
+                  className="dashboard-layout calendar-page-layout"
                 >
                   <div className="dashboard-main">
-                    {page === "overview" && (
-                      <TodayOverview
-                        showHours={isAllowed("hours")} showCalendar={isAllowed("calendar")}
-                        key={hub.teamId}
-                        timer={{
-                          state: activeTimer
-                            ? "running"
-                            : pausedTimer
-                              ? "lunch"
-                              : "idle",
-                          elapsed,
-                          pausedAt: pausedTimer?.paused_at,
-                          projectId: timerSession?.project_id ?? projectId,
-                          description: timerSession?.description || description,
-                          project: timerSession
-                            ? timerSession.team_id === hub.teamId
-                              ? projectName(timerSession.project_id)
-                              : "Timer de outro time"
-                            : projectId
-                              ? projectName(projectId)
-                              : "",
-                        }}
-                        busy={hub.busy}
-                        canParticipate={hub.canParticipate}
-                        configured={workScheduleConfigured}
-                        today={todayBalance}
-                        week={weekBalance}
-                        month={monthBalance}
-                        monthTargetMinutes={fullMonthTargetMinutes}
-                        todayKey={todayKey}
-                        homeOffice={data.upcomingHomeOffice}
-                        homeOfficeError={data.homeOfficeSummaryError}
-                        projects={data.projects}
-                        activities={[
-                          ...data.tasks.filter(task => !task.archived_at && task.status !== "done" && (!task.project_id || data.projects.some(project => project.id === task.project_id))).slice(0, 3).map(task => ({id: task.id, description: task.title, projectId: task.project_id ?? "", kind: "task" as const})),
-                          ...recentWork.map(entry => ({id: entry.id, description: entry.description, projectId: entry.project_id ?? "", kind: "recent" as const})),
-                        ]}
-                        onCreateProject={modulePermission("projects","write") ? async name => {
-                          const result = await hub.mutate(() => hub.rpc("save_project", {
-                            p_team_id: hub.teamId, p_name: name, p_description: "",
-                          }), "Projeto criado.");
-                          return result.ok ? { id: result.value, name } : null;
-                        } : undefined}
-                        onStartActivity={async input => {
-                          if (activeTimer || pausedTimer) {hub.notify("Encerre o timer atual antes de iniciar outro.", true); return false;}
-                          const result = input.taskId
-                            ? await hub.mutate(() => hub.rpc("start_task_timer", {p_task_id: input.taskId!}), "Timer iniciado na tarefa.")
-                            : await startTimer(input.description, input.projectId);
-                          if (result?.ok) {setDescription(input.description);setProjectId(input.projectId);}
-                          return Boolean(result?.ok);
-                        }}
-                        onToggleTimer={() => void toggleFocusTimer()}
-                        onStopTimer={() => void stopTimer()}
-                        onHours={() => navigate("hours")}
-                        onSchedule={() => setWorkScheduleOpen(true)}
-                        onHomeOffice={() => {
-                          setHomeOfficeFocusWeek("");
-                          setHomeOfficeOpen(true);
-                        }}
-                        onRetry={() => void hub.refreshTeam()}
-                      />
-                    )}
                     {isAllowed("calendar") && <LiveCalendar
                       hub={hub}
                       monday={monday}
@@ -1015,56 +1082,12 @@ export function LiveHubApp({ userId }: { userId: string }) {
                         setHomeOfficeFocusWeek(entry.week_start);
                         setHomeOfficeOpen(true);
                       }}
-                      full={page === "calendar"}
-                      compact={page === "overview"}
+                      full={true}
+                      compact={false}
                     />}
                   </div>
-                  {page === "overview" ? (
-                    <TodayContext
-                      showCalendar={isAllowed("calendar")} showPeople={isAllowed("people")} showChat={isAllowed("chat")} showHours={isAllowed("hours")}
-                      events={todayEvents.filter(
-                        (event) => new Date(event.ends_at).getTime() > now,
-                      )}
-                      people={data.people}
-                      presence={hub.presenceReady}
-                      online={hub.onlinePeople}
-                      unread={totalUnread}
-                      currentUserId={userId}
-                      currentActivity={timerSession?.team_id === hub.teamId ? [pausedTimer ? `Almoço · ${timerSession.description}` : timerSession.description || "Trabalhando agora", data.projects.find(project => project.id === timerSession.project_id)?.name].filter(Boolean).join(" · ") : ""}
-                      activities={hub.onlineActivities}
-                      inbox={data.inbox}
-                      unreadByPerson={Object.fromEntries(data.channels.filter(channel => channel.kind === "dm" && !channel.archived_at && (channel.dm_user_low === userId || channel.dm_user_high === userId) && data.channelMemberships.some(member => member.channel_id === channel.id && member.user_id === userId)).map(channel => [channel.dm_user_low === userId ? channel.dm_user_high! : channel.dm_user_low!, data.unread[channel.id] ?? 0]))}
-                      inboxError={data.inboxError}
-                      onMessage={id => {setChannelId(id);navigate("chat");setShowChannelList(false);}}
-                      recent={recentWork.map((entry) => ({
-                        id: entry.id,
-                        description: entry.description,
-                        project: projectName(entry.project_id),
-                      }))}
-                      busy={hub.busy}
-                      canRestart={!timerSession && hub.canParticipate}
-                      onEvent={(event) => setEventId(event.id)}
-                      onCalendar={() => navigate("calendar")}
-                      onPerson={(person) => {
-                        setPeopleQuery(person.display_name);
-                        navigate("people");
-                      }}
-                      onPeople={() => {
-                        setPeopleQuery("");
-                        navigate("people");
-                      }}
-                      onRestart={(id) => {
-                        const entry = recentWork.find(
-                          (entry) => entry.id === id,
-                        );
-                        if (entry)
-                          void startTimer(
-                            entry.description,
-                            entry.project_id ?? "",
-                          );
-                      }}
-                      onChat={() => navigate("chat")}
-                    />
+                  {false ? (
+                    <></>
                   ) : (
                     <aside className="context-sidebar">
                       <section className="team-section">
@@ -1206,13 +1229,13 @@ export function LiveHubApp({ userId }: { userId: string }) {
               {page === "organization-chat" && isAllowed("organization-chat") && <OrganizationContacts key={hub.workspace?.id} hub={hub} canCall={isAllowed("calls")} />}
               {page === "organization" && organization.authority && canAdminister && <OrganizationAdmin key={hub.workspace?.id} hub={hub} authority={organization.authority} command={organization.command} />}
               {page === "library" && isAllowed("library") && <OrganizationLibrary key={hub.workspace?.id} hub={hub} />}
-              {page === "calls" && <LiveCalls key={hub.teamId} hub={hub} />}
+              {page === "calls" && <LiveCalls key={hub.teamId} hub={hub} demo={demo} />}
               {page === "integrations" && (
-                <LiveIntegrations key={hub.teamId} hub={hub} />
+                <LiveIntegrations key={hub.teamId} hub={hub} demo={demo} />
               )}
               {(["goals", "clients", "shifts", "absences", "dates"] as string[]).includes(page) && <LiveManagement key={`${hub.teamId}:${page}`} hub={{...hub,canManage:modulePermission(page==="goals"?"hours":"management","manage")}} initialTab={page as "goals" | "clients" | "shifts" | "absences" | "dates"} embedded />}
               {page === "reports" && <HoursReport key={hub.teamId} hub={{...hub,isAdmin:hub.isAdmin || Boolean(organization.authority?.permissions[hub.teamId]?.["reports.manage"])}} />}
-              {page === "settings" && <WorkspaceSettings hub={hub} organization={organization} onProfile={() => openModal("profile")} onMembers={() => navigate("organization")} onIntegrations={() => navigate("integrations")} onSignOut={signOut} />}
+              {page === "settings" && <WorkspaceSettings demo={demo} hub={hub} organization={organization} onProfile={() => openModal("profile")} onMembers={() => navigate("organization")} onIntegrations={() => navigate("integrations")} onSignOut={signOut} />}
               {(["notes", "standups", "meetings", "notifications"] as string[]).includes(page) && (
                 <LiveCollaboration
                   key={`${hub.teamId}:${page}`}
@@ -1888,6 +1911,9 @@ export function LiveHubApp({ userId }: { userId: string }) {
           )}
 
         </main>
+        {Boolean(data.teamId) && isAllowed("hours") && <div className="night-timer-dock">{timerDock}</div>}
+        {demo && <span className="night-demo-label">Demonstração · dados fictícios</span>}
+        {newTaskOpen && <TaskEditor task={null} editable={hub.canParticipate && modulePermission("tasks","write")} canArchive={false} projects={data.projects} people={data.people} initialProject="" busy={hub.busy} onClose={()=>setNewTaskOpen(false)} onSave={saveDashboardTask} onArchive={async()=>null} />}
       </div>
       {Notice}
       <HomeOfficeManager
@@ -2541,7 +2567,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
           onClose={() => setModal(null)}
           wide
         >
-          <TeamAccess hub={hub} onClose={() => setModal(null)} />
+          <TeamAccess demo={demo} hub={hub} onClose={() => setModal(null)} />
         </HubDialog>
       )}
       {modal === "organization" && (

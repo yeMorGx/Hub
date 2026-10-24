@@ -19,7 +19,7 @@ try{
     if(pages.length>1) await page.locator('.area-tabs').getByRole('tab',{name:label,exact:true}).click();
     await page.locator(`main[data-motion-page="${id}"]`).waitFor();await page.waitForTimeout(id==='organization'||id==='integrations'?1400:500);await page.mouse.move(1350,12);
     if(id==='notes') await page.getByText('Carregando colaboração…',{exact:true}).waitFor({state:'hidden'});
-    const row={step:number++,id,label,group,source:'authenticated-production',desktop:await inventory()};
+    const row={step:number++,id,label,group,source: new URL(base).hostname === '127.0.0.1' ? 'authenticated-local-candidate' : 'authenticated-production',desktop:await inventory()};
     await page.screenshot({path:`${out}/screens/${String(row.step).padStart(2,'0')}-prod-${id}-1440.png`,fullPage:true});
     await page.setViewportSize({width:390,height:1000});await page.waitForTimeout(200);row.mobile=await inventory();row.horizontalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);
     await page.screenshot({path:`${out}/screens/${String(row.step).padStart(2,'0')}-prod-${id}-390.png`,fullPage:true});

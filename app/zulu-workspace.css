@@ -45,13 +45,13 @@ body:has(.auth-shell) * {
 
 html:has(.live-app:not(.dashboard-redesign)) .desktop-titlebar,
 html:has(.auth-shell) .desktop-titlebar {
-  color: #52617b;
-  background: #f6f5f1;
+  color: var(--muted);
+  background: var(--surface);
 }
 
 html:has(.live-app:not(.dashboard-redesign)) .desktop-titlebar-drag > svg,
 html:has(.auth-shell) .desktop-titlebar-drag > svg {
-  color: #294d94;
+  color: var(--accent);
 }
 
 html:has(.live-app:not(.dashboard-redesign)) .desktop-window-controls button:hover,
@@ -68,7 +68,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) :is(button, a, input, select, textarea, summary):focus-visible {
-  outline: 2px solid #3764b6;
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -81,7 +81,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
     padding: 14px 10px 16px;
     align-items: center;
     overflow: hidden;
-    background: #fdfcf9;
+    background: var(--surface);
     border: 0;
     border-radius: 22px;
   }
@@ -125,12 +125,12 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
   .live-app .rail-button:hover {
     color: #243b63;
-    background: #eef1f7;
+    background: var(--surface-raised);
   }
 
   .live-app .rail-button.active {
-    color: #244584;
-    background: #e8edf8;
+    color: var(--accent);
+    background: var(--surface-raised);
   }
 
   .live-app .rail-button.active::before {
@@ -191,7 +191,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .workspace-icon {
-  color: #52617b;
+  color: var(--muted);
   background: white;
   border: 0;
   border-radius: 9px;
@@ -207,7 +207,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .page-heading h1 {
-  color: #202b40;
+  color: var(--text);
   font-size: 32px;
   font-weight: 650;
   letter-spacing: -0.04em;
@@ -217,12 +217,12 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 .live-app:not(.dashboard-redesign) .muted,
 .live-app:not(.dashboard-redesign) .subtle-text,
 .live-app:not(.dashboard-redesign) .resource-note {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .primary-button {
   color: white;
-  background: #294d94;
+  background: var(--accent);
   border: 0;
   border-radius: 9px;
   transition: background 160ms ease, transform 160ms ease;
@@ -230,7 +230,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .primary-button:hover:not(:disabled) {
   color: white;
-  background: #1f3e7b;
+  background: var(--accent);
   transform: translateY(-1px);
 }
 
@@ -240,8 +240,8 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .outline-button,
 .live-app:not(.dashboard-redesign) .secondary-button {
-  color: #334563;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
   border-radius: 9px;
 }
@@ -267,7 +267,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 .live-app:not(.dashboard-redesign) .icon-button:hover:not(:disabled),
 .live-app:not(.dashboard-redesign) .icon-button.is-open {
   color: #203f78;
-  background: #e9edf5;
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .team-pill,
@@ -279,8 +279,8 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .running-pill {
-  color: #244584;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
   font-variant-numeric: tabular-nums;
 }
 
@@ -295,7 +295,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) :is(.panel, .card, .focus-card, .time-entry-panel, .hours-balance, .person-card, .call-lobby, .integration-card, .goal-list > article, .board-card) {
   color: var(--text);
-  background-color: #fff;
+  background-color: var(--surface);
   border: 0;
   box-shadow: none;
   border-radius: 14px;
@@ -303,15 +303,15 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) :is(.channel-sidebar, .chat-main, .board-column) {
   color: var(--text);
-  background-color: #fff;
+  background-color: var(--surface);
 }
 
 .live-app:not(.dashboard-redesign) :is(input, select, textarea) {
-  color: #202b40;
-  background-color: #eef1f7;
+  color: var(--text);
+  background-color: var(--surface-raised);
   border: 0;
   border-radius: 9px;
-  caret-color: #294d94;
+  caret-color: var(--accent);
 }
 
 .live-app:not(.dashboard-redesign) :is(input, select, textarea):hover {
@@ -323,16 +323,16 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) :is(.popover, .filter-popover) {
-  color: #202b40;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
   border: 0;
   border-radius: 14px;
   box-shadow: 0 12px 32px #2538581a;
 }
 
 .live-app:not(.dashboard-redesign) .search-button kbd {
-  color: #59667c;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
 }
 
@@ -341,59 +341,59 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .calendar-section {
-  background: #fff;
+  background: var(--surface);
   border: 0;
   border-radius: 14px;
   padding: 24px;
 }
 
 .live-app:not(.dashboard-redesign) .calendar-section .section-heading h2 {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .calendar-heading h2,
 .live-app:not(.dashboard-redesign) .date-controls > span {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) :is(.filter-button, .today-button, .add-calendar) {
-  color: #334563;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
   border-radius: 9px;
 }
 
 .live-app:not(.dashboard-redesign) .filter-button:hover,
 .live-app:not(.dashboard-redesign) .filter-active {
-  color: #244584;
+  color: var(--accent);
   background: #e2e8f3;
 }
 
 .live-app:not(.dashboard-redesign) .segmented {
   padding: 3px;
-  background: #eef1f7;
+  background: var(--surface-raised);
   border: 0;
   border-radius: 10px;
 }
 
 .live-app:not(.dashboard-redesign) .segmented button {
-  color: #59667c;
+  color: var(--muted);
   border-radius: 8px;
 }
 
 .live-app:not(.dashboard-redesign) .segmented button.selected {
-  color: #244584;
-  background: #fff;
+  color: var(--accent);
+  background: var(--surface);
 }
 
 .live-app:not(.dashboard-redesign) :is(.calendar-scroll, .calendar-month) {
-  background: #fff;
+  background: var(--surface);
   border: 0;
 }
 
 .live-app:not(.dashboard-redesign) .calendar-grid {
   border: 0;
-  background: #fff;
+  background: var(--surface);
 }
 
 .live-app:not(.dashboard-redesign) .day-header > span:first-child,
@@ -402,26 +402,26 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) :is(.day-header, .time-gutter-header, .time-gutter, .day-column, .hour-cell, .home-office-cell, .home-office-gutter, .month-cell, .month-cell-header, .month-weekdays) {
-  color: #52617b;
-  background: #fff;
+  color: var(--muted);
+  background: var(--surface);
   border: 0;
 }
 
 .live-app:not(.dashboard-redesign) .day-header.is-today,
 .live-app:not(.dashboard-redesign) .month-cell.month-today,
 .live-app:not(.dashboard-redesign) .today-column {
-  background: #f1f4fa;
+  background: var(--night-selection, var(--surface-raised));
 }
 
 .live-app:not(.dashboard-redesign) .hour-cell:hover,
 .live-app:not(.dashboard-redesign) .month-cell:hover {
-  background: #f7f8fb;
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .home-office-assignment,
 .live-app:not(.dashboard-redesign) .month-event {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
   border: 0;
 }
 
@@ -452,7 +452,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .channel-sidebar-heading,
 .live-app:not(.dashboard-redesign) .channel-sidebar-heading h2 {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .list-label,
@@ -462,25 +462,25 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 .live-app:not(.dashboard-redesign) .message-meta time,
 .live-app:not(.dashboard-redesign) .chat-date-divider,
 .live-app:not(.dashboard-redesign) .chat-local-note {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .channel-button {
-  color: #52617b;
+  color: var(--muted);
   border: 0;
   border-radius: 9px;
 }
 
 .live-app:not(.dashboard-redesign) .channel-button:hover,
 .live-app:not(.dashboard-redesign) .channel-button.selected {
-  color: #244584;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .channel-count,
 .live-app:not(.dashboard-redesign) .you-tag {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
   border: 0;
 }
 
@@ -488,14 +488,14 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 .live-app:not(.dashboard-redesign) .conversation-tools,
 .live-app:not(.dashboard-redesign) .thread-heading,
 .live-app:not(.dashboard-redesign) .conversation-search {
-  color: #202b40;
+  color: var(--text);
   border: 0;
 }
 
 .live-app:not(.dashboard-redesign) .chat-head h2,
 .live-app:not(.dashboard-redesign) .message-meta strong,
 .live-app:not(.dashboard-redesign) .advanced-message-body > p {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .message p {
@@ -514,30 +514,30 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .message-form textarea {
-  color: #202b40;
+  color: var(--text);
   background: transparent;
 }
 
 .live-app:not(.dashboard-redesign) .send-button {
-  color: #fff;
-  background: #294d94;
+  color: var(--text);
+  background: var(--accent);
   border-radius: 9px;
 }
 
 .live-app:not(.dashboard-redesign) .send-button:hover {
-  background: #1f3e7b;
+  background: var(--accent);
 }
 
 .live-app:not(.dashboard-redesign) .composer-context > span,
 .live-app:not(.dashboard-redesign) .mention-token,
 .live-app:not(.dashboard-redesign) .message-attachment {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
   border: 0;
 }
 
 .live-app:not(.dashboard-redesign) .hours-balance {
-  background: #fff;
+  background: var(--surface);
   border: 0;
   border-radius: 14px;
 }
@@ -561,18 +561,18 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .time-table {
   overflow: hidden;
-  background: #fff;
+  background: var(--surface);
   border: 0;
   border-radius: 14px;
 }
 
 .live-app:not(.dashboard-redesign) .time-table-head {
-  color: #52617b;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .time-table-row {
-  color: #52617b;
+  color: var(--muted);
   border: 0;
 }
 
@@ -582,12 +582,12 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .time-table-row > strong,
 .live-app:not(.dashboard-redesign) .duration-cell {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .people-search {
-  color: #52617b;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
 }
 
@@ -596,7 +596,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .person-card {
-  background: #fff;
+  background: var(--surface);
 }
 
 .live-app:not(.dashboard-redesign) .person-work {
@@ -604,44 +604,44 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .status-label {
-  color: #52617b;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .board-column {
-  background: #eef1f7;
+  background: var(--surface-raised);
   border: 0;
   border-radius: 14px;
 }
 
 .live-app:not(.dashboard-redesign) .board-card {
-  background: #fff;
+  background: var(--surface);
   border: 0;
   border-radius: 12px;
 }
 
 .live-app:not(.dashboard-redesign) .board-mine.selected,
 .live-app:not(.dashboard-redesign) .board-column-heading svg {
-  color: #294d94;
+  color: var(--accent);
 }
 
 .live-app:not(.dashboard-redesign) .board-card .outline-button,
 .live-app:not(.dashboard-redesign) .board-card select {
-  background: #eef1f7;
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .workspace-module,
 .live-app:not(.dashboard-redesign) .management-workspace {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) :is(.workspace-module-heading h2, .workspace-section-heading h2, .workspace-subheading) {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .workspace-module-heading p,
 .live-app:not(.dashboard-redesign) .workspace-module .eyebrow,
 .live-app:not(.dashboard-redesign) .workspace-section-heading p {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .workspace-tabs {
@@ -650,15 +650,15 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .workspace-tabs > button:not(.icon-button) {
-  color: #52617b;
+  color: var(--muted);
   border: 0;
   border-radius: 9px;
   background: transparent;
 }
 
 .live-app:not(.dashboard-redesign) .workspace-tabs > button.active {
-  color: #244584;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .workspace-section-heading {
@@ -668,7 +668,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .workspace-filters select,
 .live-app:not(.dashboard-redesign) .workspace-filters input {
-  background: #eef1f7;
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .workspace-table {
@@ -677,8 +677,8 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .workspace-table th {
-  color: #52617b;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
 }
 
@@ -703,15 +703,15 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .integration-card {
-  color: #202b40;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
   border: 0;
   border-radius: 14px;
 }
 
 .live-app:not(.dashboard-redesign) .integration-symbol {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .webhook-secret {
@@ -726,11 +726,11 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .audit-row[open] {
-  background: #fff;
+  background: var(--surface);
 }
 
 .live-app:not(.dashboard-redesign) .audit-row summary span {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .inline-notice {
@@ -742,29 +742,29 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .calls-module > p,
 .live-app:not(.dashboard-redesign) .call-lobby-visual > span {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .call-lobby {
   overflow: hidden;
-  background: #fff;
+  background: var(--surface);
   border: 0;
   border-radius: 14px;
 }
 
 .live-app:not(.dashboard-redesign) .call-lobby-visual {
-  background: #eef1f7;
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .call-orbit {
-  color: #294d94;
-  background: #fff;
+  color: var(--accent);
+  background: var(--surface);
   border: 0;
-  outline-color: #e8edf8;
+  outline-color: var(--border);
 }
 
 .live-app:not(.dashboard-redesign) .call-lobby-controls {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .live-call [data-lk-theme="default"] {
@@ -773,8 +773,8 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .work-schedule-nudge {
-  color: #202b40;
-  background: #e8edf8;
+  color: var(--text);
+  background: var(--surface-raised);
   border: 0;
 }
 
@@ -787,43 +787,43 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .empty-state,
 .live-app:not(.dashboard-redesign) .empty-state h3 {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .empty-state > svg {
-  color: #496ba8;
+  color: var(--accent);
 }
 
 /* The standalone demo uses an older overview layout; keep its surfaces legible. */
 .live-app:not(.dashboard-redesign) .focus-card {
-  color: #202b40;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
 }
 
 .live-app:not(.dashboard-redesign) .card-topline,
 .live-app:not(.dashboard-redesign) .card-topline > svg,
 .live-app:not(.dashboard-redesign) .focus-title > span,
 .live-app:not(.dashboard-redesign) .timer-bottom > span:last-child {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .focus-title h2 {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .timer-control {
-  color: #fff;
-  background: #294d94;
+  color: var(--text);
+  background: var(--accent);
   border: 0;
   box-shadow: 0 8px 18px #294d9433;
 }
 
 .live-app:not(.dashboard-redesign) .timer-control:hover {
-  background: #1f3e7b;
+  background: var(--accent);
 }
 
 .live-app:not(.dashboard-redesign) .work-item {
-  color: #202b40;
+  color: var(--text);
   background: #f3f5f9;
   border: 0;
   border-radius: 10px;
@@ -831,17 +831,17 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .work-item:hover {
-  background: #e9edf5;
+  background: var(--surface-raised);
   transform: translateY(-1px);
 }
 
 .live-app:not(.dashboard-redesign) .work-item strong {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .work-item small,
 .live-app:not(.dashboard-redesign) .work-arrow {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .small-play {
@@ -864,24 +864,24 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .tone-blue {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .meeting-preview {
-  color: #334563;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
   border-radius: 10px;
 }
 
 .live-app:not(.dashboard-redesign) .meeting-featured {
-  color: #244584;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .meeting-preview > strong {
-  color: #202b40;
+  color: var(--text);
 }
 
 .live-app:not(.dashboard-redesign) .meeting-bottom .avatar {
@@ -900,7 +900,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) :is(.section-description, .person-row small, .weekly-total > span, .week-bar-item > span, .hours-summary-bottom > span, .chat-snippet p) {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .week-bar-track {
@@ -916,18 +916,18 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .week-bar-item.current > span {
-  color: #294d94;
+  color: var(--accent);
 }
 
 .operations-demo.live-app {
-  background: #f6f5f1;
+  background: var(--surface);
 }
 
 .operations-demo-header {
   min-height: 72px;
   padding: 14px 28px;
-  color: #59667c;
-  background: #f6f5f1;
+  color: var(--muted);
+  background: var(--surface);
   border: 0;
 }
 
@@ -936,8 +936,8 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .operations-demo-header .demo-badge {
-  color: #59667c;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
   border-radius: 999px;
   padding: 7px 11px;
@@ -948,8 +948,8 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .operations-demo-layout > aside {
-  color: #202b40;
-  background: #fdfcf9;
+  color: var(--text);
+  background: var(--surface);
   border: 0;
 }
 
@@ -963,73 +963,73 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .operations-demo-layout > aside > p,
 .operations-demo-layout > aside > small {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .operations-demo-layout > aside > nav button {
-  color: #59667c;
+  color: var(--muted);
   border-radius: 9px;
   transition: color 150ms ease, background-color 150ms ease, transform 150ms ease;
 }
 
 .operations-demo-layout > aside > nav button:hover {
-  color: #244584;
-  background: #eef1f7;
+  color: var(--accent);
+  background: var(--surface-raised);
   transform: translateX(2px);
 }
 
 .operations-demo-layout > aside > nav button.active {
-  color: #244584;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
 }
 
 .operations-demo-layout > aside > nav button.active svg {
-  color: #294d94;
+  color: var(--accent);
 }
 
 .operations-demo-layout > main {
-  color: #202b40;
+  color: var(--text);
 }
 
 .demo-advanced-chat {
-  color: #202b40;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
   border: 0;
   border-radius: 14px;
 }
 
 .demo-advanced-chat > .chat-header {
-  color: #202b40;
+  color: var(--text);
   border: 0;
 }
 
 .demo-advanced-chat .chat-header > span {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .task-card {
-  color: #202b40;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
   border: 0;
   border-radius: 12px;
   transition: background-color 150ms ease, transform 150ms ease;
 }
 
 .live-app:not(.dashboard-redesign) .task-card:hover {
-  background: #fbfcfe;
+  background: var(--surface-raised);
   transform: translateY(-1px);
 }
 
 .live-app:not(.dashboard-redesign) .task-running {
-  background: #f0f3fa;
+  background: var(--night-selection, var(--surface-raised));
 }
 
 .live-app:not(.dashboard-redesign) .task-title:hover {
-  color: #294d94;
+  color: var(--accent);
 }
 
 .live-app:not(.dashboard-redesign) .task-preview {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .task-overdue {
@@ -1041,25 +1041,25 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .task-timer-button {
-  color: #294d94;
+  color: var(--accent);
   border-radius: 8px;
   transition: color 150ms ease, background-color 150ms ease, transform 150ms ease;
 }
 
 .live-app:not(.dashboard-redesign) .task-timer-button:hover,
 .live-app:not(.dashboard-redesign) .task-timer-button.is-running {
-  color: #244584;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .board-mine.selected {
-  color: #244584;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .board-search {
-  color: #52617b;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
 }
 
@@ -1074,7 +1074,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) :is(.document-row, .notification-row):hover {
-  background: #eef1f7;
+  background: var(--surface-raised);
   transform: translateX(2px);
 }
 
@@ -1084,21 +1084,21 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .home-office-open,
 .calendar-demo .home-office-open {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
   border: 0;
 }
 
 .live-app:not(.dashboard-redesign) .home-office-open:hover,
 .calendar-demo .home-office-open:hover {
-  color: #244584;
+  color: var(--accent);
   background: #dce5f6;
 }
 
 .live-app:not(.dashboard-redesign) .month-event-home-office,
 .calendar-demo .month-event-home-office {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
   border: 0;
   border-radius: 7px;
 }
@@ -1108,27 +1108,27 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .home-office-manager :is(label, .home-office-hint, .home-office-save-row p, .home-office-request p, .home-office-request-list h4) {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .home-office-section-title {
-  color: #294d94;
+  color: var(--accent);
 }
 
 .live-app:not(.dashboard-redesign) .home-office-roster-row > span,
 .live-app:not(.dashboard-redesign) .home-office-holiday-row {
-  color: #334563;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .home-office-roster-row b {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
   border: 0;
 }
 
 .live-app:not(.dashboard-redesign) .home-office-time-input {
-  color: #52617b;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
 }
 
@@ -1141,8 +1141,8 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .calendar-demo .calendar-section {
-  color: #202b40;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
   border: 0;
   border-radius: 14px;
 }
@@ -1153,46 +1153,46 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .calendar-demo .calendar-section .section-heading h2 {
-  color: #202b40;
+  color: var(--text);
 }
 
 .calendar-demo :is(.filter-button, .today-button, .add-calendar) {
-  color: #334563;
-  background: #eef1f7;
+  color: var(--muted);
+  background: var(--surface-raised);
   border: 0;
   border-radius: 9px;
 }
 
 .calendar-demo .segmented {
-  background: #eef1f7;
+  background: var(--surface-raised);
   border: 0;
 }
 
 .calendar-demo .segmented button {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .calendar-demo .segmented button.selected {
-  color: #244584;
-  background: #fff;
+  color: var(--accent);
+  background: var(--surface);
 }
 
 .calendar-demo :is(.day-header, .time-gutter-header, .time-gutter, .day-column, .hour-cell, .home-office-cell, .home-office-gutter, .month-cell, .month-cell-header, .month-weekdays) {
-  color: #52617b;
-  background: #fff;
+  color: var(--muted);
+  background: var(--surface);
   border: 0;
 }
 
 .calendar-demo .day-header.is-today,
 .calendar-demo .month-cell.month-today,
 .calendar-demo .today-column {
-  background: #f1f4fa;
+  background: var(--night-selection, var(--surface-raised));
 }
 
 .calendar-demo .home-office-assignment,
 .calendar-demo .month-event {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
   border: 0;
 }
 
@@ -1227,14 +1227,14 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
   }
 
   .operations-demo-layout > aside > nav button.active {
-    color: #244584;
-    background: #e8edf8;
+    color: var(--accent);
+    background: var(--surface-raised);
   }
 }
 
 .live-app:not(.dashboard-redesign) .dialog {
-  color: #202b40;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
   border: 0;
   border-radius: 16px;
   box-shadow: 0 24px 70px #1b2d4d26;
@@ -1246,7 +1246,7 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 
 .live-app:not(.dashboard-redesign) .dialog-form label,
 .live-app:not(.dashboard-redesign) .timer-form label {
-  color: #52617b;
+  color: var(--muted);
 }
 
 .live-app:not(.dashboard-redesign) .dialog-actions {
@@ -1254,8 +1254,8 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) :is(.project-tag, .channel-heading-icon, .notification-item > span:first-child) {
-  color: #294d94;
-  background: #e8edf8;
+  color: var(--accent);
+  background: var(--surface-raised);
 }
 
 .live-app:not(.dashboard-redesign) .form-alert {
@@ -1271,15 +1271,15 @@ html:has(.auth-shell) .desktop-window-controls button:hover {
 }
 
 .live-app:not(.dashboard-redesign) .toast {
-  color: #202b40;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
   border: 0;
   box-shadow: 0 12px 32px #2538581a;
 }
 
 body:has(.live-app:not(.dashboard-redesign)) .dialog {
-  color: #202b40;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
   border: 0;
   border-radius: 16px;
   box-shadow: 0 24px 70px #1b2d4d26;
@@ -1294,8 +1294,8 @@ body:has(.live-app:not(.dashboard-redesign)) .dialog-actions {
 }
 
 body:has(.live-app:not(.dashboard-redesign)) .zulu-tooltip {
-  color: #fff;
-  background: #202b40;
+  color: var(--text);
+  background: var(--text);
   border: 0;
   border-radius: 8px;
   box-shadow: none;
@@ -1305,31 +1305,31 @@ body:has(.live-app:not(.dashboard-redesign)) .zulu-tooltip {
 
 /* Account access shares the same ivory, navy and icon-first language. */
 .auth-shell {
-  color: #202b40;
-  background: #f6f5f1;
+  color: var(--text);
+  background: var(--surface);
 }
 
 .auth-story {
-  color: #202b40;
-  background: #eef1f7;
+  color: var(--text);
+  background: var(--surface-raised);
   border: 0;
 }
 
 .auth-orbit-icon,
 .auth-step-icon {
-  color: #294d94;
-  background: #fff;
+  color: var(--accent);
+  background: var(--surface);
   border: 0;
   border-radius: 18px;
 }
 
 .auth-story-main h1,
 .auth-title h2 {
-  color: #202b40;
+  color: var(--text);
 }
 
 .auth-story-main h1 > span {
-  color: #294d94;
+  color: var(--accent);
 }
 
 .auth-story-main > p,
@@ -1344,13 +1344,13 @@ body:has(.live-app:not(.dashboard-redesign)) .zulu-tooltip {
 .mfa-instructions,
 .mfa-secret summary,
 .mfa-secret p {
-  color: #59667c;
+  color: var(--muted);
 }
 
 .auth-form input,
 .auth-form select {
-  color: #202b40;
-  background: #eef1f7;
+  color: var(--text);
+  background: var(--surface-raised);
   border: 0;
   border-radius: 9px;
 }
@@ -1363,12 +1363,12 @@ body:has(.live-app:not(.dashboard-redesign)) .zulu-tooltip {
 .auth-switch button,
 .auth-bottom a,
 .password-label .text-button {
-  color: #294d94;
+  color: var(--accent);
 }
 
 .auth-switch button:hover,
 .auth-bottom a:hover {
-  color: #1f3e7b;
+  color: var(--accent);
 }
 
 .auth-security-note,
@@ -1377,16 +1377,16 @@ body:has(.live-app:not(.dashboard-redesign)) .zulu-tooltip {
 }
 
 .mfa-secret {
-  color: #202b40;
-  background: #eef1f7;
+  color: var(--text);
+  background: var(--surface-raised);
   border: 0;
   border-radius: 9px;
 }
 
 .mfa-secret code,
 .copy-id {
-  color: #294d94;
-  background: #fff;
+  color: var(--accent);
+  background: var(--surface);
   border: 0;
   border-radius: 8px;
 }
@@ -1469,7 +1469,7 @@ body:has(.live-app:not(.dashboard-redesign)) .zulu-tooltip {
   }
 
   .live-app:not(.dashboard-redesign) .auth-content {
-    background: #f6f5f1;
+    background: var(--surface);
   }
 }
 

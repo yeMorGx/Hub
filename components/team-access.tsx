@@ -9,7 +9,9 @@ import { errorMessage } from "@/lib/supabase/errors";
 export function TeamAccess({
   hub,
   onClose,
+  demo = false,
 }: {
+  demo?: boolean;
   hub: HubController;
   onClose: () => void;
 }) {
@@ -57,6 +59,7 @@ export function TeamAccess({
     }
   }
   async function invite(email: string, role: TeamRole) {
+    if (demo) throw new Error("A demonstração não envia convites. Entre no ZULU para convidar seu time.");
     const response = await fetch("/api/team-invitations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -49,3 +49,7 @@ Resolva conflitos nesta ordem: instruções do sistema/desenvolvedor e seguranç
 ## ZULU: recursos do aplicativo desktop
 
 Por decisão explícita do usuário, recursos de sistema do aplicativo instalado usam APIs nativas via Tauri/Rust. Compartilhamento de tela deve usar captura nativa, listagem e prévia próprias de janelas/monitores. Não decidir o caminho pelo user-agent nem recorrer à captura web quando o caminho nativo falhar ou não for suportado; mostrar erro explícito. APIs de captura do navegador ficam restritas à versão aberta no navegador. Priorizar integrações nativas também para arquivos, notificações, segundo plano e inicialização. A interface atual continua em Tauri; uma eventual troca da tecnologia de interface exige planejamento separado.
+
+## ZULU: identidade vigente — Night Shift
+
+Em 24/10/2026 o usuário escolheu a opção 3 do redesign: `docs/design-references/2026-10-24/night-shift.png`. A referência vigente substitui o dashboard marfim/Bento anterior: grafite, lavanda na tarefa expandida, ação principal verde e timer compacto persistente. Ler [o contrato Night Shift](docs/night-shift.md), `.impeccable/briefs/night-shift.md` e `DESIGN.md`; não restaurar o grande card de gradiente ou a foto de home office na tela inicial. HeroUI v3, símbolo oficial, pouco texto de marca e recursos nativos continuam obrigatórios. Produção e demonstração usam `HubWorkspace`; somente o controlador de dados muda. Não importar fixtures no caminho autenticado nem apresentar efeitos simulados como comprovação de persistência real.

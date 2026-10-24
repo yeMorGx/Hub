@@ -1,0 +1,38 @@
+{
+  "base": "http://127.0.0.1:3005",
+  "pages": 22,
+  "viewportWidths": [
+    1440,
+    390
+  ],
+  "results": [
+    "task-create-memory",
+    "timer-lunch-resume-stop-picker",
+    "search",
+    "profile-only-updates-own-person-and-bootstrap",
+    "overview",
+    "board",
+    "hours",
+    "reports",
+    "library",
+    "notes",
+    "goals",
+    "clients",
+    "chat",
+    "organization-chat",
+    "calls",
+    "notifications",
+    "calendar",
+    "shifts",
+    "absences",
+    "dates",
+    "meetings",
+    "people",
+    "standups",
+    "settings",
+    "organization",
+    "integrations"
+  ],
+  "errors": [],
+  "data": "public in-memory demonstration; not evidence of authenticated effects"
+}

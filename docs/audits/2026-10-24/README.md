@@ -1,5 +1,7 @@
 # ZULU — Auditoria da produção e plano do redesign integral
 
+> **Baseline histórico anterior ao Night Shift.** O usuário escolheu posteriormente a opção 3; a nova autoridade, implementação e limites estão em [Night Shift](../../night-shift.md) e o fechamento de QA em [design-qa.md](../../../design-qa.md). Os achados e resultados abaixo descrevem a versão auditada, sem revalidar a reconstrução.
+
 **Capturas de 23–24/10/2026, horário de São Paulo.** Fonte principal: https://hub-one-azure.vercel.app, autenticada com senha e MFA. Organização e três contas exclusivas de teste; os registros e nomes nas capturas são fictícios. A demonstração foi comparada separadamente.
 
 ## Resultado

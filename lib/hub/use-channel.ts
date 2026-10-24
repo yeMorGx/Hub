@@ -7,8 +7,9 @@ export function useChannel(
   channelId: string,
   joined: boolean,
   onRead: () => void,
+  providedClient?: ReturnType<typeof createClient>,
 ) {
-  const client = createClient();
+  const client = providedClient ?? createClient();
   const [resource, setResource] = useState<{
     id: string;
     messages: Row<"messages">[];

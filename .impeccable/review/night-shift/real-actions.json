@@ -1,0 +1,13 @@
+{
+  "realMfa": true,
+  "isolatedData": true,
+  "taskCreated": true,
+  "timerStarted": true,
+  "lunchTimer": true,
+  "resume": true,
+  "stop": true,
+  "taskCompletion": true,
+  "activityPicker": true,
+  "search": true,
+  "errors": []
+}

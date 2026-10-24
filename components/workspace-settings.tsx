@@ -13,15 +13,15 @@ import { OfflineSettings } from "./offline-settings";
 import { InstallApp } from "./pwa";
 import { desktopRuntime, isDesktopRuntime, type RuntimeState } from "@/lib/desktop/runtime";
 
-export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, onSignOut, organization }: {
-  hub: HubController; onProfile: () => void; onMembers: () => void; onIntegrations: () => void; onSignOut: () => void; organization?: { authority: Authority | null; command: OrgCommand };
+export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, onSignOut, organization, demo = false }: {
+  demo?: boolean; hub: HubController; onProfile: () => void; onMembers: () => void; onIntegrations: () => void; onSignOut: () => void; organization?: { authority: Authority | null; command: OrgCommand };
 }) {
   const [narrow, setNarrow] = useState(false);
   const [leaveOpen,setLeaveOpen]=useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false), [confirmation, setConfirmation] = useState(""), [deleteError, setDeleteError] = useState(""), [deletionPending, setDeletionPending] = useState(false);
   const isOwner = hub.workspace?.owner_id === hub.userId || Boolean(organization?.authority?.owner);
   const canManageOrganization=isOwner||hub.isAdmin||Boolean(organization?.authority?.team_admin||organization?.authority?.can_approve);
-  const [theme, setTheme] = useState("light"), [message, setMessage] = useState(""), [busy, setBusy] = useState(false);
+  const [theme, setTheme] = useState("dark"), [message, setMessage] = useState(""), [busy, setBusy] = useState(false);
   const [runtime, setRuntime] = useState<RuntimeState | null>(null);
   useEffect(() => {
     setDeleteOpen(false); setConfirmation(""); setDeleteError(""); setDeletionPending(false);
@@ -31,6 +31,7 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
     return () => { active = false; };
   }, [hub.client, hub.workspace?.id, isOwner]);
   async function deleteOrganization() {
+    if (demo) { setDeleteError("A demonstração não exclui organizações reais."); return; }
     if (busy || !isOwner || !hub.workspace || confirmation.trim() !== hub.workspace.name) return;
     const workspaceId = hub.workspace.id;
     setBusy(true); setDeleteError("");
@@ -59,8 +60,8 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
     const media = matchMedia("(max-width: 760px)"); const update = () => setNarrow(media.matches); update(); media.addEventListener("change", update); return () => media.removeEventListener("change", update);
   }, []);
   useEffect(() => {
-    try { setTheme(localStorage.getItem("zulu:theme") || "light"); } catch {}
-    if (isDesktopRuntime()) void desktopRuntime("state").then(setRuntime).catch(() => setMessage("Não foi possível consultar as opções do desktop."));
+    try { setTheme(localStorage.getItem("zulu:appearance:v2") || "dark"); } catch {}
+    if (!demo && isDesktopRuntime()) void desktopRuntime("state").then(setRuntime).catch(() => setMessage("Não foi possível consultar as opções do desktop."));
   }, []);
   async function runtimeAction(action: "set_autostart" | "show_mini" | "hide_mini" | "quit", enabled?: boolean) {
     setBusy(true); setMessage("");
@@ -93,7 +94,7 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
         <div className="settings-row"><div><strong>Aparência</strong><p>Escolha a iluminação do seu espaço.</p></div>
           <Select aria-label="Tema do aplicativo" value={theme} onChange={key => {
             const value = String(key); setTheme(value); document.documentElement.dataset.zuluTheme = value;
-            try { localStorage.setItem("zulu:theme", value); } catch {}
+            try { localStorage.setItem("zulu:appearance:v2", value); } catch {}
           }}><Label className="sr-only">Tema do aplicativo</Label><Select.Trigger><Select.Value /><Select.Indicator /></Select.Trigger><Select.Popover className="zulu-overlay"><ListBox><ListBox.Item id="light" textValue="Claro"><Label>Claro</Label><ListBox.ItemIndicator /></ListBox.Item><ListBox.Item id="dark" textValue="Escuro"><Label>Escuro</Label><ListBox.ItemIndicator /></ListBox.Item></ListBox></Select.Popover></Select>
         </div>
         <PushSettings hub={hub} /><OfflineSettings userId={hub.userId} /><InstallApp />
@@ -133,7 +134,7 @@ export function WorkspaceSettings({ hub, onProfile, onMembers, onIntegrations, o
 
 export function WorkspaceTheme() {
   useEffect(() => {
-    try { document.documentElement.dataset.zuluTheme = localStorage.getItem("zulu:theme") || "light"; } catch {}
+    try { document.documentElement.dataset.zuluTheme = localStorage.getItem("zulu:appearance:v2") || "dark"; } catch {}
   }, []);
   return null;
 }

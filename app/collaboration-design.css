@@ -2,9 +2,9 @@
    HeroUI owns controls; this file changes composition and product surfaces. */
 .live-app.workspace-inset .rail nav { gap: 9px; padding-top: 16px; }
 .live-app.workspace-inset .rail .rail-button { width: 44px; height: 44px; min-width: 44px; color: #a4a8b0; border-radius: 12px; transition: background 160ms ease-out, color 160ms ease-out, transform 160ms ease-out; }
-.live-app.workspace-inset .rail .rail-button.active { color: #fff; background: #292c32; }
+.live-app.workspace-inset .rail .rail-button.active { color: var(--text); background: #292c32; }
 .live-app.workspace-inset .rail .rail-button.active::before { display: none; }
-.live-app.workspace-inset .rail .rail-button:hover { color: #fff; background: #ffffff14; }
+.live-app.workspace-inset .rail .rail-button:hover { color: var(--text); background: #ffffff14; }
 .live-app.workspace-inset .rail .rail-button:active { transform: scale(.95); }
 .live-app.workspace-inset .rail .rail-button svg { width: 21px; height: 21px; }
 .live-app.workspace-inset .rail .rail-button:focus-visible { outline: 2px solid #b6caff; outline-offset: 4px; }
@@ -40,9 +40,9 @@
 .live-app .advanced-message-body > header time { font-size: 10px; color: var(--muted); }
 .live-app .advanced-message-body > p { color: var(--text); font-size: 14px; line-height: 1.65; }
 .live-app .advanced-message.own-message { flex-direction: row-reverse; }
-.live-app .advanced-message.own-message .advanced-message-body { color: var(--accent-foreground, #fff); background: var(--accent); border-radius: 15px 15px 4px 15px; }
-.live-app .advanced-message.own-message .advanced-message-body > :is(p, header), .live-app .advanced-message.own-message .advanced-message-body > header strong { color: var(--accent-foreground, #fff); }
-.live-app .advanced-message.own-message .advanced-message-body > header time { color: color-mix(in srgb, var(--accent-foreground, #fff) 85%, var(--accent)); }
+.live-app .advanced-message.own-message .advanced-message-body { color: var(--accent-foreground, var(--text)); background: var(--accent); border-radius: 15px 15px 4px 15px; }
+.live-app .advanced-message.own-message .advanced-message-body > :is(p, header), .live-app .advanced-message.own-message .advanced-message-body > header strong { color: var(--accent-foreground, var(--text)); }
+.live-app .advanced-message.own-message .advanced-message-body > header time { color: color-mix(in srgb, var(--accent-foreground, var(--text)) 85%, var(--accent)); }
 .live-app .advanced-message .message-tools { position: absolute; z-index: 3; right: 0; bottom: calc(100% - 2px); display: flex; gap: 2px; width: max-content; max-width: 100%; margin: 0; padding: 4px; border-radius: 10px; color: var(--text); background: var(--surface-raised); opacity: 0; pointer-events: none; transform: translateY(3px); transition: opacity 150ms ease-out, transform 150ms ease-out; }
 .live-app .advanced-message:is(:hover, :focus-within) .message-tools { opacity: 1; pointer-events: auto; transform: none; }
 .live-app .advanced-message .message-tools :is(.reaction-button, .icon-button, .text-button), .message-reaction-summary .reaction-button { color: var(--muted); background: transparent; border: 0; min-height: 28px; min-width: 28px; padding: 4px 5px; border-radius: 7px; font-size: 11px; }
@@ -103,7 +103,7 @@
 .live-app .calendar-full .day-header > span:first-child { font-size: 10px; letter-spacing: 0; }
 .live-app .calendar-full .day-header strong { font-size: 14px; }
 .live-app .calendar-full .day-header.is-today { background: color-mix(in srgb, var(--accent) 9%, var(--surface)); color: var(--accent); }
-.live-app .calendar-full .day-header.is-today strong { color: var(--accent-foreground, #fff); background: var(--accent); border-radius: 7px; padding: 5px 7px; }
+.live-app .calendar-full .day-header.is-today strong { color: var(--accent-foreground, var(--text)); background: var(--accent); border-radius: 7px; padding: 5px 7px; }
 .live-app .calendar-full .day-today { display: none; }
 .live-app .calendar-full :is(.home-office-cell, .home-office-gutter) { position: sticky; top: 58px; z-index: 4; height: 34px; background: var(--surface); }
 .live-app .calendar-full .time-gutter { color: var(--muted); font-size: 11px; }
@@ -132,7 +132,7 @@
 .notification-feed-row { display: flex; align-items: flex-start; gap: 18px; padding: 20px 0; border-radius: 0; transition: background 160ms ease-out; }
 .notification-feed-row + .notification-feed-row { margin-top: 6px; }
 .notification-feed-symbol { position: relative; display: grid; place-items: center; flex: 0 0 48px; width: 48px; height: 48px; color: var(--accent); background: var(--surface-raised); border-radius: 50%; }
-.notification-kind-mention { color: #65509b; background: #f0ebf9; }
+.notification-kind-mention { color: var(--accent); background: var(--surface-raised); }
 .notification-kind-home_office, .notification-kind-home_office_swap { color: #386753; background: #eaf4ed; }
 .notification-type-badge { position: absolute; right: -3px; bottom: -3px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); color: inherit; }
 .notification-feed-copy { flex: 1; min-width: 0; }
@@ -184,7 +184,7 @@ html[data-zulu-theme="dark"] :is(.notification-kind-home_office, .notification-k
 }
 @media (hover: none), (max-width: 760px) {
  .live-app .advanced-message .message-tools { position: static; opacity: 1; pointer-events: auto; transform: none; max-width: 100%; flex-wrap: wrap; background: transparent; margin-top: 8px; padding: 0; }
- .live-app .advanced-message.own-message .message-tools :is(.reaction-button, .icon-button, .text-button) { color: var(--accent-foreground, #fff); }
+ .live-app .advanced-message.own-message .message-tools :is(.reaction-button, .icon-button, .text-button) { color: var(--accent-foreground, var(--text)); }
  .notification-read-action > svg { opacity: 1; }
  .notification-unread-dot { display: none; }
 }
