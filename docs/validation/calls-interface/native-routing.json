@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "desktopRuntime": true,
+      "windowsUserAgent": false,
+      "nativeFailure": false,
+      "browserCaptureCalls": 0,
+      "nativeRouting": true,
+      "realWindowsCapture": false
+    },
+    {
+      "desktopRuntime": true,
+      "windowsUserAgent": false,
+      "nativeFailure": true,
+      "browserCaptureCalls": 0,
+      "nativeRouting": true,
+      "realWindowsCapture": false
+    }
+  ],
+  "build": "passed",
+  "unitPassed": 62,
+  "nativeBinaryChanged": false,
+  "actualWindowsCaptureVerified": false
+}

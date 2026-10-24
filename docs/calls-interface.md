@@ -46,3 +46,7 @@ Não foram medidos câmera/áudio físicos, seleção real de hardware, entrega 
 ## Divergência documental observada
 
 `PRODUCT.md` ainda contém a descrição anterior de salas LiveKit dependentes de configuração externa e inativas. Este trabalho registra uma interface implementada e validada com fixture; não estabelece o estado atual do provedor em produção. A descrição deve ser conciliada em uma revisão documental própria com evidência operacional. `DESIGN.md`, `PRODUCT.md` e os registros `.impeccable` não foram reescritos nesta extensão.
+
+## Política desktop nativa
+
+O aplicativo instalado escolhe captura nativa pela presença do runtime Tauri, independentemente do user-agent. Uma falha de listagem, autorização ou captura nativa termina com erro explícito; não abre a captura do navegador. Builds sem suporte nativo retornam o erro da implementação Rust. A versão no navegador mantém seu seletor do navegador. Esta regra se aplica ao recurso de captura; não representa migração da interface Tauri para outro toolkit.

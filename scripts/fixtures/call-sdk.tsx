@@ -5,7 +5,7 @@ export function LiveKitRoom({ children, onError }: any) {
   const [mic, setMic] = useState(true), [camera, setCamera] = useState(false), [screen, setScreen] = useState(false), [connection, setConnection] = useState("connected"), [messages, setMessages] = useState<any[]>([]);
   useEffect(() => { const listener = (event: any) => { if (event.detail.error) onError(new Error("fixture")); if (event.detail.connection) setConnection(event.detail.connection); if (event.detail.screen !== undefined) setScreen(event.detail.screen); }; window.addEventListener("call-fixture", listener); return () => window.removeEventListener("call-fixture", listener); }, [onError]);
   const localParticipant = { identity: "fixture-ana", name: "Ana Martins", isLocal: true, isMicrophoneEnabled: mic, isSpeaking: false,
-    setMicrophoneEnabled: async (value: boolean) => setMic(value), setCameraEnabled: async (value: boolean) => setCamera(value), setScreenShareEnabled: async (value: boolean) => setScreen(value) };
+    setMicrophoneEnabled: async (value: boolean) => setMic(value), setCameraEnabled: async (value: boolean) => setCamera(value), setScreenShareEnabled: async (value: boolean) => { (window as any).__browserCaptureCalls = ((window as any).__browserCaptureCalls || 0) + 1; setScreen(value); } };
   return <Context.Provider value={{mic,camera,screen,connection,messages,setMessages,localParticipant}}><div className="lk-room-container">{children}</div></Context.Provider>;
 }
 export function useLocalParticipant() { const context = useContext(Context); return { ...context, isMicrophoneEnabled:context.mic, isCameraEnabled:context.camera, isScreenShareEnabled:context.screen }; }

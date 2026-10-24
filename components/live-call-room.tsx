@@ -7,6 +7,7 @@ import {
   VideoTrack, RoomAudioRenderer, useTracks, useConnectionState, useParticipants, useChat, useMediaDeviceSelect,
   type TrackReferenceOrPlaceholder, type TrackReference,
 } from "@livekit/components-react";
+import { isDesktopRuntime } from "@/lib/desktop/runtime";
 import { CallSurface, CallAvatar } from "./call-surface";
 import { Room, RoomEvent, Track, ConnectionState } from "livekit-client";
 import {
@@ -62,14 +63,12 @@ function ScreenShareControl({
   const [nativeSelectedId, setNativeSelectedId] = useState("");
   const [nativePreview, setNativePreview] = useState("");
   const [previewLoading, setPreviewLoading] = useState(false);
-  const isWindowsDesktop =
-    isDesktopApp &&
-    typeof navigator !== "undefined" &&
-    /Windows/i.test(navigator.userAgent);
-  const isSharing = isWindowsDesktop ? nativeSharing : isScreenShareEnabled;
+  // Desktop capture never depends on a browser user-agent or falls back to getDisplayMedia.
+  const usesNativeCapture = isDesktopApp || isDesktopRuntime();
+  const isSharing = usesNativeCapture ? nativeSharing : isScreenShareEnabled;
 
   useEffect(() => {
-    if (!isWindowsDesktop) return;
+    if (!usesNativeCapture) return;
     let mounted = true;
     let unlisten: (() => void) | undefined;
     void listen<string>("hub-native-share-ended", ({ payload }) => {
@@ -85,10 +84,10 @@ function ScreenShareControl({
       unlisten?.();
       void invoke("stop_native_screen_share").catch(() => undefined);
     };
-  }, [isWindowsDesktop, onError]);
+  }, [usesNativeCapture, onError]);
 
   useEffect(() => {
-    if (!dialogOpen || !isWindowsDesktop || !nativeSelectedId) {
+    if (!dialogOpen || !usesNativeCapture || !nativeSelectedId) {
       setNativePreview("");
       return;
     }
@@ -109,12 +108,12 @@ function ScreenShareControl({
     return () => {
       active = false;
     };
-  }, [dialogOpen, isWindowsDesktop, nativeSelectedId]);
+  }, [dialogOpen, usesNativeCapture, nativeSelectedId]);
 
   const toggleShare = async () => {
     if (isSharing) {
       try {
-        if (isWindowsDesktop) {
+        if (usesNativeCapture) {
           await invoke("stop_native_screen_share");
           setNativeSharing(false);
         } else {
@@ -125,7 +124,7 @@ function ScreenShareControl({
       }
       return;
     }
-    if (isWindowsDesktop) {
+    if (usesNativeCapture) {
       setLoadingSources(true);
       onError("");
       try {
@@ -161,7 +160,7 @@ function ScreenShareControl({
     setStarting(true);
     onError("");
     try {
-      if (isWindowsDesktop) {
+      if (usesNativeCapture) {
         if (!nativeSelectedId) {
           onError("Escolha uma janela ou uma tela para compartilhar.");
           return;
@@ -200,7 +199,6 @@ function ScreenShareControl({
               frameRate: selected.frameRate,
             },
             contentHint: selected.contentHint,
-            ...(isDesktopApp ? { selfBrowserSurface: "exclude" as const } : {}),
           },
           screenSharePublishOptions(profile),
         );
@@ -255,15 +253,15 @@ function ScreenShareControl({
         <HubDialog
           title="Compartilhar tela"
           onClose={() => setDialogOpen(false)}
-          wide={isWindowsDesktop}
+          wide={usesNativeCapture}
         >
           <p className="share-dialog-description">
-            {isWindowsDesktop
+            {usesNativeCapture
               ? "Escolha uma janela ou monitor e confira a prévia antes de transmitir."
               : "Escolha o tipo de fonte e a qualidade. Depois, selecione a janela ou o monitor na janela de captura do sistema."}
           </p>
 
-          {isWindowsDesktop ? (
+          {usesNativeCapture ? (
             <div className="native-share-source-picker">
               <div className="native-share-preview">
                 {nativePreview ? (
@@ -314,10 +312,8 @@ function ScreenShareControl({
           </RadioGroup>
 
           <p className="share-quality-note">
-            {isWindowsDesktop
+            {usesNativeCapture
               ? "A captura usa a API nativa do Windows. A qualidade pode variar com a tela e a rede."
-              : isDesktopApp
-              ? "A qualidade real depende da tela, do Windows e da conexão de quem transmite."
               : "A qualidade real depende do navegador, da tela e da conexão de quem transmite."}
           </p>
 
@@ -331,7 +327,7 @@ function ScreenShareControl({
             <ZuluButton
               className="primary-button"
               onClick={() => void startShare()}
-              disabled={starting || (isWindowsDesktop && !nativeSelectedId)}
+              disabled={starting || (usesNativeCapture && !nativeSelectedId)}
             >
               <MonitorArrowUp size={17} aria-hidden="true" />
               {starting
