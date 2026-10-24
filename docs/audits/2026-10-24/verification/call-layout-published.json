@@ -1,0 +1,39 @@
+{
+  "renderer": "published production app; real MFA test session and provider token",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "controls": {
+        "x": 136,
+        "y": 866,
+        "width": 1236,
+        "height": 68
+      },
+      "visible": true
+    },
+    {
+      "width": 390,
+      "height": 1000,
+      "controls": {
+        "x": 36,
+        "y": 896,
+        "width": 318,
+        "height": 58
+      },
+      "visible": true
+    },
+    {
+      "width": 1813,
+      "height": 854,
+      "controls": {
+        "x": 136,
+        "y": 720,
+        "width": 1609,
+        "height": 68
+      },
+      "visible": true
+    }
+  ],
+  "mediaTransmissionVerified": false
+}

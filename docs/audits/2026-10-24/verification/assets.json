@@ -1,0 +1,42 @@
+[
+  {
+    "file": "verification/call-layout-fixed-published-1440.png",
+    "sha256": "4881b6c6d714598014e5ef1c38678c61860d0b8492d710aab113a9c4b10bc409",
+    "source": "published production, real MFA isolated test accounts"
+  },
+  {
+    "file": "verification/call-layout-fixed-published-1813.png",
+    "sha256": "fea24223f4284bd4d219e7c5d5de1df67cea2efd3a69dee3af7b476916e3bc17",
+    "source": "published production, real MFA isolated test accounts"
+  },
+  {
+    "file": "verification/call-layout-fixed-published-390.png",
+    "sha256": "082847e728c178d03adc7aad7001e710a65467bf38a0c25cbdec6259c96cee96",
+    "source": "published production, real MFA isolated test accounts"
+  },
+  {
+    "file": "verification/login-fixed-published.png",
+    "sha256": "c53a4c98b0d4b0f8aae2a708a1c6c3fae0847b82500ff04fcb9e519a236ace40",
+    "source": "published production, real MFA isolated test accounts"
+  },
+  {
+    "file": "verification/mobile-menu-fixed-published.png",
+    "sha256": "c678036543601f77e313abb0bf0db872c5f8dc44231bd16018df425916af8cdf",
+    "source": "published production, real MFA isolated test accounts"
+  },
+  {
+    "file": "verification/mobile-menu-open-fixed-published.png",
+    "sha256": "19c606aa85fe15c9a24b398117606b92841dcf524f1781be183ae1a0aaab6b08",
+    "source": "published production, real MFA isolated test accounts"
+  },
+  {
+    "file": "verification/search-fixed-published-member.png",
+    "sha256": "ff2a3cd95123aa79cbe6ea831886210182dc5d80026f29739443453a76ba06cd",
+    "source": "published production, real MFA isolated test accounts"
+  },
+  {
+    "file": "verification/search-fixed-published-owner.png",
+    "sha256": "dfd1cf35d4107aae2950b77f5c9e44e7fcfcfbd571af49c4a8fb6e2678211f57",
+    "source": "published production, real MFA isolated test accounts"
+  }
+]

@@ -25,7 +25,7 @@
   "nativeWindowsVerified": false,
   "realMediaVerified": false,
   "outgoingEmailRequested": false,
-  "cleanup": "pending final production verification",
+  "cleanup": "completed: isolated organization and three users deleted; absence verified; private credentials removed",
   "deploymentBefore": "dpl_3kdgeSAk7dgbAL46ehWLtnEr4DDm",
   "captureDates": "2026-10-23–2026-10-24 America/Sao_Paulo"
 }

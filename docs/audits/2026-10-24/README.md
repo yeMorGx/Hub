@@ -14,22 +14,22 @@ O redesign precisa reconstruir a composição, a navegação e o sistema de comp
 - Dono percorreu as 22 telas. Administrador e membro tiveram as telas Pessoas, Relatórios e Preferências verificadas; [roles.json](roles.json) detalha o escopo.
 - Nenhum erro de página ou resposta HTTP ≥400 apareceu no levantamento inicial de navegação. Isso não comprova os efeitos que não foram executados.
 
-## Correções delimitadas verificadas localmente
+## Correções delimitadas publicadas e verificadas
 
-O candidato abaixo passou por build, **63 testes unitários** e **35 testes públicos** locais. A publicação e a conferência final em produção estão pendentes; a limpeza da organização e das contas de teste também está pendente. O estado atualizado de entrega fica em [delivery.json](delivery.json).
+Publicado em https://hub-one-azure.vercel.app no deploy `dpl_9sVXJTG9JRhVfJA4DCWu6aKzR78w` (commit `fcba77b`). Build e **63 testes unitários** passaram; **35 testes públicos** passaram também no endereço de produção. Busca com dono/membro, contraste, navegação móvel e enquadramento da chamada foram conferidos na publicação. A organização isolada e as três contas foram excluídas, a ausência foi verificada e os arquivos privados de credenciais foram removidos. Detalhes em [delivery.json](delivery.json) e [evidências da publicação](verification/assets.json).
 
 1. URLs antigas `/demo`, `/demo/calendar`, `/demo/kanban` e `/demo/operations` passam a encaminhar para as prévias mantidas. Os componentes antigos deixam de ser a entrada dessas URLs.
 2. A busca global usa o mesmo catálogo de 22 páginas da navegação, com filtro de permissões e normalização de acentos, maiúsculas e espaços externos. O estado sem resultados usa a mesma lista filtrada. A produção anterior não retornava “Relatórios”.
-3. O botão principal passa a usar o token semântico de primeiro plano. No login, o contraste medido passa de **2,33:1** para **8,13:1** no candidato local.
+3. O botão principal passa a usar o token semântico de primeiro plano. No login, o contraste medido passa de **2,33:1** para **8,13:1** na publicação.
 4. O botão de navegação móvel ganha fundo transparente no header e alvo de 44×44 px, preservando o ícone claro sobre a moldura escura.
-5. A chamada integrada passa a caber na área útil da janela; controles conferidos em 1440×1000, 390×1000 e 1813×854 no app real com CSS candidato injetado. Isso valida enquadramento, não transmissão de mídia.
+5. A chamada integrada passa a caber na área útil da janela; controles conferidos em 1440×1000, 390×1000 e 1813×854 no app real com CSS candidato injetado. A conferência posterior repetiu as três dimensões no deploy publicado, sem injeção de CSS. Isso valida enquadramento, não transmissão de mídia.
 6. `AGENTS.md` exige auditoria da versão publicada com MFA e separa evidência real de mocks/fixtures.
 
-Esses ajustes corrigem problemas delimitados. O novo design integral ainda depende da escolha de uma direção visual entre três conceitos em preparação; nenhuma nova linguagem visual foi implementada nesta entrega. As telas abaixo documentam a versão auditada antes dessa reconstrução.
+Esses ajustes corrigem problemas delimitados. O novo design integral ainda depende da escolha de uma direção visual entre [três conceitos apresentados](../../design-references/2026-10-24/README.md); nenhuma nova linguagem visual foi implementada nesta entrega. As telas abaixo documentam a versão auditada antes dessa reconstrução.
 
 ### Sistema preservado e divergências documentadas
 
-O candidato preserva o símbolo ZULU, Inter, as superfícies claras e o azul profundo do aplicativo, a moldura externa preta, HeroUI v3 e a identidade independente do site público. Preserva também os contratos funcionais e nativos; a mudança de enquadramento da chamada foi conferida no aplicativo real de produção com CSS candidato injetado, sem comprovar mídia real nem a publicação desse CSS.
+O candidato preserva o símbolo ZULU, Inter, as superfícies claras e o azul profundo do aplicativo, a moldura externa preta, HeroUI v3 e a identidade independente do site público. Preserva também os contratos funcionais e nativos; a mudança de enquadramento da chamada foi conferida no aplicativo real de produção com CSS candidato injetado, sem comprovar mídia real. A conferência posterior confirmou o mesmo enquadramento no CSS publicado, sem injeção.
 
 `DESIGN.md` e `PRODUCT.md` continuam como registros existentes. Há descrições históricas em `PRODUCT.md` de uma lista menor de telas, rotas legadas da demonstração e validações então pendentes; elas não substituem a evidência desta auditoria. Esta entrega registra essa divergência sem reescrever a identidade ou reparar o histórico desses documentos. Os redirecionamentos das URLs legadas não resolvem a paridade de renderização, formulários e callbacks entre demonstração e produção.
 

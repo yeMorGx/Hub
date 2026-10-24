@@ -1,4 +1,35 @@
 {
-  "status": "candidate verified locally; production publication pending",
-  "cleanup": "pending"
+  "status": "published and verified",
+  "commit": "fcba77b",
+  "deploymentId": "dpl_9sVXJTG9JRhVfJA4DCWu6aKzR78w",
+  "url": "https://hub-one-azure.vercel.app",
+  "buildPassed": true,
+  "unitTests": {
+    "passed": 63,
+    "failed": 0
+  },
+  "publicProductionTests": {
+    "passed": 35,
+    "failed": 0
+  },
+  "authenticatedProductionChecks": [
+    "owner/member normalized report search and permission filtering",
+    "no contradictory search empty state",
+    "login contrast8.13:1",
+    "mobile44px menu and drawer navigation",
+    "call controls visible1440x1000,390x1000,1813x854 without injected CSS"
+  ],
+  "reviewDisposition": "ship (bounded audit and fixes only)",
+  "cleanup": {
+    "isolatedOrganizationDeletedViaUI": true,
+    "auditUsersDeleted": 3,
+    "absenceVerified": true,
+    "privateCredentialFilesRemoved": true
+  },
+  "redesign": "Three concepts displayed; awaiting user selection. Not implemented.",
+  "limits": [
+    "native Windows media/performance not verified",
+    "demo/production renderer parity remains pending",
+    "not every business action executed; see coverage and flows"
+  ]
 }
