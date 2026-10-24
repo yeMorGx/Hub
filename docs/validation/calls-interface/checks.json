@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-24",
+  "surface": "ZULU product-owned active call",
+  "browser": [
+    {
+      "width": 1440,
+      "customStage": true,
+      "mediaToggles": true,
+      "devices": true,
+      "chat": true,
+      "sharePicker": true,
+      "focus": true,
+      "errorDismiss": true,
+      "reconnectionState": true,
+      "reducedMotion": true,
+      "leave": true,
+      "pageErrors": [],
+      "realMedia": false
+    },
+    {
+      "width": 390,
+      "customStage": true,
+      "mediaToggles": true,
+      "devices": true,
+      "chat": true,
+      "sharePicker": true,
+      "focus": true,
+      "errorDismiss": true,
+      "reconnectionState": true,
+      "reducedMotion": true,
+      "leave": true,
+      "pageErrors": [],
+      "realMedia": false
+    }
+  ],
+  "unit": {
+    "passed": 62,
+    "failed": 0
+  },
+  "productionBuild": "passed",
+  "realMedia": false,
+  "nativeChanges": false,
+  "review": "ship at fixture scope; see finish-review.md"
+}

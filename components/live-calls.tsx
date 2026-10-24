@@ -152,6 +152,7 @@ export function LiveCalls({
         token={call.token}
         url={call.url}
         channelId={channel}
+        channelName={hub.snapshot.channels.find(item => item.id === channel)?.name || "Sala do time"}
         video={video}
         audio={audio}
         onLeave={() => setCall(null)}

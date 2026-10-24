@@ -1,12 +1,14 @@
 "use client";
-import { ZuluButton, ZuluLabel } from "./dashboard-ui";
-import { useEffect, useMemo, useState } from "react";
+import { ZuluButton, ZuluLabel, ZuluInput } from "./dashboard-ui";
+import { useEffect, useMemo, useState, useRef } from "react";
 import {
   LiveKitRoom,
   useLocalParticipant,
-  VideoConference,
+  VideoTrack, RoomAudioRenderer, useTracks, useConnectionState, useParticipants, useChat, useMediaDeviceSelect,
+  type TrackReferenceOrPlaceholder, type TrackReference,
 } from "@livekit/components-react";
-import { Room, RoomEvent } from "livekit-client";
+import { CallSurface, CallAvatar } from "./call-surface";
+import { Room, RoomEvent, Track, ConnectionState } from "livekit-client";
 import {
   shareProfiles,
   screenSharePublishOptions,
@@ -18,9 +20,9 @@ import {
   AppWindow,
   Monitor,
   MonitorArrowUp,
-  Stop,
+  Stop, Microphone, MicrophoneSlash, VideoCamera, VideoCameraSlash, PhoneDisconnect, CornersOut, ArrowUp, CaretDown, Check,
 } from "@phosphor-icons/react";
-import { RadioGroup, Radio, Label } from "@heroui/react";
+import { RadioGroup, Radio, Label, Dropdown } from "@heroui/react";
 import { HubDialog } from "@/components/hub-ui";
 import "@livekit/components-styles";
 
@@ -221,6 +223,7 @@ function ScreenShareControl({
   return (
     <>
       <ZuluButton
+        type="button"
         className="call-screen-share-toggle"
         onClick={() => void toggleShare()}
         disabled={starting || loadingSources}
@@ -342,78 +345,81 @@ function ScreenShareControl({
   );
 }
 
-export default function LiveCallRoom({
-  token,
-  url,
-  channelId,
-  video,
-  audio,
-  onLeave,
-}: {
-  token: string;
-  url: string;
-  channelId: string;
-  video: boolean;
-  audio: boolean;
-  onLeave: () => void;
+function DeviceMenu({ kind, room, onError }: { kind: "audioinput" | "videoinput"; room: Room; onError: (message: string) => void }) {
+  const { devices, activeDeviceId, setActiveMediaDevice } = useMediaDeviceSelect({ kind, room, requestPermissions: false });
+  const name = kind === "audioinput" ? "microfone" : "câmera";
+  return <Dropdown><ZuluButton type="button" className="zulu-call-device" aria-label={`Escolher ${name}`}><CaretDown size={14}/></ZuluButton><Dropdown.Popover><Dropdown.Menu aria-label={`Dispositivos de ${name}`}>
+    {devices.length ? devices.map((device, i) => <Dropdown.Item id={device.deviceId || `device-${i}`} key={device.deviceId || i} textValue={device.label || `${name} ${i + 1}`} onAction={() => { void setActiveMediaDevice(device.deviceId).catch(() => onError(`Não foi possível trocar o dispositivo de ${name}. Confira as permissões e tente novamente.`)); }}><Label>{device.label || `${name} ${i + 1}`}</Label>{activeDeviceId === device.deviceId && <Check size={16}/>}</Dropdown.Item>) : <Dropdown.Item id="empty" isDisabled><Label>Nenhum dispositivo encontrado</Label></Dropdown.Item>}
+  </Dropdown.Menu></Dropdown.Popover></Dropdown>;
+}
+
+function CallConference({ room, channelId, channelName, isDesktopApp, error, setError, onLeave }: {
+  room: Room; channelId: string; channelName: string; isDesktopApp: boolean; error: string; setError: (message: string) => void; onLeave: () => void;
 }) {
-  const room = useMemo(
-      () => new Room({ adaptiveStream: true, dynacast: true }),
-      [],
-    ),
-    [error, setError] = useState(""),
-    [isDesktopApp, setIsDesktopApp] = useState(false);
+  const allTracks = useTracks([{ source: Track.Source.Camera, withPlaceholder: true }, { source: Track.Source.ScreenShare, withPlaceholder: false }], { onlySubscribed: false });
+  const tracks = allTracks.filter(track => track.source === Track.Source.ScreenShare || !track.participant.identity.startsWith("hub-share:"));
+  const participants = useParticipants().filter(participant => !participant.identity.startsWith("hub-share:"));
+  const state = useConnectionState();
+  const { localParticipant, isMicrophoneEnabled, isCameraEnabled } = useLocalParticipant();
+  const { chatMessages, send, isSending } = useChat();
+  const [chatOpen, setChatOpen] = useState(false), [draft, setDraft] = useState(""), [busy, setBusy] = useState(false), [focused, setFocused] = useState<string | null>(null);
+  const [readCount, setReadCount] = useState(0);
+  const messagesEnd = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (chatOpen) messagesEnd.current?.scrollIntoView({ block: "nearest" }); }, [chatOpen, chatMessages.length]);
+  useEffect(() => { if (chatOpen) setReadCount(chatMessages.length); }, [chatOpen, chatMessages.length]);
+  const connected = state === ConnectionState.Connected;
+  const status = connected ? "Na sala" : state === ConnectionState.Connecting ? "Conectando…" : state === ConnectionState.Reconnecting || state === ConnectionState.SignalReconnecting ? "Reconectando…" : "Desconectado";
+  const key = (track: TrackReferenceOrPlaceholder) => `${track.participant.identity}:${track.source}`;
+  const screens = tracks.filter(track => track.source === Track.Source.ScreenShare);
+  const focus = focused === null ? screens[0] : tracks.find(track => key(track) === focused);
+  const visible = focus ? [focus, ...tracks.filter(track => key(track) !== key(focus))] : tracks;
+  async function toggle(kind: "microphone" | "camera") {
+    setBusy(true);
+    try { if (kind === "microphone") await localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled); else await localParticipant.setCameraEnabled(!isCameraEnabled); setError(""); }
+    catch { setError(`Não foi possível ativar ${kind === "microphone" ? "o microfone" : "a câmera"}. Confira a permissão e o dispositivo nas configurações.`); }
+    finally { setBusy(false); }
+  }
+  return <>
+    <CallSurface name={channelName} status={status} connected={connected} count={participants.length} error={error} onDismissError={() => setError("")} chatOpen={chatOpen} onToggleChat={() => setChatOpen(open => !open)} unread={Math.max(0, chatMessages.length - readCount)}
+      controls={<>
+        <div className="zulu-call-control-pair"><ZuluButton type="button" className="zulu-call-toggle" aria-label={isMicrophoneEnabled ? "Desligar microfone" : "Ligar microfone"} aria-pressed={isMicrophoneEnabled} disabled={busy || !connected} onClick={() => void toggle("microphone")}>{isMicrophoneEnabled ? <Microphone size={21}/> : <MicrophoneSlash size={21}/>}<span>Microfone</span></ZuluButton><DeviceMenu kind="audioinput" room={room} onError={setError}/></div>
+        <div className="zulu-call-control-pair"><ZuluButton type="button" className="zulu-call-toggle" aria-label={isCameraEnabled ? "Desligar câmera" : "Ligar câmera"} aria-pressed={isCameraEnabled} disabled={busy || !connected} onClick={() => void toggle("camera")}>{isCameraEnabled ? <VideoCamera size={21}/> : <VideoCameraSlash size={21}/>}<span>Câmera</span></ZuluButton><DeviceMenu kind="videoinput" room={room} onError={setError}/></div>
+        <div className="zulu-call-share"><ScreenShareControl room={room} channelId={channelId} isDesktopApp={isDesktopApp} onError={setError}/></div>
+        <ZuluButton type="button" className="zulu-call-leave" aria-label="Sair da chamada" onClick={() => { void room.disconnect(); onLeave(); }}><PhoneDisconnect size={21}/><span>Sair</span></ZuluButton>
+      </>}
+      chat={<><div className="zulu-call-chat-heading"><h3>Conversa da chamada</h3><p>As mensagens ficam só nesta sessão.</p></div><div className="zulu-call-messages" role="log" aria-label="Mensagens da chamada">{!chatMessages.length && <p className="zulu-call-chat-empty">Uma ideia, um link, uma pergunta.<br/>A conversa começa aqui.</p>}{chatMessages.map((message, i) => <article key={`${message.timestamp}-${i}`}><strong>{message.from?.name || message.from?.identity || "Participante"}</strong><p>{message.message}</p></article>)}<div ref={messagesEnd}/></div><form onSubmit={event => { event.preventDefault(); if (!draft.trim() || isSending) return; void send(draft.trim()).then(() => setDraft("")).catch(() => setError("A mensagem não foi enviada. Tente novamente.")); }}><ZuluInput aria-label="Mensagem na chamada" placeholder="Escreva uma mensagem…" value={draft} onChange={event => setDraft(event.target.value)} maxLength={2000}/><ZuluButton type="submit" aria-label="Enviar mensagem" disabled={!connected || isSending || !draft.trim()}><ArrowUp size={19}/></ZuluButton></form></>}
+    >
+      <div className="zulu-call-grid" data-focused={Boolean(focus)} data-count={visible.length}>
+        {!visible.length && <div className="zulu-call-empty">{status}</div>}
+        {visible.map(track => {
+          const name = (track.participant.name || track.participant.identity || "Participante").replace(track.participant.identity.startsWith("hub-share:") ? / · tela$/ : /$^/, "");
+          const screen = track.source === Track.Source.ScreenShare;
+          const hasVideo = Boolean(track.publication && !track.publication.isMuted);
+          return <div key={key(track)} className="zulu-call-tile" data-screen={screen} data-speaking={track.participant.isSpeaking}>
+            {hasVideo ? <VideoTrack trackRef={track as TrackReference} manageSubscription /> : <CallAvatar name={name} local={track.participant.isLocal} muted={!track.participant.isMicrophoneEnabled}/>}
+            {hasVideo && <div className="zulu-call-caption">{screen && <Monitor size={16}/>}<span>{screen ? `Tela de ${name}` : name}{track.participant.isLocal ? " · Você" : ""}</span>{!track.participant.isMicrophoneEnabled && !screen && <MicrophoneSlash size={15}/>}</div>}
+            <ZuluButton type="button" className="zulu-call-focus" aria-label={Boolean(focus && key(focus) === key(track)) ? `Voltar à grade de ${name}` : `Destacar ${screen ? "tela de " : ""}${name}`} aria-pressed={Boolean(focus && key(focus) === key(track))} onClick={() => setFocused(focus && key(focus) === key(track) ? "" : key(track))}><CornersOut size={18}/></ZuluButton>
+          </div>;
+        })}
+      </div>
+    </CallSurface>
+    <RoomAudioRenderer />
+  </>;
+}
+
+export default function LiveCallRoom({ token, url, channelId, channelName = "Sala do time", video, audio, onLeave }: {
+  token: string; url: string; channelId: string; channelName?: string; video: boolean; audio: boolean; onLeave: () => void;
+}) {
+  const room = useMemo(() => new Room({ adaptiveStream: true, dynacast: true }), []);
+  const [error, setError] = useState(""), [isDesktopApp, setIsDesktopApp] = useState(false);
+  useEffect(() => { setIsDesktopApp("__TAURI_INTERNALS__" in window); }, []);
   useEffect(() => {
-    setIsDesktopApp("__TAURI_INTERNALS__" in window);
-  }, []);
-  useEffect(() => {
-    const failed = () =>
-      setError(
-        "Não foi possível acessar a câmera, o microfone ou a tela. Confira as permissões do navegador.",
-      );
+    const failed = () => setError("Não foi possível acessar um dispositivo. Confira as permissões de câmera e microfone.");
     room.on(RoomEvent.MediaDevicesError, failed);
-    return () => {
-      room.off(RoomEvent.MediaDevicesError, failed);
-      void room.disconnect();
-    };
+    return () => { room.off(RoomEvent.MediaDevicesError, failed); void room.disconnect(); };
   }, [room]);
-  return (
-    <section className="live-call" data-lk-theme="default">
-      {error && <p role="alert">{error}</p>}
-      <LiveKitRoom
-        room={room}
-        serverUrl={url}
-        token={token}
-        connect
-        audio={audio}
-        video={video}
-        onDisconnected={onLeave}
-        onError={() =>
-          setError("A chamada perdeu a conexão. Saia e tente entrar novamente.")
-        }
-      >
-        <div className="call-header">
-          <strong>Sala do time</strong>
-          <div className="call-header-actions">
-            <ScreenShareControl
-              room={room}
-              channelId={channelId}
-              isDesktopApp={isDesktopApp}
-              onError={setError}
-            />
-            <ZuluButton
-              className="secondary-button"
-              onClick={() => {
-                void room.disconnect();
-                onLeave();
-              }}
-            >
-              Sair da chamada
-            </ZuluButton>
-          </div>
-        </div>
-        <VideoConference />
-      </LiveKitRoom>
-    </section>
-  );
+  return <div className="zulu-call-room"><LiveKitRoom room={room} serverUrl={url} token={token} connect audio={audio} video={video} onDisconnected={onLeave}
+    onError={() => setError("Não foi possível concluir uma ação da chamada. Confira sua conexão e as permissões dos dispositivos.")}>
+    <CallConference room={room} channelId={channelId} channelName={channelName} isDesktopApp={isDesktopApp} error={error} setError={setError} onLeave={onLeave}/>
+  </LiveKitRoom></div>;
 }

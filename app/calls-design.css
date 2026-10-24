@@ -1,0 +1,74 @@
+/* ZULU owns the call surface. LiveKit supplies only media and room state. */
+.zulu-call-room{height:calc(100dvh - 158px);min-height:540px;min-width:0}
+.zulu-call-room>.lk-room-container{height:100%;background:transparent;color:inherit;font-family:inherit}
+.zulu-call{--call-ink:#202335;--call-muted:#626779;display:flex;flex-direction:column;height:100%;min-height:0;min-width:0;background:#f5f4f9;color:var(--call-ink);border-radius:20px;padding:24px;isolation:isolate}
+.zulu-call-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:22px;flex-shrink:0}
+.zulu-call-identity{display:flex;align-items:center;gap:13px;min-width:0}
+.zulu-call-symbol{display:grid;place-items:center;width:48px;height:48px;background:#e5e1f6;color:#5143a0;border-radius:16px;flex-shrink:0}
+.zulu-call-heading h2{font-size:19px;line-height:1.3;letter-spacing:-.025em;margin:0;overflow-wrap:anywhere;font-weight:650;color:var(--call-ink)}
+.zulu-call-heading p{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;color:var(--call-muted);margin:6px 0 0}
+.zulu-call-dot{width:7px;height:7px;border-radius:50%;background:#997134}
+.zulu-call-dot[data-connected=true]{background:#307854}
+.zulu-call .button{border:0;box-shadow:none;font-family:inherit;transition:background 160ms ease,transform 160ms ease;color:inherit;flex-shrink:0}
+.zulu-call .button:focus-visible{outline:2px solid #7257ce;outline-offset:3px}
+.zulu-call .button[data-pressed=true]{transform:scale(.96)}
+.zulu-call-chat-toggle{background:#e9e7f0!important;border-radius:13px!important;min-height:42px;gap:8px;padding:0 14px!important;font-size:13px!important}
+.zulu-call-chat-toggle[aria-pressed=true]{background:#ded8f1!important;color:#4c3a8e!important}
+.zulu-call-chat-toggle b{background:#5745a9;color:#fff;border-radius:12px;padding:1px 6px;font-size:11px}
+.zulu-call-body{display:flex;gap:16px;flex:1;min-height:0;min-width:0}
+.zulu-call-stage{min-width:0;flex:1;min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#c0baca transparent}
+.zulu-call-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(200px,1fr);gap:12px;height:100%;min-height:0}
+.zulu-call-grid[data-count="1"]{grid-template-columns:1fr}
+.zulu-call-grid[data-focused=true]{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(260px,1fr) 150px;grid-auto-rows:150px}
+.zulu-call-grid[data-focused=true]>.zulu-call-tile:first-child{grid-column:1/-1}
+.zulu-call-grid[data-count="1"][data-focused=true]{grid-template-rows:1fr}
+.zulu-call-tile{position:relative;display:grid;place-items:center;background:#eae7f1;min-height:180px;min-width:0;overflow:hidden;border-radius:16px}
+.zulu-call-tile:nth-child(3n+2){background:#e6eced}
+.zulu-call-tile:nth-child(3n+3){background:#eee7e2}
+.zulu-call-tile[data-speaking=true]{box-shadow:inset 0 0 0 2px #8270bf}
+.zulu-call-tile video{width:100%;height:100%;min-height:0;object-fit:cover;background:#17191f}
+.zulu-call-tile[data-screen=true] video{object-fit:contain}
+.zulu-call-avatar-wrap{display:flex;align-items:center;flex-direction:column;justify-content:center;padding:40px 20px;max-width:100%;text-align:center}
+.zulu-call-avatar{display:grid;place-items:center;width:92px;height:92px;background:#d7d0e7;color:#4b3a72;border-radius:32px;font-size:30px;font-weight:600;letter-spacing:-.03em;margin-bottom:20px}
+.zulu-call-tile:nth-child(3n+2) .zulu-call-avatar{background:#cbdcdc;color:#355d60}
+.zulu-call-tile:nth-child(3n+3) .zulu-call-avatar{background:#e1d1c6;color:#71503d}
+.zulu-call-avatar-wrap>strong{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-size:16px;overflow-wrap:anywhere;color:#292633}
+.zulu-call-avatar-wrap small{font-size:11px;font-weight:500;background:#fff9;border-radius:7px;padding:3px 6px;color:#50485f}
+.zulu-call-avatar-wrap>span{display:flex;align-items:center;gap:5px;font-size:12px;color:#625a70;margin-top:8px}
+.zulu-call .zulu-call-focus{position:absolute;right:12px;top:12px;background:#fff!important;color:#393242!important;width:34px;min-width:34px;height:34px;border-radius:10px;padding:0!important;opacity:0;transition:opacity 150ms,background 150ms}
+.zulu-call-tile:hover .zulu-call-focus,.zulu-call-tile:focus-within .zulu-call-focus{opacity:1}
+.zulu-call-caption{position:absolute;bottom:14px;left:14px;right:14px;width:fit-content;max-width:calc(100% - 28px);display:flex;align-items:center;gap:7px;background:#14171de8;color:#fff;padding:7px 10px;border-radius:9px;font-size:12px;overflow-wrap:anywhere}
+.zulu-call-controls{display:flex;align-items:center;justify-content:center;gap:10px;padding:20px 0 0;flex-shrink:0;flex-wrap:wrap}
+.zulu-call-control-pair{display:flex;align-items:stretch;background:#e7e4ee;border-radius:13px;overflow:hidden}
+.zulu-call .zulu-call-toggle{min-height:48px;background:transparent!important;padding:0 13px!important;gap:8px;border-radius:0!important;font-size:12px!important}
+.zulu-call-toggle[aria-pressed=false]{color:#8c334b!important;background:#f1dfe5!important}
+.zulu-call .zulu-call-device{background:transparent!important;width:28px;min-width:28px;padding:0!important;border-radius:0!important}
+.zulu-call .zulu-call-toggle:hover,.zulu-call .zulu-call-device:hover{background:#d9d3e6!important}
+.zulu-call-share>.button{min-height:48px;background:#282537!important;color:#fff!important;padding:0 15px!important;border-radius:13px!important;font-size:12px!important;gap:8px}
+.zulu-call .zulu-call-leave{min-height:48px;background:#b9324f!important;color:#fff!important;border-radius:13px!important;padding:0 18px!important;gap:8px;font-size:12px!important}
+.zulu-call .zulu-call-leave:hover{background:#9c2942!important}
+.zulu-call-error{display:flex;align-items:center;gap:10px;background:#f8e3dc;color:#7c3021;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.5;flex-shrink:0}
+.zulu-call-error>svg{flex-shrink:0}
+.zulu-call-error>.button{margin-left:auto;background:transparent;min-width:30px;padding:0;width:30px;height:30px;color:#7c3021!important}
+.zulu-call-chat{width:290px;display:flex;flex-direction:column;background:#fff;border-radius:16px;min-height:0;flex-shrink:0}
+.zulu-call-chat-heading{padding:20px 18px 12px}
+.zulu-call-chat h3{font-size:14px;font-weight:650;color:#252233;margin:0}
+.zulu-call-chat-heading>p{font-size:11px;color:#686174;line-height:1.6;margin:5px 0 0}
+.zulu-call-messages{flex:1;overflow:auto;padding:0 18px;scrollbar-width:thin;min-height:110px}
+.zulu-call-messages article{margin:14px 0}
+.zulu-call-messages article>strong{font-size:11px;color:#686174}
+.zulu-call-messages article>p{font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;background:#f0edf7;padding:10px 12px;border-radius:0 12px 12px 12px;color:#30283f;margin:5px 0 0}
+.zulu-call-chat-empty{font-size:13px;color:#736b80;line-height:1.8;padding-top:28px}
+.zulu-call-chat form{display:flex;align-items:center;gap:5px;padding:12px}
+.zulu-call-chat input{min-width:0;width:100%;background:#f2eff7!important;color:#272033!important;font-size:12px!important;border:0!important;box-shadow:none!important;border-radius:10px!important;padding:11px!important}
+.zulu-call-chat form>.button{background:#5948a5!important;color:#fff!important;width:34px;min-width:34px;height:34px;padding:0!important;border-radius:10px}
+.zulu-call-empty{display:grid;place-items:center;color:#625a70}
+@media(max-width:1000px){.zulu-call{padding:18px}.zulu-call-chat{width:250px}.zulu-call-toggle span{display:none}.zulu-call-grid[data-focused=true]{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.zulu-call-room{height:calc(100dvh - 200px);min-height:580px}.zulu-call{padding:12px;border-radius:16px}.zulu-call-heading{padding:6px 2px 16px;gap:8px}.zulu-call-symbol{width:38px;height:38px;border-radius:12px}.zulu-call-heading h2{font-size:16px}.zulu-call-heading p{font-size:11px;gap:5px}.zulu-call-chat-toggle{width:40px;min-width:40px;padding:0!important}.zulu-call-chat-toggle>span{display:none}.zulu-call-grid{grid-template-columns:1fr;grid-auto-rows:minmax(220px,1fr)}.zulu-call-grid[data-focused=true]{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:minmax(230px,1fr) 150px}.zulu-call-tile{min-height:150px}.zulu-call-avatar{width:72px;height:72px;border-radius:25px;font-size:24px}.zulu-call-controls{gap:6px;padding-top:14px}.zulu-call .zulu-call-toggle{padding:0 9px!important;min-height:44px}.zulu-call .zulu-call-device{width:23px;min-width:23px}.zulu-call-share>.button{padding:0 10px!important;min-height:44px;font-size:11px!important}.zulu-call .zulu-call-leave{padding:0 11px!important;min-height:44px}.zulu-call-leave span{display:none}.zulu-call-body[data-chat-open=true] .zulu-call-stage{display:none}.zulu-call-chat{width:100%}.zulu-call .zulu-call-focus{opacity:1}.zulu-call-error{font-size:12px;padding:10px}.zulu-call-avatar-wrap>strong{font-size:14px}}
+@media(hover:none){.zulu-call .zulu-call-focus{opacity:1}}
+@media(prefers-reduced-motion:reduce){.zulu-call *{transition:none!important;animation:none!important}}
+
+.zulu-call-grid[data-focused=true]>.zulu-call-tile:not(:first-child) .zulu-call-avatar-wrap{padding:12px}
+.zulu-call-grid[data-focused=true]>.zulu-call-tile:not(:first-child) .zulu-call-avatar{width:44px;height:44px;border-radius:16px;font-size:18px;margin-bottom:8px}
+.zulu-call-grid[data-focused=true]>.zulu-call-tile:not(:first-child) .zulu-call-avatar-wrap>strong{font-size:12px}
+.zulu-call-grid[data-focused=true]>.zulu-call-tile:not(:first-child) .zulu-call-avatar-wrap>span{font-size:10px;margin-top:5px}
