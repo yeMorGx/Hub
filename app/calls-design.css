@@ -120,3 +120,8 @@
 .screen-share-dialog .native-share-source-list{overscroll-behavior:contain}
 .screen-share-dialog .radio .radio__control{background:transparent;border:1.5px solid #82768e}
 .screen-share-dialog .radio.is-selected .radio__control{background:#65509f;border-color:#65509f}
+
+/* The real app shell owns the available height; the media stage scrolls inside it. */
+.live-app.workspace-inset .main-content[data-motion-page="calls"]:has(> .zulu-call-room){display:flex;flex-direction:column;height:calc(100dvh - var(--shell-top) - 12px);min-height:0;overflow:hidden}
+.live-app.workspace-inset .main-content[data-motion-page="calls"]:has(> .zulu-call-room)>*{flex-shrink:0}
+.live-app.workspace-inset .main-content[data-motion-page="calls"]>.zulu-call-room{flex:1 1 auto;height:auto;min-height:0}

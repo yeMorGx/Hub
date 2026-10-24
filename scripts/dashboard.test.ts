@@ -154,3 +154,16 @@ test("prévia só considera DMs próprias, não lidas, ativas e com associação
     8,
   );
 });
+
+
+test("busca global usa as mesmas 22 páginas da navegação e respeita permissões", async () => {
+  const { workspaceAreas, workspaceSearchPages, searchWorkspacePages } = await import("../lib/hub/navigation");
+  assert.equal(workspaceSearchPages.length, 22);
+  assert.equal(new Set(workspaceSearchPages.map(page => page.id)).size, 22);
+  assert.deepEqual(workspaceSearchPages.map(page => page.id), workspaceAreas.flatMap(area => area.tabs.map(([id]) => id)));
+  assert.deepEqual(searchWorkspacePages("relatorios").map(page => page.id), ["reports"]);
+  assert.deepEqual(searchWorkspacePages(" BIBLIOTECA ").map(page => page.id), ["library"]);
+  assert.equal(searchWorkspacePages("Agenda").length, 5);
+  assert.equal(searchWorkspacePages("Organização", page => page !== "organization").length, 0);
+  assert.equal(searchWorkspacePages("").some(page => ["more", "management", "collaboration"].includes(page.id)), false);
+});

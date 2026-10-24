@@ -11,3 +11,13 @@ export function workspaceArea(page: LivePage) {
   return workspaceAreas.find(area => area.tabs.some(([id]) => id === page)) ?? workspaceAreas[0];
 }
 export const pageTitles: Partial<Record<LivePage, string>> = Object.fromEntries(workspaceAreas.reduce<[string, string][]>((rows, area) => [...rows, ...area.tabs.map(([id, title]): [string, string] => [id, title])], []));
+
+/** Search and navigation share the same page catalog and permission predicate. */
+export const workspaceSearchPages = workspaceAreas.flatMap(area =>
+  area.tabs.map(([id, label]) => ({ id, label, area: area.label, icon: area.icon })),
+);
+const normalizeSearch = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR").trim();
+export function searchWorkspacePages(query: string, isAllowed: (page: LivePage) => boolean = () => true) {
+  const term = normalizeSearch(query);
+  return workspaceSearchPages.filter(page => isAllowed(page.id) && normalizeSearch(`${page.label} ${page.area}`).includes(term));
+}

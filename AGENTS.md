@@ -14,6 +14,8 @@ Antes de criar ou retrabalhar componentes de interface, leia [`.agents/skills/zu
 
 A revisão visual de uma alteração deve cobrir os estados que o usuário realmente abre: diálogos, seletores, menus, prévias, carregamento e erros. Capturar esses estados em desktop e celular, conferir contraste, dimensões dos controles e ações visíveis, e corrigir conflitos entre CSS legado e as primitivas HeroUI antes de considerar a interface aprovada.
 
+A fonte de verdade do QA é a versão publicada e autenticada, com MFA e dados de teste isolados. Compare a demonstração com essa versão; componentes compartilhados, mocks e fixtures não comprovam paridade dos fluxos. Registre separadamente controles inventariados, ações exercitadas, papéis testados e bloqueios de plataforma/provedor. A auditoria e o plano do redesign integral estão em `docs/audits/2026-10-24/README.md`.
+
 ## ZULU: formulários HeroUI
 
 Ao criar ou alterar formulários, seguir [docs/form-controls.md](docs/form-controls.md) e usar os adaptadores compartilhados em todas as páginas. Selects, datas, horários, números, checkboxes e radios usam a composição oficial HeroUI v3 em pt-BR, com valores de envio, validação, foco e estado desabilitado preservados. Conferir a interação real de Checkbox.Content e o envio de FormData ao mudar esses controles.

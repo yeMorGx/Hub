@@ -1,0 +1,654 @@
+[
+  {
+    "name": "work-schedule",
+    "status": "exercised",
+    "files": [
+      "40-work-schedule-1440.png",
+      "40-work-schedule-390.png"
+    ],
+    "persisted": true
+  },
+  {
+    "name": "activity-chooser",
+    "status": "exercised",
+    "files": [
+      "41-activity-chooser-1440.png",
+      "41-activity-chooser-390.png"
+    ]
+  },
+  {
+    "name": "home-office",
+    "status": "exercised",
+    "files": [
+      "42-home-office-1440.png",
+      "42-home-office-390.png"
+    ],
+    "details": {
+      "heading": "Escala de home office",
+      "labels": [
+        {
+          "tag": "BUTTON",
+          "label": "Fechar",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "new-project",
+    "status": "exercised",
+    "files": [
+      "43-new-project-1440.png",
+      "43-new-project-390.png"
+    ],
+    "persisted": true
+  },
+  {
+    "name": "manual-time",
+    "status": "exercised",
+    "files": [
+      "44-manual-time-1440.png",
+      "44-manual-time-390.png"
+    ],
+    "details": {
+      "heading": "Adicionar horas",
+      "labels": [
+        {
+          "tag": "BUTTON",
+          "label": "Fechar",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": "O que você fez?",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Projeto — auditoria isolada",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Abrir calendário",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Abrir calendário",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Voltar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Salvar registro",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "create-task",
+    "status": "exercised",
+    "files": [
+      "45-create-task-1440.png",
+      "45-create-task-390.png"
+    ],
+    "persisted": true
+  },
+  {
+    "name": "create-event",
+    "status": "exercised",
+    "reason": "locator.waitFor: Timeout 12000ms exceeded.",
+    "screen": [
+      "47-blocked-create-event-1440.png",
+      "47-blocked-create-event-390.png"
+    ],
+    "persisted": true,
+    "observation": "Salvar evento succeeded and opened event details; original wait expected all dialogs to close. Evidence confirms saved event."
+  },
+  {
+    "name": "calendar-filters-views",
+    "status": "exercised",
+    "files": [
+      "48-calendar-filter-1440.png",
+      "48-calendar-filter-390.png"
+    ],
+    "views": 3
+  },
+  {
+    "name": "profile",
+    "status": "exercised",
+    "files": [
+      "49-profile-1440.png",
+      "49-profile-390.png"
+    ],
+    "details": {
+      "heading": "Seu espaço, do seu jeito",
+      "labels": [
+        {
+          "tag": "BUTTON",
+          "label": "Fechar",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Disponível",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": "Compartilhe seu foco com o time",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Voltar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Salvar perfil",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Abrir configurações",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Copiar identificador",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Sair da conta",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "invite",
+    "status": "exercised",
+    "files": [
+      "50-invite-1440.png",
+      "50-invite-390.png"
+    ],
+    "details": {
+      "heading": "Pessoas e convites",
+      "labels": [
+        {
+          "tag": "BUTTON",
+          "label": "Fechar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Convidar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Membros",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Convites",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "chat-message",
+    "status": "exercised",
+    "files": [
+      "51-chat-message-1440.png",
+      "51-chat-message-390.png"
+    ],
+    "persisted": true
+  },
+  {
+    "name": "chat-channel",
+    "status": "exercised",
+    "files": [
+      "52-chat-channel-1440.png",
+      "52-chat-channel-390.png"
+    ],
+    "details": {
+      "heading": "Novo canal",
+      "labels": [
+        {
+          "tag": "BUTTON",
+          "label": "Fechar",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": "Ex.: design",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Público — pessoas do time podem participar",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Voltar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Criar canal",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "channel-members",
+    "status": "exercised",
+    "files": [
+      "53-channel-members-1440.png",
+      "53-channel-members-390.png"
+    ],
+    "details": {
+      "heading": "Adicionar participante ao canal",
+      "labels": [
+        {
+          "tag": "BUTTON",
+          "label": "Fechar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Selecione uma pessoa",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Participante",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Voltar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Adicionar",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "new-library",
+    "status": "exercised",
+    "files": [
+      "54-new-library-1440.png",
+      "54-new-library-390.png"
+    ],
+    "details": {
+      "heading": "Nova biblioteca",
+      "labels": [
+        {
+          "tag": "BUTTON",
+          "label": "Fechar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Selecionar opção",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Criar biblioteca",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "notes-editor",
+    "status": "exercised",
+    "files": [
+      "55-notes-loaded-1440.png",
+      "55-notes-loaded-390.png",
+      "56-notes-editor-1440.png",
+      "56-notes-editor-390.png"
+    ]
+  },
+  {
+    "name": "settings-preferences",
+    "status": "exercised",
+    "files": [
+      "57-settings-preferences-1440.png",
+      "57-settings-preferences-390.png"
+    ]
+  },
+  {
+    "name": "settings-desktop",
+    "status": "exercised",
+    "files": [
+      "58-settings-desktop-1440.png",
+      "58-settings-desktop-390.png"
+    ],
+    "nativeActions": "Not executed in Linux/browser; Windows session required"
+  },
+  {
+    "name": "settings-organization",
+    "status": "exercised",
+    "files": [
+      "59-settings-organization-1440.png",
+      "59-settings-organization-390.png"
+    ]
+  },
+  {
+    "name": "integration-sections",
+    "status": "exercised",
+    "files": [
+      "60-integrations-webhooks-1440.png",
+      "60-integrations-webhooks-390.png",
+      "61-integrations-auditoria-1440.png",
+      "61-integrations-auditoria-390.png",
+      "62-integrations-calendários-1440.png",
+      "62-integrations-calendários-390.png"
+    ]
+  },
+  {
+    "name": "organization-real-sections",
+    "status": "exercised",
+    "files": [
+      "70-org-pessoas-1440.png",
+      "70-org-pessoas-390.png",
+      "71-org-times-1440.png",
+      "71-org-times-390.png",
+      "72-org-convites-1440.png",
+      "72-org-convites-390.png",
+      "73-org-aprovacoes-1440.png",
+      "73-org-aprovacoes-390.png",
+      "74-org-funcionalidades-1440.png",
+      "74-org-funcionalidades-390.png",
+      "75-org-politicas-1440.png",
+      "75-org-politicas-390.png",
+      "76-org-historico-1440.png",
+      "76-org-historico-390.png"
+    ],
+    "sections": [
+      "Pessoas",
+      "Times",
+      "Convites",
+      "Aprovações",
+      "Funcionalidades",
+      "Políticas",
+      "Histórico"
+    ]
+  },
+  {
+    "name": "real-timer-lunch",
+    "status": "exercised",
+    "files": [
+      "90-timer-running-1440.png",
+      "90-timer-running-390.png",
+      "91-timer-lunch-1440.png",
+      "91-timer-lunch-390.png",
+      "92-hours-populated-1440.png",
+      "92-hours-populated-390.png"
+    ],
+    "persisted": true
+  },
+  {
+    "name": "real-report-export",
+    "status": "exercised",
+    "files": [
+      "93-report-populated-1440.png",
+      "93-report-populated-390.png"
+    ],
+    "downloads": [
+      {
+        "name": "zulu-horas-2026-10-01-2026-10-23.pdf",
+        "failed": null
+      },
+      {
+        "name": "zulu-horas-2026-10-01-2026-10-23.csv",
+        "failed": null
+      }
+    ]
+  },
+  {
+    "name": "real-call-room",
+    "status": "blocked",
+    "reason": "locator.waitFor: Timeout 12000ms exceeded.",
+    "screen": [
+      "100-blocked-real-call-room-1440.png",
+      "100-blocked-real-call-room-390.png"
+    ]
+  },
+  {
+    "name": "create-organization-dialog",
+    "status": "exercised",
+    "files": [
+      "148-create-organization-real-1440.png",
+      "148-create-organization-real-390.png"
+    ],
+    "details": {
+      "heading": "Nova organização",
+      "labels": [
+        {
+          "tag": "BUTTON",
+          "label": "Fechar",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": "Nome da empresa ou do grupo",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Cancelar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Criar organização",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "create-team-dialog",
+    "status": "exercised",
+    "files": [
+      "149-create-team-real-1440.png",
+      "149-create-team-real-390.png"
+    ],
+    "details": {
+      "heading": "Novo time",
+      "labels": [
+        {
+          "tag": "BUTTON",
+          "label": "Fechar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "ZULU — Auditoria isolada",
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": null,
+          "disabled": false
+        },
+        {
+          "tag": "INPUT",
+          "label": "Nome do novo time",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Voltar",
+          "disabled": false
+        },
+        {
+          "tag": "BUTTON",
+          "label": "Criar time",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "global-search",
+    "status": "exercised",
+    "files": [
+      "132-global-search-1440.png",
+      "132-global-search-390.png"
+    ]
+  },
+  {
+    "name": "notification-inbox",
+    "status": "exercised",
+    "files": [
+      "133-notification-inbox-1440.png",
+      "133-notification-inbox-390.png"
+    ]
+  },
+  {
+    "name": "organization-member-controls",
+    "status": "exercised",
+    "files": [
+      "134-org-member-editor-1440.png",
+      "134-org-member-editor-390.png"
+    ]
+  },
+  {
+    "name": "dark-theme",
+    "status": "exercised",
+    "files": [
+      "135-settings-dark-1440.png",
+      "135-settings-dark-390.png",
+      "136-overview-dark-1440.png",
+      "136-overview-dark-390.png",
+      "137-home-office-dark-1440.png",
+      "137-home-office-dark-390.png"
+    ]
+  },
+  {
+    "name": "delete-organization-confirmation",
+    "status": "exercised",
+    "files": [
+      "138-delete-organization-confirmation-1440.png",
+      "138-delete-organization-confirmation-390.png"
+    ],
+    "executed": false,
+    "confirmationRequired": true
+  },
+  {
+    "name": "library-document-flow",
+    "status": "exercised",
+    "files": [
+      "155-library-real-document-1440.png",
+      "155-library-real-document-390.png",
+      "156-library-real-editor-1440.png",
+      "156-library-real-editor-390.png",
+      "157-library-sharing-permissions-1440.png",
+      "157-library-sharing-permissions-390.png"
+    ],
+    "persisted": true,
+    "sharingSubmitted": false
+  }
+]

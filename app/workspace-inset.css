@@ -142,7 +142,7 @@ html[data-zulu-theme="dark"] .workspace-inset :is(.workspace-table th, .workspac
  .live-app.workspace-inset .rail { width: 76px; transform: translateX(-100%); transition: transform 180ms ease-out; }
  .workspace-inset[data-menu-open="true"] .rail { transform: translateX(0); }
  .workspace-inset[data-menu-open="true"] .mobile-menu-backdrop { display: block; position: fixed; inset: 0; z-index: 99; background: #14213b55; border: 0; }
- .live-app.workspace-inset .mobile-navigation-toggle { display: inline-grid; min-width: 36px; width: 36px; padding: 0; }
+ .live-app.workspace-inset .mobile-navigation-toggle { display: inline-grid; min-width: 44px; width: 44px; min-height: 44px; padding: 0; background: transparent; }
  .live-app.workspace-inset .app-content { padding: var(--shell-top) 8px 8px; margin: 0; }
  .live-app.workspace-inset .app-content::before { display: none; }
  .live-app.workspace-inset .main-content { border-radius: 16px; padding: 22px 16px; }

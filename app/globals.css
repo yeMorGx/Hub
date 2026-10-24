@@ -12,6 +12,7 @@
   --muted: #a0a2a6;
   --quiet: #7e8187;
   --accent: #e26540;
+  --accent-foreground: #160f0c;
   --accent-hover: #f17a54;
   --blue: #7fa8ef;
   --green: #8dbb9d;
@@ -551,7 +552,7 @@ kbd {
 }
 .primary-button {
   background: var(--accent);
-  color: #160f0c;
+  color: var(--accent-foreground, #160f0c);
 }
 .primary-button:hover {
   background: var(--accent-hover);

@@ -1,0 +1,4246 @@
+{
+  "components": 50,
+  "eventBindings": 530,
+  "actions": [
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 471,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void toggleReaction(r)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 505,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void loadThread(message)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 524,
+      "event": "onAction",
+      "element": "Dropdown.Item",
+      "handler": "{() => void toggleReaction(r)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 530,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void loadThread(message)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 545,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { await hub.mutate( () => hub.rpc(\"pin_message\", { p_message_id: message.id, p_active: !pins.some( (p) => p.message_id === message.id, ), }), \"Fixação atualizada.\", ); await channel.refresh(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 566,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onEdit(message)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 594,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setMode(\"conversation\"); setRoot(null); setThread([]); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 605,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setMode(\"pins\"); setRoot(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 616,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setMode(\"search\"); setRoot(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 624,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDetailsOpen(value => !value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 630,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { threadSerial.current++; setRoot(null); rootRef.current = null; setThread([]); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 646,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => { e.preventDefault(); void runSearch(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 657,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => { setSearch(e.target.value); setResults([]); setSearchMore(false); searchSerial.current++; setSearchBusy(false); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 679,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setError(\"\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 697,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setAtBottom(false); void channel.loadOlder(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 709,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void loadThread(root, true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 743,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void runSearch(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 754,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { const list = scroller.current; if (list) list.scrollTop = list.scrollHeight; setAtBottom(true); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 773,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void removePending(a)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 783,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setMentions((m) => m.filter((v) => v !== id))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 798,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => void send(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 805,
+      "event": "onChange",
+      "element": "ZuluTextArea",
+      "handler": "{(e) => { setDraft(e.target.value); channel.publishTyping(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 831,
+      "event": "onChange",
+      "element": "input",
+      "handler": "{(e) => { const f = e.target.files?.[0]; if (f) void upload(f); e.target.value = \"\"; }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 842,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => uploadInput.current?.click()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 851,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void record()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 860,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => { if (e) setMentions((m) => [ ...new Set([...m, e]), ]); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 882,
+      "event": "onCheckedChange",
+      "element": "ZuluCheckboxField",
+      "handler": "{(e) => setMentionChannel(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/advanced-conversation.tsx",
+      "line": 985,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void download()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/auth-screen.tsx",
+      "line": 161,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void resendConfirmation()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/auth-screen.tsx",
+      "line": 180,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { setBusy(true); setError(\"\"); try { const { error } = await createClient().auth.signInWithOAuth({ provider: \"azure\", options: { scopes: \"email\", redirectTo: `${location.origin}/auth/callback`, }, }); if (er",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/auth-screen.tsx",
+      "line": 201,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{submit}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/auth-screen.tsx",
+      "line": 234,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => changeMode(\"reset\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/auth-screen.tsx",
+      "line": 259,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setShowPassword(!showPassword)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/auth-screen.tsx",
+      "line": 292,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => changeMode(\"signup\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/auth-screen.tsx",
+      "line": 295,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => changeMode(\"login\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/mfa-screen.tsx",
+      "line": 147,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{enroll}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/mfa-screen.tsx",
+      "line": 159,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{verify}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/mfa-screen.tsx",
+      "line": 189,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setFactorId(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/mfa-screen.tsx",
+      "line": 209,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setCode(e.target.value.replace(/\\D/g, \"\").slice(0, 6)) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/mfa-screen.tsx",
+      "line": 232,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{signOut}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/auth/password-screen.tsx",
+      "line": 109,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{submit}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/calendar-demo.tsx",
+      "line": 123,
+      "event": "onSubmit",
+      "element": "Form",
+      "handler": "{(event) => { event.preventDefault(); const values = new FormData(event.currentTarget); const start = new Date(String(values.get(\"start\"))), end = new Date(String(values.get(\"end\"))); if (!Number.isFinite(start.getTime()",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/calendar-time-column.tsx",
+      "line": 81,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{(event) => { if (event.pointerType === \"mouse\" || event.pointerType === \"pen\") return; const chosen = calendarSelection(hour, hour, endHour, false); onNew(date, chosen.start, chosen.end); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/call-surface.tsx",
+      "line": 16,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{onToggleChat}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/call-surface.tsx",
+      "line": 18,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{onDismissError}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/create-organization-dialog.tsx",
+      "line": 11,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{onSubmit}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/create-organization-dialog.tsx",
+      "line": 17,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{onClose}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-demo.tsx",
+      "line": 228,
+      "event": "onOpenChange",
+      "element": "Tooltip",
+      "handler": "{open => { if (!open) setNavTooltip(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-demo.tsx",
+      "line": 250,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { location.href = \"/demo/workspace?page=settings\"; }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-demo.tsx",
+      "line": 256,
+      "event": "onOpenChange",
+      "element": "WorkspaceDrawer",
+      "handler": "{setMenuOpen}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-demo.tsx",
+      "line": 259,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setMenuOpen(!menuOpen)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-demo.tsx",
+      "line": 269,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(value) => showScenario(value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-demo.tsx",
+      "line": 505,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 117,
+      "event": "onOpenChange",
+      "element": "Tooltip",
+      "handler": "{railTooltip ? setTooltipOpen : undefined}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 241,
+      "event": "onOpenChange",
+      "element": "Select",
+      "handler": "{setOpen}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 266,
+      "event": "onChange",
+      "element": "Select",
+      "handler": "{(next) => { const v = next === \"__zulu_empty_option__\" || next == null ? \"\" : String(next); setSelected(v); onValueChange?.(v); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 299,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{() => { setOpen(false); onAddNew(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 348,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{onCheckedChange}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 384,
+      "event": "onOpenChange",
+      "element": "Modal",
+      "handler": "{(open) => { if (!open) onClose(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 421,
+      "event": "onOpenChange",
+      "element": "Popover",
+      "handler": "{setOpen}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 444,
+      "event": "onChange",
+      "element": "Calendar",
+      "handler": "{(value) => { if (value) onDate(new Date(value.year, value.month - 1, value.day, 12)); setOpen(false); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 601,
+      "event": "onOpenChange",
+      "element": "Dropdown",
+      "handler": "{setOpen}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/dashboard-ui.tsx",
+      "line": 625,
+      "event": "onAction",
+      "element": "Dropdown.Menu",
+      "handler": "{(key) => { setOpen(false); if (key === \"new-team\") onNewTeam(); else if (key === \"new-organization\") onNewOrganization?.(); else onTeam(String(key)); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-mini-timer.tsx",
+      "line": 112,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act(\"open_main\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-mini-timer.tsx",
+      "line": 135,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act(timer?.phase === \"lunch\" ? \"resume\" : \"pause\") }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-mini-timer.tsx",
+      "line": 154,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act(\"stop\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-mini-timer.tsx",
+      "line": 158,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act(timer?.compact ? \"expand\" : \"compact\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-mini-timer.tsx",
+      "line": 164,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act(\"hide\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-mini-timer.tsx",
+      "line": 172,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act(\"open_main\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-runtime-controls.tsx",
+      "line": 64,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void change(\"show_mini\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-runtime-controls.tsx",
+      "line": 70,
+      "event": "onOpenChange",
+      "element": "Popover",
+      "handler": "{(value) => { setOpen(value); if (value) void change(\"state\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-runtime-controls.tsx",
+      "line": 92,
+      "event": "onCheckedChange",
+      "element": "ZuluCheckboxField",
+      "handler": "{(enabled) => void change(\"set_autostart\", enabled) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-runtime-controls.tsx",
+      "line": 106,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void change(state.miniVisible ? \"hide_mini\" : \"show_mini\") }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-runtime-controls.tsx",
+      "line": 118,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void change(\"quit\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-titlebar.tsx",
+      "line": 169,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act(\"minimize\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-titlebar.tsx",
+      "line": 177,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act(\"toggle_maximize\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-titlebar.tsx",
+      "line": 190,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act(\"close\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-update.tsx",
+      "line": 161,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { sessionStorage.setItem(\"hub-update-dismissed\", version); setVersion(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-update.tsx",
+      "line": 171,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { setOpening(true); setError(false); let unlisten: (() => void) | undefined; try { const { invoke } = await import(\"@tauri-apps/api/core\"); if (automatic) { setPhase(\"preparing\"); setPercent(null); const { l",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-update.tsx",
+      "line": 214,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { if (webBuild) { sessionStorage.setItem(\"hub-web-update-dismissed\", webBuild); } setWebBuild(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/desktop-update.tsx",
+      "line": 225,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => window.location.reload()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/form-controls.tsx",
+      "line": 126,
+      "event": "onChange",
+      "element": "TimeField",
+      "handler": "{update}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/form-controls.tsx",
+      "line": 150,
+      "event": "onChange",
+      "element": "DatePicker",
+      "handler": "{update}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/form-controls.tsx",
+      "line": 233,
+      "event": "onChange",
+      "element": "NumberField",
+      "handler": "{(next) => { const text = Number.isFinite(next) ? String(next) : \"\"; setLocal(text); onValueChange?.(text); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 274,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{(event) => setAnchorWeek(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 279,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{(event) => setReminderTime(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 291,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(value) => chooseMember(index, value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 309,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setHolidays((current) => current.filter((item) => item.holiday_date !== holiday.holiday_date))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 314,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{addHoliday}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 315,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{(event) => setHolidayDate(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 316,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(event) => setHolidayLabel(event.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 324,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void saveSchedule()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 340,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{requestSwap}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 343,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(value) => { setSwapWeek(value); setTargetUserId(\"\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 349,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(value) => setTargetUserId(value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 376,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void decideSwap(swap.id, \"accept\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 377,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void decideSwap(swap.id, \"decline\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/home-office-manager.tsx",
+      "line": 380,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void decideSwap(swap.id, \"cancel\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hours-report.tsx",
+      "line": 60,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{event => { event.preventDefault(); void generate(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hours-report.tsx",
+      "line": 61,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{event => setFrom(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hours-report.tsx",
+      "line": 62,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{event => setTo(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hours-report.tsx",
+      "line": 63,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{setUser}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hours-report.tsx",
+      "line": 64,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{setProject}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hours-report.tsx",
+      "line": 72,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void exportFile(() => downloadHoursPdf(report))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hours-report.tsx",
+      "line": 73,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void exportFile(() => saveReportFile(`zulu-horas-${from}-${to}.csv`, csvBlob([\"Pessoa\", \"Projeto\", \"Cliente\", \"Atividade\", \"Início\", \"Término\", \"Segundos\"], report.rows.map(row => [row.display_name, row.project_na",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 152,
+      "event": "onClick",
+      "element": "dialog",
+      "handler": "{(e) => { if (e.target === e.currentTarget) onClose(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 158,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{onClose}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 514,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setFilterOpen(!filterOpen)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 527,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => { setProjectFilter(e); setFilterOpen(false); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 544,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setCalendarView(\"week\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 550,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setCalendarView(\"day\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 558,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{openEventForm}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 571,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => moveCalendar(-1)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 589,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => moveCalendar(1)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 595,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setWeekOffset(0); setActiveDay((today.getDay() + 6) % 7); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 623,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setActiveDay(day); setCalendarView(\"day\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 656,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setActiveDay(day); setEditEvent(null); setEventStart(hourLabel(hour)); setDialog(\"event\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 674,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setSelectedEvent(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 732,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => (timer ? stopTimer() : startTimer())}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 766,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(\"overview\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 773,
+      "event": "onOpenChange",
+      "element": "Tooltip",
+      "handler": "{open => { if (!open) setNavTooltip(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 779,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(item.id)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 798,
+      "event": "onOpenChange",
+      "element": "Tooltip",
+      "handler": "{open => { if (!open) setNavTooltip(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 805,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"settings\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 822,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"settings\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 835,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setPopover(popover === \"workspace\" ? null : \"workspace\") }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 855,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { navigate(\"people\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 874,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"search\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 888,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setPopover( popover === \"notifications\" ? null : \"notifications\", ) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 903,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setNotified(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 910,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { navigate(\"chat\"); setChannel(\"geral\"); setNotified(true); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 926,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(\"calendar\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 943,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"settings\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 972,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(\"hours\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 980,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{openEventForm}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 987,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"manual\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1037,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => startTimer(work.title, work.project)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1052,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(\"hours\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1070,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setSelectedEvent(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1095,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(\"calendar\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1118,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { navigate(\"people\"); setPeopleQuery(p.name); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1133,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setPeopleQuery(\"\"); navigate(\"people\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1201,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setChannel(\"geral\"); navigate(\"chat\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1228,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setChannel(c)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1246,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setChannel(i === 1 ? \"marina\" : `dm-${i}`)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1283,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setPeopleQuery(\"\"); navigate(\"people\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1333,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{sendMessage}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1340,
+      "event": "onChange",
+      "element": "ZuluTextArea",
+      "handler": "{(e) => setDraft(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1389,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setDescription(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1398,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setProject(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1410,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => (timer ? stopTimer() : startTimer())}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1489,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"manual\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1509,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setPeopleQuery(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1516,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setAvailability(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1572,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"settings\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1580,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { const key = i === 1 ? \"marina\" : `dm-${i}`; setChannel(key); setMessages((prev) => prev[key] ? prev : { ...prev, [key]: [] }, ); navigate(\"chat\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1611,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setPeopleQuery(\"\"); setAvailability(\"all\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1628,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setToast(\"\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1678,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setEditEvent(selectedEvent); setSelectedEvent(null); setDialog(\"event\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1689,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { const updated = { ...selectedEvent, rsvp: !selectedEvent.rsvp }; setEvents((prev) => prev.map((ev) => (ev.id === updated.id ? updated : ev)), ); setSelectedEvent(updated); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1716,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{saveEvent}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1808,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setDialog(null); setEditEvent(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1825,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{saveManual}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1875,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1894,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => { e.preventDefault(); const data = new FormData(e.currentTarget); const updated = String(data.get(\"name\")).trim(); if (!updated) return; setName(updated); setStatus(String(data.get(\"status\"))); setDialog(null); s",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1940,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1966,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setQuery(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 1979,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { navigate(n.id); setDialog(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-app.tsx",
+      "line": 2000,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setDialog(null); setSelectedEvent(e); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-ui.tsx",
+      "line": 95,
+      "event": "onClick",
+      "element": "dialog",
+      "handler": "{(e) => { if (e.target === e.currentTarget) onClose(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-ui.tsx",
+      "line": 101,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{onClose}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/hub-ui.tsx",
+      "line": 129,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{onAction}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/invitation-screen.tsx",
+      "line": 131,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void accept()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/invitation-screen.tsx",
+      "line": 158,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void dismiss()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/kanban-dnd.tsx",
+      "line": 118,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{(event) => event.continuePropagation()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 318,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setQuery(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 325,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{setProject}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 340,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setMine(!mine)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 351,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setEditor({ task: null })}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 372,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setError(\"\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 452,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setEditor({ task: null })}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 572,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onEdit(task)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 610,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(status) => onMove(task, status)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 623,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{onStop}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 634,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onStart(task)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 700,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => void submit(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 808,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setConfirmArchive(false)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 816,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { if (!task) return; const result = await onArchive(task); if (result) setError(result); else onClose(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 834,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setConfirmArchive(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-board.tsx",
+      "line": 844,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{onClose}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 167,
+      "event": "onOpenChange",
+      "element": "Dropdown",
+      "handler": "{setFilterOpen}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 170,
+      "event": "onAction",
+      "element": "Dropdown.Menu",
+      "handler": "{(key) => { setFilter(String(key)); setFilterOpen(false); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 182,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onHomeOffice({ team_id: hub.teamId, user_id: null, scheduled_on: dayKey(date), week_start: sundayKey(date), display_name: null, avatar_url: null, entry_kind: \"home_office\", entry_label: null, })}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 197,
+      "event": "onSelectionChange",
+      "element": "ToggleButtonGroup",
+      "handler": "{(keys) => { const key = [...keys][0]; if (key) onView(String(key) as CalendarView); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 204,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onNew(dateAt(monday, day))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 222,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onMove(-1)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 237,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onMove(1)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 241,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{onToday}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 296,
+      "event": "onClick",
+      "element": "div",
+      "handler": "{(event) => { if (hub.canParticipate && !hub.busy && !(event.target as HTMLElement).closest(\"button, a\")) onNew(cell); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 305,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{openDay}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 313,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onNew(cell)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 327,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onHomeOffice(item.office)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 358,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onSelect(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 367,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{openDay}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 375,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{openDay}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 399,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { onDay(s.index); onView(\"day\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 425,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onHomeOffice(office)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calendar.tsx",
+      "line": 478,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => onSelect(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 226,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void toggleShare()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 261,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialogOpen(false)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 267,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void startShare()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 307,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setNativeSelectedId(item.sourceId)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 324,
+      "event": "onChange",
+      "element": "RadioGroup",
+      "handler": "{value=>setSource(value as ShareSource)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 330,
+      "event": "onChange",
+      "element": "RadioGroup",
+      "handler": "{value=>setProfile(value as ShareProfile)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 353,
+      "event": "onAction",
+      "element": "Dropdown.Item",
+      "handler": "{() => { void setActiveMediaDevice(device.deviceId).catch(() => onError(`Não foi possível trocar o dispositivo de ${name}. Confira as permissões e tente novamente.`)); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 386,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void toggle(\"microphone\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 387,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void toggle(\"camera\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 389,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { void room.disconnect(); onLeave(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 391,
+      "event": "onSubmit",
+      "element": "form",
+      "handler": "{event => { event.preventDefault(); if (!draft.trim() || isSending) return; void send(draft.trim()).then(() => setDraft(\"\")).catch(() => setError(\"A mensagem não foi enviada. Tente novamente.\")); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 391,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{event => setDraft(event.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-call-room.tsx",
+      "line": 402,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setFocused(focus && key(focus) === key(track) ? \"\" : key(track))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calls.tsx",
+      "line": 182,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setChannel(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calls.tsx",
+      "line": 197,
+      "event": "onCheckedChange",
+      "element": "ZuluCheckboxField",
+      "handler": "{(e) => setAudio(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calls.tsx",
+      "line": 206,
+      "event": "onCheckedChange",
+      "element": "ZuluCheckboxField",
+      "handler": "{(e) => setVideo(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calls.tsx",
+      "line": 221,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setStatusAttempt((attempt) => attempt + 1)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-calls.tsx",
+      "line": 247,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{join}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 90,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setTab(t.id); setEditing(undefined); setError(\"\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 103,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void store.refresh()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 119,
+      "event": "onAction",
+      "element": "EmptyState",
+      "handler": "{() => void store.refresh()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 131,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setEditing(undefined)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 138,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setPreview(!preview)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 145,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => void saveNote(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 170,
+      "event": "onChange",
+      "element": "ZuluTextArea",
+      "handler": "{(e) => setBody(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 185,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { if ( !window.confirm( \"Arquivar este documento? Ele sairá da lista do time.\", ) ) return; const r = await hub.mutate( () => hub.rpc(\"save_team_note\", { p_team_id: hub.teamId, p_title: editing.title, p_body",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 239,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setEditing(null); setBody(\"\"); setPreview(false); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 256,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setEditing(note); setBody(note.body); setPreview(!canWrite); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 302,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => { setKind(e); setPeriod( e === \"weekly\" ? dayKey(mondayOf(new Date())) : dayKey(new Date()), ); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 320,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setPeriod(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 330,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const r = await hub.mutate( () => hub.rpc(\"save_standup\", { p_team_id: hub.teamId, p_period_on: period, p_kind: kind, p_accomplished: String(f.",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 452,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => { setEventId(e); setError(\"\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-collaboration.tsx",
+      "line": 471,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const r = await hub.mutate( () => hub.rpc(\"save_meeting_documents\", { p_event_id: eventId, p_agenda: String(f.get(\"agenda\")), p_minutes: String",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 665,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{hub.dismissNotice}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 687,
+      "event": "onAction",
+      "element": "EmptyState",
+      "handler": "{() => void hub.refreshAll()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 689,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{signOut}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 749,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(\"overview\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 756,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(area.tabs.find(([id]) => isAllowed(id))![0])}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 762,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(\"settings\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 764,
+      "event": "onOpenChange",
+      "element": "WorkspaceDrawer",
+      "handler": "{setMenuOpen}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 766,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setMenuOpen(!menuOpen)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 780,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => openModal(\"search\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 801,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => openModal(\"profile\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 809,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{()=>void organization.refresh()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 843,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(\"hours\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 855,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{newTime}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 863,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => openModal(\"member\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 897,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setWorkScheduleOpen(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 903,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void hub.mutate( () => hub.rpc(\"skip_work_schedule_setup\", { p_team_id: hub.teamId }), \"Tudo certo. Você pode configurar sua jornada em Minhas horas quando quiser.\", )}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 919,
+      "event": "onAction",
+      "element": "EmptyState",
+      "handler": "{() => void hub.refreshAll()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1093,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setPeopleQuery(person.display_name); navigate(\"people\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1124,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setPeopleQuery(\"\"); navigate(\"people\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1192,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(\"chat\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1244,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => navigate(item.id)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1359,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => { e.preventDefault(); void (pausedTimer ? resumeTimer() : activeTimer ? pauseTimer() : startTimer()); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1368,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setDescription(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1379,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(value) => setProjectId(value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1414,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void stopTimer()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1436,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => openModal(\"project\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1449,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setWorkScheduleOpen(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1510,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setEditingTime(entry); openModal(\"time\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1545,
+      "event": "onAction",
+      "element": "EmptyState",
+      "handler": "{newTime}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1562,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setPeopleQuery(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1569,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(value) => setAvailabilityFilter(value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1626,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => openModal(\"profile\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1635,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void openDm(person)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1657,
+      "event": "onAction",
+      "element": "EmptyState",
+      "handler": "{() => { setPeopleQuery(\"\"); setAvailabilityFilter(\"all\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1689,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => openModal(\"channel\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1697,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{e => setChannelQuery(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1705,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setChannelId(c.id); setShowChannelList(false); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1739,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setChannelId(c.id); setShowChannelList(false); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1764,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setPeopleQuery(\"\"); navigate(\"people\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1798,
+      "event": "onAction",
+      "element": "EmptyState",
+      "handler": "{() => hub.canManage && hub.canParticipate ? openModal(\"channel\") : navigate(\"people\") }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1811,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setShowChannelList(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1845,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => openModal(\"channel-members\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1857,
+      "event": "onAction",
+      "element": "EmptyState",
+      "handler": "{() => void hub.mutate( () => hub.rpc(\"join_public_channel\", { p_channel_id: channelId, }), \"Você entrou no canal.\", ) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 1995,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(value) => void hub.mutate( () => hub.rpc(\"respond_to_event\", { p_event_id: selectedEvent.id, p_response: value as | \"accepted\" | \"declined\" | \"tentative\" | \"pending\", }), \"Sua resposta foi registrada.\", )}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2018,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const fields = new FormData(e.currentTarget); const id = String(fields.get(\"user\")); if (id) await hub.mutate( () => hub.rpc(\"invite_event_attendee\", { p_event_id: selectedEvent.id, p_",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2066,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { const result = await hub.mutate( () => hub.rpc(\"cancel_event\", { p_event_id: selectedEvent.id }), \"Evento cancelado.\", ); if (result.ok) setEventId(\"\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2080,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => editEvent(selectedEvent)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2094,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{saveEvent}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2168,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setModal(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2189,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{saveTime}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2266,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setModal(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2287,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{saveProfile}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2340,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setModal(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2350,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setModal(null); navigate(\"settings\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2357,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { try { await navigator.clipboard.writeText(userId); hub.notify(\"Identificador copiado.\"); } catch { hub.notify(\"Selecione e copie o identificador acima.\", true); } }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2369,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{signOut}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2378,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{createProject}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2402,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setModal(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2416,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{createChannel}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2457,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setModal(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2478,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const fields = new FormData(e.currentTarget); const result = await hub.mutate( () => hub.rpc(\"set_channel_member\", { p_channel_id: channelId, p_user_id: String(fields.get(\"user\")), p_r",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2525,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setModal(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2547,
+      "event": "onSubmit",
+      "element": "CreateOrganizationDialog",
+      "handler": "{createOrganization}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2551,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{createTeam}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2585,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setModal(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2609,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const fields = new FormData(e.currentTarget); const body = String(fields.get(\"body\")).trim(); if (!body) return; const result = await hub.mutate( () => hub.rpc(\"edit_message\", { p_mess",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2643,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setModal(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2659,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { const result = await hub.mutate( () => hub.rpc(\"delete_message\", { p_message_id: editingMessage.id, }), \"Mensagem removida.\", ); if (result.ok) { setModal(null); await channel.refresh(); } }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2685,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setSearch(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2699,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { navigate(n.id); setModal(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2718,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setPeopleQuery(person.display_name); navigate(\"people\"); setModal(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-hub-app.tsx",
+      "line": 2744,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setModal(null); setEventId(event.id); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 208,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => run(refresh)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 226,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setTab(key as typeof tab); setSecret(null); setError(\"\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 289,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => run(() => sync(connection))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 297,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { if ( confirm( \"Desconectar? O calendário externo e os eventos serão preservados.\", ) ) void run(async () => { await api( `/api/integrations/${provider}/disconnect`, { connectionId: connection.id }, ); setConflic",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 320,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => run(async () => { const result = await api( `/api/integrations/${provider}/connect`, { teamId: hub.teamId }, ); location.assign(result.url); }) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 355,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => activeSync && run(() => sync(activeSync, { [c.eventId]: \"hub\" })) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 364,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => activeSync && run(() => sync(activeSync, { [c.eventId]: \"external\" })) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 392,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => { e.preventDefault(); void run(async () => { const r = await hub.rpc(\"create_incoming_webhook\", { p_channel_id: channel, p_name: name, }); setSecret(r as unknown as { id: string; token: string }); setName(\"\"); aw",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 411,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setName(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 420,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setChannel(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 457,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => run(async () => { await navigator.clipboard.writeText( JSON.stringify( { url: webhookUrl, authorization: `Bearer ${secret.token}`, body: { event_id: \"ticket-123\", text: \"Novo ticket recebido\", }, }, null, 2, ), );",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 480,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setSecret(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 503,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => run(async () => { await hub.rpc(\"set_incoming_webhook\", { p_webhook_id: h.id, p_enabled: !h.enabled, }); await refresh(); }) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 533,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setFilter(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 554,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => loadAudit()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-integrations.tsx",
+      "line": 599,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => loadAudit(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 214,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setTab(t.id); setError(\"\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 226,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void store.refresh()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 251,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => { e.preventDefault(); void loadReport(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 261,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setFrom(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 271,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setTo(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 280,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setUserId(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 295,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setProjectId(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 309,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setClientId(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 337,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => downloadCsv( `hub-horas-${from}-${to}.csv`, columns, reportRows, ) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 351,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void downloadPdf( `hub-horas-${from}-${to}.pdf`, \"ZULU · Relatório de horas\", `${hub.currentTeam?.name || \"Time\"} · ${from} a ${to}`, columns, reportRows, ).catch((e) => setError(errorMessage(e))) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 435,
+      "event": "onAction",
+      "element": "EmptyState",
+      "handler": "{() => void store.refresh()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 455,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); await act( () => hub.rpc(\"set_time_goal\", { p_team_id: hub.teamId, p_user_id: String(f.get(\"user\")), p_weekly_minutes: Math.round( Number(f.get",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 568,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setFrom(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 575,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setTo(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 583,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const ok = await act( () => hub.rpc(\"save_shift\", { p_team_id: hub.teamId, p_user_id: String(f.get(\"user\")), p_label: String(f.get(\"label\")), p",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 661,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setEditingShift(null)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 686,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setEditingShift(s)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 693,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { if (window.confirm(\"Cancelar este turno?\")) void act( () => hub.rpc(\"save_shift\", { p_team_id: hub.teamId, p_user_id: s.user_id, p_label: s.label, p_starts_at: s.starts_at, p_ends_at: s.ends_at, p_shift_id: s.id",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 719,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setSwapShift(s.id)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 730,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); if ( await act( () => hub.rpc(\"request_shift_swap\", { p_shift_id: swapShift, p_target_user_id: String(f.get(\"target\")), }), \"Pedido de troca en",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 764,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setSwapShift(\"\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 793,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act( () => hub.rpc(\"decide_shift_swap\", { p_request_id: r.id, p_action: \"accepted\", }), \"Troca aceita. Aguardando liderança.\", ) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 811,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act( () => hub.rpc(\"decide_shift_swap\", { p_request_id: r.id, p_action: \"approved\", }), \"Troca aprovada.\", ) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 828,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act( () => hub.rpc(\"decide_shift_swap\", { p_request_id: r.id, p_action: \"rejected\", }), \"Troca recusada.\", ) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 845,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act( () => hub.rpc(\"decide_shift_swap\", { p_request_id: r.id, p_action: \"cancelled\", }), \"Pedido cancelado.\", ) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 880,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const form = e.currentTarget, f = new FormData(form); if ( await act( () => hub.rpc(\"request_absence\", { p_team_id: hub.teamId, p_kind: String(f.get(\"kind\")), p_starts_on: String(f.get",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 947,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act( () => hub.rpc(\"decide_absence\", { p_absence_id: a.id, p_status: \"approved\", }), \"Ausência aprovada.\", ) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 964,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void act( () => hub.rpc(\"decide_absence\", { p_absence_id: a.id, p_status: \"rejected\", }), \"Ausência recusada.\", ) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 984,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { if (window.confirm(\"Cancelar esta ausência?\")) void act( () => hub.rpc(\"cancel_absence\", { p_absence_id: a.id, }), \"Ausência cancelada.\", ); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 1038,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const form = e.currentTarget, f = new FormData(form); if ( await act( () => hub.rpc(\"save_team_date\", { p_team_id: hub.teamId, p_label: String(f.get(\"label\")), p_happens_on: String(f.g",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 1100,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { if (window.confirm(\"Remover esta data do time?\")) void act( () => hub.rpc(\"save_team_date\", { p_team_id: hub.teamId, p_date_id: d.id, p_label: d.label, p_happens_on: d.happens_on, p_delete: true, }), \"Data remov",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 1143,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const form = e.currentTarget, f = new FormData(form); if ( await act( () => hub.rpc(\"save_client\", { p_team_id: hub.teamId, p_name: String(f.get(\"name\")), }), \"Cliente criado.\", ) ) fo",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 1171,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (e) => { e.preventDefault(); const f = new FormData(e.currentTarget); await act( () => hub.rpc(\"set_project_client\", { p_project_id: String(f.get(\"project\")), p_client_id: String(f.get(\"client\")) || undefined, }),",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-management.tsx",
+      "line": 1232,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { if ( window.confirm( \"Arquivar este cliente? O histórico será preservado.\", ) ) void act( () => hub.rpc(\"save_client\", { p_team_id: hub.teamId, p_name: c.name, p_client_id: c.id, p_archived: true, }), \"Cliente a",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-onboarding.tsx",
+      "line": 81,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{submit}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-onboarding.tsx",
+      "line": 87,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setWorkspaceId(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-onboarding.tsx",
+      "line": 138,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void hub.refreshAll()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/live-onboarding.tsx",
+      "line": 143,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{signOut}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/marketing.tsx",
+      "line": 67,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setOpen(!open)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/marketing.tsx",
+      "line": 74,
+      "event": "onClick",
+      "element": "Link",
+      "handler": "{() => setOpen(false)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/marketing.tsx",
+      "line": 77,
+      "event": "onClick",
+      "element": "Link",
+      "handler": "{() => setOpen(false)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/marketing.tsx",
+      "line": 80,
+      "event": "onClick",
+      "element": "Link",
+      "handler": "{() => setOpen(false)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/marketing.tsx",
+      "line": 212,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setSelected(index)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/marketing.tsx",
+      "line": 338,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { if (started === null) { setSeconds(0); setStarted(Date.now()); } else setStarted(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/marketing.tsx",
+      "line": 844,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { try { await navigator.clipboard.writeText(WINDOWS_RELEASE.sha256); setCopied(true); setCopyError(false); } catch { setCopyError(true); } }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/notification-bell.tsx",
+      "line": 54,
+      "event": "onOpenChange",
+      "element": "Popover",
+      "handler": "{setOpen}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/notification-bell.tsx",
+      "line": 58,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void refresh(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/notification-bell.tsx",
+      "line": 63,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setOpen(false); onOpen(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/notification-feed.tsx",
+      "line": 47,
+      "event": "onSelectionChange",
+      "element": "ToggleButtonGroup",
+      "handler": "{keys => { const key = [...keys][0]; if (key) setFilter(String(key)); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/notification-feed.tsx",
+      "line": 60,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { onOpenChannel(n.channel_id!); if (!n.read_at) void markRead(n.id); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/notification-feed.tsx",
+      "line": 62,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void markRead(n.id)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/offline-settings.tsx",
+      "line": 68,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(e) => setPass(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/offline-settings.tsx",
+      "line": 76,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{enable}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/offline-settings.tsx",
+      "line": 87,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { await clearVault(); setExists(false); setUnlocked(false); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/operations-demo.tsx",
+      "line": 63,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setPage(id as string); setNotice(\"\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 17,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{enabled=>onChange(changePermission(value,id,action,enabled))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 37,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void load()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 42,
+      "event": "onSelectionChange",
+      "element": "Tabs",
+      "handler": "{k=>setTab(String(k))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 51,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>setQuery(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 52,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>setSelected(m.user_id)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 54,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>{accessDirty.current=true;setJob(e.target.value);}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 54,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{setTeam}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 55,
+      "event": "onChange",
+      "element": "PermissionMatrix",
+      "handler": "{p=>{accessDirty.current=true;setPermissions(p);}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 55,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>propose('member_permissions',{team_id:team,user_id:selected,job_title:job,permissions},'Salvar cargo e permissões individuais')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 55,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>propose('team_member',{team_id:team,user_id:selected,permissions},'Incluir pessoa no time selecionado')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 57,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>propose('team_admin',{team_id:team,user_id:selected,enabled:!membership.is_team_admin},membership.is_team_admin?'Retirar administração deste time':'Conceder administração deste time')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 58,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>propose('workspace_admin',{user_id:selected,enabled:member.role!=='admin'},member.role==='admin'?'Retirar administração geral':'Conceder administração geral')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 58,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>propose(member.is_active?'member_suspend':'member_restore',{user_id:selected},member.is_active?'Suspender o acesso à organização':'Reativar o acesso à organização')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 58,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>propose('member_remove',{user_id:selected},'Remover pessoa da organização')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 59,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{enabled=>void run(()=>command('approver',{user_id:selected,enabled}))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 63,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>setConfirmation('transfer')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 63,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>setConfirmation('transfer_leave')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 66,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{e=>{e.preventDefault();void run(async()=>{await command('create_team',{name:teamName.trim()});setTeamName('');if(!fixture)await hub.refreshBootstrap();},'Time criado. Configure as pessoas e seus acessos.');}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 66,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>setTeamName(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 66,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>propose('team_delete',{team_id:t.id},`Arquivar o time ${t.name}`)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 67,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{e=>{e.preventDefault();propose('invite',{team_id:inviteTeams[0],email:inviteEmail,job_title:inviteJob,general_admin:inviteAdmin,teams:inviteTeams.map(team_id=>({team_id,is_team_admin:inviteTeamAdmin,permissions:invitePe",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 68,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>setInviteEmail(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 68,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>setInviteJob(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 69,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{v=>setInviteTeams(old=>v?[...old,t.id]:old.filter(id=>id!==t.id))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 70,
+      "event": "onChange",
+      "element": "PermissionMatrix",
+      "handler": "{setInvitePermissions}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 71,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{setInviteTeamAdmin}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 72,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{setInviteAdmin}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 74,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(async()=>{const r=await fetch('/api/organization/invite',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({authorizationId:a.id})});const d=await r.json();if(!r.ok)throw Error(",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 75,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void navigator.clipboard.writeText(inviteUrl).then(()=>setSuccess('Link copiado.')).catch(()=>setError('Selecione e copie o link.'))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 76,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(()=>command('revoke_invite',{id:i.id}))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 81,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>setConfirmation(`approve:${r.id}`)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 81,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>setConfirmation(`reject:${r.id}`)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 81,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(()=>command('decide',{id:r.id,decision:'cancel'}),'Solicitação cancelada.')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 85,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>propose('feature',{feature:id,enabled:authority.features[id]===false},`${authority.features[id]===false?'Ativar':'Desativar'} ${label} para toda a organização`)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 86,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{setPolicyAction}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 87,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{v=>{policyDirty.current=true;setApprovers(a=>v?[...a,m.user_id]:a.filter(id=>id!==m.user_id));if(!v)setRequired(a=>a.filter(id=>id!==m.user_id));}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 87,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{v=>{policyDirty.current=true;setRequired(a=>v?[...a,m.user_id]:a.filter(id=>id!==m.user_id));}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 88,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{e=>{policyDirty.current=true;setQuorum(e);}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 88,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{e=>{policyDirty.current=true;setExpiry(e);}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 88,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(async()=>{const r=await command('policy',{action:policyAction,approvers,required_approvers:required,quorum:Number(quorum),expires_days:Number(expiry)});policyDirty.current=false;return r;})}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 91,
+      "event": "onChange",
+      "element": "TextArea",
+      "handler": "{e=>setReason(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 91,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{setJoint}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 91,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(async()=>{const r=await command('request',{action:draft.action,data:draft.data,reason:reason||'Alteração confirmada pelo dono',submit_for_approval:joint}) as {pending?:boolean};if(draft.action==='member_per",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 92,
+      "event": "onChange",
+      "element": "TextArea",
+      "handler": "{e=>setReason(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-admin.tsx",
+      "line": 92,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(async()=>{if(confirmation.startsWith('transfer'))await command('transfer',{user_id:selected,leave_after:confirmation==='transfer_leave'});else await command('decide',{id:confirmation.split(':')[1],decision:",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-contacts.tsx",
+      "line": 19,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>setQuery(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-contacts.tsx",
+      "line": 19,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{async()=>{setBusy(true);setError('');try{const r=await hub.client.rpc('organization_contacts',{p_workspace_id:hub.workspace!.id,p_other_user_id:p.id});if(r.error)throw r.error;await load();setSelected((r.data as {channe",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-contacts.tsx",
+      "line": 19,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>setCalling(v=>!v)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-contacts.tsx",
+      "line": 19,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async e=>{e.preventDefault();const r=await hub.mutate(()=>hub.rpc('edit_message',{p_message_id:editing.id,p_body:editing.body}),'Mensagem editada.');if(r.ok){setEditing(null);await channel.refresh();}}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-contacts.tsx",
+      "line": 19,
+      "event": "onChange",
+      "element": "TextArea",
+      "handler": "{e=>setEditing({...editing,body:e.target.value})}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 27,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void load()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 28,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>{setCreateKind(parent?'document':'library');setTitle('');setBody('');setSensitive(false);setDialog('create');}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 30,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>{setDocument(null);setEditing(false);}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 30,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>{if(editing){setTitle(document.title);setBody(document.body);}setEditing(v=>!v);}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 30,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(async()=>{if(fixture)return;const r=await fetch(`/api/library/download?workspace=${workspaceId}&id=${document.id}`);if(!r.ok)throw Error('Não foi possível baixar. Confira seu acesso.');if(r.headers.get('con",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 30,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>{setRecipient('');setSharePermissions(['read']);setDialog(`share:${document.id}`);}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 31,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{e=>{e.preventDefault();void run(async()=>{await call('save',{id:document.id,title,body,version:document.version});const d=await call('read',{id:document.id}) as Document;setDocument({...document,...d});setEditing(false)",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 31,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>setTitle(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 31,
+      "event": "onChange",
+      "element": "TextArea",
+      "handler": "{e=>setBody(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 32,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>{const file=e.target.files?.[0];e.target.value='';if(!file)return;if(file.size>50*1024*1024){setError('Escolha um arquivo de até 50 MB.');return;}void run(async()=>{const path=`${document.id}/${crypto.randomUUID()}`;",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 33,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(async()=>{await call('sensitivity',{id:document.id,sensitive:!document.sensitive});const d=await call('read',{id:document.id}) as Document;setDocument({...document,...d});})}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 33,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(async()=>{setGrants(await call('grants',{id:document.id}) as typeof grants);setDialog(`grants:${document.id}`);},'')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 34,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>setParent(current?.parent_id||'')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 34,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>setSearch(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 35,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void open(n)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 35,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>{setRecipient('');setSharePermissions(['read']);setDialog(`share:${n.id}`);}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 37,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(()=>call('share_decide',{id:r.node_id,request_id:r.id,approve:true}),'Compartilhamento aprovado.')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 37,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(()=>call('share_decide',{id:r.node_id,request_id:r.id,approve:false}),'Compartilhamento rejeitado.')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 38,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{e=>{e.preventDefault();void run(async()=>{await call('create',{kind:createKind,title,body,sensitive,parent_id:parent||null,team_id:createTeam||null});setDialog('');},'Conteúdo criado. Compartilhe o acesso quando estiver",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 38,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{setCreateKind}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 38,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{setCreateTeam}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 38,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{e=>setTitle(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 38,
+      "event": "onChange",
+      "element": "TextArea",
+      "handler": "{e=>setBody(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 38,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{setSensitive}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 39,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{e=>{e.preventDefault();void run(async()=>{if(recipient==='organization'){const r=await call('publish_org',{id:sharedNode.id,permissions:sharePermissions});setDialog('');return r;}else{const [type,id]=recipient.split(':'",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 39,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{setRecipient}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 39,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{v=>setSharePermissions(a=>v?[...a,id]:a.filter(x=>x!==id))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-library.tsx",
+      "line": 40,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void run(async()=>{await call('revoke',{id:document.id,grant_id:g.id});setGrants(await call('grants',{id:document.id}) as typeof grants);},'Acesso direto revogado.')}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-notices.tsx",
+      "line": 15,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>setConfirmTransfer(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-notices.tsx",
+      "line": 15,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void act('transfer_decide',{id:transfer.id,accept:false})}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-notices.tsx",
+      "line": 15,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void act('notice_read',{id:notice.id})}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/organization-notices.tsx",
+      "line": 15,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>void act('transfer_decide',{id:transfer.id,accept:true}).then(()=>setConfirmTransfer(false))}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/profile-avatar.tsx",
+      "line": 32,
+      "event": "onChange",
+      "element": "Input",
+      "handler": "{async event => { const file = event.target.files?.[0]; event.target.value = \"\"; if (!file) return; if (file.size > 5 * 1024 * 1024 || ![\"image/jpeg\", \"image/png\", \"image/webp\"].includes(file.type)) { setMessage(\"Escolha",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/push-settings.tsx",
+      "line": 184,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void toggle()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/pwa.tsx",
+      "line": 82,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { await prompt.prompt(); await prompt.userChoice; deferredInstall = null; setPrompt(null); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/team-access.tsx",
+      "line": 119,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setTab(id); setError(\"\"); setNotice(\"\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/team-access.tsx",
+      "line": 152,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => { e.preventDefault(); const fields = new FormData(e.currentTarget); void run(() => invite( String(fields.get(\"email\")).trim(), String(fields.get(\"role\")) as TeamRole, ), ); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/team-access.tsx",
+      "line": 201,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{async () => { try { await navigator.clipboard.writeText(created.url); setNotice(\"Link copiado.\"); } catch { setNotice(\"Selecione e copie o link no campo acima.\"); } }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/team-access.tsx",
+      "line": 228,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(e) => void saveMember(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/team-access.tsx",
+      "line": 234,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(e) => setMemberId(e)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/team-access.tsx",
+      "line": 257,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void run(async () => { await hub.rpc(\"set_workspace_member\", { p_workspace_id: hub.workspace!.id, p_user_id: selected.id, p_role: selected.workspace_role, p_is_active: true, }); await load(); await hub.refreshAll(",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/team-access.tsx",
+      "line": 324,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void run(load)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/team-access.tsx",
+      "line": 356,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void run(() => invite(i.email, i.role)) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/team-access.tsx",
+      "line": 366,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void run(async () => { await hub.rpc(\"revoke_team_invitation\", { p_invitation_id: i.id, }); if (created?.id === i.id) setCreated(null); await load(); setNotice(\"Convite revogado.\"); }) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 209,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { if (timer.state !== \"idle\") { props.onToggleTimer(); return; } setActivity(timer.description); setProject(timer.projectId ?? \"\"); setTaskId(undefined); setStartError(\"\"); setChoosing(!choosing); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 240,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{props.onStopTimer}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 269,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setChoosing(false); document .querySelector<HTMLButtonElement>(\".today-timer-primary\") ?.focus(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 281,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{async (event) => { event.preventDefault(); if (starting || busy || addingProject || !activity.trim()) return; setStarting(true); setStartError(\"\"); try { if ( await props.onStartActivity({ description: activity.trim(), ",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 317,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{(event) => { setActivity(event.target.value); setTaskId(undefined); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 329,
+      "event": "onValueChange",
+      "element": "ZuluSelect",
+      "handler": "{(value) => { setProject(value); setTaskId(undefined); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 349,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{event => setProjectName(event.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 355,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void saveNewProject()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 358,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{closeProjectCreator}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 379,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { setActivity(item.description); setProject(item.projectId); setTaskId(item.kind === \"task\" ? item.id : undefined); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 437,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{props.onRetry}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 496,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{props.onHomeOffice}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 563,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => props.onEvent(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 595,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{props.onCalendar}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 622,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => props.onPerson(person)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 661,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => props.onMessage(message.channelId)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 693,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{props.onPeople}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 711,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => props.onRestart(entry.id)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/today-dashboard.tsx",
+      "line": 725,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{props.onChat}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/work-schedule-setup.tsx",
+      "line": 93,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{(event) => void save(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/work-schedule-setup.tsx",
+      "line": 111,
+      "event": "onCheckedChange",
+      "element": "ZuluCheckboxField",
+      "handler": "{(checked) => setWorkdaysMask((current) => current ^ (1 << index)) }",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/work-schedule-setup.tsx",
+      "line": 134,
+      "event": "onValueChange",
+      "element": "ZuluInput",
+      "handler": "{(event) => setDailyHours(event)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/work-schedule-setup.tsx",
+      "line": 155,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => void skip()}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-area-tabs.tsx",
+      "line": 9,
+      "event": "onSelectionChange",
+      "element": "Tabs",
+      "handler": "{key => onPage(String(key) as LivePage)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-chat-preview.tsx",
+      "line": 18,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{e => setQuery(e.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-chat-preview.tsx",
+      "line": 20,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setList(false)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-chat-preview.tsx",
+      "line": 23,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setList(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-demo.tsx",
+      "line": 78,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => go(\"overview\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-demo.tsx",
+      "line": 78,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => go(a.tabs[0][0])}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-demo.tsx",
+      "line": 78,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => go(\"settings\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-demo.tsx",
+      "line": 79,
+      "event": "onOpenChange",
+      "element": "WorkspaceDrawer",
+      "handler": "{setMenu}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-demo.tsx",
+      "line": 79,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setMenu(!menu)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-demo.tsx",
+      "line": 79,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"Busca demonstrativa\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-demo.tsx",
+      "line": 79,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => setDialog(\"Perfil demonstrativo\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-demo.tsx",
+      "line": 93,
+      "event": "onSubmit",
+      "element": "CreateOrganizationDialog",
+      "handler": "{event => { event.preventDefault(); setDialog(\"Organização demonstrativa — nenhum dado foi salvo\"); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-drawer.tsx",
+      "line": 15,
+      "event": "onOpenChange",
+      "element": "Modal",
+      "handler": "{onOpenChange}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-drawer.tsx",
+      "line": 20,
+      "event": "onClick",
+      "element": "ZuluButton",
+      "handler": "{() => { onOpenChange(false); onPage(area.tabs.find(([id])=>isAllowed(id))![0]); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 79,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{onProfile}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 80,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{async () => { setBusy(true); setMessage(\"\"); try { const { data, error } = await hub.client.auth.getUser(); if (error || !data.user?.email) throw Error(); const result = await hub.client.auth.resetPasswordForEmail(data.",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 88,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{()=>organization.authority?.owner?onMembers():setLeaveOpen(true)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 89,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{onSignOut}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 94,
+      "event": "onChange",
+      "element": "Select",
+      "handler": "{key => { const value = String(key); setTheme(value); document.documentElement.dataset.zuluTheme = value; try { localStorage.setItem(\"zulu:theme\", value); } catch {} }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 104,
+      "event": "onChange",
+      "element": "Checkbox",
+      "handler": "{enabled => void runtimeAction(\"set_autostart\", enabled)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 106,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{() => void runtimeAction(runtime.miniVisible ? \"hide_mini\" : \"show_mini\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 107,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{() => void runtimeAction(\"quit\")}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 112,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{onMembers}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 113,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{onIntegrations}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 114,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{() => { setConfirmation(\"\"); setDeleteError(\"\"); setDeleteOpen(true); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 117,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{async()=>{setBusy(true);try{await organization.command('leave');setLeaveOpen(false);await hub.refreshAll();}catch{setMessage('Não foi possível sair. Confira sua conexão e tente novamente.');}finally{setBusy(false);}}}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 119,
+      "event": "onSubmit",
+      "element": "ZuluForm",
+      "handler": "{event => { event.preventDefault(); void deleteOrganization(); }}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 123,
+      "event": "onChange",
+      "element": "ZuluInput",
+      "handler": "{event => setConfirmation(event.target.value)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    },
+    {
+      "file": "components/workspace-settings.tsx",
+      "line": 126,
+      "event": "onPress",
+      "element": "Button",
+      "handler": "{() => setDeleteOpen(false)}",
+      "status": "source-inventory; runtime verification recorded separately"
+    }
+  ]
+}

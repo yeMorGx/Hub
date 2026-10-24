@@ -1,0 +1,1132 @@
+[
+  {
+    "file": "assets/baseline-01-login.png",
+    "sha256": "43c0a6783f6310df77fbdaa80947ac68f3141b2110ee9fd7ca4b692e65d42985",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-02-mfa-intro.png",
+    "sha256": "3b6af72286cb0964e4cad990a637caff9c76972e67a57e1672c032e26fa73559",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-03-onboarding.png",
+    "sha256": "4847432d0258f4d0df65630c5b91f0b00afba703cbc046eb51b38788f2b121c1",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-04-production-home.png",
+    "sha256": "b19f35ea2b5af659f8dc7e1dc181ea080307cc756f6c86d2a93ef344255c15d0",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-05-prod-overview-1440.png",
+    "sha256": "4936a5a9dfbff8dedeff2583b83634b8ba262b45e8f5713d7bee469ccee8bbc9",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-05-prod-overview-390.png",
+    "sha256": "05c7342642a2f4545983faf03d2f3c29803b6e0a7efed1db1c4cd8e0339d4320",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-06-prod-board-1440.png",
+    "sha256": "1f5def71aa247f5a28a8bb1213ea9e29d597cccdd40adce10cfcad710f9ca344",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-06-prod-board-390.png",
+    "sha256": "70ccd4b8d123ebee45eca5720bdba280ec2a928446da89d5ad92414d7aecc6b3",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-07-prod-hours-1440.png",
+    "sha256": "3cef0bc15e7fd07249e51968fd493055876eb18017bce3006950f5f5d6a1f106",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-07-prod-hours-390.png",
+    "sha256": "3dbb1e2a07aa6a41e03e1bc702c52e002034b4ec4d5dd56c02a5ec10bf13c14f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-08-prod-reports-1440.png",
+    "sha256": "de6a3596457610578c33a5be3d9def57213c8a3734209478ced0651a872b621a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-08-prod-reports-390.png",
+    "sha256": "d491184f33ab0430439a8ae38f779c9bdbc6683d3b9b247323c603c168ac4463",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-09-prod-library-1440.png",
+    "sha256": "6a26352437166274c0ebf3003b6a3264b234b9df40a2f1d9e0c4b180e60a590e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-09-prod-library-390.png",
+    "sha256": "17bbf34377581e926bf50835fbda0cbbc256c12882d5d179d29fedf0685879be",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-100-blocked-real-call-room-1440.png",
+    "sha256": "b9b176600b391f8ec2c3e3d6030e5818174f22c5592f1ff520c7a640e3c87062",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-100-blocked-real-call-room-390.png",
+    "sha256": "81d94f39fcb36b10af0e64ba9050284f1300ed0ebe49b78adca73494ae13135a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-11-prod-goals-1440.png",
+    "sha256": "5e21197577fbe9a2b0a313eae1c788f6f3394d2123a778270966136408646be0",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-11-prod-goals-390.png",
+    "sha256": "2066db4d973636a1c61f4a4f8ae2d0d302669945eaff574bb0b10499135c2c31",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-110-legacy-demo.png",
+    "sha256": "b2e48d336fbf900bcdba2be0f2a428f8811641c3aee313b9c34417ea032626ff",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-111-legacy-operations.png",
+    "sha256": "a761dd8231d826f50ae6de0123981f4ae17630e993cec10f91396bb6521c2eb2",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-112-legacy-calendar.png",
+    "sha256": "74f3a134bc40a601433482eac45874019406889a13b81ef009b391552ab14fac",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-113-legacy-kanban.png",
+    "sha256": "eac4dc37a62b9d752ce62c14ee71b7a28b763ca521d3126b358c01902421ae92",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-114-desktop-timer-browser.png",
+    "sha256": "de231adb780d2e04fbd14eb85383c854536a34344681343b62d746d5bd8ea282",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-115-signup.png",
+    "sha256": "48bdd8ebed954c0ae801b593098092afbfcc77131ae943a2d87599161c07dc83",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-116-recover-password.png",
+    "sha256": "81e55d565a3b7e423e273f30e83d7d0e7d659c93368a9a095a07001c44da7716",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-12-prod-clients-1440.png",
+    "sha256": "07c80e918c2ff39520093ab1ebf7afac436667afdb33919811c52f24ac31933d",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-12-prod-clients-390.png",
+    "sha256": "fbbc78dd5323566e0a015d95ad49708d76d49a0fbbb0ab774da10f6d6a14adb1",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-13-prod-chat-1440.png",
+    "sha256": "abd77a90ced7f1dd7a1e986b260dd0da6332d638a5f5bb833436c78de06235c7",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-13-prod-chat-390.png",
+    "sha256": "fee25fd1d46b7dc4c9ec14d7a1957916a207c4e4bf5a5bce8978ae96469128c0",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-132-global-search-1440.png",
+    "sha256": "6c0acf2c3454e587b70858cc8dc8d9e4e4afac5d2dd4a6c900fa13423e5f64d7",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-132-global-search-390.png",
+    "sha256": "617ca31d47412601f159a183a5c396f77f9fbdf4fe7a41499d21c5a6c79c310e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-133-notification-inbox-1440.png",
+    "sha256": "9606bf0bbddd7814e67ddd6077102e178ef25d7a1fb5f197b6def8436d8637a6",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-133-notification-inbox-390.png",
+    "sha256": "9c0469b748fa62703e4dc2375c468c74c1617546170186e5dd50a817ef0fd770",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-134-org-member-editor-1440.png",
+    "sha256": "57d22bf09a878c5a1f495b4523c6737ff5f44fc3596a788f8edd2b4d5a5ed0f2",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-134-org-member-editor-390.png",
+    "sha256": "f7e77d560b024483944e3599453262e788de39d07e8c4f02326357067e222ec2",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-135-settings-dark-1440.png",
+    "sha256": "7184098fc232bbda151b3a0799c8b3644292cf0f4fdbd8e6c26f274857a67915",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-135-settings-dark-390.png",
+    "sha256": "a084b4a96bbaa5e7c385d2e41dd74c9ea3e1bd1ce03d062dc272baf356afd7ed",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-136-overview-dark-1440.png",
+    "sha256": "74a520c2387f34276319b2332913553ac218aa249ed971cd5672695e66168d9b",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-136-overview-dark-390.png",
+    "sha256": "d53101daf5717c7397428d099cc067c1e47a1ae0a832b389c2de92471b903a3f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-137-home-office-dark-1440.png",
+    "sha256": "a3a8cdce381123cf37b673b6197bb6bbe7bec5eeb3549f1ddbf1da1b60728421",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-137-home-office-dark-390.png",
+    "sha256": "10b2701ad55cc3d4f6150eb2a0bdc848194edb864e77e1ef21b5a9b2e9f81538",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-138-delete-organization-confirmation-1440.png",
+    "sha256": "801ca8ec90e2d85072f34de84610e3aabbb468d6850895b583fbc3885f834ae1",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-138-delete-organization-confirmation-390.png",
+    "sha256": "c8e9ece4cfda296c5c4ef2ea084b8f6e0dea31e4a3c1e66c6665b4a4bc797b53",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-14-prod-organization-chat-1440.png",
+    "sha256": "2565b998dfb662731d3e42e3c70ebf7e5d8e6d3b243e6875e84dae7d8038eb33",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-14-prod-organization-chat-390.png",
+    "sha256": "cf68d04e4203ca45730f7eff42aa2ba38cd0c9aff53fcaca284854acc5df28a6",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-148-create-organization-real-1440.png",
+    "sha256": "ded9a6f005075ae0dbafaec151d2129390b852c5c6ae50899a7f966f63fd0d4e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-148-create-organization-real-390.png",
+    "sha256": "667b95859738cefd476ea5e8b5bf089e9475dd058329f833c10b113064de47f2",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-149-create-team-real-1440.png",
+    "sha256": "76e57aefb923b7f63bb6e0d34ff8af78998f16ce058f69cd3aa4f442c585688c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-149-create-team-real-390.png",
+    "sha256": "db3ccfdbb7069e795ada34ed5e8d8b03e50d27bc550f576a589c3abb3b32cd73",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-15-prod-calls-1440.png",
+    "sha256": "ee746495ce42921f525062d6d0e2d1e99498f861d57cd8c18b8f086456daf013",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-15-prod-calls-390.png",
+    "sha256": "1a7f00a6b284c01aa271ddc26f9c1f19f0c72106e9c6b248682373ea57561fd6",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-155-library-real-document-1440.png",
+    "sha256": "727ce1f88d2a26c000ac2042857db1c9e24c0c83e9b569e9fd350412c89cc0d8",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-155-library-real-document-390.png",
+    "sha256": "5199ad1df7653c7c86a8acbe86534d7ff5016116f00f19d7fd94da1795c88301",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-156-library-real-editor-1440.png",
+    "sha256": "b6c9c2838e5fb6f0fa840baba61e194430ec9b0f63a07210d148350833f9dd39",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-156-library-real-editor-390.png",
+    "sha256": "7d2f45068a575b65af7c74c403e12d39ad959b7e1f8dacdbff9c42476594ee52",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-157-library-sharing-permissions-1440.png",
+    "sha256": "a6f091ab30cb1f9c8789bbd19b5bfaf255158112c1b12821f991084112f55d43",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-157-library-sharing-permissions-390.png",
+    "sha256": "0b64ecacd7b7a811b7d01ce0f5cde1ec48f116f7cb2c0f916853bdb9ce5d5f7e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-159-global-search-reports-missing.png",
+    "sha256": "52ca59675961ab83a1d1da97fc011a47bc631a3ef2fec1de316dfc6dbfc9c16e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-16-prod-notifications-1440.png",
+    "sha256": "70e9be15a86f6b5ea4072a4a630fe4c310d15d86608be0ed6fcbe6670f545dc8",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-16-prod-notifications-390.png",
+    "sha256": "579d814b08032ef610e702a0ff1c572ad7e12db67350e9114a2b732310c779aa",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-17-prod-calendar-1440.png",
+    "sha256": "490fe7f7e9461e928f33a7d26144f29d3a7b65d10b480cc92da126dc4b8e9311",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-17-prod-calendar-390.png",
+    "sha256": "6c19fbce24531cbe517bea3919628b77e1d8f8d86eb338fbbd2105393ebbb97a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-18-prod-shifts-1440.png",
+    "sha256": "100156ba4ffba45da9ce8e72a7db88c83ac058fc00d7ca11d192a4b6e443a23a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-18-prod-shifts-390.png",
+    "sha256": "d8563f07d2907b8bec46bf36c0bf1455569eff1fefa4ab79ab82251c073d55bc",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-19-prod-absences-1440.png",
+    "sha256": "28b34abb1140237c1f9c537e06a50f0adb8e4a1aee5197aee7aaaefcae4c7227",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-19-prod-absences-390.png",
+    "sha256": "bb51a68df593bf7ca1cfcda7f4d6aec6a92ff4292d4ed99480964a4615ec6518",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-20-prod-dates-1440.png",
+    "sha256": "222432063671358651e53fc5b9c8e1c6a9944f8c62ada7a288c55c1943c830af",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-20-prod-dates-390.png",
+    "sha256": "853bdb2fcb160453bc079d858d45a5a0e3b4b1962a175317486582160ded95f9",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-21-prod-meetings-1440.png",
+    "sha256": "652591899a7ea193a448ebbef707d47cf0d42d3aa1a30624700327abcdb17535",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-21-prod-meetings-390.png",
+    "sha256": "28952692009d03325a71b6e89c554ac44dd94b3ac2210ef5cb88ec20afb54093",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-22-prod-people-1440.png",
+    "sha256": "91b935e03576f4838c0b2468b8af0909158e0ab8c958f7c237474ecea16f287c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-22-prod-people-390.png",
+    "sha256": "bd4004bae579f90dbb544541a68d3ab606fd3adc64a3c2ae4b86c4c8b0f3deb8",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-23-prod-standups-1440.png",
+    "sha256": "0bbf8bd531a598fbd093c601f6971ed05f4a99239af2656481bb95657a616231",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-23-prod-standups-390.png",
+    "sha256": "a0ebafff776966ea4fe9379eaa71f04d2edc4b1057d13cac11128310102664b8",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-24-prod-settings-1440.png",
+    "sha256": "56416edb6a72c413518d5c515c97437ec57f6ceb0dd1ddef596e15ec0ade4142",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-24-prod-settings-390.png",
+    "sha256": "96692cbec47c04a1132062e8bd1d406819c2f12c7b1439be7222451cdbac7220",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-25-prod-organization-1440.png",
+    "sha256": "aa406c835b04ac0b72b042dddbf0362042c16a4553c6e9f89f46caeba4f92eef",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-25-prod-organization-390.png",
+    "sha256": "87d171a87fa8b9ed8e26117f1e635132043648f4a548a3743e15a5b89a6fb65a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-26-prod-integrations-1440.png",
+    "sha256": "ee9db1aa7e8e6ab950dcb912b6ba08f68c10d3852c755cbb57cd8a39179f1c6a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-26-prod-integrations-390.png",
+    "sha256": "25db81615e9b593d83edfac8ab20ca93207da807dd87f6477da8f0ada46f25bd",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-27-marketing-1440.png",
+    "sha256": "8dc777565a2ec88baee35beb190ef46b3d07f1c930c29fee6f5063ab7fe976af",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-28-download-1440.png",
+    "sha256": "1bc040baef3f8de1e2f5373dfb9b14d0802169e20aeb95ca23a5eda9beacee68",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-29-privacy-1440.png",
+    "sha256": "a41d6667a6c0f7287315398dcf1357f608b472097a945d3665a0af724eec999c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-30-reset-password-1440.png",
+    "sha256": "6754c70e20add842f1a0ac55790875c0e156e507701a6e69f1f5e66ed11be4df",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-31-invite-1440.png",
+    "sha256": "48c236363d52f104d269ccde7f5cd61a3ec992bb658e0bee85010fe1b489a0a0",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-32-demo-home-1440.png",
+    "sha256": "d58f031856cc369dbea10d785fc6915ee38027418e3da5f0f9100bd426de8896",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-33-demo-calendar-1440.png",
+    "sha256": "a104d04b992191ae4ff7bbd5810f40524026ea96f69fcf0e49c31133b9818d95",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-34-demo-people-1440.png",
+    "sha256": "f0cf4c1e80694f3de97dd2069af1c3cdd8d8e09cfa2fc2a81e218505fb1f1f1b",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-35-demo-chat-1440.png",
+    "sha256": "a9c2c63f3e9f6ad937e5d4a6de84114cb4f2cdd80de559341a1d2ce0b9fa6a86",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-40-work-schedule-1440.png",
+    "sha256": "bec8e4d6f6a77339089c9b387c546855e8f6d5d38649d9783fda13e30128bba4",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-40-work-schedule-390.png",
+    "sha256": "5d9e51673951594c215857d07a9f9bd205e9a612d461dca87a46ce6e1dd4b114",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-41-activity-chooser-1440.png",
+    "sha256": "778b75ab7295e039f0b4d276edd86fe70b17b1c9329afebc2d8d394a3efa9e18",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-41-activity-chooser-390.png",
+    "sha256": "8977a5c6680b3f217dc31396489819781debfb5a236a909ca1ee192128887635",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-42-home-office-1440.png",
+    "sha256": "61897684d26aa5c3b17d86e9e32dcf597923565d0f509bd1532d81d322a7bd8d",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-42-home-office-390.png",
+    "sha256": "2c38e130e643134bf2413d9d4a0b21232cd9d67b970d026fba9856539a09859b",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-43-new-project-1440.png",
+    "sha256": "b655dee5300ccb76019ba4d21f0afa5c052003b6ed1012b70cfa042cd070d1aa",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-43-new-project-390.png",
+    "sha256": "a6a13deba573784187f617a48db31cc9556047dbf8b979d2c11ccfa2128b69aa",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-44-manual-time-1440.png",
+    "sha256": "fbbec366a4d0880cd96619dd01a59f7182a32e070c62cf0c9266ecf791ec0c6d",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-44-manual-time-390.png",
+    "sha256": "1d1cfb1f52f35291c3cb51230d94835961ecb22a53c691e2ec6258be6f08900c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-45-create-task-1440.png",
+    "sha256": "724f8e4f9f43ad0b326f163c74f368776bdc4d4d404fb9d097d770671068318c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-45-create-task-390.png",
+    "sha256": "88914b47548dea777c6fa9006914e2baeec9bfa464ae0c5d89a7d92fe75961ce",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-46-create-event-1440.png",
+    "sha256": "93968eb3b15f7d661efeacff9e66046705029a7d72fa2e61563f691a11be34a7",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-46-create-event-390.png",
+    "sha256": "1cb24acc420b1936e13441067bfbae6d36a8de0520be3fd590370bbd6b0f33fc",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-47-blocked-create-event-1440.png",
+    "sha256": "6d43b546513310ba387102a1350f9f784bd95a7239f78aff4cc89db52de5f3ca",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-47-blocked-create-event-390.png",
+    "sha256": "7e9f6192801696ae6fd428764cb3bf46885282b4eaa2c1055fb8f93800f53148",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-48-calendar-filter-1440.png",
+    "sha256": "913a12b26dfce90621f985a9b054f082110891fde048b5758b9045b692673850",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-48-calendar-filter-390.png",
+    "sha256": "0f1bbf7a7c70b6a2767a37368479d907584c4a3e7e6d7baf9814c7878571ecd7",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-49-profile-1440.png",
+    "sha256": "eb1621e509b2c45a355057c9570f01a25c39e8ae93e043bac1ae0e9519aaa165",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-49-profile-390.png",
+    "sha256": "4d292c496e0e3550f25049becabadf7cd8ed133a4289d5b2a3a0b20b6d431a05",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-50-invite-1440.png",
+    "sha256": "eef3c58946c6ce3cda46815732d6736dbef96dd681115f3c31a95873b68c4374",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-50-invite-390.png",
+    "sha256": "e3d3bf41b9f351754fb7c36ae34864e674764c82f837294c96b3d4ac3f7d5df5",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-51-chat-message-1440.png",
+    "sha256": "9ac7643f08113a7227ecdeff3669c0015f5bcb4ed5e5ff7fc4bdfc0bef736865",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-51-chat-message-390.png",
+    "sha256": "fc67538990f709703fd0ad35cf39450c8fd416637a783809004a83fe08808afb",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-52-chat-channel-1440.png",
+    "sha256": "bb8ed66ca5ee05fb8a28b2e4ec69ea0ef2c4784bfd901816825c0ade3261a2a0",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-52-chat-channel-390.png",
+    "sha256": "e20d13721961db724f4246bae57ae1504b2356d07169d14b5db385d1f1f59aef",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-53-channel-members-1440.png",
+    "sha256": "f8984d8603ad945e4b10e41a46e30ee174d633673d7ea6a3c8505c9fad80708f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-53-channel-members-390.png",
+    "sha256": "0452937599f1df1cc9f040e7508dd2057e96caefc118f6ca05dae38fdb55f607",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-54-new-library-1440.png",
+    "sha256": "f2085ce9f5f29197cfe9aac13afc0de1bd393c27d9f11008c778cb0b1904dd94",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-54-new-library-390.png",
+    "sha256": "242f0b2627cdf676a815f15decf318b876cc880e35c9cf93320e8e590e7035b9",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-55-notes-loaded-1440.png",
+    "sha256": "cec9a6b66e7a66d9196a4c645419339fa27483ed7be4b0a103baceb6a773e80e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-55-notes-loaded-390.png",
+    "sha256": "71d82670fb34310ffe3ab48b43bf5f509e62722e60fea41cd896db0bcaefc446",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-56-notes-editor-1440.png",
+    "sha256": "5c74ba0c8819b033d92b09bc64e600f3057566dc3baae2663d7f58f6e3f5aeaa",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-56-notes-editor-390.png",
+    "sha256": "1c7a76e0ac3d4f42891ec2a150141a4c66d2c10b9990a3ec89fff0b360e44136",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-57-settings-preferences-1440.png",
+    "sha256": "7d0d79eaab9d34a88f14ef3c4dfe109c06b6a059530575611e6bd4e41a54864a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-57-settings-preferences-390.png",
+    "sha256": "23cf0d9bfd21af614e7c2f0972a1a5e16ac6957771414695989fc43802caa0dd",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-58-settings-desktop-1440.png",
+    "sha256": "08523b7e3279abe6c47a7f42d272558dbb15116cb3ba332f76f498b6e0bc1944",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-58-settings-desktop-390.png",
+    "sha256": "7eb29ee4f9deeb72f952754f2197b1d93207f770b5dd52001fde6a32510b28d5",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-59-settings-organization-1440.png",
+    "sha256": "62d2b621f044ac2659ec8b48b918eeee529dcf08d6b1de01bf3b4b6c7eea203a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-59-settings-organization-390.png",
+    "sha256": "6bcd032e239ba1400a01dfdba73cce53ae7bffc31c12cea6401161b62e3d0bac",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-60-integrations-webhooks-1440.png",
+    "sha256": "e7ebbdce54ea42faff87123eb87b8919e7ec005be16d4735a738397305a0f693",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-60-integrations-webhooks-390.png",
+    "sha256": "ec44ceb642dfcc2a5737d8cd0ed98b03bc7b209f657d2db533147aaabd4c42ee",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-61-integrations-auditoria-1440.png",
+    "sha256": "7a2e4dadd2ebee146811a647b6b9b02c41e6ca28219c4d9e8e00acf8bb9cdd89",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-61-integrations-auditoria-390.png",
+    "sha256": "778dd5895496899c68dcb2579c67affb6dffad1786344fb8c06e8d7aae61e1d6",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-62-integrations-calendários-1440.png",
+    "sha256": "485e12d5bdd211fe2b5dba57e89f45a26f0ad9bf9c74720b18cfa6ac836a6d9f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-62-integrations-calendários-390.png",
+    "sha256": "b6f5cdb3b707140242ca295fe6efe87749dd4897633aa9cb88afdafe4f2f962c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-70-org-pessoas-1440.png",
+    "sha256": "87812f87169999b1937cc291b30cf8ccdcb455dcf79b461608f87834c9be6533",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-70-org-pessoas-390.png",
+    "sha256": "de2b79fde53687717f635b56016bf21b4f98a32848ab9c66f3ad2f63ea26da52",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-71-org-times-1440.png",
+    "sha256": "011907777c0be22ad3b12384e863c10ef7eac7e199c4902eb8929217b802fcbe",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-71-org-times-390.png",
+    "sha256": "b22bfa59312ea9d396616bd805ddd7ce41fe5c9f332a0345a5d876154e538248",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-72-org-convites-1440.png",
+    "sha256": "650d0637dbcda3e2fe5df652d1c6dc7f5d5d84a2ac38b51dcfb3e1417f53dbfc",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-72-org-convites-390.png",
+    "sha256": "e9f12666023ee2b8cfa6ea01a9bb797214dbc482c98b97feb8eb0588334b25e4",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-73-org-aprovacoes-1440.png",
+    "sha256": "c2d03f08ca16bb183a3021d457842c44cd1eb7ca52c79b75998a44864c90f0ec",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-73-org-aprovacoes-390.png",
+    "sha256": "43f1d8ee97ebf5bcb2f19940a2517629596f3903f2b49bb417502c8767fed095",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-74-org-funcionalidades-1440.png",
+    "sha256": "2ba13a62ecb5ba9dd6d7c78a70528cc02401c7ab2c05a7545f63fff6924a7f72",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-74-org-funcionalidades-390.png",
+    "sha256": "89aec609ff4287cb922b4988610f460f4fbc6aff6b43154d6073527e677f1877",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-75-org-politicas-1440.png",
+    "sha256": "2443eb3dc288b89ed498a1bc9eecf5e13f7e242be25213f6911719d6fb8c0a6c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-75-org-politicas-390.png",
+    "sha256": "43337a9dccc859026524843da9a3ee8e001a132fd34a6546e791479faad62dab",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-76-org-historico-1440.png",
+    "sha256": "428c6f1bfb7fa68ff1b31204525fc8fc28b3331a0e61e5a3bb18e833bedc52cb",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-76-org-historico-390.png",
+    "sha256": "8dbd3dcd732fb5c239f8f137f2615babb4f0ed9d7b34fae9ea59f5d172936df8",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-78-report-populated-1440.png",
+    "sha256": "72cd4e46f30d6b49d611ac46ce23e64e15262b9ecb914320544dac2f344ca52a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-78-report-populated-390.png",
+    "sha256": "5bd9fbe1cf9225b1acc6c03b925483a7f25a062e4fcf4c7ba5c4e8d2ea357040",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-90-timer-running-1440.png",
+    "sha256": "e4a335cce5ba39d1b755c9f3be45d5bc9f3ebee1eb41ee23e7028675824e7a03",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-90-timer-running-390.png",
+    "sha256": "67855e93a4e26638e65fec0bd5980d4d845d85f6aff06b68210c686c62e94269",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-91-timer-lunch-1440.png",
+    "sha256": "287698c7f89aa5a8eaa26d4b778a5f1606e09502762666a44a6a622ed6424041",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-91-timer-lunch-390.png",
+    "sha256": "0ad415ea1ebdfd5a35468e5189e0617ae2a3057401eed1ec292a2866bc929088",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-92-hours-populated-1440.png",
+    "sha256": "e5b00e3de854975ce936947ce28540ef6f182c865005b77c95de343a171307a4",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-92-hours-populated-390.png",
+    "sha256": "9209e925d2754da12b23bc0c0f2712565031426b57a3ef81ed059dd13c7f4e7e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-93-report-populated-1440.png",
+    "sha256": "8b946722315352c8c802ede2b5c489aa9ce17dc53beadee5edd1c05e19074cab",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-93-report-populated-390.png",
+    "sha256": "acdb805cd17679afd3a1b6c09a7ec975492c947ab15e978f4e59a0590c2fd344",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-call-layout-fixed-local-1440.png",
+    "sha256": "4df2164a56f3ba88d999d7e113f605b80b15fdea01bc5f7bd155e6c779cd4f12",
+    "source": "local-candidate"
+  },
+  {
+    "file": "assets/baseline-call-layout-fixed-local-1813.png",
+    "sha256": "c2749cd067a5a2d7a13dd7ac3701c4ab6e48cd88c10c30d9d6f085e411c60d53",
+    "source": "local-candidate"
+  },
+  {
+    "file": "assets/baseline-call-layout-fixed-local-390.png",
+    "sha256": "25d1554a33f364d4b089ce7da5570ed31001f04360cf95237c42dea010711273",
+    "source": "local-candidate"
+  },
+  {
+    "file": "assets/baseline-login-fixed-local.png",
+    "sha256": "c53a4c98b0d4b0f8aae2a708a1c6c3fae0847b82500ff04fcb9e519a236ace40",
+    "source": "local-candidate"
+  },
+  {
+    "file": "assets/baseline-mobile-menu-fixed-local.png",
+    "sha256": "2a8a7594c6106f02fd5af7a7b537e9a275df63cf18b1305f4474bb538b7d0152",
+    "source": "local-candidate"
+  },
+  {
+    "file": "assets/baseline-mobile-menu-open-fixed-local.png",
+    "sha256": "d39f38f50b636bcffd28e265da92ad46bcab5a508d2961a24d9102082e80f609",
+    "source": "local-candidate"
+  },
+  {
+    "file": "assets/baseline-role-admin-people.png",
+    "sha256": "c888bf5b58839c88d391a8188c0184506aefcf1a6fcb8d4f44741e80d6ec26af",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-role-admin-reports.png",
+    "sha256": "9c56d999a5dbde1539a1198ad71c9cc3e8ede139e7f3b60b5ee5b3c5e4d2f406",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-role-admin-settings.png",
+    "sha256": "0f8ff557389f8bad70a2621e7e592c6d87cd44333b20c106915035ad48757b3c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-role-member-people.png",
+    "sha256": "bd3f999f3a7917158d32c58597525e9405f3675e461c61d02ef75fc2a8782d81",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-role-member-reports.png",
+    "sha256": "19f1f75ee7d4d91a2aca6cc7fd4c02a5ce54712b4c8d3d3eefb595821e5f3471",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-role-member-settings.png",
+    "sha256": "11656e3ecbba0fa6bbdaa510e0f0066f7f07fdd526f9dc22e58d9af9ac06a3d5",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/baseline-search-fixed-local-member.png",
+    "sha256": "8834129be6143372f018c444b84f1806576942a15e88cb3209ba3674ca15cb21",
+    "source": "local-candidate"
+  },
+  {
+    "file": "assets/baseline-search-fixed-local-owner.png",
+    "sha256": "6c56ac129b42d2844c4de24eab5d6f5cb268e41247bdacd5a57daa5a8356c796",
+    "source": "local-candidate"
+  },
+  {
+    "file": "assets/populated-05-prod-overview-1440.png",
+    "sha256": "95bc8f0de81fd3217f052d5681834b248aa7741e3a23d5090537571c5bf712c7",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-05-prod-overview-390.png",
+    "sha256": "e8dd27730ffeb72316b043ca08fd5fb9cd10b99922e89fad1a0c6f0b9b45ea14",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-06-prod-board-1440.png",
+    "sha256": "0986e777b71a0e2c6d1001f93bb8688fe15f1c1a47adbf7b6ce435026c50048f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-06-prod-board-390.png",
+    "sha256": "d0286c181d44112dce923015b4cdd25bd30a251681901ab3ceb272ea65b51fde",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-07-prod-hours-1440.png",
+    "sha256": "0c055c7dde1c9b21db8535d0f1ac9030b88e03b0c49174ffc81e15524e3f3fc8",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-07-prod-hours-390.png",
+    "sha256": "c655cf81cfeeef2399f4805b70750883f87ae9b2562d2cc950cc2ba31ad567b5",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-08-prod-reports-1440.png",
+    "sha256": "4464edfccf0d60ab3035d69e1c0bc345a6c89001c3dec7ccf23b35f698c3a410",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-08-prod-reports-390.png",
+    "sha256": "6fd8abffff05d29d613321f34b446296a5bcc419aa7c5b21d167d7ff82007be0",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-09-prod-library-1440.png",
+    "sha256": "14b62e5c0929df3941e6c708209931cf36bc7934bcb70ab7d9a7cfa427bdd99e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-09-prod-library-390.png",
+    "sha256": "ad94254429225af15d2d6a05a127598ed593fb3175c711b6feec04009fc1241d",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-10-prod-notes-1440.png",
+    "sha256": "cec9a6b66e7a66d9196a4c645419339fa27483ed7be4b0a103baceb6a773e80e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-10-prod-notes-390.png",
+    "sha256": "71d82670fb34310ffe3ab48b43bf5f509e62722e60fea41cd896db0bcaefc446",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-11-prod-goals-1440.png",
+    "sha256": "c537aae5438086ba7edb6073f7a9631d3b254ad8a864a7bd4c8849e85f3b2268",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-11-prod-goals-390.png",
+    "sha256": "200b5928b2b044933b15b2a518488047054eee5fe9c9c6eeebdc5a0ed350aade",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-12-prod-clients-1440.png",
+    "sha256": "5bba7f4596b83347dae677594f24fa53532fd99692240e4f92678004cda10f69",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-12-prod-clients-390.png",
+    "sha256": "19efac64e9ed68004db0b16e372e7e968c6243b739f5210e4a080b65a4d8faf5",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-13-prod-chat-1440.png",
+    "sha256": "8e53f22094e66ec734b41c976e747eb0df303e730ff4d94b6e07c214836e76dc",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-13-prod-chat-390.png",
+    "sha256": "4aa4acd47667fbe402a98027cccc90d642bceb5938ed6b58be4768b68fc2a3b0",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-14-prod-organization-chat-1440.png",
+    "sha256": "8857933f202684cf039a68cd3deb155d9a7f22e3e094ad392e5612499b4ce738",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-14-prod-organization-chat-390.png",
+    "sha256": "1250166a4f8cffe54872b2c7296c7506f53d381b1f49f5e1967a3b97293d893c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-15-prod-calls-1440.png",
+    "sha256": "8e9c9692f8bc7d60709942b5bcff8b1f2f0533530fb4afcfd5385e784b65459d",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-15-prod-calls-390.png",
+    "sha256": "3700c175a8f713d42836d15d6ea8da7eceb7261791ca7cbd4d079b8795bf1c9b",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-16-prod-notifications-1440.png",
+    "sha256": "604d67efdc7e3a96d360f3e380e715372b63737d25e06864fa3db9ad16f931ba",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-16-prod-notifications-390.png",
+    "sha256": "85444cb9663f5111fe30373913ce707c61952017bbadd675638ec12bf749c69f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-17-prod-calendar-1440.png",
+    "sha256": "eee8947335a1d9c884e9c19bb13484971a34befe0520b06aaaaa8b7071175399",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-17-prod-calendar-390.png",
+    "sha256": "463d40d7680d133168471e2e9f0919ec21b21ba58c885d51a8cb2cebc11f16d3",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-18-prod-shifts-1440.png",
+    "sha256": "026e1c8040520dff860a1fdf88924d1e88ec7931685b7100cb619f421e6cb66f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-18-prod-shifts-390.png",
+    "sha256": "28d2f63013db14d69276b5d36a0253f22840f445862d608182a9fff5680c6199",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-19-prod-absences-1440.png",
+    "sha256": "70598d2acc07c35ad1bbe61cb2b95beed7b1f340acd2243817c273d0a928ac3f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-19-prod-absences-390.png",
+    "sha256": "1b21bfa8bf43d88339da0411d053d49c5da423befdabe80d2c2bf84ab7fd02d4",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-20-prod-dates-1440.png",
+    "sha256": "08aec6cf8f50c08df1e9fe0381bab191cbb7a17714dc1896724834f892a5ee50",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-20-prod-dates-390.png",
+    "sha256": "62834a88228a94545ae04ba6ab1905d97e1d4e8e2e45eadedeb3f57e4a9af430",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-21-prod-meetings-1440.png",
+    "sha256": "4050b45bad089a83296a35dd4e39937dae94242aab09b1065b1c38c193bbdc5e",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-21-prod-meetings-390.png",
+    "sha256": "cb5ef08a81574b8f4828ef506a4a0466c9a51a55d1b50d271fbe7f7765e43f89",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-22-prod-people-1440.png",
+    "sha256": "ae5ed2150d1381e48cb5cd31d599037c8ed47ce3637ae39b6d2cc4853b7a3793",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-22-prod-people-390.png",
+    "sha256": "5328eed7907bda4b22c55846adca3dbefe0aaf3afcc01cb29ec358a56044328b",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-23-prod-standups-1440.png",
+    "sha256": "c945f19e4ab35cfea20006de51362408ff3f8759b4c2f8bb950f2eb4e99b622d",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-23-prod-standups-390.png",
+    "sha256": "80c472ea7d31f8b9f763cd21d3f00ed7d3309100ba04f693b16bf26a9cd67736",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-24-prod-settings-1440.png",
+    "sha256": "5075e926507375bbf09118782db5dcef479bfc8bfae1ed98e5b46b8782841e1f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-24-prod-settings-390.png",
+    "sha256": "dd6b65c8b1cff7ecccb44f46ccf179d28747f79832f4643ac1acb11a2f2a989f",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-25-prod-organization-1440.png",
+    "sha256": "71ea0940bca790fbec940de8388bda764f33b25bce993983a8f89ede6e326b4a",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-25-prod-organization-390.png",
+    "sha256": "3b68a6f90d09e63522d712e507c382578e6249cdf0afb9458779b936834ed70d",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-26-prod-integrations-1440.png",
+    "sha256": "d9f32d7240f6189c11a5d349e60358e60895b405b1e1f180b09ad1a259822925",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-26-prod-integrations-390.png",
+    "sha256": "321fa2c1d2ddd2425797227cd7ef28a0c89ea960260a088c34943d8a51bf4f84",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-27-marketing-1440.png",
+    "sha256": "8dc777565a2ec88baee35beb190ef46b3d07f1c930c29fee6f5063ab7fe976af",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-28-download-1440.png",
+    "sha256": "1bc040baef3f8de1e2f5373dfb9b14d0802169e20aeb95ca23a5eda9beacee68",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-29-privacy-1440.png",
+    "sha256": "a41d6667a6c0f7287315398dcf1357f608b472097a945d3665a0af724eec999c",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-30-reset-password-1440.png",
+    "sha256": "6754c70e20add842f1a0ac55790875c0e156e507701a6e69f1f5e66ed11be4df",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-31-invite-1440.png",
+    "sha256": "48c236363d52f104d269ccde7f5cd61a3ec992bb658e0bee85010fe1b489a0a0",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-32-demo-home-1440.png",
+    "sha256": "201ee9268933809b3ce60c9b9ea7655b2acd0384b5130cf92ccfdfdde6144ca3",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-33-demo-calendar-1440.png",
+    "sha256": "7f7e0e438c5dcb16c38e9ecd622d233e7322ebef56757f1fb9b6cdfcfffe8a30",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-34-demo-people-1440.png",
+    "sha256": "f0cf4c1e80694f3de97dd2069af1c3cdd8d8e09cfa2fc2a81e218505fb1f1f1b",
+    "source": "production-or-public-demo; see screen index"
+  },
+  {
+    "file": "assets/populated-35-demo-chat-1440.png",
+    "sha256": "c51cfdd1fcbf90eeb1991beb62785a5877c8a057e2a45fc1cc86aa377b4b9e50",
+    "source": "production-or-public-demo; see screen index"
+  }
+]

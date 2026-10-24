@@ -89,15 +89,12 @@ test("página offline está disponível sem sessão", async () => {
   assert.equal(response.status, 200);
   assert.match(await response.text(), /reconect|conexão/i);
 });
-for (const path of ["/demo", "/demo/kanban"]) {
-  test(`${path} retorna o HTML público esperado antes da hidratação`, async () => {
-    const response = await request(path);
-    assert.equal(response.status, 200);
-    assert.match(response.headers.get("content-type") || "", /text\/html/);
-    assert.match(
-      await response.text(),
-      path === "/demo" ? /Preparando seu espaço/ : /[Dd]emonstração/,
-    );
+for (const [path, target] of [
+  ["/demo", "/demo/dashboard"],
+  ["/demo/kanban", "/demo/workspace?page=board"],
+]) {
+  test(`${path} encaminha para a demonstração mantida`, async () => {
+    redirectTo(await request(path), target);
   });
 }
 
@@ -142,10 +139,8 @@ test("calendário Outlook responde ao desafio como texto sem refletir HTML execu
   assert.match(response.headers.get("content-type") || "", /text\/plain/);
   assert.equal(await response.text(), value);
 });
-test("demonstração operacional é pública e declara seus dados fictícios", async () => {
-  const response = await request("/demo/operations");
-  assert.equal(response.status, 200);
-  assert.match(await response.text(), /dados fictícios/);
+test("demonstração operacional antiga encaminha para a organização atual", async () => {
+  redirectTo(await request("/demo/operations"), "/demo/workspace?page=organization");
 });
 
 test("convite público responde sem cache e sem enviar referência", async () => {
@@ -205,10 +200,8 @@ test("convite pendente: token inválido é recusado; cookie é privado e pode se
   assert.match(dismissed.headers.get("set-cookie") || "", /Max-Age=0/i);
 });
 
-test("prévia do calendário é pública e declara seus dados fictícios", async () => {
-  const response = await request("/demo/calendar");
-  assert.equal(response.status, 200);
-  assert.match(await response.text(), /dados fictícios/);
+test("prévia antiga do calendário encaminha para o calendário atual", async () => {
+  redirectTo(await request("/demo/calendar"), "/demo/workspace?page=calendar");
 });
 
 test("site público apresenta o produto e leva à central de downloads", async () => {

@@ -1,4 +1,6 @@
-import { HubApp } from "@/components/hub-app";
+import { redirect } from "next/navigation";
+
+/** Legacy previews resolve to the maintained workspace surfaces. */
 export default function DemoPage() {
-  return <HubApp />;
+  redirect("/demo/dashboard");
 }

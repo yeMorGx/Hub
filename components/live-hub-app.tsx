@@ -8,7 +8,7 @@ import { allowedPage } from "@/lib/organization/model";
 import { WorkspaceDrawer } from "./workspace-drawer";
 import { DashboardLoading, ZuluAlert, DashboardNotice, DashboardWorkspacePicker, DashboardUIProvider, ZuluForm, ZuluLabel, ZuluFieldset, ZuluLegend, ZuluButton, ZuluSelect, ZuluInput, ZuluTextArea, ZuluCheckboxField } from "./dashboard-ui";
 import { WorkspaceAreaTabs } from "./workspace-area-tabs";
-import { workspaceArea, workspaceAreas, pageTitles } from "@/lib/hub/navigation";
+import { workspaceArea, workspaceAreas, pageTitles, searchWorkspacePages } from "@/lib/hub/navigation";
 import { OpeningGreeting } from "./opening-greeting";
 import { WorkspaceSettings } from "./workspace-settings";
 import { HoursReport } from "./hours-report";
@@ -196,6 +196,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
     [search, setSearch] = useState(""),
     [peopleQuery, setPeopleQuery] = useState(""),
     [availabilityFilter, setAvailabilityFilter] = useState("all");
+  const pageSearchResults = searchWorkspacePages(search, isAllowed);
   const [eventId, setEventId] = useState(""),
     [editingEvent, setEditingEvent] = useState<Row<"events"> | null>(null),
     [eventStart, setEventStart] = useState(""),
@@ -2689,10 +2690,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
           </div>
           <div className="search-results">
             <p className="list-label">Páginas</p>
-            {navigation
-              .filter((n) =>
-                n.label.toLowerCase().includes(search.toLowerCase()),
-              )
+            {pageSearchResults
               .map((n) => (
                 <ZuluButton
                   key={n.id}
@@ -2701,7 +2699,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                     setModal(null);
                   }}
                 >
-                  <n.icon size={20} />
+                  <DashboardNavIcon name={n.icon} />
                   <span>{n.label}</span>
                   <ArrowUpRight size={16} />
                 </ZuluButton>
@@ -2757,9 +2755,7 @@ export function LiveHubApp({ userId }: { userId: string }) {
                 </ZuluButton>
               ))}
             {search &&
-              !navigation.some((n) =>
-                n.label.toLowerCase().includes(search.toLowerCase()),
-              ) &&
+              pageSearchResults.length === 0 &&
               !data.people.some((p) =>
                 p.display_name.toLowerCase().includes(search.toLowerCase()),
               ) &&

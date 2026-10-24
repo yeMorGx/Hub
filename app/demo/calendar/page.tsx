@@ -1,4 +1,6 @@
-import { CalendarDemo } from "@/components/calendar-demo";
+import { redirect } from "next/navigation";
+
+/** Legacy previews resolve to the maintained workspace surfaces. */
 export default function CalendarDemoPage() {
-  return <CalendarDemo />;
+  redirect("/demo/workspace?page=calendar");
 }

@@ -1,0 +1,31 @@
+{
+  "mainScreens": 22,
+  "viewportPairs": [
+    {
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "width": 390,
+      "height": 1000
+    }
+  ],
+  "roleCoverage": {
+    "owner": "22 main screens + additional states",
+    "admin": "people/reports/settings",
+    "member": "people/reports/settings"
+  },
+  "controlOccurrences": 867,
+  "sourceEventBindings": 530,
+  "sourceComponents": 50,
+  "sourceScope": "entire component tree, including demonstrations; not a count of tested production buttons",
+  "flowScenarios": 31,
+  "exercisedScenarios": 30,
+  "archivedScreenshots": 226,
+  "nativeWindowsVerified": false,
+  "realMediaVerified": false,
+  "outgoingEmailRequested": false,
+  "cleanup": "pending final production verification",
+  "deploymentBefore": "dpl_3kdgeSAk7dgbAL46ehWLtnEr4DDm",
+  "captureDates": "2026-10-23–2026-10-24 America/Sao_Paulo"
+}
