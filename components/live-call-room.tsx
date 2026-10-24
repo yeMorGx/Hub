@@ -254,7 +254,28 @@ function ScreenShareControl({
           title="Compartilhar tela"
           onClose={() => setDialogOpen(false)}
           wide={usesNativeCapture}
+          footer={<div className="screen-share-dialog screen-share-footer">
+          <div className="dialog-actions">
+            <ZuluButton
+              className="outline-button"
+              onClick={() => setDialogOpen(false)}
+            >
+              Cancelar
+            </ZuluButton>
+            <ZuluButton
+              className="primary-button"
+              onClick={() => void startShare()}
+              disabled={starting || (usesNativeCapture && !nativeSelectedId)}
+            >
+              <MonitorArrowUp size={17} aria-hidden="true" />
+              {starting
+                ? "Iniciando…"
+                : `Compartilhar ${selectedProfile.details}`}
+            </ZuluButton>
+          </div>
+          </div>}
         >
+          <div className="screen-share-dialog">
           <p className="share-dialog-description">
             {usesNativeCapture
               ? "Escolha uma janela ou monitor e confira a prévia antes de transmitir."
@@ -317,23 +338,7 @@ function ScreenShareControl({
               : "A qualidade real depende do navegador, da tela e da conexão de quem transmite."}
           </p>
 
-          <div className="dialog-actions">
-            <ZuluButton
-              className="outline-button"
-              onClick={() => setDialogOpen(false)}
-            >
-              Cancelar
-            </ZuluButton>
-            <ZuluButton
-              className="primary-button"
-              onClick={() => void startShare()}
-              disabled={starting || (usesNativeCapture && !nativeSelectedId)}
-            >
-              <MonitorArrowUp size={17} aria-hidden="true" />
-              {starting
-                ? "Iniciando…"
-                : `Compartilhar ${selectedProfile.details}`}
-            </ZuluButton>
+
           </div>
         </HubDialog>
       )}

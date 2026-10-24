@@ -63,7 +63,7 @@ export function PeopleAvatars({ people }: { people: Person[] }) {
     </Group>
   );
 }
-export function HubDialog(props: { title: string; children: ReactNode; onClose: () => void; wide?: boolean }) {
+export function HubDialog(props: { title: string; children: ReactNode; onClose: () => void; wide?: boolean; footer?: ReactNode }) {
   const hero = useDashboardUI();
   return hero ? <DashboardDialog {...props} /> : <NativeHubDialog {...props} />;
 }
@@ -72,11 +72,13 @@ function NativeHubDialog({
   children,
   onClose,
   wide = false,
+  footer,
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
   wide?: boolean;
+  footer?: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -101,6 +103,7 @@ function NativeHubDialog({
         </ZuluButton>
       </div>
       {children}
+      {footer}
     </dialog>
   );
 }

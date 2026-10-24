@@ -370,11 +370,13 @@ export function DashboardDialog({
   onClose,
   children,
   wide,
+  footer,
 }: {
   title: string;
   onClose: () => void;
   children: ReactNode;
   wide?: boolean;
+  footer?: ReactNode;
 }) {
   return (
     <Modal
@@ -399,6 +401,7 @@ export function DashboardDialog({
               <Modal.Heading>{title}</Modal.Heading>
             </Modal.Header>
             <Modal.Body>{children}</Modal.Body>
+            {footer && <Modal.Footer>{footer}</Modal.Footer>}
           </Modal.Dialog>
         </Modal.Container>
       </Modal.Backdrop>

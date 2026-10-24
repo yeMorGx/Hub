@@ -1,0 +1,79 @@
+{
+  "source": "User screenshot + AGENTS.md + installed skill catalog",
+  "skillsApplied": [
+    "zulu-heroui",
+    "ui-ux-pro-max",
+    "frontend-design",
+    "design-system",
+    "ui-styling (HeroUI override)",
+    "web-design-guidelines",
+    "writing-for-agents",
+    "token-saver",
+    "pbeens-token-saver",
+    "openworkai-token-saver"
+  ],
+  "browser": [
+    {
+      "width": 1440,
+      "desktopRuntime": true,
+      "windowsUserAgent": false,
+      "nativeFailure": false,
+      "browserCaptureCalls": 0,
+      "nativeRouting": true,
+      "realWindowsCapture": false
+    },
+    {
+      "width": 1440,
+      "desktopRuntime": true,
+      "windowsUserAgent": false,
+      "nativeFailure": true,
+      "browserCaptureCalls": 0,
+      "nativeRouting": true,
+      "realWindowsCapture": false
+    },
+    {
+      "width": 870,
+      "desktopRuntime": true,
+      "windowsUserAgent": false,
+      "nativeFailure": false,
+      "browserCaptureCalls": 0,
+      "nativeRouting": true,
+      "realWindowsCapture": false
+    },
+    {
+      "width": 870,
+      "desktopRuntime": true,
+      "windowsUserAgent": false,
+      "nativeFailure": true,
+      "browserCaptureCalls": 0,
+      "nativeRouting": true,
+      "realWindowsCapture": false
+    },
+    {
+      "width": 390,
+      "desktopRuntime": true,
+      "windowsUserAgent": false,
+      "nativeFailure": false,
+      "browserCaptureCalls": 0,
+      "nativeRouting": true,
+      "realWindowsCapture": false
+    },
+    {
+      "width": 390,
+      "desktopRuntime": true,
+      "windowsUserAgent": false,
+      "nativeFailure": true,
+      "browserCaptureCalls": 0,
+      "nativeRouting": true,
+      "realWindowsCapture": false
+    }
+  ],
+  "radioControlSize": "16×16 px",
+  "uncheckedBoundaryContrast": 3.76,
+  "sharedDialogFooter": "official HeroUI Modal.Footer; optional prop",
+  "build": "passed",
+  "unitPassed": 62,
+  "nativeCaptureChanged": false,
+  "realWindowsCaptureVerified": false,
+  "reviewDisposition": "ship for two material fixes"
+}

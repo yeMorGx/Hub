@@ -50,3 +50,22 @@ Não foram medidos câmera/áudio físicos, seleção real de hardware, entrega 
 ## Política desktop nativa
 
 O aplicativo instalado escolhe captura nativa pela presença do runtime Tauri, independentemente do user-agent. Uma falha de listagem, autorização ou captura nativa termina com erro explícito; não abre a captura do navegador. Builds sem suporte nativo retornam o erro da implementação Rust. A versão no navegador mantém seu seletor do navegador. Esta regra se aplica ao recurso de captura; não representa migração da interface Tauri para outro toolkit.
+
+## QA do design do seletor de compartilhamento
+
+A captura reportada em **870×921** expunha fontes ilegíveis sobre fundo escuro e radios esticados pela regra legada `label > span` com `flex: 1`. O acabamento em `app/calls-design.css`, limitado a `.screen-share-dialog`, define superfícies claras e texto contrastante, fixa os controles HeroUI v3 em **16×16 px** e organiza a qualidade em três colunas no desktop e uma no celular. O radio desmarcado usa borda de 1,5 px `#82768e` para contraste mínimo de 3:1; o contorno lilás indica foco por teclado. As referências consultadas foram as implementações instaladas de Radio/Modal do HeroUI v3 e a busca UX do UI/UX Pro Max por `radio control contrast modal`.
+
+`HubDialog` e `DashboardDialog` aceitam um `footer` opcional, composto com `Modal.Footer` fora do `Modal.Body` rolável. O seletor usa esse rodapé para manter a ação de compartilhar visível no celular. A escolha de fonte, qualidade e os comandos nativos mantêm seus contratos.
+
+O registro `/tmp/zulu-share-picker-verdict-browser.log` aprovou seis casos em Chromium: **1440×921**, **870×921** e **390×921**, cada um com sucesso e falha nativos simulados. `scripts/native-capture-routing-browser.mjs` verifica seis fontes, dimensões reais dos três radios, troca de qualidade, ação visível, foco por teclado, início/encerramento nativos e erro explícito sem captura do navegador. As capturas são `/tmp/zulu-call-qa/share-picker-{1440,870,390}.png` e `/tmp/zulu-call-qa/share-picker-focus-{1440,870,390}.png`. A prévia é sintética e identificada como **Prévia simulada**; esses casos não medem captura em um dispositivo Windows real nem comprovam aprovação visual final.
+
+O build passou em `/tmp/zulu-share-picker-fix-build.log`; os 62 testes unitários passaram em `/tmp/zulu-share-picker-unit.log`. Para reproduzir, execute o build e o empacotamento do fixture descritos acima, depois:
+
+```bash
+npm run test:unit
+node scripts/native-capture-routing-browser.mjs
+```
+
+A publicação e a conferência em produção pertencem à entrega coordenada; estes artefatos registram a validação local do seletor.
+
+A revisão visual final pontuou as duas correções materiais como **resolvidas**: ações visíveis no celular e contraste de 3,76:1 na borda do radio desmarcado. O veredito limitado a essas correções está em [validation/share-picker/verdict.md](validation/share-picker/verdict.md). A regressão dos diálogos de calendário e das interações de chat/notificações também passou em 1440 e 390 px, sem erros de página ou avisos no console.

@@ -72,3 +72,51 @@
 .zulu-call-grid[data-focused=true]>.zulu-call-tile:not(:first-child) .zulu-call-avatar{width:44px;height:44px;border-radius:16px;font-size:18px;margin-bottom:8px}
 .zulu-call-grid[data-focused=true]>.zulu-call-tile:not(:first-child) .zulu-call-avatar-wrap>strong{font-size:12px}
 .zulu-call-grid[data-focused=true]>.zulu-call-tile:not(:first-child) .zulu-call-avatar-wrap>span{font-size:10px;margin-top:5px}
+
+/* Share dialog is portaled outside the call shell. Own its palette and controls. */
+.screen-share-dialog{--text:#242435;--muted:#686878;--accent:#3d4e9b;--surface:#fff;--surface-raised:#f3f2f7;color:var(--text);min-width:0}
+.screen-share-dialog .share-dialog-description{font-size:13px;line-height:1.6;color:#686878;max-width:52ch;margin:0 0 22px}
+.screen-share-dialog .native-share-source-picker{grid-template-columns:minmax(0,1.2fr) minmax(210px,1fr);gap:16px;align-items:start;margin-bottom:24px}
+.screen-share-dialog .native-share-preview{border:0;border-radius:14px;background:#22222e;aspect-ratio:16/10}
+.screen-share-dialog .native-share-preview>div{color:#d3cedf}
+.screen-share-dialog .native-share-source-list{display:flex;flex-direction:column;gap:6px;max-height:248px;padding:2px 5px 2px 0;scrollbar-width:thin;scrollbar-color:#c7c3d4 transparent}
+.screen-share-dialog .native-share-source{width:100%;min-height:58px;flex-shrink:0;justify-content:flex-start;padding:10px!important;border:0!important;border-radius:12px;background:#f1f0f5!important;color:#2a2838!important;box-shadow:none!important;text-align:left;gap:10px;transition:background 160ms ease,transform 160ms ease}
+.screen-share-dialog .native-share-source:hover{background:#e8e5f0!important}
+.screen-share-dialog .native-share-source.is-selected{background:#e7e2f6!important;color:#3d3169!important}
+.screen-share-dialog .native-share-source-icon{width:34px;height:34px;flex:0 0 34px;background:#fff;color:#686176;border-radius:10px}
+.screen-share-dialog .native-share-source.is-selected .native-share-source-icon{color:#5c499a}
+.screen-share-dialog .native-share-source-copy{flex:1;overflow:hidden}
+.screen-share-dialog .native-share-source-copy strong{font-size:12px;font-weight:600;color:inherit}
+.screen-share-dialog .native-share-source-copy small{font-size:10px;color:#656170}
+.screen-share-dialog .native-share-source>i{width:7px;height:7px;flex:0 0 7px;background:transparent;box-shadow:none}
+.screen-share-dialog .native-share-source.is-selected>i{background:#6b54ae;box-shadow:none}
+.screen-share-dialog .share-quality-options,.screen-share-dialog .share-source-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 18px}
+.screen-share-dialog .share-source-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+.screen-share-dialog .radio-group>[data-slot=label]{grid-column:1/-1;font-size:12px;font-weight:600;color:#343142;margin-bottom:3px}
+.screen-share-dialog .radio{display:flex;align-items:stretch;min-width:0}
+.screen-share-dialog .radio .radio__content{display:flex;align-items:center;justify-content:flex-start;gap:9px;min-height:82px;width:100%;padding:13px 11px;border:0;border-radius:12px;background:#f1f0f5;color:#302b3c;transition:background 160ms ease;cursor:pointer}
+.screen-share-dialog .radio.is-selected .radio__content{background:#e7e2f6}
+.screen-share-dialog .radio .radio__content:hover{background:#e8e5f0}
+.screen-share-dialog .radio .radio__content>span:not(.radio__control){min-width:0;flex:1}
+/* Legacy label > span flex rules must never stretch the official radio control. */
+.screen-share-dialog .radio .radio__control{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;min-width:16px;max-width:16px;flex:0 0 16px;margin:0;padding:0;border:0;border-radius:50%;background:#d8d3e1;box-shadow:none;overflow:hidden}
+.screen-share-dialog .radio.is-selected .radio__control{background:#65509f}
+.screen-share-dialog .radio .radio__indicator{display:grid;place-items:center;width:100%;height:100%;flex:none;border-radius:50%;background:transparent;box-shadow:none}
+.screen-share-dialog .radio .radio__indicator::before{width:6px;height:6px;max-width:6px;max-height:6px;border-radius:50%;background:#fff}
+.screen-share-dialog .radio strong{display:block;font-size:12px;font-weight:600;color:#343044;line-height:1.5}
+.screen-share-dialog .radio small{display:block;margin-top:4px;font-size:10px;color:#686174;line-height:1.5}
+.screen-share-dialog .share-quality-note{font-size:11px;line-height:1.6;color:#686878;margin:0 0 22px}
+.screen-share-dialog .dialog-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:0}
+.screen-share-dialog .dialog-actions .button{min-height:42px;font-size:12px!important;padding:0 15px!important;border:0!important;box-shadow:none!important;border-radius:11px!important}
+.screen-share-dialog .dialog-actions .outline-button{background:#f1f0f5!important;color:#4f485e!important}
+.screen-share-dialog .dialog-actions .primary-button{background:#3e4792!important;color:#fff!important;gap:8px}
+.screen-share-dialog .button:focus-visible,.screen-share-dialog .radio__content[data-focus-visible=true]{outline:2px solid #7460b6;outline-offset:3px}
+@media(max-width:700px){.screen-share-dialog .native-share-source-picker{grid-template-columns:1fr;gap:12px}.screen-share-dialog .native-share-preview{aspect-ratio:16/9;max-height:200px}.screen-share-dialog .native-share-source-list{max-height:164px}.screen-share-dialog .share-quality-options{grid-template-columns:1fr}.screen-share-dialog .radio .radio__content{min-height:56px;padding:10px 12px}.screen-share-dialog .share-source-options{grid-template-columns:1fr 1fr}.screen-share-dialog .dialog-actions{flex-wrap:wrap}.screen-share-dialog .dialog-actions .button{flex:1 1 auto!important}}
+@media(prefers-reduced-motion:reduce){.screen-share-dialog *{animation:none!important;transition:none!important}}
+.screen-share-dialog .radio .radio__content:focus-within{outline:none}
+.screen-share-dialog .radio .radio__content[data-focus-visible=true]{outline:2px solid #7460b6;outline-offset:3px}
+
+.screen-share-footer{width:100%;padding-top:6px}
+.screen-share-dialog .native-share-source-list{overscroll-behavior:contain}
+.screen-share-dialog .radio .radio__control{background:transparent;border:1.5px solid #82768e}
+.screen-share-dialog .radio.is-selected .radio__control{background:#65509f;border-color:#65509f}
